@@ -30,7 +30,7 @@ if (WIN32)
     set(CMAKE_ASM_COMPILER_WORKS TRUE)
 endif()
 
-project(NintendoWare4CTR C CXX ASM)
+project(NintendoWare C CXX ASM)
 
 if (NOT WIN32)
     set_compilers()
@@ -42,14 +42,14 @@ __compiler_armcc(ASM)
 
 file(GLOB_RECURSE csourcefiles "src/*.cpp")
 
-add_library(NintendoWare4CTR ${csourcefiles})
+add_library(NintendoWare ${csourcefiles})
 
-target_compile_options(NintendoWare4CTR PUBLIC $<$<COMPILE_LANGUAGE:C>:
+target_compile_options(NintendoWare PUBLIC $<$<COMPILE_LANGUAGE:C>:
     --apcs=//interwork --cpu=MPCore --fpmode=fast --c99 --arm
     --signed_chars --multibyte-chars --locale=japanese
     -Otime --data-reorder --split_sections
     >)
 
-target_compile_definitions(NintendoWare4CTR PUBLIC NON_MATCHING=)
+target_compile_definitions(NintendoWare PUBLIC NON_MATCHING=)
 
-target_include_directories(NintendoWare4CTR PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(NintendoWare PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
