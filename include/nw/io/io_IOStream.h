@@ -1,5 +1,6 @@
 #pragma once
 
+#include <nw/Assert.h>
 #include <nw/ut/ut_RuntimeTypeInfo.h>
 
 namespace nw   {

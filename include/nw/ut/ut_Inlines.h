@@ -134,6 +134,29 @@ inline ValueT RoundUp(ValueT x, unsigned int base){
     return static_cast<ValueT>( (x + (base - 1)) & ~(base - 1) );
 }
 
+template <typename ValueT> ValueT RoundDown(ValueT x, unsigned int base);
+
+template <typename ValueT>
+inline void* RoundDown(ValueT* x, unsigned int base){
+    IntPtr value = reinterpret_cast<IntPtr>(x);
+    IntPtr rounded = value  & ~(base - 1);
+
+    return reinterpret_cast<void*>(rounded);
+}
+
+template <typename ValueT>
+inline const void* RoundDown(const ValueT* x, unsigned int base){
+    IntPtr value = reinterpret_cast<IntPtr>(x);
+    IntPtr rounded = value  & ~(base - 1);
+
+    return reinterpret_cast<const void*>(rounded);
+}
+
+template <typename ValueT>
+inline ValueT RoundDown(ValueT x, unsigned int base){
+    return static_cast<ValueT>(x & ~(base - 1));
+}
+
 template <typename T>
 inline T Clamp(T x, T low, T high){
     return (x > high) ? high : ( (x < low) ? low : x );

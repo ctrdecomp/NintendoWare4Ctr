@@ -1,0 +1,157 @@
+/*---------------------------------------------------------------------------*
+  Project:  NintendoWare
+
+  Copyright (C)Nintendo/HAL Laboratory, Inc.  All rights reserved.
+
+  These coded instructions, statements, and computer programs contain proprietary
+  information of Nintendo and/or its licensed developers and are protected by
+  national and international copyright laws. They may not be disclosed to third
+  parties or copied or duplicated in any form, in whole or in part, without the
+  prior written consent of Nintendo.
+
+  The content herein is highly confidential and should be handled accordingly.
+ *---------------------------------------------------------------------------*/
+
+#ifndef NW_GFX_RES_TYPE_INFO_H_
+#define NW_GFX_RES_TYPE_INFO_H_
+
+#include <nw/types.h>
+
+namespace nw
+{
+namespace gfx
+{
+namespace res
+{
+
+#define NW_GFX_RES_TYPE_INFO(name)  res::name##_TYPE_INFO
+
+//! @details :private
+enum ResTypeInfoDefinition
+{
+    ResCameraViewUpdater_TYPE_INFO      = 0x00000000,
+    ResAimTargetViewUpdater_TYPE_INFO   = 0x80000000,
+    ResLookAtTargetViewUpdater_TYPE_INFO = 0x40000000,
+    ResRotateViewUpdater_TYPE_INFO      = 0x20000000,
+    ResCameraProjectionUpdater_TYPE_INFO = 0x00000000,
+    ResFrustumProjectionUpdater_TYPE_INFO = 0x80000000,
+    ResOrthoProjectionUpdater_TYPE_INFO = 0x40000000,
+    ResPerspectiveProjectionUpdater_TYPE_INFO = 0x20000000,
+    ResParticleForm_TYPE_INFO           = 0x00000000,
+    ResParticleCubeForm_TYPE_INFO       = 0x80000000,
+    ResParticleCylinderForm_TYPE_INFO   = 0x40000000,
+    ResParticleDiscForm_TYPE_INFO       = 0x20000000,
+    ResParticlePointForm_TYPE_INFO      = 0x10000000,
+    ResParticleRectangleForm_TYPE_INFO  = 0x08000000,
+    ResParticleSphereForm_TYPE_INFO     = 0x04000000,
+    ResParticleUpdater_TYPE_INFO        = 0x00000000,
+    ResParticleAccelarationUpdater_TYPE_INFO = 0x80000000,
+    ResParticleGeneralUpdater_TYPE_INFO = 0x40000000,
+    ResParticleGravityUpdater_TYPE_INFO = 0x20000000,
+    ResParticleSpinUpdater_TYPE_INFO    = 0x10000000,
+    ResParticleRandomUpdater_TYPE_INFO  = 0x08000000,
+    ResParticleChildUpdater_TYPE_INFO   = 0x04000000,
+    ResParticleUserUpdater_TYPE_INFO    = 0x02000000,
+    ResParticleVector2ImmediateUpdater_TYPE_INFO = 0x01000000,
+    ResParticleVector3Updater_TYPE_INFO = 0x00800000,
+    ResParticleFloatUpdater_TYPE_INFO   = 0x00400000,
+    ResParticleFloatImmediate4KeyUpdater_TYPE_INFO = 0x00200000,
+    ResParticleVector3Immediate4KeyUpdater_TYPE_INFO = 0x00100000,
+    ResParticleRotateUpVectorUpdater_TYPE_INFO = 0x00080000,
+    ResParticleTexturePatternUpdater_TYPE_INFO = 0x00040000,
+    ResParticleMagnetUpdater_TYPE_INFO  = 0x00020000,
+    ResParticleCollisionUpdater_TYPE_INFO = 0x00010000,
+    ResParticleVector3ImmediateUpdater_TYPE_INFO = 0x00800001,
+    ResParticleVector3AdditiveUpdater_TYPE_INFO = 0x00800002,
+    ResParticleVector3RandomAdditiveUpdater_TYPE_INFO = 0x00800004,
+    ResParticleFloatImmediateUpdater_TYPE_INFO = 0x00400001,
+    ResParticleAnimationOption_TYPE_INFO = 0x00000000,
+    ResParticleFittingAnimationOption_TYPE_INFO = 0x80000000,
+    ResParticleFrameLoopAnimationOption_TYPE_INFO = 0x40000000,
+    ResParticleRandomAnimationOption_TYPE_INFO = 0x20000000,
+    ResParticleShapeBuilder_TYPE_INFO   = 0x00000000,
+    ResParticleBillboardShapeBuilder_TYPE_INFO = 0x80000000,
+    ResParticleWorldBillboardShapeBuilder_TYPE_INFO = 0x40000000,
+    ResParticleYBillboardShapeBuilder_TYPE_INFO = 0x20000000,
+    ResParticleXyPlaneShapeBuilder_TYPE_INFO = 0x10000000,
+    ResParticleInitializer_TYPE_INFO    = 0x00000000,
+    ResParticleDirectionalVelocityInitializer_TYPE_INFO = 0x80000000,
+    ResParticleRandomDirectionalVelocityInitializer_TYPE_INFO = 0x40000000,
+    ResParticleOriginVelocityInitializer_TYPE_INFO = 0x20000000,
+    ResParticleRandomVelocityInitializer_TYPE_INFO = 0x10000000,
+    ResParticleYAxisVelocityInitializer_TYPE_INFO = 0x08000000,
+    ResParticleVector3ImmediateInitializer_TYPE_INFO = 0x04000000,
+    ResParticleFloatRandomInitializer_TYPE_INFO = 0x02000000,
+    ResParticleFloatRangeRandomInitializer_TYPE_INFO = 0x01000000,
+    ResParticleFloatImmediateInitializer_TYPE_INFO = 0x00800000,
+    ResParticleVector2ImmediateInitializer_TYPE_INFO = 0x00400000,
+    ResParticleVector3Random1Initializer_TYPE_INFO = 0x00200000,
+    ResParticleVector3Random3Initializer_TYPE_INFO = 0x00100000,
+    ResParticleVector3MultRandomInitializer_TYPE_INFO = 0x00080000,
+    ResParticleAttribute_TYPE_INFO      = 0x00000000,
+    ResParticleStreamAttribute_TYPE_INFO = 0x80000000,
+    ResParticleParameterAttribute_TYPE_INFO = 0x40000000,
+    ResVertexAttribute_TYPE_INFO        = 0x00000000,
+    ResVertexParamAttribute_TYPE_INFO   = 0x80000000,
+    ResVertexStreamBase_TYPE_INFO       = 0x40000000,
+    ResVertexStream_TYPE_INFO           = 0x40000001,
+    ResInterleavedVertexStream_TYPE_INFO = 0x40000002,
+    ResSceneObject_TYPE_INFO            = 0x00000000,
+    ResShader_TYPE_INFO                 = 0x80000000,
+    ResSceneNode_TYPE_INFO              = 0x40000000,
+    ResTexture_TYPE_INFO                = 0x20000000,
+    ResShape_TYPE_INFO                  = 0x10000000,
+    ResMaterial_TYPE_INFO               = 0x08000000,
+    ResLookupTableSet_TYPE_INFO         = 0x04000000,
+    ResSkeleton_TYPE_INFO               = 0x02000000,
+    ResMesh_TYPE_INFO                   = 0x01000000,
+    ResSceneEnvironmentSetting_TYPE_INFO = 0x00800000,
+    ResReferenceShader_TYPE_INFO        = 0x80000001,
+    ResBinaryShader_TYPE_INFO           = 0x80000002,
+    ResParticleSet_TYPE_INFO            = 0x40000001,
+    ResTransformNode_TYPE_INFO          = 0x40000002,
+    ResParticleEmitter_TYPE_INFO        = 0x40000006,
+    ResCamera_TYPE_INFO                 = 0x4000000A,
+    ResModel_TYPE_INFO                  = 0x40000012,
+    ResLight_TYPE_INFO                  = 0x40000022,
+    ResFog_TYPE_INFO                    = 0x40000042,
+    ResSkeletalModel_TYPE_INFO          = 0x40000092,
+    ResParticleModel_TYPE_INFO          = 0x40000112,
+    ResFragmentLight_TYPE_INFO          = 0x400000A2,
+    ResHemiSphereLight_TYPE_INFO        = 0x40000122,
+    ResVertexLight_TYPE_INFO            = 0x40000222,
+    ResAmbientLight_TYPE_INFO           = 0x40000422,
+    ResPixelBasedTexture_TYPE_INFO      = 0x20000001,
+    ResProceduralTexture_TYPE_INFO      = 0x20000002,
+    ResReferenceTexture_TYPE_INFO       = 0x20000004,
+    ResCubeTexture_TYPE_INFO            = 0x20000009,
+    ResImageTexture_TYPE_INFO           = 0x20000011,
+    ResShadowTexture_TYPE_INFO          = 0x20000021,
+    ResSeparateDataShape_TYPE_INFO      = 0x10000001,
+    ResParticleShape_TYPE_INFO          = 0x10000002,
+    ResParticleAnimation_TYPE_INFO      = 0x00000000,
+    ResParticleChildUpdaterOption_TYPE_INFO = 0x00000000,
+    ResParticleChildUpdaterFirstUpdateOption_TYPE_INFO = 0x80000000,
+    ResParticleChildUpdaterFinalUpdateOption_TYPE_INFO = 0x40000000,
+    ResParticleChildUpdaterIntervalOption_TYPE_INFO = 0x20000000,
+    ResParticleChildUpdaterFrameOption_TYPE_INFO = 0x10000000,
+    ResLookupTable_TYPE_INFO            = 0x00000000,
+    ResImageLookupTable_TYPE_INFO       = 0x80000000,
+    ResReferenceLookupTable_TYPE_INFO   = 0x40000000,
+    ResTextureSampler_TYPE_INFO         = 0x00000000,
+    ResStandardTextureSampler_TYPE_INFO = 0x80000000,
+    ResShadowTextureSampler_TYPE_INFO   = 0x40000000,
+    ResTextureMapper_TYPE_INFO          = 0x00000000,
+    ResPixelBasedTextureMapper_TYPE_INFO = 0x80000000,
+    ResProceduralTextureMapper_TYPE_INFO = 0x40000000,
+    ResMorphShape_TYPE_INFO             = 0x00000000,
+    ResSeparateDataMorphShape_TYPE_INFO = 0x80000000
+};
+
+} // namespace res
+} // namespace gfx
+} // namespace nw
+
+#endif /* NW_GFX_RES_TYPE_INFO_H_ */
+
+

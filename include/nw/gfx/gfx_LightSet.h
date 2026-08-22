@@ -15,7 +15,7 @@ namespace gfx{
 
 typedef nw::ut::FixedSizeArray<FragmentLight*, LIGHT_COUNT> FixedFragmentLightArray;
 
-class LightSet : public adsl::gfx::GfxObject{
+class LightSet : public GfxObject{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(LightSet);
 

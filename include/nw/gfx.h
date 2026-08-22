@@ -23,6 +23,8 @@
 #include <nw/gfx/gfx_SortingMaterialIdGenerator.h>
 #include <nw/gfx/gfx_SceneEnvironment.h>
 #include <nw/gfx/gfx_ShaderBinaryInfo.h>
+#include <nw/gfx/gfx_AnimGroup.h>
+#include <nw/gfx/gfx_AnimObject.h>
 #include <nw/gfx/gfx_SceneObject.h>
 #include <nw/gfx/gfx_Material.h>
 #include <nw/gfx/gfx_SceneNode.h>
@@ -96,9 +98,9 @@
 
 #ifdef __cplusplus
 
-using namespace adsl::gfx;
-using namespace adsl::gfx::res;
-using namespace adsl::gfx::internal;
+using namespace nw::gfx;
+using namespace nw::gfx::res;
+using namespace nw::gfx::internal;
 using namespace nw;
 
 #endif

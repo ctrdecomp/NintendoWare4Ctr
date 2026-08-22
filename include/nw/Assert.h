@@ -39,7 +39,12 @@
 
 #ifndef NW_MINMAX_ASSERT
 #define NW_MINMAX_ASSERT(exp, min, max) \
-            NW_ASSERTMSG( (exp) >= (min) && (exp) <= (max), #exp " is out of bounds(%d)\n%d <= "#exp" <= %d not satisfied.", static_cast<int>(exp), static_cast<int>(min), static_cast<int>(max))
+            NW_ASSERTMSG((exp) >= (min) && (exp) <= (max), #exp " is out of bounds(%d)\n%d <= "#exp" <= %d not satisfied.", static_cast<int>(exp), static_cast<int>(min), static_cast<int>(max))
+#endif
+
+#ifndef NW_MINMAXLT_ASSERT
+#define NW_MINMAXLT_ASSERT(exp, min, max) \
+            NW_ASSERTMSG((exp) >= (min) && (exp) < (max), #exp " is out of bounds(%d)\n%d <= "#exp" < %d not satisfied.", static_cast<int>(exp), static_cast<int>(min), static_cast<int>(max))
 #endif
 
 // NULL ASSERT

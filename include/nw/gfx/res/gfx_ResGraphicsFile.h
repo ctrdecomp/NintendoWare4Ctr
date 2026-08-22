@@ -534,21 +534,21 @@ public:
         mVramImageAddress(vramImageAddress)
     {}
 
-    void operator()(adsl::gfx::ResTexture resTexture) const{
-        switch( resTexture.ref().typeInfo ){
-        case adsl::gfx::ResImageTexture::TYPE_INFO:{
-                adsl::gfx::ResImageTexture resImageTexture = adsl::gfx::ResStaticCast<adsl::gfx::ResImageTexture>( resTexture );
+    void operator()(nw::gfx::ResTexture resTexture) const{
+        switch(resTexture.ref().typeInfo){
+        case nw::gfx::ResImageTexture::TYPE_INFO:{
+                nw::gfx::ResImageTexture resImageTexture = nw::gfx::ResStaticCast<nw::gfx::ResImageTexture>( resTexture );
 
-                adsl::gfx::ResPixelBasedImage resImage = resImageTexture.GetImage();
-                const void* locationAddress = this->GetVramLocation( resImage.GetImageData() );
-                resImage.SetLocationAddress( locationAddress );
+                nw::gfx::ResPixelBasedImage resImage = resImageTexture.GetImage();
+                const void* locationAddress = this->GetVramLocation(resImage.GetImageData());
+                resImage.SetLocationAddress(locationAddress);
             }
             break;
-        case adsl::gfx::ResCubeTexture::TYPE_INFO:{
-                adsl::gfx::ResCubeTexture resCubeTexture = adsl::gfx::ResStaticCast<adsl::gfx::ResCubeTexture>( resTexture );
+        case nw::gfx::ResCubeTexture::TYPE_INFO:{
+                nw::gfx::ResCubeTexture resCubeTexture = nw::gfx::ResStaticCast<nw::gfx::ResCubeTexture>(resTexture);
                 
-                for (int face = 0; face < adsl::gfx::ResCubeTexture::MAX_CUBE_FACE; ++face){
-                    adsl::gfx::ResPixelBasedImage resImage = resCubeTexture.GetImage(adsl::gfx::ResCubeTexture::CubeFace(face));
+                for (int face = 0; face <nw::gfx::ResCubeTexture::MAX_CUBE_FACE; ++face){
+                    nw::gfx::ResPixelBasedImage resImage = resCubeTexture.GetImage(nw::gfx::ResCubeTexture::CubeFace(face));
                     const void* locationAddress = this->GetVramLocation( resImage.GetImageData() );
                     resImage.SetLocationAddress( locationAddress );
                 }
@@ -559,12 +559,12 @@ public:
         }
     }
 
-    void operator()(adsl::gfx::ResIndexStream resIndexStream) const{
+    void operator()(nw::gfx::ResIndexStream resIndexStream) const{
         const void* locationAddress = this->GetVramLocation( resIndexStream.GetStream() );
         resIndexStream.SetLocationAddress( locationAddress );
     }
 
-    void operator()(adsl::gfx::ResVertexStreamBase resVertexStream) const{
+    void operator()(nw::gfx::ResVertexStreamBase resVertexStream) const{
         const void* locationAddress = this->GetVramLocation( resVertexStream.GetStream() );
         resVertexStream.SetLocationAddress(locationAddress);
     }
@@ -625,8 +625,8 @@ public:
         NW_ASSERT(resMaterial.IsValid());
 
         nw::ut::ResTypeInfo resTypeInfo = resModel.GetTypeInfo();
-        if (resTypeInfo == adsl::gfx::ResParticleModel::TYPE_INFO){
-            resMaterial.SetFlags(nw::ut::EnableFlag(resMaterial.GetFlags(), adsl::gfx::ResMaterialData::FLAG_PARTICLE_MATERIAL_ENABLED));
+        if (resTypeInfo == nw::gfx::ResParticleModel::TYPE_INFO){
+            resMaterial.SetFlags(nw::ut::EnableFlag(resMaterial.GetFlags(), nw::gfx::ResMaterialData::FLAG_PARTICLE_MATERIAL_ENABLED));
         }
     }
 };

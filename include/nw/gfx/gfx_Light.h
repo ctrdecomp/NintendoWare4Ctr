@@ -1,7 +1,11 @@
 #pragma once
 
 #include <nw/gfx/gfx_TransformNode.h>
+#include <nw/gfx/gfx_AnimGroup.h>
+#include <nw/gfx/gfx_AnimObject.h>
 #include <nw/gfx/res/gfx_ResLight.h>
+
+#include <nw/math/math_Transform.h>
 
 namespace nw{
 namespace gfx{
@@ -45,7 +49,7 @@ protected:
 
     Result CreateAnimGroup(nw::os::IAllocator* allocator);
 
-    void* GetAnimTargetObject(const anim::ResAnimGroupMember& anim);    
+    void* GetAnimTargetObject(const anim::res::ResAnimGroupMember& anim);    
 
     void DestroyOriginalValue();
 
@@ -56,9 +60,7 @@ protected:
     nw::math::Transform3 mOriginalTransform;
 
 private:
-
     bool ValidateLightAnimType(AnimObject* animObject);
-
     AnimGroup* mAnimGroup;
 };
 

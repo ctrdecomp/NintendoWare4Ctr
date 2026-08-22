@@ -46,7 +46,7 @@ public:
     virtual void VisitParticleModel(ParticleModel* particleModel) = 0;
 
 protected:
-    ISceneVisitor(nw::os::IAllocator* allocator) : GfxObject(allocator) {}
+    ISceneVisitor(os::IAllocator* allocator):GfxObject(allocator){}
 };
 
 }

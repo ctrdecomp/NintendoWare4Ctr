@@ -68,7 +68,7 @@ public:
 
     NW_RES_FIELD_FLAGS_DECL(u32, Flags)
     NW_RES_FIELD_CLASS_LIST_DECL(ResSceneObject, Children)
-    NW_RES_FIELD_CLASS_DIC_DECL(adsl::anim::res::ResAnimGroup, AnimGroups, nw::ut::ResDicPatricia)
+    NW_RES_FIELD_CLASS_DIC_DECL(nw::anim::res::ResAnimGroup, AnimGroups, nw::ut::ResDicPatricia)
     
     bool IsBranchVisible() const { return ref().mFlags & ResSceneNodeData::FLAG_IS_BRANCH_VISIBLE; }
     

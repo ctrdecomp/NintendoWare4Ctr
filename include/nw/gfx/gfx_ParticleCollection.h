@@ -33,12 +33,7 @@ public:
         f32* mStream;
     };
 
-    static ParticleCollection* Create(
-        ParticleSet* parent,
-        ResParticleCollection resource,
-        nw::os::IAllocator* mainAllocator,
-        nw::os::IAllocator* deviceAllocator,
-        ParticleShape* shape);
+    static ParticleCollection* Create(ParticleSet* parent,ResParticleCollection resource,nw::os::IAllocator* mainAllocator,nw::os::IAllocator* deviceAllocator,ParticleShape* shape);
 
     static size_t GetMemorySize(ResParticleCollection resource, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT){
         nw::os::MemorySizeCalculator size(alignment);

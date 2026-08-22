@@ -8,7 +8,7 @@
 #include <nw/gfx/res/gfx_ResRevision.h>
 #include <nw/gfx/res/gfx_ResTypeInfo.h>
 
-namespace adsl {
+namespace nw {
 namespace gfx {
 namespace res {
 
