@@ -1,0 +1,76 @@
+#pragma once
+
+#include <nw/ut/ut_ResUtil.h>
+#include <nw/ut/ut_ResDictionary.h>
+#include <nw/gfx/res/gfx_ResParticleUpdater.h>
+
+namespace nw {
+namespace gfx {
+namespace res {
+
+struct ResParticleAttributeData{
+    nw::ut::ResTypeInfo typeInfo;
+    nw::ut::ResS32 mUsage;
+};
+
+class ResParticleAttribute : public nw::ut::ResCommon< ResParticleAttributeData >{
+public:
+    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleAttribute) };
+    enum { SIGNATURE = NW_RES_SIGNATURE32('PSAT') };
+
+    NW_RES_CTOR( ResParticleAttribute )
+
+    NW_RES_FIELD_PRIMITIVE_DECL( s32, Usage )
+    nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
+};
+
+typedef nw::ut::ResArrayClass<ResParticleAttribute>::type  ResParticleAttributeArray;
+
+struct ResParticleStreamAttributeData : public ResParticleAttributeData
+{
+};
+
+class ResParticleStreamAttribute : public ResParticleAttribute{
+public:
+    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleStreamAttribute) };
+    enum { SIGNATURE = NW_RES_SIGNATURE32('PSST') };
+
+    NW_RES_CTOR_INHERIT( ResParticleStreamAttribute, ResParticleAttribute )
+};
+
+struct ResParticleParameterAttributeData : public ResParticleAttributeData{
+    nw::ut::ResS32 mDimension;
+    nw::ut::ResS32 mDataTableCount;
+    nw::ut::Offset toDataTable;
+};
+
+class ResParticleParameterAttribute : public ResParticleAttribute{
+public:
+    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleParameterAttribute) };
+    enum { SIGNATURE = NW_RES_SIGNATURE32('PSPA') };
+
+    NW_RES_CTOR_INHERIT( ResParticleParameterAttribute, ResParticleAttribute )
+
+    NW_RES_FIELD_PRIMITIVE_DECL( s32, Dimension )
+    NW_RES_FIELD_PRIMITIVE_LIST_DECL( f32, Data )
+
+    nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
+};
+
+struct ResParticleCollectionData{
+    nw::ut::ResS32 mCapacity;
+    nw::ut::ResS32 mAttributesTableCount;
+    nw::ut::Offset toAttributesTable;
+};
+
+class ResParticleCollection : public nw::ut::ResCommon< ResParticleCollectionData >{
+public:
+    NW_RES_CTOR( ResParticleCollection )
+
+    NW_RES_FIELD_PRIMITIVE_DECL( s32, Capacity )
+    NW_RES_FIELD_CLASS_LIST_DECL( ResParticleAttribute, Attributes )
+};
+
+}
+}
+}

@@ -1,55 +1,73 @@
 cmake_minimum_required(VERSION 3.24)
-set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/project/ARMCC.cmake)
-
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-if(NOT DEFINED ENV{ARMCC_PATH})
-    message(FATAL_ERROR "please set ARMCC_PATH")
-endif()
-
-find_program(ARM_ASM NAMES armasm.exe PATHS $ENV{ARMCC_PATH}/bin REQUIRED NO_DEFAULT_PATH)
-find_program(ARM_AR NAMES armar.exe PATHS $ENV{ARMCC_PATH}/bin REQUIRED NO_DEFAULT_PATH)
-find_program(ARM_CC NAMES armcc.exe PATHS $ENV{ARMCC_PATH}/bin REQUIRED NO_DEFAULT_PATH)
-find_program(ARM_LINK NAMES armlink.exe PATHS $ENV{ARMCC_PATH}/bin REQUIRED NO_DEFAULT_PATH)
-# find_program(ARM_FROMELF NAMES fromelf.exe PATHS $ENV{ARMCC_PATH}/bin REQUIRED NO_DEFAULT_PATH) # not important
-
-macro (set_compilers)
-    set(CMAKE_CXX_COMPILER_ID ARMCC)
-
-    set(CMAKE_AR ${ARM_AR})
-    set(CMAKE_C_COMPILER ${ARM_CC})
-    set(CMAKE_CXX_COMPILER ${ARM_CC})
-    set(CMAKE_ASM_COMPILER ${ARM_ASM})
-    set(CMAKE_LINKER ${ARM_LINK})
-endmacro()
-
-if (WIN32)
-    set_compilers()
-    set(CMAKE_C_COMPILER_WORKS TRUE)
-    set(CMAKE_CXX_COMPILER_WORKS TRUE)
-    set(CMAKE_ASM_COMPILER_WORKS TRUE)
-endif()
 
 project(NintendoWare C CXX ASM)
 
-if (NOT WIN32)
-    set_compilers()
-endif()
+function(nw_library TARGET_NAME MODULE_DIR)
+    file(GLOB_RECURSE MODULE_SOURCES
+        "${MODULE_DIR}/*.cpp"
+        "${MODULE_DIR}/*.c"
+        "${MODULE_DIR}/*.s"
+        "${MODULE_DIR}/*.asm"
+    )
 
-__compiler_armcc(C)
-__compiler_armcc(CXX)
-__compiler_armcc(ASM)
+    if(NOT MODULE_SOURCES)
+        message(STATUS "Skipping ${TARGET_NAME} (no sources)")
+        return()
+    endif()
 
-file(GLOB_RECURSE csourcefiles "src/*.cpp")
+    add_library(${TARGET_NAME} STATIC ${MODULE_SOURCES})
 
-add_library(NintendoWare ${csourcefiles})
+    set_target_properties(${TARGET_NAME} PROPERTIES
+        OUTPUT_NAME "lib${TARGET_NAME}"
+        SUFFIX ".fast.a"
+    )
 
-target_compile_options(NintendoWare PUBLIC $<$<COMPILE_LANGUAGE:C>:
-    --apcs=//interwork --cpu=MPCore --fpmode=fast --c99 --arm
-    --signed_chars --multibyte-chars --locale=japanese
-    -Otime --data-reorder --split_sections
-    >)
+    target_compile_options(${TARGET_NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:
+        --multibyte-chars --signed_chars --cpu=MPCore
+        --dollar --littleend --wchar --wchar16 --library_interface=rvct
+        --apcs=//interwork --data-reorder --split_sections
+        --debug_info=line_inlining_extensions --force_new_nothrow --fpmode=fast --no_exceptions --rtti --rtti_data --remarks --no_vfe --allow_fpreg_for_nonfpdata
+        --diag_suppress=3017,940,997,177,541,1,1134,550,83,427,2525,117,284,174,111,1441,161,826,177,1549,513,1441,340,228,2530,1297,401,261,381,2516,2192,1596,193,113,1035,2523,2091,1663,1801,1621,2519,1676,63,286,74,271,2945,1301,1945,1847,2813,68,2523
+        --cpp --arm -O3 -Otime
+        -DNN_PROCESSOR_ARM11MPCORE -DNW_RELEASE -DNW_PLATFORM_CTR
+        >
+    )
 
-target_compile_definitions(NintendoWare PUBLIC NON_MATCHING=)
+    target_compile_options(${TARGET_NAME} PRIVATE $<$<COMPILE_LANGUAGE:C>:
+        --multibyte-chars --signed_chars --cpu=MPCore
+        --dollar --littleend --wchar --wchar16 --library_interface=rvct
+        --apcs=//interwork --data-reorder --split_sections
+        --debug_info=line_inlining_extensions --force_new_nothrow --fpmode=fast --no_exceptions --rtti --rtti_data --remarks --no_vfe --allow_fpreg_for_nonfpdata
+        --diag_suppress=3017,940,997,177,541,1,1134,550,83,427,2525,117,284,174,111,1441,161,826,177,1549,513,1441,340,228,2530,1297,401,261,381,2516,2192,1596,193,113,1035,2523,2091,1663,1801,1621,2519,1676,63,286,74,271,2945,1301,1945,1847,2813,68,2523
+        --c99 --arm -O3 -Otime
+        -DNN_PROCESSOR_ARM11MPCORE -DNW_RELEASE -DNW_PLATFORM_CTR
+        >
+    )
 
-target_include_directories(NintendoWare PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    target_include_directories(${TARGET_NAME} PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${MODULE_DIR}
+        ${PROJECT_SOURCE_DIR}/../CTRSDK-4_2_5/include
+    )
+
+    target_compile_definitions(${TARGET_NAME} PUBLIC
+        NON_MATCHING=
+        NW_RELEASE
+    )
+endfunction()
+
+nw_library(nw_font    ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/font)
+nw_library(nw_lyt     ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/lyt)
+nw_library(nw_gfx     ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/gfx)
+nw_library(nw_os      ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/os)
+nw_library(nw_ut      ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/ut)
+
+add_library(NintendoWare INTERFACE)
+
+target_link_libraries(NintendoWare INTERFACE
+    nw_font
+    nw_lyt
+    nw_gfx
+    nw_os
+    nw_ut
+)

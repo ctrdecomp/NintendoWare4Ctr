@@ -1,0 +1,104 @@
+#pragma once
+
+#include <nw/gfx/gfx_Common.h>
+#include <nw/gfx/gfx_GfxObject.h>
+#include <nw/gfx/gfx_IRenderTarget.h>
+#include <nw/gfx/gfx_ISceneUpdater.h>
+#include <nw/gfx/gfx_SceneUpdater.h>
+#include <nw/gfx/gfx_RenderQueue.h>
+#include <nw/gfx/gfx_RenderElement.h>
+#include <nw/gfx/gfx_ISceneVisitor.h>
+#include <nw/gfx/gfx_MeshRenderer.h>
+#include <nw/gfx/gfx_RenderContext.h>
+#include <nw/gfx/gfx_SceneContext.h>
+#include <nw/gfx/gfx_SceneTraverser.h>
+#include <nw/gfx/gfx_SceneInitializer.h>
+#include <nw/gfx/gfx_SkeletonUpdater.h>
+#include <nw/gfx/gfx_WorldMatrixUpdater.h>
+#include <nw/gfx/gfx_BillboardUpdater.h>
+#include <nw/gfx/gfx_IMaterialActivator.h>
+#include <nw/gfx/gfx_MaterialActivator.h>
+#include <nw/gfx/gfx_SimpleMaterialActivator.h>
+#include <nw/gfx/gfx_IMaterialIdGenerator.h>
+#include <nw/gfx/gfx_SortingMaterialIdGenerator.h>
+#include <nw/gfx/gfx_SceneEnvironment.h>
+#include <nw/gfx/gfx_ShaderBinaryInfo.h>
+#include <nw/gfx/gfx_SceneObject.h>
+#include <nw/gfx/gfx_Material.h>
+#include <nw/gfx/gfx_SceneNode.h>
+#include <nw/gfx/gfx_TransformNode.h>
+#include <nw/gfx/gfx_UserRenderNode.h>
+#include <nw/gfx/gfx_Model.h>
+#include <nw/gfx/gfx_SkeletalModel.h>
+#include <nw/gfx/gfx_StandardSkeleton.h>
+#include <nw/gfx/gfx_Skeleton.h>
+#include <nw/gfx/gfx_SceneBuilder.h>
+#include <nw/gfx/gfx_SceneHelper.h>
+#include <nw/gfx/gfx_CalculatedTransform.h>
+#include <nw/gfx/gfx_ShaderProgram.h>
+#include <nw/gfx/gfx_SceneEnvironmentSetting.h>
+#include <nw/gfx/gfx_LightSet.h>
+#include <nw/gfx/gfx_Fog.h>
+#include <nw/gfx/gfx_Light.h>
+#include <nw/gfx/gfx_AmbientLight.h>
+#include <nw/gfx/gfx_FragmentLight.h>
+#include <nw/gfx/gfx_VertexLight.h>
+#include <nw/gfx/gfx_HemiSphereLight.h>
+#include <nw/gfx/gfx_Camera.h>
+#include <nw/gfx/gfx_CameraProjectionUpdater.h>
+#include <nw/gfx/gfx_FrustumProjectionUpdater.h>
+#include <nw/gfx/gfx_OrthoProjectionUpdater.h>
+#include <nw/gfx/gfx_PerspectiveProjectionUpdater.h>
+#include <nw/gfx/gfx_CameraViewUpdater.h>
+#include <nw/gfx/gfx_AimTargetViewUpdater.h>
+#include <nw/gfx/gfx_LookAtTargetViewUpdater.h>
+#include <nw/gfx/gfx_RotateViewUpdater.h>
+#include <nw/gfx/gfx_Viewport.h>
+#include <nw/gfx/gfx_ParticleCollection.h>
+#include <nw/gfx/gfx_ParticleContext.h>
+#include <nw/gfx/gfx_ParticleEmitter.h>
+#include <nw/gfx/gfx_ParticleModel.h>
+#include <nw/gfx/gfx_ParticleRandom.h>
+#include <nw/gfx/gfx_ParticleSceneUpdater.h>
+#include <nw/gfx/gfx_ParticleSet.h>
+#include <nw/gfx/gfx_ParticleShape.h>
+#include <nw/gfx/gfx_ParticleTime.h>
+#include <nw/gfx/gfx_ParticleUtil.h>
+#include <nw/gfx/res/gfx_ResGraphicsFile.h>
+#include <nw/gfx/res/gfx_ResSceneObject.h>
+#include <nw/gfx/res/gfx_ResLookupTable.h>
+#include <nw/gfx/res/gfx_ResTexture.h>
+#include <nw/gfx/res/gfx_ResProceduralTexture.h>
+#include <nw/gfx/res/gfx_ResFragmentShader.h>
+#include <nw/gfx/res/gfx_ResMaterial.h>
+#include <nw/gfx/res/gfx_ResMesh.h>
+#include <nw/gfx/res/gfx_ResModel.h>
+#include <nw/gfx/res/gfx_ResShader.h>
+#include <nw/gfx/res/gfx_ResShape.h>
+#include <nw/gfx/res/gfx_ResSkeleton.h>
+#include <nw/gfx/res/gfx_ResCamera.h>
+#include <nw/gfx/res/gfx_ResLight.h>
+#include <nw/gfx/res/gfx_ResFog.h>
+#include <nw/gfx/res/gfx_ResVertex.h>
+#include <nw/gfx/res/gfx_ResUtil.h>
+#include <nw/gfx/res/gfx_ResSceneEnvironmentSetting.h>
+#include <nw/gfx/res/gfx_ResParticleAnimation.h>
+#include <nw/gfx/res/gfx_ResParticleAnimationOption.h>
+#include <nw/gfx/res/gfx_ResParticleCollection.h>
+#include <nw/gfx/res/gfx_ResParticleEmitter.h>
+#include <nw/gfx/res/gfx_ResParticleForm.h>
+#include <nw/gfx/res/gfx_ResParticleInitializer.h>
+#include <nw/gfx/res/gfx_ResParticleModel.h>
+#include <nw/gfx/res/gfx_ResParticleSet.h>
+#include <nw/gfx/res/gfx_ResParticleShape.h>
+#include <nw/gfx/res/gfx_ResParticleShapeBuilder.h>
+#include <nw/gfx/res/gfx_ResParticleUpdater.h>
+
+#ifdef __cplusplus
+
+using namespace adsl::gfx;
+using namespace adsl::gfx::res;
+using namespace adsl::gfx::internal;
+using namespace nw;
+
+#endif
