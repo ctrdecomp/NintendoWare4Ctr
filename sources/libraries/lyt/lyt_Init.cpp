@@ -8,7 +8,8 @@
 namespace nw{
 namespace lyt{
 
-void Initialize(nw::os::IAllocator* pAllocator,nw::os::IAllocator* pDeviceMemoryAllocator){
+void Initialize(nw::os::IAllocator* pAllocator,nw::os::IAllocator* pDeviceMemoryAllocator)
+{
     Layout::SetAllocator(pAllocator);
     Layout::SetDeviceMemoryAllocator(pDeviceMemoryAllocator);
 }

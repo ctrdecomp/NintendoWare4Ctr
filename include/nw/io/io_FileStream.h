@@ -31,17 +31,17 @@ protected:
     {}
     class FilePosition{
     public:
-        FilePosition() : mFileSize(0), mPosition(0) {}
-        void SetFileSize(u32 fileSize) { mFileSize = fileSize; }
-        u32 GetFileSize() const { return mFileSize; }
+        FilePosition() : m_FileSize(0), m_Position(0) {}
+        void SetFileSize(u32 fileSize) { m_FileSize = fileSize; }
+        u32 GetFileSize() const { return m_FileSize; }
         
         u32 Skip(s32 offset);
         u32 Append(s32 offset);
         void Seek(s32 offset, u32 origin);
-        u32 Tell() const { return mPosition; }
+        u32 Tell() const { return m_Position; }
     private:
-        u32 mFileSize;
-        u32 mPosition;
+        u32 m_FileSize;
+        u32 m_Position;
     };
 };
 

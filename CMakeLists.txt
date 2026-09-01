@@ -61,6 +61,7 @@ nw_library(nw_lyt     ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/lyt)
 nw_library(nw_gfx     ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/gfx)
 nw_library(nw_os      ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/os)
 nw_library(nw_ut      ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/ut)
+nw_library(nw_snd      ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/snd)
 
 add_library(NintendoWare INTERFACE)
 
@@ -70,4 +71,5 @@ target_link_libraries(NintendoWare INTERFACE
     nw_gfx
     nw_os
     nw_ut
+    nw_snd
 )

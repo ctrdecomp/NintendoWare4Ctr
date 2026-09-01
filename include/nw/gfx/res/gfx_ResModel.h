@@ -33,12 +33,12 @@ struct ResSkeletalModelData : public ResModelData{
     nw::ut::Offset toSkeleton;
 };
 
-class ResMeshNodeVisibility : public nw::ut::ResCommon< ResMeshNodeVisibilityData >{
+class ResMeshNodeVisibility : public nw::ut::ResCommon<ResMeshNodeVisibilityData>{
 public:
-    NW_RES_CTOR( ResMeshNodeVisibility )
+    NW_RES_CTOR(ResMeshNodeVisibility)
 
-    NW_RES_FIELD_STRING_DECL( Name )
-    NW_RES_FIELD_BOOL_PRIMITIVE_DECL( Visible )
+    NW_RES_FIELD_STRING_DECL(Name)
+    NW_RES_FIELD_BOOL_PRIMITIVE_DECL(Visible)
 };
 
 class ResModel : public ResTransformNode{
@@ -76,8 +76,8 @@ public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResSkeletalModel) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('CSMD') };
     
-    NW_RES_CTOR_INHERIT( ResSkeletalModel, ResModel )
-    NW_RES_FIELD_CLASS_DECL( ResSkeleton, Skeleton )
+    NW_RES_CTOR_INHERIT(ResSkeletalModel, ResModel)
+    NW_RES_FIELD_CLASS_DECL(ResSkeleton, Skeleton)
 };
 
 }

@@ -23,29 +23,38 @@ namespace nw{
 namespace lyt{
 namespace{
 
-void SetTagProcessorImpl(Pane* pPane,font::TagProcessorBase<wchar_t>* pTagProcessor){
-    if (TextBox* pTextBox = ut::DynamicCast<TextBox*>(pPane)){
+void SetTagProcessorImpl(Pane* pPane,font::TagProcessorBase<wchar_t>* pTagProcessor)
+{
+    if (TextBox* pTextBox = ut::DynamicCast<TextBox*>(pPane))
+    {
         pTextBox->SetTagProcessor(pTagProcessor);
     }
 
-    for (PaneList::Iterator it = pPane->GetChildList().GetBeginIter(); it != pPane->GetChildList().GetEndIter(); ++it){
+    for (PaneList::Iterator it = pPane->GetChildList().GetBeginIter(); it != pPane->GetChildList().GetEndIter(); ++it)
+    {
         SetTagProcessorImpl(&(*it), pTagProcessor);
     }
 }
 
-bool IsIncludeAnimationGroupRef(GroupContainer* pGroupContainer,const AnimationGroupRef *const  groupRefs,u16 bindGroupNum,bool bDescendingBind,Pane* pTargetPane){
-    for (u16 grpIdx = 0; grpIdx < bindGroupNum; ++grpIdx){
+bool IsIncludeAnimationGroupRef(GroupContainer* pGroupContainer,const AnimationGroupRef *const  groupRefs,u16 bindGroupNum,bool bDescendingBind,Pane* pTargetPane)
+{
+    for (u16 grpIdx = 0; grpIdx < bindGroupNum; ++grpIdx)
+    {
         Group *const pGroup = pGroupContainer->FindGroupByName(groupRefs[grpIdx].GetName());
         PaneLinkList& paneList = pGroup->GetPaneList();
-        for (PaneLinkList::Iterator it = paneList.GetBeginIter(); it != paneList.GetEndIter(); ++it){
-            if (it->target == pTargetPane){
+        for (PaneLinkList::Iterator it = paneList.GetBeginIter(); it != paneList.GetEndIter(); ++it)
+        {
+            if (it->target == pTargetPane)
+            {
                 return true;
             }
 
-            if (bDescendingBind){
-                for (Pane* pParentPane = pTargetPane->GetParent(); pParentPane; pParentPane = pParentPane->GetParent()){
-
-                    if (it->target == pParentPane){
+            if (bDescendingBind)
+            {
+                for (Pane* pParentPane = pTargetPane->GetParent(); pParentPane; pParentPane = pParentPane->GetParent())
+                {
+                    if (it->target == pParentPane)
+                    {
                         return true;
                     }
                 }
@@ -58,57 +67,68 @@ bool IsIncludeAnimationGroupRef(GroupContainer* pGroupContainer,const AnimationG
 
 }
 
-nw::os::IAllocator* Layout::spAllocator = 0;
-nw::os::IAllocator* Layout::spDeviceMemoryAllocator = 0;
-bool Layout::sLayoutDrawEnable = false;
+nw::os::IAllocator* Layout::s_pAllocator = 0;
+nw::os::IAllocator* Layout::s_pDeviceMemoryAllocator = 0;
+bool Layout::s_LayoutDrawEnable = false;
 
 Layout::Layout(): 
     mpRootPane(0),
     mpGroupContainer(0),
     mLayoutSize(0.f, 0.f)
-{}
+{
+}
 
-Layout::~Layout(){
+Layout::~Layout()
+{
     DeleteObj(this->mpGroupContainer);
 
-    if (mpRootPane && !this->mpRootPane->IsUserAllocated()){
+    if (mpRootPane && !this->mpRootPane->IsUserAllocated())
+    {
         DeleteObj(this->mpRootPane);
     }
 
-    for (AnimTransformList::Iterator it = this->mAnimTransList.GetBeginIter(); it != this->mAnimTransList.GetEndIter();){
+    for (AnimTransformList::Iterator it = this->mAnimTransList.GetBeginIter(); it != this->mAnimTransList.GetEndIter(); )
+    {
         AnimTransformList::Iterator currIt = it++;
         this->mAnimTransList.Erase(currIt);
         DeleteObj(&(*currIt));
     }
 }
 
-void Layout::SetAllocator(nw::os::IAllocator* pAllocator){
-    spAllocator = pAllocator;
+void Layout::SetAllocator(nw::os::IAllocator* pAllocator)
+{
+    s_pAllocator = pAllocator;
 }
 
-void Layout::SetDeviceMemoryAllocator(nw::os::IAllocator* pAllocator){
-    spDeviceMemoryAllocator = pAllocator;
+void Layout::SetDeviceMemoryAllocator(nw::os::IAllocator* pAllocator)
+{
+    s_pDeviceMemoryAllocator = pAllocator;
 }
 
-void* Layout::AllocMemory(u32 size, u8 alignment){
-    void *const pMem = spAllocator->Alloc(size, alignment);
+void* Layout::AllocMemory(u32 size, u8 alignment)
+{
+    void *const pMem = s_pAllocator->Alloc(size, alignment);
     return pMem;
 }
 
-void* Layout::AllocDeviceMemory(u32 size, u8 alignment){
-    void *const pMem = spDeviceMemoryAllocator->Alloc(size, alignment);
+void* Layout::AllocDeviceMemory(u32 size, u8 alignment)
+{
+    void *const pMem = s_pDeviceMemoryAllocator->Alloc(size, alignment);
     return pMem;
 }
 
-void Layout::FreeMemory(void* mem){
-    spAllocator->Free(mem);
+void Layout::FreeMemory(void* mem)
+{
+    s_pAllocator->Free(mem);
 }
 
-void Layout::FreeDeviceMemory(void* mem){
-    spDeviceMemoryAllocator->Free(mem);
+void Layout::FreeDeviceMemory(void* mem)
+{
+    s_pDeviceMemoryAllocator->Free(mem);
 }
 
-bool Layout::Build(const void* lytResBuf,ResourceAccessor* pResAcsr){
+bool Layout::Build(const void* lytResBuf,ResourceAccessor* pResAcsr)
+{
     const ut::BinaryFileHeader *const pFileHead = static_cast<const ut::BinaryFileHeader*>(lytResBuf);
 
     ResBlockSet resBlockSet = { 0 };
@@ -120,11 +140,14 @@ bool Layout::Build(const void* lytResBuf,ResourceAccessor* pResAcsr){
     int groupNestLevel = 0;
 
     const void* dataPtr = static_cast<const u8*>(lytResBuf) + pFileHead->headerSize;
-    for (int i = 0; i < pFileHead->dataBlocks; ++i){
+    for (int i = 0; i < pFileHead->dataBlocks; ++i)
+    {
         const ut::BinaryBlockHeader* pDataBlockHead = static_cast<const ut::BinaryBlockHeader*>(dataPtr);
         ut::SigWord kind = pDataBlockHead->kind;
-        switch (kind){
-        case res::DATABLOCKKIND_LAYOUT:{
+        switch (kind)
+        {
+        case res::DATABLOCKKIND_LAYOUT:
+            {
                 const res::Layout* pResLyt = static_cast<const res::Layout*>(dataPtr);
                 this->SetLayoutSize(pResLyt->layoutSize);
             }
@@ -146,14 +169,17 @@ bool Layout::Build(const void* lytResBuf,ResourceAccessor* pResAcsr){
         case res::DATABLOCKKIND_PICTURE:
         case res::DATABLOCKKIND_TEXTBOX:
         case res::DATABLOCKKIND_WINDOW:
-        case res::DATABLOCKKIND_BOUNDING:{
+        case res::DATABLOCKKIND_BOUNDING:
+            {
                 Pane* pPane = BuildPaneObj(kind, dataPtr, resBlockSet);
-                if (pPane){
-
-                    if (this->GetRootPane() == 0){
+                if (pPane)
+                {
+                    if (this->GetRootPane() == 0)
+                    {
                         this->SetRootPane(pPane);
                     }
-                    if (pParentPane){
+                    if (pParentPane)
+                    {
                         pParentPane->AppendChild(pPane);
                     }
 
@@ -176,15 +202,18 @@ bool Layout::Build(const void* lytResBuf,ResourceAccessor* pResAcsr){
             break;
 
         case res::DATABLOCKKIND_GROUP:
-            if (!bReadRootGroup){
+            if (!bReadRootGroup)
+            {
                 bReadRootGroup = true;
                 this->SetGroupContainer(NewObj<GroupContainer>());
             }
 
             else{
 
-                if (this->GetGroupContainer() && groupNestLevel == 1){
-                    if (Group* pGroup = NewObj<Group>(reinterpret_cast<const res::Group*>(pDataBlockHead), this->GetRootPane())){
+                if (this->GetGroupContainer() && groupNestLevel == 1)
+                {
+                    if (Group* pGroup = NewObj<Group>(reinterpret_cast<const res::Group*>(pDataBlockHead), this->GetRootPane()))
+                    {
                         this->GetGroupContainer()->AppendGroup(pGroup);
                     }
                 }
@@ -204,31 +233,38 @@ bool Layout::Build(const void* lytResBuf,ResourceAccessor* pResAcsr){
     return true;
 }
 
-AnimTransform* Layout::CreateAnimTransform(){
+AnimTransform* Layout::CreateAnimTransform()
+{
     AnimTransformBasic *const pAnimTrans = NewObj<AnimTransformBasic>();
-    if (pAnimTrans){
+    if (pAnimTrans)
+    {
         this->GetAnimTransformList().PushBack(pAnimTrans);
     }
     return pAnimTrans;
 }
 
-void Layout::DeleteAnimTransform(AnimTransform *pAnimTransform){
+void Layout::DeleteAnimTransform(AnimTransform *pAnimTransform)
+{
     this->GetAnimTransformList().erase(pAnimTransform);
     DeleteObj(pAnimTransform);
 }
 
-AnimTransform* Layout::CreateAnimTransform(const void* animResBuf,ResourceAccessor* pResAcsr){
+AnimTransform* Layout::CreateAnimTransform(const void* animResBuf,ResourceAccessor* pResAcsr)
+{
     return this->CreateAnimTransform(AnimResource(animResBuf), pResAcsr);
 }
 
-AnimTransform* Layout::CreateAnimTransform(const AnimResource& animRes,ResourceAccessor* pResAcsr){
+AnimTransform* Layout::CreateAnimTransform(const AnimResource& animRes,ResourceAccessor* pResAcsr)
+{
     const res::AnimationBlock *const pAnimBlock = animRes.GetResourceBlock();
-    if (!pAnimBlock){
+    if (!pAnimBlock)
+    {
         return 0;
     }
 
     AnimTransform *const pAnimTrans = CreateAnimTransform();
-    if (pAnimTrans){
+    if (pAnimTrans)
+    {
         pAnimTrans->SetResource(pAnimBlock, pResAcsr);
     }
 
@@ -241,27 +277,34 @@ void Layout::BindAnimation(AnimTransform* pAnimTrans){
     }
 }
 
-void Layout::UnbindAnimation(AnimTransform* pAnimTrans){
-    if (this->GetRootPane()){
+void Layout::UnbindAnimation(AnimTransform* pAnimTrans)
+{
+    if (this->GetRootPane())
+    {
         this->GetRootPane()->UnbindAnimation(pAnimTrans, true);
     }
 }
 
-void Layout::UnbindAllAnimation(){
+void Layout::UnbindAllAnimation()
+{
     UnbindAnimation(0);
 }
 
-bool Layout::BindAnimationAuto(const AnimResource& animRes,ResourceAccessor* pResAcsr){
-    if (!this->GetRootPane()){
+bool Layout::BindAnimationAuto(const AnimResource& animRes,ResourceAccessor* pResAcsr)
+{
+    if (!this->GetRootPane())
+    {
         return false;
     }
 
-    if (!animRes.GetResourceBlock()){
+    if (!animRes.GetResourceBlock())
+    {
         return false;
     }
 
     AnimTransform *const pAnimTrans = CreateAnimTransform();
-    if (pAnimTrans == NULL){
+    if (pAnimTrans == NULL)
+    {
         return false;
     }
 
@@ -270,7 +313,8 @@ bool Layout::BindAnimationAuto(const AnimResource& animRes,ResourceAccessor* pRe
     const u16 bindGroupNum = animRes.GetGroupNum();
 
     u16 animNum = 0;
-    if (bindGroupNum == 0){
+    if (bindGroupNum == 0)
+    {
         animNum = animRes.GetResourceBlock()->animContNum;
 
         pAnimTrans->SetResource(animRes.GetResourceBlock(), pResAcsr, animNum);
@@ -278,12 +322,14 @@ bool Layout::BindAnimationAuto(const AnimResource& animRes,ResourceAccessor* pRe
         const bool bRecursive = true;
         this->GetRootPane()->BindAnimation(pAnimTrans, bRecursive, true/* bDisable */);
     }
-    else{
+    else
+    {
         const AnimationGroupRef *const groupRefs = animRes.GetGroupArray();
-        for (int grpIdx = 0; grpIdx < bindGroupNum; ++grpIdx){
-
+        for (int grpIdx = 0; grpIdx < bindGroupNum; ++grpIdx)
+        {
             Group *const pGroup = this->GetGroupContainer()->FindGroupByName(groupRefs[grpIdx].GetName());
-            if (pGroup == NULL){
+            if (pGroup == NULL)
+            {
                 bResult = false;
                 continue;
             }
@@ -293,10 +339,11 @@ bool Layout::BindAnimationAuto(const AnimResource& animRes,ResourceAccessor* pRe
 
         pAnimTrans->SetResource(animRes.GetResourceBlock(), pResAcsr, animNum);
 
-        for (int grpIdx = 0; grpIdx < bindGroupNum; ++grpIdx){
-
+        for (int grpIdx = 0; grpIdx < bindGroupNum; ++grpIdx)
+        {
             Group *const pGroup = this->GetGroupContainer()->FindGroupByName(groupRefs[grpIdx].GetName());
-            if (pGroup == NULL){
+            if (pGroup == NULL)
+            {
                 continue;
             }
 
@@ -308,36 +355,41 @@ bool Layout::BindAnimationAuto(const AnimResource& animRes,ResourceAccessor* pRe
     if (animShareInfoNum > 0){
         const AnimationShareInfo *const animShareInfoAry = animRes.GetAnimationShareInfoArray();
 
-        for (int i = 0; i < animShareInfoNum; ++i){
-
+        for (int i = 0; i < animShareInfoNum; ++i)
+        {
             Pane *const pSrcPane = this->GetRootPane()->FindPaneByName(animShareInfoAry[i].GetSrcPaneName());
-            if (pSrcPane == NULL){
+            if (pSrcPane == NULL)
+            {
                 bResult = false;
                 continue;
             }
 
             internal::AnimPaneTree animPaneTree(pSrcPane, animRes);
-            if (!animPaneTree.IsEnabled()){
+            if (!animPaneTree.IsEnabled())
+            {
                 continue;
             }
 
             Group *const pGroup = this->GetGroupContainer()->FindGroupByName(animShareInfoAry[i].GetTargetGroupName());
-            if (pGroup == NULL){
+            if (pGroup == NULL)
+            {
                 bResult = false;
                 continue;
             }
 
             PaneLinkList& paneList = pGroup->GetPaneList();
             u32 animIdx = 0;
-            for (PaneLinkList::Iterator it = paneList.GetBeginIter(); it != paneList.GetEndIter(); ++it, ++animIdx){
-
-                if (it->target != pSrcPane){
-
-                    if (bindGroupNum > 0){
+            for (PaneLinkList::Iterator it = paneList.GetBeginIter(); it != paneList.GetEndIter(); ++it, ++animIdx)
+            {
+                if (it->target != pSrcPane)
+                {
+                    if (bindGroupNum > 0)
+                    {
                         const bool bInclude = IsIncludeAnimationGroupRef(this->GetGroupContainer(),animRes.GetGroupArray(),
                             bindGroupNum,animRes.IsDescendingBind(),it->target);
 
-                        if (!bInclude){
+                        if (!bInclude)
+                        {
                             continue;
                         }
                     }
@@ -349,26 +401,33 @@ bool Layout::BindAnimationAuto(const AnimResource& animRes,ResourceAccessor* pRe
     return bResult;
 }
 
-void Layout::SetAnimationEnable(AnimTransform* pAnimTrans,bool bEnable){
-    if (this->GetRootPane()){
+void Layout::SetAnimationEnable(AnimTransform* pAnimTrans,bool bEnable)
+{
+    if (this->GetRootPane())
+    {
         this->GetRootPane()->SetAnimationEnable(pAnimTrans, bEnable, true);
     }
 }
 
-void Layout::CalculateMtx(const DrawInfo& drawInfo){
-    if (!this->GetRootPane()){
+void Layout::CalculateMtx(const DrawInfo& drawInfo)
+{
+    if (!this->GetRootPane())
+    {
         return;
     }
     this->GetRootPane()->CalculateMtx(drawInfo);
 }
 
-void Layout::Draw(const DrawInfo& drawInfo){
-    if (!this->GetRootPane()){
+void Layout::Draw(const DrawInfo& drawInfo)
+{
+    if (!this->GetRootPane())
+    {
         return;
     }
 
     GraphicsResource* graphicsResource = drawInfo.GetGraphicsResource();
-    if (graphicsResource == NULL){
+    if (graphicsResource == NULL)
+    {
         return;
     }
 
@@ -386,24 +445,29 @@ void Layout::Draw(const DrawInfo& drawInfo){
     drawInfo.SetLayout(0);
 }
 
-void Layout::Animate(u32 option){
-    if (!this->GetRootPane()){
+void Layout::Animate(u32 option)
+{
+    if (!this->GetRootPane())
+    {
         return;
     }
 
     this->GetRootPane()->Animate(option);
 }
 
-const ut::Rect Layout::GetLayoutRect() const{
+const ut::Rect Layout::GetLayoutRect() const
+{
     return ut::Rect(- this->mLayoutSize.width / 2, this->mLayoutSize.height / 2, this->mLayoutSize.width / 2, - this->mLayoutSize.height / 2);
 }
 
-void Layout::SetTagProcessor(font::TagProcessorBase<wchar_t>* pTagProcessor){
+void Layout::SetTagProcessor(font::TagProcessorBase<wchar_t>* pTagProcessor)
+{
     SetTagProcessorImpl(this->GetRootPane(), pTagProcessor);
 }
 
 Pane* Layout::BuildPaneObj(s32 kind,const void* dataPtr,const ResBlockSet& resBlockSet){
-    switch (kind){
+    switch (kind)
+    {
     case res::DATABLOCKKIND_PANE:{
             const res::Pane* pResPane = static_cast<const res::Pane*>(dataPtr);
             return NewObj<Pane>(pResPane);

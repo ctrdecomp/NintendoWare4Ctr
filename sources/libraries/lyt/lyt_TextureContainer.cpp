@@ -9,36 +9,45 @@
 namespace nw{
 namespace lyt{
 
-TextureRefLink::TextureRefLink(){
+TextureRefLink::TextureRefLink()
+{
     mName[0] = '\0';
 }
 
-TextureRefLink::~TextureRefLink(){
+TextureRefLink::~TextureRefLink()
+{
     lyt::DeleteTexture(this->mTexInfo);
 }
 
-void TextureRefLink::Set(const char* name,const TextureInfo& texInfo){
+void TextureRefLink::Set(const char* name,const TextureInfo& texInfo)
+{
     ut::strcpy(this->mName, sizeof(mName), name);
     mTexInfo = texInfo;
 }
 
 /* Texture Container */
 
-TextureContainer::~TextureContainer(){
+TextureContainer::~TextureContainer()
+{
     this->Finalize();
 }
 
-void TextureContainer::Finalize(){
-    while (!this->empty()){
+void TextureContainer::Finalize()
+{
+    while (!this->empty())
+    {
         TextureRefLink* pLink = &this->front();
         this->erase(pLink);
         Layout::DeleteObj(pLink);
     }
 }
 
-const TextureInfo TextureContainer::FindTextureByName(const char* name){
-    for (Iterator it = this->GetBeginIter(); it != this->GetEndIter(); ++it){
-        if (0 == std::strcmp(name, it->GetResourceName())){
+const TextureInfo TextureContainer::FindTextureByName(const char* name)
+{
+    for (Iterator it = this->GetBeginIter(); it != this->GetEndIter(); ++it)
+    {
+        if (0 == std::strcmp(name, it->GetResourceName()))
+        {
             return it->GetTextureInfo();
         }
     }
@@ -46,11 +55,14 @@ const TextureInfo TextureContainer::FindTextureByName(const char* name){
     return TextureInfo();
 }
 
-const TextureInfo TextureContainer::FindTextureByKey(TextureKey key){
+const TextureInfo TextureContainer::FindTextureByKey(TextureKey key)
+{
     TextureRefLink* pLink = (TextureRefLink*)(key);
 
-    for (Iterator it = this->GetBeginIter(); it != this->GetEndIter(); ++it){
-        if (&(*it) == pLink){
+    for (Iterator it = this->GetBeginIter(); it != this->GetEndIter(); ++it)
+    {
+        if (&(*it) == pLink)
+        {
             return it->GetTextureInfo();
         }
     }
@@ -58,9 +70,11 @@ const TextureInfo TextureContainer::FindTextureByKey(TextureKey key){
     return TextureInfo();
 }
 
-TextureKey TextureContainer::RegistTexture(const char* name, const TextureInfo& textureInfo){
+TextureKey TextureContainer::RegistTexture(const char* name, const TextureInfo& textureInfo)
+{
     TextureRefLink* pLink = Layout::NewObj<TextureRefLink>();
-    if (pLink == NULL){
+    if (pLink == NULL)
+    {
         return NULL;
     }
 
@@ -70,7 +84,8 @@ TextureKey TextureContainer::RegistTexture(const char* name, const TextureInfo& 
     return (TextureKey) pLink;
 }
 
-void TextureContainer::UnregistTexture(TextureKey key){
+void TextureContainer::UnregistTexture(TextureKey key)
+{
     TextureRefLink* pLink = (TextureRefLink*)(key);
     this->erase(pLink);
     Layout::DeleteObj(pLink);

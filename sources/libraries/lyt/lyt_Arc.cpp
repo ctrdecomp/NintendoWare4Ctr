@@ -11,19 +11,22 @@ namespace lyt{
 typedef struct FSTEntry FSTEntry;
 
 struct FSTArcEntry{
-    unsigned int    isDirAndStringOff;
-    unsigned int    parentOrPosition;
-    unsigned int    nextEntryOrLength;
+    u32    isDirAndStringOff;
+    u32    parentOrPosition;
+    u32    nextEntryOrLength;
 };
 
 static bool isSame(const wchar_t* path, const wchar_t* string){
-    while(*string != '\0'){
-        if (tolower(*path++) != tolower(*string++)){
+    while(*string != '\0')
+    {
+        if (tolower(*path++) != tolower(*string++))
+        {
             return false;
         }
     }
 
-    if ((*path == '/') || (*path == '\0')){
+    if ((*path == '/') || (*path == '\0'))
+    {
         return true;
     }
 
@@ -44,11 +47,13 @@ static bool isSame(const wchar_t* path, const wchar_t* string){
 #define fileLength(fstStart, i)         \
         (fstStart[i].nextEntryOrLength )
 
-inline wchar_t* GetStringPtr(wchar_t* str,size_t offset){
+inline wchar_t* GetStringPtr(wchar_t* str,size_t offset)
+{
     return reinterpret_cast<wchar_t*>(reinterpret_cast<u8*>(str) + offset);
 }
 
-bool ARCInitHandle(void* arcStart, ARCHandle* handle){
+bool ARCInitHandle(void* arcStart, ARCHandle* handle)
+{
     FSTArcEntry*           FSTEntries;
     ARCHeader*          arcHeader;
 
@@ -66,18 +71,22 @@ bool ARCInitHandle(void* arcStart, ARCHandle* handle){
     return true;
 }
 
-bool ARCOpenDir(ARCHandle* handle, s32 entrynum, ARCDir* dir){
+bool ARCOpenDir(ARCHandle* handle, s32 entrynum, ARCDir* dir)
+{
     FSTArcEntry* FSTEntries = (FSTArcEntry*)handle->FSTStart;
 
-    if (handle == NULL){
+    if (handle == NULL)
+    {
         return false;
     }
 
-    if (entrynum < 0 || static_cast<s32>(handle->entryNum) <= entrynum){
+    if (entrynum < 0 || static_cast<s32>(handle->entryNum) <= entrynum)
+    {
         return false;
     }
 
-    if (!entryIsDir(FSTEntries, entrynum)){
+    if (!entryIsDir(FSTEntries, entrynum))
+    {
         return false;
     }
 
@@ -95,7 +104,8 @@ bool ARCFastOpen(ARCHandle* handle, s32 entrynum, ARCFileInfo* af){
     FSTEntries = (FSTArcEntry*)handle->FSTStart;
 
 
-    if ((entrynum < 0) || (entrynum >= static_cast<s32>(handle->entryNum)) || entryIsDir(FSTEntries, entrynum) ){
+    if ((entrynum < 0) || (entrynum >= static_cast<s32>(handle->entryNum)) || entryIsDir(FSTEntries, entrynum))
+    {
         return false;
     }
 
@@ -106,7 +116,8 @@ bool ARCFastOpen(ARCHandle* handle, s32 entrynum, ARCFileInfo* af){
     return true;
 }
 
-bool ARCReadDir(ARCDir* dir, ARCDirEntry* dirent){
+bool ARCReadDir(ARCDir* dir, ARCDirEntry* dirent)
+{
     u32         loc;
     FSTArcEntry*   FSTEntries;
     ARCHandle*  handle;
@@ -125,7 +136,8 @@ retry:
     dirent->isDir = entryIsDir(FSTEntries, loc);
     dirent->name = GetStringPtr(handle->FSTStringStart, stringOff(FSTEntries, loc));
 
-    if (dirent->name[0] == '.' && dirent->name[1] == '\0') {
+    if (dirent->name[0] == '.' && dirent->name[1] == '\0')
+    {
         loc++;
         goto retry;
     }
@@ -135,18 +147,22 @@ retry:
     return true;
 }
 
-bool ARCChangeDir(ARCHandle* handle, s32 entrynum){
+bool ARCChangeDir(ARCHandle* handle, s32 entrynum)
+{
     FSTArcEntry* FSTEntries = (FSTArcEntry*)handle->FSTStart;
 
-    if (handle == NULL){
+    if (handle == NULL)
+    {
         return false;
     }
 
-    if (entrynum < 0 || static_cast<s32>(handle->entryNum) <= entrynum){
+    if (entrynum < 0 || static_cast<s32>(handle->entryNum) <= entrynum)
+    {
         return false;
     }
 
-    if (!entryIsDir(FSTEntries, entrynum)){
+    if (!entryIsDir(FSTEntries, entrynum))
+    {
         return false;
     }
 
@@ -155,11 +171,13 @@ bool ARCChangeDir(ARCHandle* handle, s32 entrynum){
     return true;
 }
 
-bool ARCCloseDir(ARCDir* dir){
+bool ARCCloseDir(ARCDir* dir)
+{
     return true;
 }
 
-s32 ARCConvertPathToEntrynum(ARCHandle* handle, const wchar_t* pathPtr){
+s32 ARCConvertPathToEntrynum(ARCHandle* handle, const wchar_t* pathPtr)
+{
     const wchar_t* ptr;
     wchar_t*     stringPtr;
     bool         isDir;
@@ -172,32 +190,41 @@ s32 ARCConvertPathToEntrynum(ARCHandle* handle, const wchar_t* pathPtr){
     dirLookAt = handle->currDir;
     FSTEntries = (FSTArcEntry*)handle->FSTStart;
 
-    for(;;){
+    for(;;)
+    {
 
-        if (*pathPtr == '\0'){
+        if (*pathPtr == '\0')
+        {
             return (s32)dirLookAt;
         } 
-        else if (*pathPtr == '/'){
+        else if (*pathPtr == '/')
+        {
             dirLookAt = 0;
             pathPtr++;
             continue;
         }
-        else if (*pathPtr == '.'){
-            if (*(pathPtr + 1) == '.'){
-                if (*(pathPtr + 2) == '/'){
+        else if (*pathPtr == '.')
+        {
+            if (*(pathPtr + 1) == '.')
+            {
+                if (*(pathPtr + 2) == '/')
+                {
                     dirLookAt = parentDir(FSTEntries, dirLookAt);
                     pathPtr += 3;
                     continue;
                 }
-                else if (*(pathPtr + 2) == '\0'){
+                else if (*(pathPtr + 2) == '\0')
+                {
                     return (s32)parentDir(FSTEntries, dirLookAt);
                 }
             }
-            else if (*(pathPtr + 1) == '/'){
+            else if (*(pathPtr + 1) == '/')
+            {
                 pathPtr += 2;
                 continue;
             }
-            else if (*(pathPtr + 1) == '\0'){
+            else if (*(pathPtr + 1) == '\0')
+            {
                 return (s32)dirLookAt;
             }
         }
@@ -209,8 +236,7 @@ s32 ARCConvertPathToEntrynum(ARCHandle* handle, const wchar_t* pathPtr){
 
         ptr = pathPtr;
 
-        for(i = dirLookAt + 1; i < nextDir(FSTEntries, dirLookAt);
-            i = entryIsDir(FSTEntries, i)? nextDir(FSTEntries, i): (i+1) )
+        for(i = dirLookAt + 1; i < nextDir(FSTEntries, dirLookAt); i = entryIsDir(FSTEntries, i)? nextDir(FSTEntries, i): (i+1) )
         {
 dot:
             if ((entryIsDir(FSTEntries, i) == false) &&
@@ -220,12 +246,14 @@ dot:
 
             stringPtr = GetStringPtr(handle->FSTStringStart, stringOff(FSTEntries, i));
 
-            if (*stringPtr == '.' && *(stringPtr + 1) == '\0') {
+            if (*stringPtr == '.' && *(stringPtr + 1) == '\0')
+            {
                 i++;
                 goto dot;
             }
 
-            if (isSame(ptr, stringPtr) == true){
+            if (isSame(ptr, stringPtr) == true)
+            {
                 goto next_hier;
             }
 
@@ -234,7 +262,8 @@ dot:
         return -1;
 
 next_hier:
-        if (!isDir){
+        if (!isDir)
+        {
             return (s32)i;
         }
 
@@ -244,11 +273,13 @@ next_hier:
     }
 }
 
-u32 ARCGetStartOffset(ARCFileInfo* af){
+u32 ARCGetStartOffset(ARCFileInfo* af)
+{
     return af->startOffset;
 }
 
-u32 ARCGetLength(ARCFileInfo* af){
+u32 ARCGetLength(ARCFileInfo* af)
+{
     return af->length;
 }
 

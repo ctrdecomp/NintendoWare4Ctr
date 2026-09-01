@@ -11,18 +11,18 @@ public:
     NW_UT_RUNTIME_TYPEINFO;
 
     RomFileStream(const char* path);
-    RomFileStream(FileInputStream* openedFileReader, bool closeEnable = true );
+    RomFileStream(FileReader* openedFileReader, bool closeEnable = true );
 
 
     bool Open(const char* path);
-    bool Open(FileInputStream* openedFileReader, bool closeEnable = true );
+    bool Open(FileReader* openedFileReader, bool closeEnable = true );
 
     virtual ~RomFileStream();
     virtual void Close();
     virtual s32 Read( void* buf, u32 length );
     virtual void Seek( s32 offset, u32 origin );
-    virtual u32 GetSize() const { return this->mFilePosition.GetFileSize(); }
-    virtual u32 Tell() const { return this->mFilePosition.Tell(); }
+    virtual u32 GetSize() const { return this->m_FilePosition.GetFileSize(); }
+    virtual u32 Tell() const { return this->m_FilePosition.Tell(); }
     virtual bool CanSeek()   const { return true; }
     virtual bool CanCancel() const { return false; }
     virtual bool CanRead()   const { return true; }
@@ -32,13 +32,13 @@ public:
 private:
     void Initialize();
 
-    FilePosition mFilePosition;
-    FileInputStream mFileReader;
-    FileInputStream* mpOpenedFileReader;
+    FilePosition m_FilePosition;
+    FileReader m_FileReader;
+    FileReader* m_pOpenedFileReader;
 
-    bool mIsAvailable;
-    bool mCloseOnDestroyFlag;
-    bool mCloseEnableFlag;
+    bool m_IsAvailable;
+    bool m_CloseOnDestroyFlag;
+    bool m_CloseEnableFlag;
 };
 
 }

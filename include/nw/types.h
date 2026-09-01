@@ -48,3 +48,5 @@ typedef unsigned long long int  bit64;
 #ifndef nullptr
 #define nullptr NULL
 #endif
+
+#define NW_INLINE inline

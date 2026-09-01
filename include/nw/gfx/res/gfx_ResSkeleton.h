@@ -32,7 +32,7 @@ struct ResBoneData{
     nw::ut::Offset toChildBone;
     nw::ut::Offset toPrevSibling;
     nw::ut::Offset toNextSibling;
-    nw::ut::Transform3 mTransform;
+    nw::math::Transform3 mTransform;
     nw::ut::ResMtx34 mLocalMatrix;
     nw::ut::ResMtx34 mWorldMatrix;
     nw::ut::ResMtx34 mInverseBaseMatrix;

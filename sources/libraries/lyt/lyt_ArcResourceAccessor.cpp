@@ -59,7 +59,6 @@ s32 FindNameResource(ARCHandle* pArcHandle,const wchar_t* resName){
     }
 
     bSuccess = ARCCloseDir(&dir);
-
     return entryNum;
 }
 
@@ -108,8 +107,9 @@ void* GetResourceSub(ARCHandle* pArcHandle,const wchar_t* resRootDir,nw::lyt::Re
     return NULL;
 }
 
-}
+} // namespace ""
 
+/* ArcResourceAccessor */
 ArcResourceAccessor::ArcResourceAccessor():   
     mArcBuf(0)
 {}
@@ -120,9 +120,9 @@ bool ArcResourceAccessor::Attach(void* archiveStart,const char* resourceRootDire
         return false;
     }
 
-    this->mArcBuf = archiveStart;
+    mArcBuf = archiveStart;
 
-    const int dstBufCount = sizeof(this->mResRootDir) / sizeof(this->mResRootDir[0]);
+    const int dstBufCount = sizeof(mResRootDir) / sizeof(mResRootDir[0]);
     strncpy(this->mResRootDir, dstBufCount, resourceRootDirectory);
 
     return true;
@@ -170,5 +170,5 @@ const TextureInfo ArcResourceAccessor::GetTexture(const char *name){
     }
 }
 
-}
-}
+} // namespace lyt
+} // namespace nw

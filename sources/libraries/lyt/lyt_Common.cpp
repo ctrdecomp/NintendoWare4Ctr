@@ -11,33 +11,36 @@
 
 #define ARRAY_LENGTH(a)   (sizeof(a) / sizeof((a)[0]))
 
-namespace nw{
-namespace lyt{
-namespace{
-    static const GLushort sVertexIndex[] ={
+namespace nw {
+namespace lyt {
+namespace {
+    static const GLushort s_VertexIndex[] ={
         VERTEX_RT, VERTEX_LT, VERTEX_RB,
         VERTEX_LT, VERTEX_LB, VERTEX_RB,
     };
 
-    static const int sNumVertex = ARRAY_LENGTH(sVertexIndex);
+    static const int s_NumVertex = ARRAY_LENGTH(s_VertexIndex);
 }
 namespace internal{
 
 using namespace nw::math;
 
-bool EqualsResName(const char* name1, const char* name2){
-     return 0 == std::strncmp(name1, name2, ResourceNameStrMax);
+bool EqualsResName(const char* name1, const char* name2)
+{
+    return 0 == std::strncmp(name1, name2, ResourceNameStrMax);
 }
 
-bool EqualsMaterialName(const char* name1, const char* name2){
-     return 0 == std::strncmp(name1, name2, MaterialNameStrMax);
+bool EqualsMaterialName(const char* name1, const char* name2)
+{
+    return 0 == std::strncmp(name1, name2, MaterialNameStrMax);
 }
 
 TexCoordAry::TexCoordAry():   
     mCap(0),
     mNum(0),
     mpData(NULL)
-{}
+{
+}
 
 void TexCoordAry::Free(){
     if (mpData){
@@ -50,23 +53,28 @@ void TexCoordAry::Free(){
     }
 }
 
-void TexCoordAry::Reserve(u8 num){
+void TexCoordAry::Reserve(u8 num)
+{
     NW_ASSERT(num <= TexMapMax);
 
-    if (mCap < num){
+    if (mCap < num)
+    {
         Free();
 
         const u32 coordNum = num;
         math::VEC2 *const pVecAry = Layout::NewArray<math::VEC2>(VERTEX_MAX * coordNum);
         mpData = reinterpret_cast<TexCoordQuad *>(pVecAry);
-        if (mpData){
+        if (mpData)
+        {
             mCap = num;
         }
     }
 }
 
-void TexCoordAry::SetSize(u8 num){
-    if (mpData && num <= mCap){
+void TexCoordAry::SetSize(u8 num)
+{
+    if (mpData && num <= mCap)
+    {
         static const VEC2 texCoords[] ={
             VEC2(0.f, 0.f),
             VEC2(1.f, 0.f),
@@ -74,8 +82,10 @@ void TexCoordAry::SetSize(u8 num){
             VEC2(1.f, 1.f)
         };
 
-        for (int j = mNum; j < num; ++j){
-            for (int i = 0; i < VERTEX_MAX; ++i){
+        for (int j = mNum; j < num; ++j)
+        {
+            for (int i = 0; i < VERTEX_MAX; ++i)
+            {
                 mpData[j][i] = texCoords[i];
             }
         }
@@ -83,18 +93,22 @@ void TexCoordAry::SetSize(u8 num){
     }
 }
 
-void TexCoordAry::GetCoord(u32 idx,TexCoordQuad coord) const{
+void TexCoordAry::GetCoord(u32 idx,TexCoordQuad coord) const
+{
     NW_ASSERT(idx < mNum);
 
-    for (int i = 0; i < VERTEX_MAX; ++i){
+    for (int i = 0; i < VERTEX_MAX; ++i)
+    {
         coord[i] = mpData[idx][i];
     }
 }
 
-void TexCoordAry::SetCoord(u32 idx,const TexCoordQuad coord){
+void TexCoordAry::SetCoord(u32 idx,const TexCoordQuad coord)
+{
     NW_ASSERT(idx < mNum);
 
-    for (int i = 0; i < VERTEX_MAX; ++i){
+    for (int i = 0; i < VERTEX_MAX; ++i)
+    {
         mpData[idx][i] = coord[i];
     }
 }
@@ -104,8 +118,10 @@ void TexCoordAry::Copy(const void* pResTexCoord,u8 texCoordNum){
 
     mNum = ut::Max(mNum, texCoordNum);
     const math::VEC2 (*src)[VERTEX_MAX] = static_cast<const math::VEC2 (*)[VERTEX_MAX]>(pResTexCoord);
-    for (int j = 0; j < texCoordNum; ++j){
-        for (int i = 0; i < VERTEX_MAX; ++i){
+    for (int j = 0; j < texCoordNum; ++j)
+    {
+        for (int i = 0; i < VERTEX_MAX; ++i)
+        {
             mpData[j][i] = src[j][i];
         }
     }
@@ -116,7 +132,8 @@ void DrawQuad(const DrawInfo& drawInfo,const VEC2& basePt,const Size& size,u8 te
 
     gres.SetupProgram();
 
-    if (vtxColors != NULL){
+    if (vtxColors != NULL)
+    {
         GLint loc = gres.GetUniformLocation(gres.UNIFORM_uVertexColor);
         glUniform4f(loc + 0, vtxColors[0].r, vtxColors[0].g, vtxColors[0].b, vtxColors[0].a);
         glUniform4f(loc + 1, vtxColors[1].r, vtxColors[1].g, vtxColors[1].b, vtxColors[1].a);
@@ -124,10 +141,13 @@ void DrawQuad(const DrawInfo& drawInfo,const VEC2& basePt,const Size& size,u8 te
         glUniform4f(loc + 3, vtxColors[3].r, vtxColors[3].g, vtxColors[3].b, vtxColors[3].a);
     }
 
-    if (texCoordNum > 0 && texCoords != NULL){
-        for (int i = 0; i < TexMapMax; ++i){
+    if (texCoordNum > 0 && texCoords != NULL)
+    {
+        for (int i = 0; i < TexMapMax; ++i)
+        {
             int src = gres.GetTexCoordSrc(i);
-            if (0 <= src && texCoords != NULL && src < texCoordNum){
+            if (0 <= src && texCoords != NULL && src < texCoordNum)
+            {
                 GLint loc = gres.GetUniformLocation(gres.UNIFORM_uVertexTexCoord0 + i);
                 glUniform4f(loc + 0, texCoords[src][0].x, texCoords[src][0].y, 0.0f, 1.0f);
                 glUniform4f(loc + 1, texCoords[src][1].x, texCoords[src][1].y, 0.0f, 1.0f);
@@ -144,10 +164,11 @@ void DrawQuad(const DrawInfo& drawInfo,const VEC2& basePt,const Size& size,u8 te
 
     gres.LoadMtxModelView();
 
-    glDrawElements(GL_TRIANGLES, sNumVertex, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLES, s_NumVertex, GL_UNSIGNED_SHORT, 0);
 }
 
-void FinalizeGraphics(){
+void FinalizeGraphics()
+{
     glDisableVertexAttribArray(VERTEXATTR_POS);
     glDisableVertexAttribArray(VERTEXATTR_COLOR);
     glDisableVertexAttribArray(VERTEXATTR_TEXCOORD0);

@@ -14,26 +14,30 @@ namespace io   {
 
 NW_UT_RUNTIME_TYPEINFO_DEFINITION(FileStream,IOStream);
 
-u32 FileStream::FilePosition::Skip(s32 offset){
-    if (offset != 0){
-        s64 position = mPosition + offset;
+u32 FileStream::FilePosition::Skip(s32 offset)
+{
+    if (offset != 0)
+    {
+        s64 position = m_Position + offset;
         
-        position = ut::Clamp(position, static_cast<s64>(0), static_cast<s64>(mFileSize));
+        position = ut::Clamp(position, static_cast<s64>(0), static_cast<s64>(m_FileSize));
         
-        mPosition = static_cast<u32>(position);
+        m_Position = static_cast<u32>(position);
     }
-    return mPosition;
+    return m_Position;
 }
 
-void FileStream::FilePosition::Seek( s32 offset, u32 origin ){
-    switch (origin){
+void FileStream::FilePosition::Seek(s32 offset, u32 origin)
+{
+    switch (origin)
+    {
     case FILE_STREAM_SEEK_BEGIN:
-        mPosition = 0;
+        m_Position = 0;
         break;
     case FILE_STREAM_SEEK_CURRENT:
         break;
     case FILE_STREAM_SEEK_END:
-        mPosition = mFileSize;
+        m_Position = m_FileSize;
         break;
     }
     (void)this->Skip(offset);

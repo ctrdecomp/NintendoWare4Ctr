@@ -17,11 +17,16 @@ NW_UT_RUNTIME_TYPEINFO_DEFINITION(Bounding, Bounding::Base);
 
 Bounding::Bounding(const res::Bounding* pBlock,const ResBlockSet& resBlockSet): 
     Base(pBlock)
-{}
+{
+}
 
-Bounding::~Bounding(){ }
+Bounding::~Bounding()
+{
+}
 
-void Bounding::DrawSelf(const DrawInfo& drawInfo){}
+void Bounding::DrawSelf(const DrawInfo& drawInfo)
+{  
+}
 
 }
 }

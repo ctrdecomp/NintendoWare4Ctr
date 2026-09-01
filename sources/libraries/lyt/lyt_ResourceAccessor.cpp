@@ -11,39 +11,50 @@
 namespace nw{
 namespace lyt{
 
-ResourceAccessor::~ResourceAccessor(){}
+ResourceAccessor::~ResourceAccessor()
+{
+}
 
-ResourceAccessor::ResourceAccessor(){}
+ResourceAccessor::ResourceAccessor()
+{
+}
 
-const TextureInfo ResourceAccessor::LoadTexture(const char *name){
+const TextureInfo ResourceAccessor::LoadTexture(const char *name)
+{
     u32 size = 0;
     void* pTexRes = this->GetResource(res::RESOURCETYPE_TEXTURE, name, &size);
-    if (!pTexRes || size == 0){
+    if (!pTexRes || size == 0)
+    {
         return TextureInfo();
     }
 
     TextureInfo texInfo = lyt::LoadTexture(pTexRes, size);
-    if (!texInfo.IsValid()){
+    if (!texInfo.IsValid())
+    {
         return TextureInfo();
     }
 
     return texInfo;
 }
 
-font::Font* ResourceAccessor::LoadFont(const char *name){
+font::Font* ResourceAccessor::LoadFont(const char *name)
+{
     u32 size = 0;
     void* pFontRes = this->GetResource(res::RESOURCETYPE_FONT, name, &size);
-    if (!pFontRes || size == 0){
+    if (!pFontRes || size == 0)
+    {
         return NULL;
     }
 
     font::ResFont* pResFont = Layout::NewObj<font::ResFont>();
-    if (pResFont == NULL){
+    if (pResFont == NULL)
+    {
         return NULL;
     }
 
     bool bSuccess = pResFont->SetResource(pFontRes);
-    if (!bSuccess){
+    if (!bSuccess)
+    {
         Layout::DeleteObj(pResFont);
         return NULL;
     }

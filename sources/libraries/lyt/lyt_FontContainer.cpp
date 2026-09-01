@@ -16,15 +16,19 @@ namespace lyt{
 FontRefLink::FontRefLink():   
     mpFont(0),
     mOwn(false)
-{}
+{ 
+}
 
-FontRefLink::~FontRefLink(){
-    if (mOwn){
-
+FontRefLink::~FontRefLink()
+{
+    if (mOwn)
+    {
         font::ResFont* pResFont = (font::ResFont*)(this->mpFont);
-        if (pResFont != NULL){
+        if (pResFont != NULL)
+        {
             void* drawBuffer = pResFont->GetDrawBuffer();
-            if (drawBuffer != NULL){
+            if (drawBuffer != NULL)
+            {
                 pResFont->SetDrawBuffer(NULL);
                 Layout::FreeMemory(drawBuffer);
             }
@@ -34,7 +38,8 @@ FontRefLink::~FontRefLink(){
     }
 }
 
-void FontRefLink::Set(const char* name,font::Font* pFont,bool own){
+void FontRefLink::Set(const char* name,font::Font* pFont,bool own)
+{
     ut::strcpy(this->mFontName, sizeof(this->mFontName), name);
     this->mpFont = pFont;
     this->mOwn = own;
@@ -42,21 +47,27 @@ void FontRefLink::Set(const char* name,font::Font* pFont,bool own){
 
 /* FontContainer */
 
-FontContainer::~FontContainer(){
+FontContainer::~FontContainer()
+{
     this->Finalize();
 }
 
-void FontContainer::Finalize(){
-    while (!this->empty()){
+void FontContainer::Finalize()
+{
+    while (!this->empty())
+    {
         FontRefLink* pLink = &this->front();
         this->erase(pLink);
         Layout::DeleteObj(pLink);
     }
 }
 
-font::Font* FontContainer::FindFontByName(const char* name){
-    for (Iterator it = this->GetBeginIter(); it != this->GetEndIter(); ++it){
-        if (0 == std::strcmp(name, it->GetFontName())){
+font::Font* FontContainer::FindFontByName(const char* name)
+{
+    for (Iterator it = this->GetBeginIter(); it != this->GetEndIter(); ++it)
+    {
+        if (0 == std::strcmp(name, it->GetFontName()))
+        {
             return it->GetFont();
         }
     }
@@ -64,10 +75,12 @@ font::Font* FontContainer::FindFontByName(const char* name){
     return NULL;
 }
 
-FontKey FontContainer::RegistFont(const char* name, font::Font* pFont, bool own){
+FontKey FontContainer::RegistFont(const char* name, font::Font* pFont, bool own)
+{
     FontRefLink* pLink = Layout::NewObj<FontRefLink>();
 
-    if (pLink == NULL){
+    if (pLink == NULL)
+    {
         return NULL;
     }
 
@@ -76,7 +89,8 @@ FontKey FontContainer::RegistFont(const char* name, font::Font* pFont, bool own)
     return reinterpret_cast<FontKey>(pLink);
 }
 
-void FontContainer::UnregistFont(FontKey key){
+void FontContainer::UnregistFont(FontKey key)
+{
     FontRefLink* pLink = (FontRefLink*)(key);
     this->erase(pLink);
     Layout::DeleteObj(pLink);

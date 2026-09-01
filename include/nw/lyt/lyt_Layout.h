@@ -36,8 +36,8 @@ typedef ut::LinkList<AnimTransform, offsetof(AnimTransform, mLink)> AnimTransfor
 class Layout{
 public:
 
-    static nw::os::IAllocator* GetAllocator() { return spAllocator; }
-    static nw::os::IAllocator* GetDeviceMemoryAllocator() { return spDeviceMemoryAllocator; }
+    static nw::os::IAllocator* GetAllocator() { return s_pAllocator; }
+    static nw::os::IAllocator* GetDeviceMemoryAllocator() { return s_pDeviceMemoryAllocator; }
     static void SetAllocator(nw::os::IAllocator* pAllocator);
     static void SetDeviceMemoryAllocator(nw::os::IAllocator* pAllocator);
     static void* AllocMemory(u32 size, u8 alignment = 4);
@@ -164,9 +164,9 @@ protected:
     void SetLayoutSize(const Size& size)                 { mLayoutSize = size; }
 
 protected:
-    static nw::os::IAllocator* spAllocator;
-    static nw::os::IAllocator* spDeviceMemoryAllocator;
-    static bool                sLayoutDrawEnable;
+    static nw::os::IAllocator* s_pAllocator;
+    static nw::os::IAllocator* s_pDeviceMemoryAllocator;
+    static bool                s_LayoutDrawEnable;
 
     AnimTransformList mAnimTransList;
     Pane*             mpRootPane;

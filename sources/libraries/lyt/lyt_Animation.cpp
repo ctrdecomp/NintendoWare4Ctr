@@ -20,72 +20,89 @@ namespace{
 
 /* Some Impl math shit */
 
-inline bool RIsSame(const f32 a,const f32 b,const f32 tolerance = R_SAME_TOLERANCE){
+inline bool RIsSame(const f32 a,const f32 b,const f32 tolerance = R_SAME_TOLERANCE)
+{
     f32 c = a - b;
     return (-tolerance < c && c < tolerance);
 }
 
-u16 GetStepCurveValue(f32 frame,const res::StepKey* keyArray,u32 keySize){
+u16 GetStepCurveValue(f32 frame,const res::StepKey* keyArray,u32 keySize)
+{
     NW_ASSERT(keySize > 0);
-    if (keySize == 1 || frame <= keyArray[0].frame){
+
+    if (keySize == 1 || frame <= keyArray[0].frame)
+    {
         return keyArray[0].value;
     }
-    else if (frame >= keyArray[keySize - 1].frame){
+    else if (frame >= keyArray[keySize - 1].frame)
+    {
         return keyArray[keySize - 1].value;
     }
 
     int ikeyL = 0;
     int ikeyR = (int)keySize - 1;
-    while (ikeyL != ikeyR - 1 && ikeyL != ikeyR){
+    while (ikeyL != ikeyR - 1 && ikeyL != ikeyR)
+    {
 
         int ikeyCenter = (ikeyL + ikeyR) / 2;
         const res::StepKey& centerKey = keyArray[ikeyCenter];
-        if (frame < centerKey.frame){
+        if (frame < centerKey.frame)
+        {
             ikeyR = ikeyCenter;
         }
-        else{
+        else
+        {
             ikeyL = ikeyCenter;
         }
     }
 
-    if (RIsSame(frame, keyArray[ikeyR].frame, R_FRAME_TOLERANCE)){
+    if (RIsSame(frame, keyArray[ikeyR].frame, R_FRAME_TOLERANCE))
+    {
         return keyArray[ikeyR].value;
     }
-    else{
+    else
+    {
         return keyArray[ikeyL].value;
     }
 }
 
-f32 GetHermiteCurveValue(f32 frame,const res::HermiteKey*  keyArray,u32 keySize){
-    if (keySize == 1 || frame <= keyArray[0].frame){
+f32 GetHermiteCurveValue(f32 frame,const res::HermiteKey*  keyArray,u32 keySize)
+{
+    if (keySize == 1 || frame <= keyArray[0].frame)
+    {
         return keyArray[0].value;
     }
-    else if (frame >= keyArray[keySize - 1].frame){
+    else if (frame >= keyArray[keySize - 1].frame)
+    {
         return keyArray[keySize - 1].value;
     }
 
     u32 ikeyL = 0;
     u32 ikeyR = keySize - 1;
-    while (ikeyL != ikeyR - 1 && ikeyL != ikeyR){
+    while (ikeyL != ikeyR - 1 && ikeyL != ikeyR)
+    {
         int ikeyCenter = (ikeyL + ikeyR) / 2;
-        if (frame <= keyArray[ikeyCenter].frame){
+        if (frame <= keyArray[ikeyCenter].frame)
+        {
             ikeyR = ikeyCenter;
         }
-        else{
+        else
+        {
             ikeyL = ikeyCenter;
         }
     }
 
     const res::HermiteKey& key0 = keyArray[ikeyL];
     const res::HermiteKey& key1 = keyArray[ikeyR];
-    if (RIsSame(frame, key1.frame, R_FRAME_TOLERANCE)){
+    if (RIsSame(frame, key1.frame, R_FRAME_TOLERANCE))
+    {
 
-        if (ikeyR < keySize - 1 &&
-            key1.frame == keyArray[ikeyR + 1].frame){
-
+        if (ikeyR < keySize - 1 && key1.frame == keyArray[ikeyR + 1].frame)
+        {
             return keyArray[ikeyR + 1].value;
         }
-        else{
+        else
+        {
             return key1.value;
         }
     }
@@ -106,8 +123,10 @@ f32 GetHermiteCurveValue(f32 frame,const res::HermiteKey*  keyArray,u32 keySize)
 
 /* Animate Inlines */
 
-void AnimatePaneSRT(Pane* pPane,const res::AnimationInfo* pAnimInfo,const u32* animTargetOffsets,f32 frame){
-    for (int i = 0; i < pAnimInfo->num; ++i){
+void AnimatePaneSRT(Pane* pPane,const res::AnimationInfo* pAnimInfo,const u32* animTargetOffsets,f32 frame)
+{
+    for (int i = 0; i < pAnimInfo->num; ++i)
+    {
         const res::AnimationTarget* pAnimTarget = internal::ConvertOffsToPtr<res::AnimationTarget>(pAnimInfo, animTargetOffsets[i]);
 
         NW_ASSERT(pAnimTarget->target < ANIMTARGET_PANE_MAX);
@@ -118,8 +137,10 @@ void AnimatePaneSRT(Pane* pPane,const res::AnimationInfo* pAnimInfo,const u32* a
     }
 }
 
-void AnimateVisibility(Pane* pPane,const res::AnimationInfo* pAnimInfo,const u32* animTargetOffsets,f32 frame){
-    for (int i = 0; i < pAnimInfo->num; ++i){
+void AnimateVisibility(Pane* pPane,const res::AnimationInfo* pAnimInfo,const u32* animTargetOffsets,f32 frame)
+{
+    for (int i = 0; i < pAnimInfo->num; ++i)
+    {
         const res::AnimationTarget* pAnimTarget = internal::ConvertOffsToPtr<res::AnimationTarget>(pAnimInfo, animTargetOffsets[i]);
 
         NW_ASSERT(pAnimTarget->target < ANIMTARGET_PANE_MAX);
@@ -130,8 +151,10 @@ void AnimateVisibility(Pane* pPane,const res::AnimationInfo* pAnimInfo,const u32
     }
 }
 
-void AnimateVertexColor(Pane* pPane,const res::AnimationInfo* pAnimInfo,const u32* animTargetOffsets,f32 frame){
-    for (int i = 0; i < pAnimInfo->num; ++i){
+void AnimateVertexColor(Pane* pPane,const res::AnimationInfo* pAnimInfo,const u32* animTargetOffsets,f32 frame)
+{
+    for (int i = 0; i < pAnimInfo->num; ++i)
+    {
         const res::AnimationTarget* pAnimTarget = internal::ConvertOffsToPtr<res::AnimationTarget>(pAnimInfo, animTargetOffsets[i]);
 
         NW_ASSERT(pAnimTarget->target < ANIMTARGET_PANE_COLOR_MAX);
@@ -145,8 +168,10 @@ void AnimateVertexColor(Pane* pPane,const res::AnimationInfo* pAnimInfo,const u3
     }
 }
 
-void AnimateMaterialColor(Material* pMaterial,const res::AnimationInfo* pAnimInfo,const u32* animTargetOffsets,f32 frame){
-    for (int i = 0; i < pAnimInfo->num; ++i){
+void AnimateMaterialColor(Material* pMaterial,const res::AnimationInfo* pAnimInfo,const u32* animTargetOffsets,f32 frame)
+{
+    for (int i = 0; i < pAnimInfo->num; ++i)
+    {
         const res::AnimationTarget* pAnimTarget = internal::ConvertOffsToPtr<res::AnimationTarget>(pAnimInfo, animTargetOffsets[i]);
 
         NW_ASSERT(pAnimTarget->target < ANIMTARGET_MATCOLOR_MAX);
@@ -160,10 +185,13 @@ void AnimateMaterialColor(Material* pMaterial,const res::AnimationInfo* pAnimInf
     }
 }
 
-void AnimateTextureSRT(Material* pMaterial,const res::AnimationInfo* pAnimInfo,const u32* animTargetOffsets,f32 frame){
-    for (int i = 0; i < pAnimInfo->num; ++i){
+void AnimateTextureSRT(Material* pMaterial,const res::AnimationInfo* pAnimInfo,const u32* animTargetOffsets,f32 frame)
+{
+    for (int i = 0; i < pAnimInfo->num; ++i)
+    {
         const res::AnimationTarget* pAnimTarget = internal::ConvertOffsToPtr<res::AnimationTarget>(pAnimInfo, animTargetOffsets[i]);
-        if (pAnimTarget->id < pMaterial->GetTexSRTCap()){
+        if (pAnimTarget->id < pMaterial->GetTexSRTCap())
+        {
 
             NW_ASSERT(pAnimTarget->target < ANIMTARGET_TEXSRT_MAX);
             NW_ASSERT(pAnimTarget->curveType == ANIMCURVE_HERMITE);
@@ -174,11 +202,14 @@ void AnimateTextureSRT(Material* pMaterial,const res::AnimationInfo* pAnimInfo,c
     }
 }
 
-void AnimateTexturePattern(Material* pMaterial,const res::AnimationInfo* pAnimInfo,const u32* animTargetOffsets,f32 frame,const TextureInfo* texInfos){
-    for (int j = 0; j < pAnimInfo->num; ++j){
+void AnimateTexturePattern(Material* pMaterial,const res::AnimationInfo* pAnimInfo,const u32* animTargetOffsets,f32 frame,const TextureInfo* texInfos)
+{
+    for (int j = 0; j < pAnimInfo->num; ++j)
+    {
         const res::AnimationTarget* pAnimTarget = internal::ConvertOffsToPtr<res::AnimationTarget>(pAnimInfo, animTargetOffsets[j]);
 
-        if (pAnimTarget->id < pMaterial->GetTexMapNum()){
+        if (pAnimTarget->id < pMaterial->GetTexMapNum())
+        {
             NW_ASSERT(pAnimTarget->curveType == ANIMCURVE_STEP);
             NW_ASSERT(pAnimTarget->target == ANIMTARGET_TEXPATTURN_IMAGE);
 
@@ -192,17 +223,13 @@ void AnimateTexturePattern(Material* pMaterial,const res::AnimationInfo* pAnimIn
     }
 }
 
-inline bool IsBindAnimation(Pane* pPane,AnimTransform* pAnimTrans){
-    NW_UNUSED_VARIABLE(pPane);
-    NW_UNUSED_VARIABLE(pAnimTrans);
-
+inline bool IsBindAnimation(Pane* pPane,AnimTransform* pAnimTrans)
+{
     return false;
 }
 
-inline bool IsBindAnimation(Material* pMaterial,AnimTransform* pAnimTrans){
-    NW_UNUSED_VARIABLE(pMaterial);
-    NW_UNUSED_VARIABLE(pAnimTrans);
-
+inline bool IsBindAnimation(Material* pMaterial,AnimTransform* pAnimTrans)
+{
     return false;
 }
 
@@ -213,20 +240,27 @@ inline bool IsBindAnimation(Material* pMaterial,AnimTransform* pAnimTrans){
 AnimTransform::AnimTransform(): 
     mpRes(0),
     mFrame(0)
-{}
+{
+}
 
-AnimTransform::~AnimTransform(){ }
+AnimTransform::~AnimTransform()
+{ 
+}
 
-u16 AnimTransform::GetFrameSize() const{
+u16 AnimTransform::GetFrameSize() const
+{
     return mpRes->frameSize;
 }
 
-bool AnimTransform::IsLoopData() const{
+bool AnimTransform::IsLoopData() const
+{
     return mpRes->loop != 0;
 }
 
-bool AnimResource::IsDescendingBind() const{
-    if (!mpTagBlock){
+bool AnimResource::IsDescendingBind() const
+{
+    if (!mpTagBlock)
+    {
         return false;
     }
 
@@ -234,7 +268,8 @@ bool AnimResource::IsDescendingBind() const{
 }
 
 const AnimationShareInfo* AnimResource::GetAnimationShareInfoArray() const{
-    if (!mpShareBlock){
+    if (!mpShareBlock)
+    {
         return 0;
     }
 
@@ -247,32 +282,39 @@ AnimTransformBasic::AnimTransformBasic():
     mpTexAry(0),
     mpAnimLinkAry(0),
     mAnimLinkNum(0)
-{}
+{
+}
 
-AnimTransformBasic::~AnimTransformBasic(){
+AnimTransformBasic::~AnimTransformBasic()
+{
     Layout::DeleteArray(this->mpAnimLinkAry, this->mAnimLinkNum);
     Layout::DeletePrimArray(this->mpTexAry);
 }
 
-void AnimTransformBasic::SetResource(const res::AnimationBlock* pRes,ResourceAccessor* pResAccessor){\
+void AnimTransformBasic::SetResource(const res::AnimationBlock* pRes,ResourceAccessor* pResAccessor)
+{
     NW_NULL_ASSERT(pRes);
     this->SetResource(pRes, pResAccessor, pRes->animContNum);
 }
 
-void AnimTransformBasic::SetResource(const res::AnimationBlock* pRes,ResourceAccessor* pResAccessor,u16 animNum){
+void AnimTransformBasic::SetResource(const res::AnimationBlock* pRes,ResourceAccessor* pResAccessor,u16 animNum)
+{
     NW_ASSERT(mpTexAry == 0);
     NW_ASSERT(mpAnimLinkAry == 0);
     NW_NULL_ASSERT(pRes);
 
     this->SetAnimResource(pRes);
     mpTexAry = 0;
-     if (pRes->fileNum > 0){
+    if (pRes->fileNum > 0)
+    {
         NW_NULL_ASSERT(pResAccessor);
         mpTexAry = Layout::NewArray<TextureInfo>(pRes->fileNum);
-        if (mpTexAry){
+        if (mpTexAry)
+        {
             const u32* fileNameOffsets = internal::ConvertOffsToPtr<u32>(pRes, sizeof(*pRes));
 
-            for (int i = 0; i < pRes->fileNum; ++i){
+            for (int i = 0; i < pRes->fileNum; ++i)
+            {
                 const char *const fileName = internal::GetStrTableStr(fileNameOffsets, i);
                 mpTexAry[i] = pResAccessor->GetTexture(fileName);
             }
@@ -280,23 +322,28 @@ void AnimTransformBasic::SetResource(const res::AnimationBlock* pRes,ResourceAcc
     }
 
     mpAnimLinkAry = Layout::NewArray<AnimationLink>(animNum);
-    if (mpAnimLinkAry){
+    if (mpAnimLinkAry)
+    {
         mAnimLinkNum = animNum;
     }
 }
 
-void AnimTransformBasic::Bind(Pane* pPane,bool bRecursive,bool bDisable){
+void AnimTransformBasic::Bind(Pane* pPane,bool bRecursive,bool bDisable)
+{
     NW_NULL_ASSERT(pPane);
 
     AnimationLink* pCrAnimLink = 0;
     const res::AnimationBlock* pRes = this->GetAnimResource();
 
     const u32 *const animContOffsets = internal::ConvertOffsToPtr<u32>(pRes, pRes->animContOffsetsOffset);
-    for (u16 i = 0; i < pRes->animContNum; ++i){
+    for (u16 i = 0; i < pRes->animContNum; ++i)
+    {
         const res::AnimationContent& animCont = *internal::ConvertOffsToPtr<res::AnimationContent>(pRes, animContOffsets[i]);
         if (animCont.type == ANIMCONTENTTYPE_PANE){
-            if (Pane *const pFindPane = pPane->FindPaneByName(animCont.name, bRecursive)){
-                if (!IsBindAnimation(pFindPane, this)){
+            if (Pane *const pFindPane = pPane->FindPaneByName(animCont.name, bRecursive))
+            {
+                if (!IsBindAnimation(pFindPane, this))
+                {
                     pCrAnimLink = Bind(pFindPane, pCrAnimLink, i, bDisable);
                     if (!pCrAnimLink)
                     {
@@ -305,11 +352,14 @@ void AnimTransformBasic::Bind(Pane* pPane,bool bRecursive,bool bDisable){
                 }
             }
         }
-        else{
-            if (Material *const pFindMat = pPane->FindMaterialByName(animCont.name, bRecursive)){
+        else
+        {
+            if (Material *const pFindMat = pPane->FindMaterialByName(animCont.name, bRecursive))
+            {
                 if (!IsBindAnimation(pFindMat, this)){
                     pCrAnimLink = Bind(pFindMat, pCrAnimLink, i, bDisable);
-                    if (!pCrAnimLink){
+                    if (!pCrAnimLink)
+                    {
                         break;
                     }
                 }
@@ -318,7 +368,8 @@ void AnimTransformBasic::Bind(Pane* pPane,bool bRecursive,bool bDisable){
     }
 }
 
-void AnimTransformBasic::Bind(Material* pMaterial,bool bDisable){
+void AnimTransformBasic::Bind(Material* pMaterial,bool bDisable)
+{
     NW_NULL_ASSERT(pMaterial);
 
     AnimationLink* pCrAnimLink = 0;
@@ -326,17 +377,19 @@ void AnimTransformBasic::Bind(Material* pMaterial,bool bDisable){
 
     const u32 *const animContOffsets = internal::ConvertOffsToPtr<u32>(pRes, pRes->animContOffsetsOffset);
 
-    for (u16 i = 0; i < pRes->animContNum; ++i){
+    for (u16 i = 0; i < pRes->animContNum; ++i)
+    {
         const res::AnimationContent& animCont = *internal::ConvertOffsToPtr<res::AnimationContent>(pRes, animContOffsets[i]);
 
-        if (animCont.type == ANIMCONTENTTYPE_MATERIAL){
-
-            if (internal::EqualsMaterialName(pMaterial->GetName(), animCont.name)){
-
-                if (!IsBindAnimation(pMaterial, this)){
-
+        if (animCont.type == ANIMCONTENTTYPE_MATERIAL)
+        {
+            if (internal::EqualsMaterialName(pMaterial->GetName(), animCont.name))
+            {
+                if (!IsBindAnimation(pMaterial, this))
+                {
                     pCrAnimLink = Bind(pMaterial, pCrAnimLink, i, bDisable);
-                    if (!pCrAnimLink){
+                    if (!pCrAnimLink)
+                    {
                         break;
                     }
                 }
@@ -345,7 +398,8 @@ void AnimTransformBasic::Bind(Material* pMaterial,bool bDisable){
     }
 }
 
-void AnimTransformBasic::Animate(u32 idx, Pane* pPane){
+void AnimTransformBasic::Animate(u32 idx, Pane* pPane)
+{
     NW_NULL_ASSERT(pPane);
 
     const res::AnimationBlock* pRes = this->GetAnimResource();
@@ -354,11 +408,13 @@ void AnimTransformBasic::Animate(u32 idx, Pane* pPane){
     const res::AnimationContent* pAnimCont = internal::ConvertOffsToPtr<res::AnimationContent>(pRes, animContOffsets);
 
     const u32* animInfoOffsets = internal::ConvertOffsToPtr<u32>(pAnimCont, sizeof(*pAnimCont));
-    for (int i = 0; i < pAnimCont->num; ++i){
+    for (int i = 0; i < pAnimCont->num; ++i)
+    {
         const res::AnimationInfo* pAnimInfo = internal::ConvertOffsToPtr<res::AnimationInfo>(pAnimCont, animInfoOffsets[i]);
         const u32* animTargetOffsets = internal::ConvertOffsToPtr<u32>(pAnimInfo, sizeof(*pAnimInfo));
 
-        switch (pAnimInfo->kind){
+        switch (pAnimInfo->kind)
+        {
         case res::ANIMATIONTYPE_PANESRT:
             AnimatePaneSRT(pPane, pAnimInfo, animTargetOffsets, this->GetFrame());
             break;
@@ -372,7 +428,8 @@ void AnimTransformBasic::Animate(u32 idx, Pane* pPane){
     }
 }
 
-void AnimTransformBasic::Animate(u32 idx, Material* pMaterial){
+void AnimTransformBasic::Animate(u32 idx, Material* pMaterial)
+{
     NW_NULL_ASSERT(pMaterial);
 
     const res::AnimationBlock* pRes = this->GetAnimResource();
@@ -381,11 +438,13 @@ void AnimTransformBasic::Animate(u32 idx, Material* pMaterial){
     const res::AnimationContent* pAnimCont = internal::ConvertOffsToPtr<res::AnimationContent>(pRes, animContOffsets);
 
     const u32* animInfoOffsets = internal::ConvertOffsToPtr<u32>(pAnimCont, sizeof(*pAnimCont));
-    for (int i = 0; i < pAnimCont->num; ++i){
+    for (int i = 0; i < pAnimCont->num; ++i)
+    {
         const res::AnimationInfo* pAnimInfo = internal::ConvertOffsToPtr<res::AnimationInfo>(pAnimCont, animInfoOffsets[i]);
         const u32* animTargetOffsets = internal::ConvertOffsToPtr<u32>(pAnimInfo, sizeof(*pAnimInfo));
 
-        switch (pAnimInfo->kind){
+        switch (pAnimInfo->kind)
+        {
         case res::ANIMATIONTYPE_MATCOLOR:
             AnimateMaterialColor(pMaterial, pAnimInfo, animTargetOffsets, this->GetFrame());
             break;
@@ -393,7 +452,8 @@ void AnimTransformBasic::Animate(u32 idx, Material* pMaterial){
             AnimateTextureSRT(pMaterial, pAnimInfo, animTargetOffsets, this->GetFrame());
             break;
         case res::ANIMATIONTYPE_TEXPATTERN:
-            if (mpTexAry){
+            if (mpTexAry)
+            {
                 AnimateTexturePattern(pMaterial, pAnimInfo, animTargetOffsets, this->GetFrame(), this->mpTexAry);
             }
             break;
@@ -403,18 +463,21 @@ void AnimTransformBasic::Animate(u32 idx, Material* pMaterial){
 
 /* AnimResource */
 
-AnimResource::AnimResource(){
+AnimResource::AnimResource()
+{
     this->Init();
 }
 
-void AnimResource::Set(const void* anmResBuf){
+void AnimResource::Set(const void* anmResBuf)
+{
     NW_NULL_ASSERT(anmResBuf);
 
     this->Init();
 
     const ut::BinaryFileHeader *const pFileHeader = static_cast<const ut::BinaryFileHeader*>(anmResBuf);
 
-    if (!ut::IsValidBinaryFile(pFileHeader, res::FILESIGNATURE_CLAN, res::BinaryFileFormatVersion)){
+    if (!ut::IsValidBinaryFile(pFileHeader, res::FILESIGNATURE_CLAN, res::BinaryFileFormatVersion))
+    {
         NW_WARNING(false, "not valid layout animation file.");
         return;
     }
@@ -422,9 +485,11 @@ void AnimResource::Set(const void* anmResBuf){
     mpFileHeader = pFileHeader;
 
     const ut::BinaryBlockHeader* pDataBlockHead = internal::ConvertOffsToPtr<ut::BinaryBlockHeader>(this->mpFileHeader, this->mpFileHeader->headerSize);
-    for (int i = 0; i < mpFileHeader->dataBlocks; ++i){
+    for (int i = 0; i < mpFileHeader->dataBlocks; ++i)
+    {
         SigWord kind = pDataBlockHead->kind;
-        switch (kind){
+        switch (kind)
+        {
         case res::DATABLOCKKIND_PANEANIMTAG:
             mpTagBlock = reinterpret_cast<const res::AnimationTagBlock*>(pDataBlockHead);
             break;
@@ -443,7 +508,8 @@ void AnimResource::Set(const void* anmResBuf){
     NW_WARNING(mpResBlock != NULL, "Animation resource is empty.");
 }
 
-void AnimResource::Init(){
+void AnimResource::Init()
+{
     mpFileHeader = NULL;
     mpResBlock = NULL;
     mpTagBlock = NULL;

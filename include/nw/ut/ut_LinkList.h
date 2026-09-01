@@ -404,3 +404,24 @@ public:
 
 } // namespace ut
 } // namespace nw
+
+/*
+Macro for Lists, as for ones used in snd.
+
+NAME = nameOfIter
+LIST = list member, for instance like `ut::LinkList m_ListTask` goes in here,as its a link list.
+lastly inside its { NAME->Function(); }
+
+*/
+
+#define NW_UT_LINKLIST_FOREACH_SAFE(NAME, LIST, ...)                         \
+    {                                                                          \
+        typedef decltype((LIST).GetBeginIter()) IterType;                      \
+                                                                               \
+        for (IterType __impl__ = (LIST).GetBeginIter();                        \
+             __impl__ != (LIST).GetEndIter();) {                               \
+                                                                               \
+            IterType NAME = __impl__++;                                        \
+            __VA_ARGS__;                                                       \
+        }                                                                      \
+    }

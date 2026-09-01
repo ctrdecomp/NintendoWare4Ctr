@@ -2,7 +2,7 @@
 
 #include <nw/types.h>
 
-namespace nw { /* nw*/
+namespace nw {
 namespace gfx {
 namespace res{
 

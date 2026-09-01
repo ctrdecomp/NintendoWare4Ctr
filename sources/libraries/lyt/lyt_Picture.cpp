@@ -15,37 +15,46 @@ namespace nw{
 namespace lyt{
 
 NW_UT_RUNTIME_TYPEINFO_DEFINITION(Picture, Picture::Base);
-Picture::Picture(u8 texNum){
+
+Picture::Picture(u8 texNum)
+{
     this->Init(texNum);
     mpMaterial = Layout::NewObj<Material>();
-    if (mpMaterial){
+    if (mpMaterial)
+    {
         mpMaterial->ReserveMem(texNum, texNum, texNum);
     }
 }
 
-Picture::Picture(const TexMap& texMap){
+Picture::Picture(const TexMap& texMap)
+{
     const int texNum = 1;
     this->Init(texNum);
 
     mpMaterial = Layout::NewObj<Material>();
-    if (mpMaterial){
+    if (mpMaterial)
+    {
         mpMaterial->ReserveMem(texNum, texNum, texNum);
         this->Append(texMap);
     }
 }
 
 Picture::Picture(const res::Picture* pBlock,const ResBlockSet& resBlockSet):   
-Base(pBlock){
+    Base(pBlock)
+{
     const u8 texCoordNum = ut::Min((int)pBlock->texCoordNum, TexMapMax);
 
     this->Init(texCoordNum);
 
-    for (int i = 0; i < VERTEXCOLOR_MAX; ++i){
+    for (int i = 0; i < VERTEXCOLOR_MAX; ++i)
+    {
         this->mVtxColors[i] = pBlock->vtxCols[i];
     }
 
-    if (texCoordNum > 0){
-        if (!mTexCoordAry.IsEmpty()){
+    if (texCoordNum > 0)
+    {
+        if (!mTexCoordAry.IsEmpty())
+        {
             mTexCoordAry.Copy(reinterpret_cast<const char*>(pBlock) + sizeof(*pBlock), texCoordNum);
         }
     }
@@ -57,15 +66,19 @@ Base(pBlock){
     }
 }
 
-void Picture::Init(u8 texNum){
-    if (texNum > 0){
+void Picture::Init(u8 texNum)
+{
+    if (texNum > 0)
+    {
         this->ReserveTexCoord(texNum);
     }
     this->mIsTexCoordInited = false;
 }
 
-Picture::~Picture(){
-    if (mpMaterial && ! this->mpMaterial->IsUserAllocated()){
+Picture::~Picture()
+{
+    if (mpMaterial && ! this->mpMaterial->IsUserAllocated())
+    {
         Layout::DeleteObj(this->mpMaterial);
         mpMaterial = 0;
     }
@@ -73,31 +86,39 @@ Picture::~Picture(){
     this->mTexCoordAry.Free();
 }
 
-u8 Picture::GetMaterialNum() const{
+u8 Picture::GetMaterialNum() const
+{
     return mpMaterial ? 1 : 0;
 }
 
-Material* Picture::GetMaterial(u32 idx) const{
+Material* Picture::GetMaterial(u32 idx) const
+{
     return idx == 0 ? mpMaterial : 0;
 }
 
-void Picture::SetMaterial(Material* pMaterial){
-    if (mpMaterial == pMaterial){
+void Picture::SetMaterial(Material* pMaterial)
+{
+    if (mpMaterial == pMaterial)
+    {
         return;
     }
 
-    if (mpMaterial != NULL && !mpMaterial->IsUserAllocated()){
+    if (mpMaterial != NULL && !mpMaterial->IsUserAllocated())
+    {
         Layout::DeleteObj(mpMaterial);
     }
 
     mpMaterial = pMaterial;
-    if (pMaterial != NULL){
+    if (pMaterial != NULL)
+    {
         pMaterial->SetTextureDirty();
     }
 }
 
-void Picture::Append(const TexMap& texMap){
-    if (this->mpMaterial->GetTexMapNum() >= this->mpMaterial->GetTexMapCap() || this->mpMaterial->GetTexCoordGenNum() >= this->mpMaterial->GetTexCoordGenCap()){
+void Picture::Append(const TexMap& texMap)
+{
+    if (this->mpMaterial->GetTexMapNum() >= this->mpMaterial->GetTexMapCap() || this->mpMaterial->GetTexCoordGenNum() >= this->mpMaterial->GetTexCoordGenCap())
+    {
         return;
     }
 
@@ -110,54 +131,67 @@ void Picture::Append(const TexMap& texMap){
 
     SetTexCoordNum(this->mpMaterial->GetTexMapNum());
 
-    if (GetSize() == Size(0.f, 0.f) && this->mpMaterial->GetTexMapNum() == 1){
+    if (GetSize() == Size(0.f, 0.f) && this->mpMaterial->GetTexMapNum() == 1)
+    {
         const TexSize& texSize = this->mpMaterial->GetTexMap(0).GetSize();
         SetSize(Size(texSize.width, texSize.height));
     }
 }
 
-void Picture::ReserveTexCoord(u8 num){
+void Picture::ReserveTexCoord(u8 num)
+{
     this->mTexCoordAry.Reserve(num);
 }
 
-u8 Picture::GetTexCoordNum() const{
+u8 Picture::GetTexCoordNum() const
+{
     return mTexCoordAry.GetSize();
 }
 
-void Picture::SetTexCoordNum(u8 num){
+void Picture::SetTexCoordNum(u8 num)
+{
     this->mTexCoordAry.SetSize(num);
 }
 
-void Picture::GetTexCoord(u32 idx,TexCoordQuad coords) const{
+void Picture::GetTexCoord(u32 idx,TexCoordQuad coords) const
+{
     return this->mTexCoordAry.GetCoord(idx, coords);
 }
 
-void Picture::SetTexCoord(u32 idx,const TexCoordQuad coords){
+void Picture::SetTexCoord(u32 idx,const TexCoordQuad coords)
+{
     this->mTexCoordAry.SetCoord(idx, coords);
 
-    if (mpMaterial != NULL){
+    if (mpMaterial != NULL)
+    {
         this->mpMaterial->SetTextureDirty();
     }
 }
 
-const ut::Color8 Picture::GetVtxColor(u32 idx) const{
+const ut::Color8 Picture::GetVtxColor(u32 idx) const
+{
     return mVtxColors[idx];
 }
 
-void Picture::SetVtxColor(u32 idx,ut::Color8 value){
+void Picture::SetVtxColor(u32 idx,ut::Color8 value)
+{
     mVtxColors[idx] = value;
 }
 
-u8 Picture::GetVtxColorElement(u32 idx) const{
+u8 Picture::GetVtxColorElement(u32 idx) const
+{
     return internal::GetVtxColorElement(this->mVtxColors, idx);
 }
 
-void Picture::SetVtxColorElement(u32 idx, u8 value){
+void Picture::SetVtxColorElement(u32 idx, u8 value)
+{
     internal::SetVtxColorElement(this->mVtxColors, idx, value);
 }
 
-void Picture::DrawSelf(const DrawInfo& drawInfo){
-    if (!mpMaterial){
+void Picture::DrawSelf(const DrawInfo& drawInfo)
+{
+    if (!mpMaterial)
+    {
         return;
     }
 
@@ -165,13 +199,7 @@ void Picture::DrawSelf(const DrawInfo& drawInfo){
 
     this->mpMaterial->SetupGraphics(drawInfo, GetGlobalAlpha());
 
-    internal::DrawQuad(
-        drawInfo,
-        GetVtxPos(),
-        GetSize(),
-        this->mTexCoordAry.GetSize(),
-        this->mTexCoordAry.GetArray(),
-        this->mVtxColors);
+    internal::DrawQuad(drawInfo,GetVtxPos(),GetSize(),this->mTexCoordAry.GetSize(),this->mTexCoordAry.GetArray(),this->mVtxColors);
 }
 
 }

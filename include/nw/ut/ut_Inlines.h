@@ -26,6 +26,7 @@ template <typename T>
 inline u32 MakeBits(T value, s32 width, s32 shift){
     return (u32(value) & ((0x1U << width) - 1)) << shift;
 }
+
 template <typename T>
 inline T GetBits(T bits,int pos,int len){
     NW_ASSERT(len <= 32);

@@ -17,20 +17,21 @@ TexMap::TexMap():
     mWidth(0), 
     mHeight(0), 
     mRealWidth(0), 
-    mRealHeight(0){
-    this->mBits.format = TEXFORMAT_MAX;
-    this->mBits.wrapS = TEXWRAP_CLAMP;
-    this->mBits.wrapT = TEXWRAP_CLAMP;
-    this->mBits.minFilter = TEXFILTER_LINEAR;
-    this->mBits.magFilter = TEXFILTER_LINEAR;
+    mRealHeight(0)
+{
+    mBits.format = TEXFORMAT_MAX;
+    mBits.wrapS = TEXWRAP_CLAMP;
+    mBits.wrapT = TEXWRAP_CLAMP;
+    mBits.minFilter = TEXFILTER_LINEAR;
+    mBits.magFilter = TEXFILTER_LINEAR;
     this->ResetU32Info();
 }
 
 TexMap::TexMap(const TextureInfo& textureInfo){
-    this->mBits.wrapS = TEXWRAP_CLAMP;
-    this->mBits.wrapT = TEXWRAP_CLAMP;
-    this->mBits.minFilter = TEXFILTER_LINEAR;
-    this->mBits.magFilter = TEXFILTER_LINEAR;
+    mBits.wrapS = TEXWRAP_CLAMP;
+    mBits.wrapT = TEXWRAP_CLAMP;
+    mBits.minFilter = TEXFILTER_LINEAR;
+    mBits.magFilter = TEXFILTER_LINEAR;
 
     this->Set(textureInfo);
 }
@@ -54,7 +55,7 @@ void TexMap::ResetU32Info(){
       case TEXFORMAT_ETC1A4 : mu32Format = PICA_DATA_TEXTURE_FORMAT_ETC1_ALPHA_RGB8_A4_NATIVE_DMP; break;
     }
 
-    /*mu32WidthHeight = PICA_CMD_DATA_TEXTURE_SIZE(GetRealWidth(), GetRealHeight());
+    mu32WidthHeight = PICA_CMD_DATA_TEXTURE_SIZE(GetRealWidth(), GetRealHeight());
 
     const u32 minFilter[] ={
         PICA_DATA_TEXTURE_MIN_FILTER_NEAREST,
@@ -72,7 +73,7 @@ void TexMap::ResetU32Info(){
     this->mu32Format,wrap[GetWrapModeT()],
     wrap[GetWrapModeS()],
     0,
-    0);*/
+    0);
 }
 
 }

@@ -6,7 +6,6 @@
 #include <nw/anim/anim_AnimFrameController.h>
 #include <nw/ut/ut_MoveArray.h>
 
-
 namespace nw{
 namespace gfx{
 

@@ -595,10 +595,9 @@ void Window::SetContentMaterial(Material* pMaterial){
     }
 }
 
-void Window::MakeUniformDataSelf( DrawInfo* pDrawInfo, Drawer* pDrawer ) const{
-    NW_UNUSED_VARIABLE(pDrawInfo);
-    const WindowFrameSize frameSize( GetFrameSize(this->mFrameNum, this->mFrames) );
-    const math::VEC2 basePt( GetVtxPos() );
+void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) const{
+    const WindowFrameSize frameSize(GetFrameSize(this->mFrameNum, this->mFrames));
+    const math::VEC2 basePt(GetVtxPos());
 
     {
 
