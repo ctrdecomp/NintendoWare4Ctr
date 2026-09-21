@@ -1,3 +1,7 @@
+// Filename: gfx_ResUtil.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/res/gfx_ResUtil.h>
 #include <nw/gfx/res/gfx_ResGraphicsFile.h>
 

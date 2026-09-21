@@ -1,3 +1,7 @@
+// Filename: gfx_SceneHelper.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_SceneHelper.h>
 
 namespace nw{

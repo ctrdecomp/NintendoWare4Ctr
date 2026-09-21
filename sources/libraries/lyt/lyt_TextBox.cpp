@@ -61,10 +61,10 @@ TextBox::TextBox(u16 allocStrLen,const wchar_t* str,u16 strLen,const font::Font*
 
 TextBox::~TextBox()
 {
-    if (mpMaterial && !this->mpMaterial->IsUserAllocated())
+    if (m_pMaterial && !this->m_pMaterial->IsUserAllocated())
     {
-        Layout::DeleteObj(this->mpMaterial);
-        mpMaterial = 0;
+        Layout::DeleteObj(this->m_pMaterial);
+        m_pMaterial = 0;
     }
 
     FreeStringBuffer();
@@ -72,17 +72,17 @@ TextBox::~TextBox()
 
 void TextBox::Init(u16 allocStrLen)
 {
-    mpTextBuf = 0;
+    m_pTextBuf = 0;
     m_TextBufBytes = 0;
     m_TextLen = 0;
-    mpFont = 0;
+    m_pFont = 0;
     m_FontSize = Size(0, 0);
     SetTextPositionH(HORIZONTALPOSITION_CENTER);
     SetTextPositionV(VERTICALPOSITION_CENTER);
     m_LineSpace = 0;
     m_CharSpace = 0;
-    mpTagProcessor = 0;
-    mpDispStringBuf = 0;
+    m_pTagProcessor = 0;
+    m_pDispStringBuf = 0;
     std::memset(&this->m_Bits, 0, sizeof(this->m_Bits));
 
     if (allocStrLen > 0)
@@ -93,30 +93,30 @@ void TextBox::Init(u16 allocStrLen)
 
 void TextBox::InitMaterial()
 {
-    mpMaterial = Layout::NewObj<Material>();
-    if (mpMaterial)
+    m_pMaterial = Layout::NewObj<Material>();
+    if (m_pMaterial)
     {
-        this->mpMaterial->ReserveMem(0, 0, 0);
+        this->m_pMaterial->ReserveMem(0, 0, 0);
     }
 }
 
 u8 TextBox::GetMaterialNum() const
 {
-    return mpMaterial? 1 : 0;
+    return m_pMaterial? 1 : 0;
 }
 
 Material* TextBox::GetMaterial(u32 idx) const
 {
-    return idx == 0 ? mpMaterial : 0;
+    return idx == 0 ? m_pMaterial : 0;
 }
 
 void TextBox::SetMaterial(Material* pMaterial)
 {
-    if (mpMaterial && !this->mpMaterial->IsUserAllocated())
+    if (m_pMaterial && !this->m_pMaterial->IsUserAllocated())
     {
-        Layout::DeleteObj(this->mpMaterial);
+        Layout::DeleteObj(this->m_pMaterial);
     }
-    mpMaterial = pMaterial;
+    m_pMaterial = pMaterial;
 }
 
 const ut::Color8 TextBox::GetVtxColor(u32 idx) const
@@ -143,7 +143,7 @@ void TextBox::SetVtxColorElement(u32 idx, u8 value)
 
 const ut::Rect TextBox::GetTextDrawRect() const
 {
-    if (mpFont == NULL)
+    if (m_pFont == NULL)
     {
         return ut::Rect();
     }
@@ -153,7 +153,7 @@ const ut::Rect TextBox::GetTextDrawRect() const
     SetFontInfo(&writer);
 
     ut::Rect textRect;
-    writer.CalcStringRect(&textRect, this->mpTextBuf, this->m_TextLen);
+    writer.CalcStringRect(&textRect, this->m_pTextBuf, this->m_TextLen);
 
     const Size textSize(textRect.GetWidth(), textRect.GetHeight());
 
@@ -175,7 +175,7 @@ const ut::Rect TextBox::GetTextDrawRect() const
 
 void TextBox::DrawSelf(const DrawInfo& drawInfo)
 {
-    if (m_TextLen <= 0 || !mpFont || !mpMaterial)
+    if (m_TextLen <= 0 || !m_pFont || !m_pMaterial)
     {
         return;
     }
@@ -195,15 +195,15 @@ void TextBox::DrawSelf(const DrawInfo& drawInfo)
 
     this->LoadMtx(drawInfo);
 
-    ut::Color8 minCol = this->mpMaterial->GetColor(INTERPOLATECOLOR_BLACK);
-    ut::Color8 maxCol = this->mpMaterial->GetColor(INTERPOLATECOLOR_WHITE);
+    ut::Color8 minCol = this->m_pMaterial->GetColor(INTERPOLATECOLOR_BLACK);
+    ut::Color8 maxCol = this->m_pMaterial->GetColor(INTERPOLATECOLOR_WHITE);
 
     writer.SetColorMapping(minCol, maxCol);
     writer.SetAlpha(GetGlobalAlpha());
 
     writer.SetupGX();
 
-    (void)writer.Print(this->mpTextBuf, this->m_TextLen);
+    (void)writer.Print(this->m_pTextBuf, this->m_TextLen);
 
     writer.FinalizeGX();
 }
@@ -248,20 +248,20 @@ void TextBox::AllocStringBuffer(u16 minLen)
         return;
     }
 
-    mpTextBuf = textBuf;
+    m_pTextBuf = textBuf;
     m_TextBufBytes = static_cast<u16>(textBufBytes);
 
-    this->mpDispStringBuf = font::CharWriter::InitDispStringBuffer(pDispStringBuf, minLen);
+    this->m_pDispStringBuf = font::CharWriter::InitDispStringBuffer(pDispStringBuf, minLen);
 }
 
 void TextBox::FreeStringBuffer()
 {
-    if (mpTextBuf)
+    if (m_pTextBuf)
     {
-        Layout::FreeMemory(this->mpDispStringBuf);
-        Layout::DeletePrimArray(this->mpTextBuf);
-        mpDispStringBuf = 0;
-        mpTextBuf = 0;
+        Layout::FreeMemory(this->m_pDispStringBuf);
+        Layout::DeletePrimArray(this->m_pTextBuf);
+        m_pDispStringBuf = 0;
+        m_pTextBuf = 0;
         m_TextBufBytes = 0;
         m_TextLen = 0;
     }
@@ -279,12 +279,12 @@ u16 TextBox::SetString(const wchar_t* str,u16 dstIdx,u16 strLen)
 
 u16 TextBox::SetStringImpl(const wchar_t* str,u16 dstIdx,u32 strLen)
 {
-    if (mpFont == 0)
+    if (m_pFont == 0)
     {
         return 0;
     }
 
-    if (mpTextBuf == 0)
+    if (m_pTextBuf == 0)
     {
         return 0;
     }
@@ -301,10 +301,10 @@ u16 TextBox::SetStringImpl(const wchar_t* str,u16 dstIdx,u32 strLen)
 
     cpLen = ut::Min(strLen, cpLen);
 
-    std::memcpy(this->mpTextBuf + dstIdx, str, cpLen * sizeof(wchar_t));
+    std::memcpy(this->m_pTextBuf + dstIdx, str, cpLen * sizeof(wchar_t));
 
     m_TextLen = static_cast<u16>(dstIdx + cpLen);
-    mpTextBuf[this->m_TextLen] = 0;
+    m_pTextBuf[this->m_TextLen] = 0;
 
     this->UpdatePTDirty(true);
     
@@ -322,8 +322,8 @@ void TextBox::LoadMtx(const DrawInfo& drawInfo)
 
 void TextBox::SetFontInfo(font::WideTextWriter* pWriter) const
 {
-    pWriter->SetFont(this->mpFont);
-    if (mpFont != NULL)
+    pWriter->SetFont(this->m_pFont);
+    if (m_pFont != NULL)
     {
         pWriter->SetFontSize(this->m_FontSize.width, m_FontSize.height);
         pWriter->SetLineSpace(this->m_LineSpace);
@@ -331,9 +331,9 @@ void TextBox::SetFontInfo(font::WideTextWriter* pWriter) const
         pWriter->SetWidthLimit(GetSize().width);
     }
 
-    if (mpTagProcessor)
+    if (m_pTagProcessor)
     {
-        pWriter->SetTagProcessor(this->mpTagProcessor);
+        pWriter->SetTagProcessor(this->m_pTagProcessor);
     }
 }
 
@@ -448,19 +448,19 @@ void TextBox::SetupDrawCharData(Drawer* pDrawer)
 {
     font::WideTextWriter writer;
 
-    writer.SetDispStringBuffer(this->mpDispStringBuf);
+    writer.SetDispStringBuffer(this->m_pDispStringBuf);
     SetupTextWriter(&writer);
 
     if (m_Bits.isPTDirty)
     {
         writer.StartPrint();
-        (void)writer.Print(this->mpTextBuf, this->m_TextLen);
+        (void)writer.Print(this->m_pTextBuf, this->m_TextLen);
         writer.EndPrint();
 
         m_Bits.isPTDirty = false;
     }
 
-    if (!this->mpDispStringBuf->IsGeneratedCommand() && pDrawer)
+    if (!this->m_pDispStringBuf->IsGeneratedCommand() && pDrawer)
     {
         pDrawer->BuildTextCommand(&writer);
     }

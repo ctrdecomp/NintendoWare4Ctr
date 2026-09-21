@@ -1,3 +1,7 @@
+// Filename: font_ResFontBase.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/font/font_ResFontBase.h>
 #include <nw/ut/ut_Inlines.h>
 
@@ -22,9 +26,9 @@ enum
 }
 
 ResFontBase::ResFontBase():   
-    mpResource(NULL),
-    mpFontInfo(NULL),
-    mpTexObjs(NULL),
+    m_pResource(NULL),
+    m_pFontInfo(NULL),
+    m_pTexObjs(NULL),
     m_LastCharCode(0),
     m_LastGlyphIndex(GLYPH_INDEX_NOT_FOUND)
     {
@@ -35,64 +39,64 @@ ResFontBase::~ResFontBase() {}
 
 void ResFontBase::SetResourceBuffer(void* pUserBuffer,FontInformation* pFontInfo)
 {
-    this->mpResource = pUserBuffer;
-    this->mpFontInfo = pFontInfo;
+    this->m_pResource = pUserBuffer;
+    this->m_pFontInfo = pFontInfo;
 }
 
 void* ResFontBase::RemoveResourceBuffer()
 {
-    if (NULL != mpTexObjs)
+    if (NULL != m_pTexObjs)
     {
         DeleteTextureNames();
-        this->mpTexObjs = NULL;
+        this->m_pTexObjs = NULL;
     }
 
-    void* pUserData = mpResource;
+    void* pUserData = m_pResource;
 
-    mpResource = NULL;
-    mpFontInfo = NULL;
+    m_pResource = NULL;
+    m_pFontInfo = NULL;
 
     return pUserData;
 }
 
 int ResFontBase::GetWidth() const
 {
-    return mpFontInfo->width;
+    return m_pFontInfo->width;
 }
 
 int ResFontBase::GetHeight() const
 {
-    return mpFontInfo->height;
+    return m_pFontInfo->height;
 }
 
 int ResFontBase::GetAscent() const
 {
-    return mpFontInfo->ascent;
+    return m_pFontInfo->ascent;
 }
 
 int ResFontBase::GetDescent() const
 {
-    return mpFontInfo->height - mpFontInfo->ascent;
+    return m_pFontInfo->height - m_pFontInfo->ascent;
 }
 
 int ResFontBase::GetBaselinePos() const
 {
-    return mpFontInfo->pGlyph->baselinePos;
+    return m_pFontInfo->pGlyph->baselinePos;
 }
 
 int ResFontBase::GetCellHeight() const
 {
-    return mpFontInfo->pGlyph->cellHeight;
+    return m_pFontInfo->pGlyph->cellHeight;
 }
 
 int ResFontBase::GetCellWidth() const
 {
-    return mpFontInfo->pGlyph->cellWidth;
+    return m_pFontInfo->pGlyph->cellWidth;
 }
 
 int ResFontBase::GetMaxCharWidth() const
 {
-    return mpFontInfo->pGlyph->maxCharWidth;
+    return m_pFontInfo->pGlyph->maxCharWidth;
 }
 
 Font::Type ResFontBase::GetType() const
@@ -102,22 +106,22 @@ Font::Type ResFontBase::GetType() const
 
 TexFmt ResFontBase::GetTextureFormat() const
 {
-    return static_cast<TexFmt>(mpFontInfo->pGlyph->sheetFormat);
+    return static_cast<TexFmt>(m_pFontInfo->pGlyph->sheetFormat);
 }
 
 int ResFontBase::GetLineFeed() const
 {
-    return mpFontInfo->linefeed;
+    return m_pFontInfo->linefeed;
 }
 
 const CharWidths ResFontBase::GetDefaultCharWidths() const
 {
-    return mpFontInfo->defaultWidth;
+    return m_pFontInfo->defaultWidth;
 }
 
 void ResFontBase::SetDefaultCharWidths(const CharWidths& widths)
 {
-    mpFontInfo->defaultWidth = widths;
+    m_pFontInfo->defaultWidth = widths;
 }
 
 bool ResFontBase::SetAlternateChar( CharCode c )
@@ -126,7 +130,7 @@ bool ResFontBase::SetAlternateChar( CharCode c )
 
     if (index != GLYPH_INDEX_NOT_FOUND)
     {
-        mpFontInfo->alterCharIndex = index;
+        m_pFontInfo->alterCharIndex = index;
         return true;
     }
 
@@ -135,7 +139,7 @@ bool ResFontBase::SetAlternateChar( CharCode c )
 
 void ResFontBase::SetLineFeed(int linefeed)
 {
-    mpFontInfo->linefeed = static_cast<s8>(linefeed);
+    m_pFontInfo->linefeed = static_cast<s8>(linefeed);
 }
 
 int ResFontBase::GetCharWidth(CharCode c) const
@@ -162,13 +166,13 @@ bool ResFontBase::HasGlyph( CharCode c ) const
 
 CharacterCode ResFontBase::GetCharacterCode() const
 {
-    return static_cast<CharacterCode>(mpFontInfo->characterCode);
+    return static_cast<CharacterCode>(m_pFontInfo->characterCode);
 }
 
 ResFontBase::GlyphIndex ResFontBase::GetGlyphIndex(CharCode c) const
 {
     GlyphIndex index = FindGlyphIndex(c);
-    return (index != GLYPH_INDEX_NOT_FOUND) ? index: mpFontInfo->alterCharIndex;
+    return (index != GLYPH_INDEX_NOT_FOUND) ? index: m_pFontInfo->alterCharIndex;
 }
 
 ResFontBase::GlyphIndex ResFontBase::FindGlyphIndex(CharCode c) const
@@ -180,7 +184,7 @@ ResFontBase::GlyphIndex ResFontBase::FindGlyphIndex(CharCode c) const
 
     m_LastCharCode = c;
 
-    const FontCodeMap* pMap = mpFontInfo->pMap;
+    const FontCodeMap* pMap = m_pFontInfo->pMap;
     while (pMap != NULL)
     {
         if (pMap->ccodeBegin <= c && c <= pMap->ccodeEnd)
@@ -248,7 +252,7 @@ const CharWidths& ResFontBase::GetCharWidthsFromIndex(GlyphIndex index) const
 {
     const FontWidth* pWidth;
 
-    pWidth = mpFontInfo->pWidth;
+    pWidth = m_pFontInfo->pWidth;
 
     while (pWidth != NULL)
     {
@@ -260,7 +264,7 @@ const CharWidths& ResFontBase::GetCharWidthsFromIndex(GlyphIndex index) const
         pWidth = pWidth->pNext;
     }
 
-    return mpFontInfo->defaultWidth;
+    return m_pFontInfo->defaultWidth;
 }
 
 const CharWidths& ResFontBase::GetCharWidthsFromIndex(const FontWidth* pWidth,GlyphIndex index) const
@@ -270,7 +274,7 @@ const CharWidths& ResFontBase::GetCharWidthsFromIndex(const FontWidth* pWidth,Gl
 
 void ResFontBase::GetGlyphFromIndex(Glyph* glyph,GlyphIndex index) const
 {
-    const FontTextureGlyph& tg = *mpFontInfo->pGlyph;
+    const FontTextureGlyph& tg = *m_pFontInfo->pGlyph;
 
     const u32 cellsInASheet = internal::GetCellsInASheet(tg);
     const u32 sheetNo = index / cellsInASheet;
@@ -279,7 +283,7 @@ void ResFontBase::GetGlyphFromIndex(Glyph* glyph,GlyphIndex index) const
 
     glyph->pTexture  = pSheet;
     glyph->widths = GetCharWidthsFromIndex(index);
-    glyph->pTextureObject = NULL != mpTexObjs ? this->GetTextureObject(sheetNo) : 0;
+    glyph->pTextureObject = NULL != m_pTexObjs ? this->GetTextureObject(sheetNo) : 0;
     this->SetGlyphMember(glyph, index, tg);
 }
 
@@ -332,7 +336,7 @@ u32 ResFontBase::GetTextureWrapFilterValue() const
 
 int ResFontBase::GetActiveSheetNum() const
 {
-    return mpFontInfo->pGlyph->sheetNum;
+    return m_pFontInfo->pGlyph->sheetNum;
 }
 
 void ResFontBase::GenTextureNames()
@@ -340,7 +344,7 @@ void ResFontBase::GenTextureNames()
     internal::TextureObject* texObjs = GetTextureObjectsBufferPtr();
 
 
-    const FontTextureGlyph& tg = *mpFontInfo->pGlyph;
+    const FontTextureGlyph& tg = *m_pFontInfo->pGlyph;
     const int sheetNum = GetActiveSheetNum();
     u32 offsetBytes = 0;
     for (int i = 0; i < sheetNum; ++i)

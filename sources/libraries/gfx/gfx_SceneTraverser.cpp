@@ -1,3 +1,7 @@
+// Filename: gfx_SceneTraverser.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_SceneTraverser.h>
 #include <nw/gfx/gfx_SceneContext.h>
 #include <nw/gfx/gfx_SceneNode.h>

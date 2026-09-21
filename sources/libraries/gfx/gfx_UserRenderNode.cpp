@@ -1,3 +1,7 @@
+// Filename: gfx_UserRenderNode.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_UserRenderNode.h>
 #include <nw/gfx/gfx_ISceneVisitor.h>
 
@@ -8,8 +12,8 @@ NW_UT_RUNTIME_TYPEINFO_DEFINITION(UserRenderNode, TransformNode);
 
 UserRenderNode::UserRenderNode(
     os::IAllocator* allocator,
-    const UserRenderNode::Description& description)
-    : TransformNode(allocator, ResTransformNode(), description),
+    const UserRenderNode::Description& description): 
+    TransformNode(allocator, ResTransformNode(), description),
     m_TranslucencyKind(description.translucencyKind),
     m_Priority(description.priority),
     m_LayerId(description.layerId),

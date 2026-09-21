@@ -1,4 +1,6 @@
-
+// Filename: gfx_LightSet.cpp
+//
+// Project: NintendoWare4Ctr
 
 #include <nw/gfx/gfx_LightSet.h>
 

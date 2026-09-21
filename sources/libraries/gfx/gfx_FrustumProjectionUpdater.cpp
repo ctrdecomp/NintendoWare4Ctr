@@ -1,3 +1,7 @@
+// Filename: gfx_FrustumProjectionUpdater.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_FrustumProjectionUpdater.h>
 #include <nw/os/os_Memory.h>
 #include <nw/ut/ut_Rect.h>

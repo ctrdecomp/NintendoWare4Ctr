@@ -1,3 +1,7 @@
+// Filename: gfx_ParticleRandom.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_ParticleRandom.h>
 
 namespace nw{

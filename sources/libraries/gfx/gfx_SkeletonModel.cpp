@@ -1,3 +1,7 @@
+// Filename: gfx_SkeletonModel.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_SkeletalModel.h>
 #include <nw/gfx/gfx_ISceneVisitor.h>
 #include <nw/gfx/gfx_AnimObject.h>
@@ -26,7 +30,8 @@ SkeletalModel* SkeletalModel::Builder::Create(SceneNode* parent,ResSceneObject r
         skeleton.Reset(this->m_Description.sharedSkeleton, false);
         isSharedSkeleton = true;
     }
-    else{
+    else
+    {
         ResSkeleton resSkeleton = resModel.GetSkeleton();
         NW_ASSERT(resSkeleton.IsValid());
         Skeleton::TransformPose::TransformArray poseTransforms(resSkeleton.GetBonesCount(), allocator);

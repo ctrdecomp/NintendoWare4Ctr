@@ -1,3 +1,7 @@
+// Filename: gfx_BaseAnimEvaluator.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_AnimObject.h>
 #include <nw/gfx/res/gfx_ResMaterial.h>
 

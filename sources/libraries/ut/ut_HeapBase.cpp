@@ -13,9 +13,9 @@
                 do                                                          \
                 {                                                           \
                     u32 maskBits = (u32)((1 <<(bits)) -1);                   \
-                    u32 newVal = (val) & maskBits; /* 安全のためマスク */    \
+                    u32 newVal = (val) & maskBits;                          \
                     (void)(maskBits <<= st);                                 \
-                    (data) &= ~maskBits; /* セットする領域をクリア */        \
+                    (data) &= ~maskBits;                                   \
                     (data) |= newVal <<(st);                                 \
                 } while (false);
 
@@ -125,7 +125,8 @@ void HeapBase::FillAllocMemory(void* address, u32 size)
     {
         std::memset(address, 0, size);
     }
-    else{
+    else
+    {
         if (this->GetOptionFlag() & OPT_DEBUG_FILL)
         {
             std::memset(address, GetFillValue(HEAP_FILL_ALLOC), size);

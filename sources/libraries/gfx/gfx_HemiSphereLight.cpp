@@ -1,3 +1,7 @@
+// Filename: gfx_HemiSphereLight.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/os/os_Memory.h>
 
 #include <nw/gfx/gfx_HemiSphereLight.h>
@@ -14,19 +18,19 @@ HemiSphereLight* HemiSphereLight::DynamicBuilder::Create(nw::os::IAllocator* all
 {
     NW_NULL_ASSERT(allocator);
 
-    //ResPtr resource(CreateResHemiSphereLight(allocator),ResHemiSphereLightDataDestroyer(allocator));
+    ResPtr resource(CreateResHemiSphereLight(allocator), ResHemiSphereLightDataDestroyer(allocator));
 
     void* memory = allocator->Alloc(sizeof(HemiSphereLight));
     NW_NULL_ASSERT(memory);
-    //HemiSphereLight* light = new(memory) HemiSphereLight(allocator,resource,this->m_Description);
+    HemiSphereLight* light = new(memory) HemiSphereLight(allocator,resource,this->m_Description);
     
-    //Result result = light->Initialize(allocator);
-    //NW_ASSERT(result.IsSuccess());
+    Result result = light->Initialize(allocator);
+    NW_ASSERT(result.IsSuccess());
 
-    //return light;
+    return light;
 }
 
-size_t HemiSphereLight::DynamicBuilder::GetMemorySize( size_t alignment ) const
+size_t HemiSphereLight::DynamicBuilder::GetMemorySize(size_t alignment) const
 {
     NW_ASSERT(this->m_Description.isFixedSizeMemory);
 

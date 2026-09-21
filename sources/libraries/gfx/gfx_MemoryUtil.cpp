@@ -1,4 +1,6 @@
-
+// Filename: gfx_MemoryUtil.cpp
+//
+// Project: NintendoWare4Ctr
 
 #include <nw/gfx/gfx_MemoryUtil.h>
 

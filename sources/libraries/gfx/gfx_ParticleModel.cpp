@@ -1,3 +1,7 @@
+// Filename: gfx_ParticleModel.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_ParticleModel.h>
 #include <nw/gfx/gfx_ParticleContext.h>
 #include <nw/gfx/gfx_SkeletalModel.h>

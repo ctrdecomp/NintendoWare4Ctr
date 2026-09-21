@@ -16,6 +16,8 @@
                   || (((exp) & 0xF8000000) == 0xD0000000)    \
                   || (((exp) & 0xFFFFC000) == 0xE0000000),   \
                   "NW:Pointer Error\n"#exp"(=%p) is not valid pointer.", (exp) )
+
+  #define NW_GL_ASSERT() ((void)0)
   #define NW_FATAL_ERROR    true ? 0:
 #else
   #define NW_WARNING(exp, ...) (void) ((exp) || (nwosWarning(__VA_ARGS__), 0))
@@ -26,6 +28,11 @@
                   "NW:Pointer Error\n"#exp"(=%p) is not valid pointer.", (exp) )
   #define NW_FATAL_ERROR(...) \
               NW_ASSERTMSG( false, "NW:Fatal Error\n"__VA_ARGS__ )
+  #define NW_GL_ASSERT()                                              \
+    do {                                                            \
+        GLuint err = glGetError();                                  \
+        NW_ASSERTMSG( err == GL_NO_ERROR, "GL_ERROR : %s (0x%x)", nwGlErrorString( err ), err ); \
+    } while (0)                                                     
 #endif
 
 // ASSERT

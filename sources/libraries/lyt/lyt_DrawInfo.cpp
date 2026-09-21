@@ -13,9 +13,9 @@ namespace lyt{
 DrawInfo::DrawInfo():   
     m_LocationAdjustScale(1.f, 1.f),
     m_GlobalAlpha(1.f),
-    mpGraphicsResource(0),
-    mpLayout(0)
-    {
+    m_pGraphicsResource(0),
+    m_pLayout(0)
+{
     std::memset(&this->m_Flag, 0, sizeof(this->m_Flag));
 
     MTX34Identity(&this->m_ViewMtx);

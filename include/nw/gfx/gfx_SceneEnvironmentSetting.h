@@ -146,9 +146,9 @@ public:
         return this->m_LightSets.end();
     }
 protected:
-    SceneEnvironmentSetting(nw::os::IAllocator* allocator,ResSceneEnvironmentSetting resSetting,const SceneEnvironmentSetting::Description& description): 
+    SceneEnvironmentSetting(nw::os::IAllocator* allocator, ResSceneEnvironmentSetting resSetting,const SceneEnvironmentSetting::Description& description): 
     SceneObject(allocator, resSetting)
-{
+    {
         NW_UNUSED_VARIABLE(description);
     }
 
@@ -159,15 +159,18 @@ private:
     template<typename TObject>
     struct SceneObjectCompare: public std::unary_function<TObject, bool>
     {
-        SceneObjectCompare(ResReferenceSceneObject referenceSceneObject): m_Object(referenceSceneObject) {}
+        SceneObjectCompare(nw::gfx::res::ResReferenceSceneObject referenceSceneObject): 
+            m_Object(referenceSceneObject) 
+        {
+        }
 
-        ResReferenceSceneObject m_Object;
+        nw::gfx::res::ResReferenceSceneObject m_Object;
         bool operator()(TObject* lhs) const
         {
             if (lhs->GetName() != NULL &&
                 m_Object.GetPath() != NULL &&
                 std::strcmp(lhs->GetName(), m_Object.GetPath()) == 0)
-                {
+            {
                 return true;
             }
             return false;

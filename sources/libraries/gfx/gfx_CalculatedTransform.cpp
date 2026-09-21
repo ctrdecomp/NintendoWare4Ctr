@@ -1,3 +1,7 @@
+// Filename: gfx_CalculatedTransform.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_CalculatedTransform.h>
 #include <nw/gfx/res/gfx_ResSkeleton.h>
 

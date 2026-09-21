@@ -9,6 +9,7 @@
 #include <nw/gfx/res/gfx_ResModel.h>
 #include <nw/gfx/res/gfx_ResMaterial.h>
 #include <nw/gfx/res/gfx_ResGraphicsFile.h>
+#include <nw/ut/ut_MiddlewareString.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2extern.h>
 
@@ -18,6 +19,9 @@ namespace res {
 
 Result ResGraphicsFile::Setup(os::IAllocator* allocator, ResGraphicsFile graphicsFile)
 {
+#if defined(NW_VERSION_USE_GFX1)
+    NW_PUT_MODULE_SYMBOL(GFX1);
+#endif
     Result result = RESOURCE_RESULT_OK;
     NW_ASSERT(this->IsValid());
     NW_ASSERT(internal::ResCheckRevision(*this));

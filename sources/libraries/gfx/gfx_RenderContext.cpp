@@ -1,3 +1,7 @@
+// Filename: gfx_RenderContext.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/math/math_Types.h>
 #include <nw/types.h>
 #include <nw/gfx/gfx_ShaderProgram.h>

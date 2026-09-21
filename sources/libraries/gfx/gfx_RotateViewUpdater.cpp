@@ -1,3 +1,7 @@
+// Filename: gfx_RotateViewUpdater.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_RotateViewUpdater.h>
 #include <nw/os/os_Memory.h>
 

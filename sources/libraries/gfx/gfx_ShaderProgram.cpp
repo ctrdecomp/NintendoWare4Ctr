@@ -1,3 +1,7 @@
+// Filename: gfx_ShaderProgram.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_ShaderProgram.h>
 
 #include <nw/os/os_Memory.h>

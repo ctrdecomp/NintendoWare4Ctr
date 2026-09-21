@@ -239,7 +239,7 @@ inline bool IsBindAnimation(Material* pMaterial,AnimTransform* pAnimTrans)
 /* AnimTransform */
 
 AnimTransform::AnimTransform(): 
-    mpRes(0),
+    m_pRes(0),
     m_Frame(0)
     {
 }
@@ -250,47 +250,47 @@ AnimTransform::~AnimTransform()
 
 u16 AnimTransform::GetFrameSize() const
 {
-    return mpRes->frameSize;
+    return m_pRes->frameSize;
 }
 
 bool AnimTransform::IsLoopData() const
 {
-    return mpRes->loop != 0;
+    return m_pRes->loop != 0;
 }
 
 bool AnimResource::IsDescendingBind() const
 {
-    if (!mpTagBlock)
+    if (!m_pTagBlock)
     {
         return false;
     }
 
-    return internal::TestBit(this->mpTagBlock->flag, ANIMTAGFLAG_DESCENDINGBIND);
+    return internal::TestBit(this->m_pTagBlock->flag, ANIMTAGFLAG_DESCENDINGBIND);
 }
 
 const AnimationShareInfo* AnimResource::GetAnimationShareInfoArray() const
 {
-    if (!mpShareBlock)
+    if (!m_pShareBlock)
     {
         return 0;
     }
 
-    return internal::ConvertOffsToPtr<const AnimationShareInfo>(this->mpShareBlock, this->mpShareBlock->animShareInfoOffset);
+    return internal::ConvertOffsToPtr<const AnimationShareInfo>(this->m_pShareBlock, this->m_pShareBlock->animShareInfoOffset);
 }
 
 /* AnimTransformBasic */
 
 AnimTransformBasic::AnimTransformBasic(): 
-    mpTexAry(0),
-    mpAnimLinkAry(0),
+    m_pTexAry(0),
+    m_pAnimLinkAry(0),
     m_AnimLinkNum(0)
-    {
+{
 }
 
 AnimTransformBasic::~AnimTransformBasic()
 {
-    Layout::DeleteArray(this->mpAnimLinkAry, this->m_AnimLinkNum);
-    Layout::DeletePrimArray(this->mpTexAry);
+    Layout::DeleteArray(this->m_pAnimLinkAry, this->m_AnimLinkNum);
+    Layout::DeletePrimArray(this->m_pTexAry);
 }
 
 void AnimTransformBasic::SetResource(const res::AnimationBlock* pRes,ResourceAccessor* pResAccessor)
@@ -301,30 +301,30 @@ void AnimTransformBasic::SetResource(const res::AnimationBlock* pRes,ResourceAcc
 
 void AnimTransformBasic::SetResource(const res::AnimationBlock* pRes,ResourceAccessor* pResAccessor,u16 animNum)
 {
-    NW_ASSERT(mpTexAry == 0);
-    NW_ASSERT(mpAnimLinkAry == 0);
+    NW_ASSERT(m_pTexAry == 0);
+    NW_ASSERT(m_pAnimLinkAry == 0);
     NW_NULL_ASSERT(pRes);
 
     this->SetAnimResource(pRes);
-    mpTexAry = 0;
+    m_pTexAry = 0;
     if (pRes->fileNum > 0)
     {
         NW_NULL_ASSERT(pResAccessor);
-        mpTexAry = Layout::NewArray<TextureInfo>(pRes->fileNum);
-        if (mpTexAry)
+        m_pTexAry = Layout::NewArray<TextureInfo>(pRes->fileNum);
+        if (m_pTexAry)
         {
             const u32* fileNameOffsets = internal::ConvertOffsToPtr<u32>(pRes, sizeof(*pRes));
 
             for (int i = 0; i < pRes->fileNum; ++i)
             {
                 const char *const fileName = internal::GetStrTableStr(fileNameOffsets, i);
-                mpTexAry[i] = pResAccessor->GetTexture(fileName);
+                m_pTexAry[i] = pResAccessor->GetTexture(fileName);
             }
         }
     }
 
-    mpAnimLinkAry = Layout::NewArray<AnimationLink>(animNum);
-    if (mpAnimLinkAry)
+    m_pAnimLinkAry = Layout::NewArray<AnimationLink>(animNum);
+    if (m_pAnimLinkAry)
     {
         m_AnimLinkNum = animNum;
     }
@@ -344,9 +344,9 @@ void AnimTransformBasic::Bind(Pane* pPane,bool bRecursive,bool bDisable)
         if (animCont.type == ANIMCONTENTTYPE_PANE)
         {
             if (Pane *const pFindPane = pPane->FindPaneByName(animCont.name, bRecursive))
-        {
+            {
                 if (!IsBindAnimation(pFindPane, this))
-        {
+                {
                     pCrAnimLink = Bind(pFindPane, pCrAnimLink, i, bDisable);
                     if (!pCrAnimLink)
                     {
@@ -358,9 +358,9 @@ void AnimTransformBasic::Bind(Pane* pPane,bool bRecursive,bool bDisable)
         else
         {
             if (Material *const pFindMat = pPane->FindMaterialByName(animCont.name, bRecursive))
-        {
+            {
                 if (!IsBindAnimation(pFindMat, this))
-        {
+                {
                     pCrAnimLink = Bind(pFindMat, pCrAnimLink, i, bDisable);
                     if (!pCrAnimLink)
                     {
@@ -388,9 +388,9 @@ void AnimTransformBasic::Bind(Material* pMaterial,bool bDisable)
         if (animCont.type == ANIMCONTENTTYPE_MATERIAL)
         {
             if (internal::EqualsMaterialName(pMaterial->GetName(), animCont.name))
-        {
+            {
                 if (!IsBindAnimation(pMaterial, this))
-        {
+                {
                     pCrAnimLink = Bind(pMaterial, pCrAnimLink, i, bDisable);
                     if (!pCrAnimLink)
                     {
@@ -456,9 +456,9 @@ void AnimTransformBasic::Animate(u32 idx, Material* pMaterial)
             AnimateTextureSRT(pMaterial, pAnimInfo, animTargetOffsets, this->GetFrame());
             break;
         case res::ANIMATIONTYPE_TEXPATTERN:
-            if (mpTexAry)
+            if (m_pTexAry)
             {
-                AnimateTexturePattern(pMaterial, pAnimInfo, animTargetOffsets, this->GetFrame(), this->mpTexAry);
+                AnimateTexturePattern(pMaterial, pAnimInfo, animTargetOffsets, this->GetFrame(), this->m_pTexAry);
             }
             break;
         }
@@ -486,38 +486,38 @@ void AnimResource::Set(const void* anmResBuf)
         return;
     }
 
-    mpFileHeader = pFileHeader;
+    m_pFileHeader = pFileHeader;
 
-    const ut::BinaryBlockHeader* pDataBlockHead = internal::ConvertOffsToPtr<ut::BinaryBlockHeader>(this->mpFileHeader, this->mpFileHeader->headerSize);
-    for (int i = 0; i < mpFileHeader->dataBlocks; ++i)
+    const ut::BinaryBlockHeader* pDataBlockHead = internal::ConvertOffsToPtr<ut::BinaryBlockHeader>(this->m_pFileHeader, this->m_pFileHeader->headerSize);
+    for (int i = 0; i < m_pFileHeader->dataBlocks; ++i)
     {
         SigWord kind = pDataBlockHead->kind;
         switch (kind)
         {
         case res::DATABLOCKKIND_PANEANIMTAG:
-            mpTagBlock = reinterpret_cast<const res::AnimationTagBlock*>(pDataBlockHead);
+            m_pTagBlock = reinterpret_cast<const res::AnimationTagBlock*>(pDataBlockHead);
             break;
 
         case res::DATABLOCKKIND_PANEANIMSHARE:
-            mpShareBlock = reinterpret_cast<const res::AnimationShareBlock*>(pDataBlockHead);
+            m_pShareBlock = reinterpret_cast<const res::AnimationShareBlock*>(pDataBlockHead);
             break;
 
         case res::DATABLOCKKIND_PANEANIMINFO:
-            mpResBlock = reinterpret_cast<const res::AnimationBlock*>(pDataBlockHead);
+            m_pResBlock = reinterpret_cast<const res::AnimationBlock*>(pDataBlockHead);
             break;
         }
         pDataBlockHead = internal::ConvertOffsToPtr<ut::BinaryBlockHeader>(pDataBlockHead, pDataBlockHead->size);
     }
 
-    NW_WARNING(mpResBlock != NULL, "Animation resource is empty.");
+    NW_WARNING(m_pResBlock != NULL, "Animation resource is empty.");
 }
 
 void AnimResource::Init()
 {
-    mpFileHeader = NULL;
-    mpResBlock = NULL;
-    mpTagBlock = NULL;
-    mpShareBlock = NULL;
+    m_pFileHeader = NULL;
+    m_pResBlock = NULL;
+    m_pTagBlock = NULL;
+    m_pShareBlock = NULL;
 }
 
 }

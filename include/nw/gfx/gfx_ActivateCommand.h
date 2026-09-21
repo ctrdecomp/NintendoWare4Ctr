@@ -24,6 +24,10 @@ namespace internal{
 
 void ClearVertexAttribute();
 s32 SetupDrawIndexStreamCommand(CommandBufferInfo& bufferInfo, res::ResIndexStream indexStream, bool hasGeometryShader);
+s32 SetupVertexAttributeCommand(CommandBufferInfo& bufferInfo, ResSeparateDataShape shape, ResShaderProgramDescription shaderProgramDesc);
+s32 SetupDeactivateVertexAttributeCommand(CommandBufferInfo& bufferInfo, ResSeparateDataShape shape, ResShaderProgramDescription shaderProgramDesc);
+s32 CalcSetupActivateVertexAttributeCommandSize(ResSeparateDataShape shape, ResShaderProgramDescription shaderProgramDesc);
+s32 CalcSetupDeactivateVertexAttributeCommandSize(ResSeparateDataShape shape, ResShaderProgramDescription shaderProgramDesc);
 s32 CalcSetupDrawIndexStreamCommand(ResIndexStream indexStream);
 s32 SetupShaderProgramMode(bool useGeometry);
 

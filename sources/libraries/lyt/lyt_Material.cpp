@@ -145,7 +145,7 @@ Material::Material(const res::Material* pRes,const ResBlockSet& resBlockSet)
     this->ReserveMem(texMapNum,texSRTNum,texCoordGenNum,tevStageNum,allocAlpComp,allocBlendMode);
     this->SetTextureOnly(pRes->resNum.IsTextureOnly());
 
-    if (mpMem)
+    if (m_pMem)
     {
         this->SetTexMapNum(texMapNum);
         if (texMapNum > 0)
@@ -210,10 +210,10 @@ Material::~Material()
 {
     this->UnbindAllAnimation();
 
-    if (mpMem)
+    if (m_pMem)
     {
-        Layout::FreeMemory(this->mpMem);
-        mpMem = 0;
+        Layout::FreeMemory(this->m_pMem);
+        m_pMem = 0;
     }
 }
 
@@ -228,7 +228,7 @@ void Material::Init()
 
     m_Flag = 0;
 
-    mpMem = 0;
+    m_pMem = 0;
 }
 
 void Material::InitMatMemNums(internal::MatMemNums* ptr)
@@ -255,20 +255,20 @@ void Material::ReserveMem(u8 texMapNum,u8 texSRTNum,u8 texCoordGenNum,u8 tevStag
       || m_MemCap.blendMode < blendModeNum 
     )
     {
-        if (mpMem)
+        if (m_pMem)
         {
-            Layout::FreeMemory(this->mpMem);
-            mpMem = 0;
+            Layout::FreeMemory(this->m_pMem);
+            m_pMem = 0;
 
             InitMatMemNums(&this->m_MemCap);
             InitMatMemNums(&this->m_MemNum);
         }
 
-        mpMem = Layout::AllocMemory(sizeof(TexMap) * texMapNum + sizeof(TexSRT) * texSRTNum +
+        m_pMem = Layout::AllocMemory(sizeof(TexMap) * texMapNum + sizeof(TexSRT) * texSRTNum +
             sizeof(TexCoordGen) * texCoordGenNum + sizeof(AlphaCompare) * alpCompNum +
             sizeof(BlendMode) * blendModeNum + sizeof(TevStage) * tevStageNum);
 
-        if (mpMem)
+        if (m_pMem)
         {
             m_MemCap.texMap = texMapNum;
             m_MemCap.texSRT = texSRTNum;
@@ -297,62 +297,62 @@ void Material::ReserveMem(u8 texMapNum,u8 texSRTNum,u8 texCoordGenNum,u8 tevStag
 
 const TexMap* Material::GetTexMapAry() const
 {
-    return internal::ConvertOffsToPtr<TexMap>(this->mpMem, 0);
+    return internal::ConvertOffsToPtr<TexMap>(this->m_pMem, 0);
 }
 
 TexMap* Material::GetTexMapAry()
 {
-    return internal::ConvertOffsToPtr<TexMap>(this->mpMem, 0);
+    return internal::ConvertOffsToPtr<TexMap>(this->m_pMem, 0);
 }
 
 const TexSRT* Material::GetTexSRTAry() const
 {
-    return internal::ConvertOffsToPtr<TexSRT>(this->mpMem, CalcOffsetTexSRTAry(this->m_MemCap));
+    return internal::ConvertOffsToPtr<TexSRT>(this->m_pMem, CalcOffsetTexSRTAry(this->m_MemCap));
 }
 
 TexSRT* Material::GetTexSRTAry()
 {
-    return internal::ConvertOffsToPtr<TexSRT>(this->mpMem, CalcOffsetTexSRTAry(this->m_MemCap));
+    return internal::ConvertOffsToPtr<TexSRT>(this->m_pMem, CalcOffsetTexSRTAry(this->m_MemCap));
 }
 
 const TexCoordGen* Material::GetTexCoordGenAry() const
 {
-    return internal::ConvertOffsToPtr<TexCoordGen>(this->mpMem, CalcOffsetTexCoordGenAry(this->m_MemCap));
+    return internal::ConvertOffsToPtr<TexCoordGen>(this->m_pMem, CalcOffsetTexCoordGenAry(this->m_MemCap));
 }
 
 TexCoordGen* Material::GetTexCoordGenAry()
 {
-    return internal::ConvertOffsToPtr<TexCoordGen>(this->mpMem, CalcOffsetTexCoordGenAry(this->m_MemCap));
+    return internal::ConvertOffsToPtr<TexCoordGen>(this->m_pMem, CalcOffsetTexCoordGenAry(this->m_MemCap));
 }
 
 const AlphaCompare* Material::GetAlphaComparePtr() const
 {
-    return internal::ConvertOffsToPtr<AlphaCompare>(this->mpMem, CalcOffsetGetAlphaCompare(this->m_MemCap));
+    return internal::ConvertOffsToPtr<AlphaCompare>(this->m_pMem, CalcOffsetGetAlphaCompare(this->m_MemCap));
 }
 
 AlphaCompare* Material::GetAlphaComparePtr()
 {
-    return internal::ConvertOffsToPtr<AlphaCompare>(this->mpMem, CalcOffsetGetAlphaCompare(this->m_MemCap));
+    return internal::ConvertOffsToPtr<AlphaCompare>(this->m_pMem, CalcOffsetGetAlphaCompare(this->m_MemCap));
 }
 
 const BlendMode* Material::GetBlendModePtr() const
 {
-    return internal::ConvertOffsToPtr<BlendMode>(this->mpMem, CalcOffsetBlendMode(this->m_MemCap));
+    return internal::ConvertOffsToPtr<BlendMode>(this->m_pMem, CalcOffsetBlendMode(this->m_MemCap));
 }
 
 BlendMode* Material::GetBlendModePtr()
 {
-    return internal::ConvertOffsToPtr<BlendMode>(this->mpMem, CalcOffsetBlendMode(this->m_MemCap));
+    return internal::ConvertOffsToPtr<BlendMode>(this->m_pMem, CalcOffsetBlendMode(this->m_MemCap));
 }
 
 const TevStage* Material::GetTevStageAry() const
 {
-    return internal::ConvertOffsToPtr<TevStage>(this->mpMem, CalcOffsetTevStageAry(this->m_MemCap));
+    return internal::ConvertOffsToPtr<TevStage>(this->m_pMem, CalcOffsetTevStageAry(this->m_MemCap));
 }
 
 TevStage* Material::GetTevStageAry()
 {
-    return internal::ConvertOffsToPtr<TevStage>(this->mpMem, CalcOffsetTevStageAry(this->m_MemCap));
+    return internal::ConvertOffsToPtr<TevStage>(this->m_pMem, CalcOffsetTevStageAry(this->m_MemCap));
 }
 
 void Material::SetName(const char* name)

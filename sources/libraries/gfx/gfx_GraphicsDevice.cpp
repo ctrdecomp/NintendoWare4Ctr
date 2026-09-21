@@ -1,3 +1,7 @@
+// Filename: gfx_GraphicsDevice.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_GraphicsDevice.h>
 #include <nw/gfx/gfx_CommandUtil.h>
 #include <nw/gfx/res/gfx_ResMaterial.h>

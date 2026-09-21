@@ -112,5 +112,5 @@ public:
 };
 
 
-} /* namespace ut */
-} /* namespace nw */
+} // namespace ut
+} // namespace nw

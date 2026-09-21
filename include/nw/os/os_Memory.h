@@ -11,13 +11,9 @@
 namespace nw{
 namespace os{
 
-__forceinline void MemCpy(void* dstp, const void* srcp, size_t size)
+NW_FORCE_INLINE void MemCpy(void* dstp, const void* srcp, size_t size)
 {
-    #if defined(NW_PLATFORM_CTR)
-        nnnstdMemCpy(dstp, srcp, size);
-    #else
-        std::memcpy(dstp, srcp, size);
-    #endif
+    nn::nstd::ARMv6::MemCpy(dstp, srcp, size);
 }
 
 #define NW_CHAR_TRAITS_COPY(MType, MDest, MDestSize, MFrom, MCount) std::char_traits<MType>::copy(MDest, MFrom, MCount)

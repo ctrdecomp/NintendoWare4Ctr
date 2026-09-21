@@ -1,4 +1,6 @@
-
+// Filename: gfx_Light.cpp
+//
+// Project: NintendoWare4Ctr
 
 #include <nw/gfx/gfx_AnimEvaluator.h>
 #include <nw/gfx/gfx_Light.h>
@@ -71,7 +73,8 @@ Result Light::CreateAnimGroup(os::IAllocator* allocator)
         {
             this->m_AnimGroup->SetOriginalValue(memberIdx, &this->m_OriginalTransform);
         }
-        else{
+        else
+        {
             u8* originalValue = reinterpret_cast<u8*>(this->m_OriginalValue.ptr());
             originalValue += member.GetMemberOffset();
             this->m_AnimGroup->SetOriginalValue(memberIdx, originalValue);

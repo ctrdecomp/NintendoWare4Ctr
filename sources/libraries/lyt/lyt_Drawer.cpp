@@ -19,7 +19,7 @@ Drawer::Drawer():
     m_IsBlendDefault(true),
     m_AlphaTestEnable(false),
     m_CurrentTexEnvType(TEX_ENV_TYPE_NUM)
-    {
+{
 }
 
 Drawer::Drawer(GraphicsResource& graphicsResource)

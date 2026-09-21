@@ -127,9 +127,10 @@ void* GetResourceSub(ARCHandle* pArcHandle,const wchar_t* resRootDir,nw::lyt::Re
 } // namespace ""
 
 /* ArcResourceAccessor */
+
 ArcResourceAccessor::ArcResourceAccessor():   
     m_ArcBuf(0)
-    {
+{
 }
 
 bool ArcResourceAccessor::Attach(void* archiveStart,const char* resourceRootDirectory)

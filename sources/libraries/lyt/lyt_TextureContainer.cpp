@@ -47,7 +47,7 @@ const TextureInfo TextureContainer::FindTextureByName(const char* name)
     for (Iterator it = this->GetBeginIter(); it != this->GetEndIter(); ++it)
     {
         if (0 == std::strcmp(name, it->GetResourceName()))
-    {
+        {
             return it->GetTextureInfo();
         }
     }

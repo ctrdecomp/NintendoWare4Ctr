@@ -1,3 +1,7 @@
+// Filename: gfx_SceneEnvironment.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/os/os_Memory.h>
 #include <nw/gfx/gfx_SceneEnvironment.h>
 #include <nw/gfx/gfx_SceneContext.h>

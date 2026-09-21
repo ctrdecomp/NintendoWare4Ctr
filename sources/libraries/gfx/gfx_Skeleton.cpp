@@ -1,3 +1,7 @@
+// Filename: gfx_Skeleton.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_Skeleton.h>
 
 #include <nw/ut/ut_ResUtil.h>
@@ -17,7 +21,8 @@ void Skeleton::CreateCallbacks(nw::os::IAllocator* allocator, int maxCallbacks, 
             m_PreCalculateMatrixSignal = CalculateMatrixSignal::CreateInvalidateSignal(allocator);
             m_PostCalculateMatrixSignal = CalculateMatrixSignal::CreateInvalidateSignal(allocator);
         }
-        else{
+        else
+        {
             m_PreCalculateMatrixSignal = CalculateMatrixSignal::CreateFixedSizedSignal(maxCallbacks, allocator);
             m_PostCalculateMatrixSignal = CalculateMatrixSignal::CreateFixedSizedSignal(maxCallbacks, allocator);
         }

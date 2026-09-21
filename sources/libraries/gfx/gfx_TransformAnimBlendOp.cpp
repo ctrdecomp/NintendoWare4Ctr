@@ -1,7 +1,11 @@
+// Filename: gfx_TransformAnimBlendOp.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_TransformAnim.h>
 #include <nn/math/ARMv6/inline/math_Types.ipp>
 
-namespace adsl{
+namespace nw{
 namespace gfx{
 
 const float TransformAnimBlendOp::WeightDiscard = -1.0f;

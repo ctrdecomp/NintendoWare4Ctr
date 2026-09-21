@@ -1,4 +1,6 @@
-
+// Filename: gfx_ResParticleModel.cpp
+//
+// Project: NintendoWare4Ctr
 
 #include <nw/ut/ut_ResUtil.h>
 #include <nw/ut/ut_ResDictionary.h>

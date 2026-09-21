@@ -1,3 +1,7 @@
+// Filename: gfx_ParticleUtil.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_ParticleUtil.h>
 #include <nw/gfx/gfx_particleModel.h>
 #include <nw/gfx/gfx_ParticleSet.h>

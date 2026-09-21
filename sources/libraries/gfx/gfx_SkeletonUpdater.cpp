@@ -1,3 +1,7 @@
+// Filename: gfx_SkeletonUpdater.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_SkeletonUpdater.h>
 #include <nw/gfx/gfx_WorldMatrixUpdater.h>
 #include <nw/gfx/gfx_BillboardUpdater.h>

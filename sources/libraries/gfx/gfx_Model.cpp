@@ -1,3 +1,7 @@
+// Filename: gfx_Model.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_Model.h>
 #include <nw/gfx/gfx_Material.h>
 #include <nw/gfx/gfx_ISceneVisitor.h>
@@ -114,7 +118,8 @@ void Model::BindVisibilityAnim(AnimGroup* animGroup)
                 {
                     target = reinterpret_cast<u8*>(&m_BranchVisible);
                 }
-                else{
+                else
+                {
                     NW_FATAL_ERROR("");
                 }
 

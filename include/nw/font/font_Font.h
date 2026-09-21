@@ -32,16 +32,16 @@ namespace internal{
         void Set(u32 name,const Font* pFont,const void* pImage,TexFmt format,u16 width,u16 height);
         u32 GetName() const {return this->m_Name;}
         void SetName(u32 texName) {this->m_Name = texName;}
-        const Font* GetFont() const {return this->mpFont;}
-        uptr GetImage() const {return this->mpImage;}
+        const Font* GetFont() const {return this->m_pFont;}
+        uptr GetImage() const {return this->m_pImage;}
         u8 GetFormat() const {return this->m_Format;}
         const TextureSize GetSize() const {return this->m_Size;}
         u32 GetWrapFilter() const;
 
     private:
         u32 m_Name;
-        const Font* mpFont;
-        uptr mpImage;
+        const Font* m_pFont;
+        uptr m_pImage;
         TextureSize m_Size;
         u8 m_Format;
     };
@@ -84,14 +84,8 @@ public:
         TYPE_PAIR
     };
     static const CharCode INVALID_CHARACTER_CODE = INVALID_CHAR_CODE;
-#if NW_VERSION_MAJOR > 3
-    Font():
-        m_IsEnableKerning(true),
-        m_IsEnableExtraMargin(true)
-        {
-        NN_MAKE_MODULE(moduleInfo, "NINTENDO", NW_CURRENT_VERSION_NUMBER "_fnt1");
-        NN_REFER_MODULE(moduleInfo);
-    }
+#if defined(NW_VERSION_USE_FNT1) && defined(NW_VERSION_USE_FNT2)
+    Font();
 #else
     Font()
     {
@@ -127,7 +121,7 @@ public:
     virtual u32 GetTextureWrapFilterValue() const = 0;
 
 private:
-#if NW_VERSION_MAJOR > 3
+#if defined(NW_VERSION_USE_FNT2)
     bool m_IsEnableKerning;
     bool m_IsEnableExtraMargin;
 #endif

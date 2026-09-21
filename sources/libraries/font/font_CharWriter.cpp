@@ -33,9 +33,9 @@ void MultiplyAlpha(ut::FloatColor* pDst,const ut::Color8 src,u8 alpha)
 
 CharWriter::CharWriter() :   
     m_FixedWidth(0),
-    mpFont(NULL),
-    mpTextWriterResource(NULL),
-    mpDispStringBuffer(NULL),
+    m_pFont(NULL),
+    m_pTextWriterResource(NULL),
+    m_pDispStringBuffer(NULL),
     m_IsWidthFixed(false),
     m_Alpha(ut::Color8::ALPHA_MAX)
     {

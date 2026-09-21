@@ -1,3 +1,7 @@
+// Filename: gfx_TransformAnimInterpolator.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_AnimObject.h>
 #include <nw/gfx/gfx_CalculatedTransform.h>
 #include <nw/gfx/gfx_TransformAnim.h>

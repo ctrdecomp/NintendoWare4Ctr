@@ -1,3 +1,7 @@
+// Filename: gfx_StandardSkeleton.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_StandardSkeleton.h>
 #include <nw/gfx/gfx_CalculatedTransform.h>
 #include <nw/math/math_Types.h>

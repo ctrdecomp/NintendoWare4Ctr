@@ -1,3 +1,7 @@
+// Filename: gfx_VertexLight.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/os/os_Memory.h>
 
 #include <nw/gfx/gfx_VertexLight.h>
@@ -15,7 +19,7 @@ VertexLight* VertexLight::DynamicBuilder::Create(nw::os::IAllocator* allocator)
 {
     NW_NULL_ASSERT(allocator);
 
-    ResPtr resource(CreateResVertexLight(allocator),ResVertexLightDataDestroyer(allocator));
+    ResPtr resource(CreateResVertexLight(allocator), ResVertexLightDataDestroyer(allocator));
 
     void* memory = allocator->Alloc(sizeof(VertexLight));
     NW_NULL_ASSERT(memory);
@@ -50,7 +54,7 @@ VertexLight* VertexLight::Create(SceneNode* parent,ResSceneObject resource,const
     
     ResVertexLight resNode = ResDynamicCast<ResVertexLight>(resource);
     NW_ASSERT(resNode.IsValid());
-    NW_ASSERT( internal::ResCheckRevision( resNode ) );
+    NW_ASSERT(internal::ResCheckRevision(resNode));
     
     void* memory = allocator->Alloc(sizeof(VertexLight));
     NW_NULL_ASSERT(memory);    
@@ -80,7 +84,8 @@ void VertexLight::UpdateDirection()
     {
         this->CalcInheritingDiretion(this->Direction(), resLight.GetDirection());
     }
-    else{
+    else
+    {
         this->Direction() = resLight.GetDirection();
     }
 }
@@ -123,14 +128,14 @@ ResVertexLightData* VertexLight::CreateResVertexLight(os::IAllocator* allocator,
 }
 void VertexLight::DestroyResVertexLight(os::IAllocator* allocator, ResVertexLightData* resVertexLight)
 {
-    NW_NULL_ASSERT( allocator );
-    NW_NULL_ASSERT( resVertexLight );
+    NW_NULL_ASSERT(allocator);
+    NW_NULL_ASSERT(resVertexLight);
     
     if (resVertexLight->toName.to_ptr() != NULL)
     {
-        allocator->Free( const_cast<char*>( resVertexLight->toName.to_ptr() ) );
+        allocator->Free(const_cast<char*>(resVertexLight->toName.to_ptr()));
     }
-    allocator->Free( resVertexLight );
+    allocator->Free(resVertexLight);
 }
 
 Result VertexLight::CreateOriginalValue(os::IAllocator* allocator)

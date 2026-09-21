@@ -1,3 +1,7 @@
+// Filename: gfx_SceneContext.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_SceneContext.h>
 
 namespace nw{

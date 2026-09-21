@@ -39,7 +39,6 @@ struct DispStringBuffer
         generatedCommand = false;
     }
 
-    //! コマンドが生成済みかどうかを判定します。
     bool IsGeneratedCommand()
     {
         return 0 != generatedCommand;
@@ -49,7 +48,9 @@ struct DispStringBuffer
     {
         return 0 == commandBufferSize;
     }
+
     u16 GetDrawCharCount() const { return this->drawCharCount; }
+
     void SetDrawCharCount(u16 count)
     {
         drawCharCount = count;

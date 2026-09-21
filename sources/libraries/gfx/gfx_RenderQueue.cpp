@@ -1,3 +1,7 @@
+// Filename: gfx_RenderQueue.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_RenderQueue.h>
 
 namespace nw{

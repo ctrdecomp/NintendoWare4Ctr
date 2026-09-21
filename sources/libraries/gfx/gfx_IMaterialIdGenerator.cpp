@@ -1,4 +1,4 @@
-// Filename: .cpp
+// Filename: IMaterialIdGenerator.cpp
 //
 // Project: NintendoWare4Ctr
 

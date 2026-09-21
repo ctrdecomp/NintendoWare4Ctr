@@ -1,3 +1,7 @@
+// Filename: gfx_GlImplement.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_GlImplement.h>
 
 namespace nw{

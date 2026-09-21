@@ -38,17 +38,17 @@ bool EqualsMaterialName(const char* name1, const char* name2)
 TexCoordAry::TexCoordAry():   
     m_Cap(0),
     m_Num(0),
-    mpData(NULL)
-    {
+    m_pData(NULL)
+{
 }
 
 void TexCoordAry::Free()
 {
-    if (mpData)
+    if (m_pData)
     {
         const u32 coordNum = m_Cap;
-        Layout::DeleteArray<math::VEC2>(&mpData[0][0], VERTEX_MAX * coordNum);
-        mpData = 0;
+        Layout::DeleteArray<math::VEC2>(&m_pData[0][0], VERTEX_MAX * coordNum);
+        m_pData = 0;
 
         m_Cap = 0;
         m_Num = 0;
@@ -65,8 +65,8 @@ void TexCoordAry::Reserve(u8 num)
 
         const u32 coordNum = num;
         math::VEC2 *const pVecAry = Layout::NewArray<math::VEC2>(VERTEX_MAX * coordNum);
-        mpData = reinterpret_cast<TexCoordQuad *>(pVecAry);
-        if (mpData)
+        m_pData = reinterpret_cast<TexCoordQuad *>(pVecAry);
+        if (m_pData)
         {
             m_Cap = num;
         }
@@ -75,7 +75,7 @@ void TexCoordAry::Reserve(u8 num)
 
 void TexCoordAry::SetSize(u8 num)
 {
-    if (mpData && num <= m_Cap)
+    if (m_pData && num <= m_Cap)
     {
         static const VEC2 texCoords[] ={
             VEC2(0.f, 0.f),
@@ -88,7 +88,7 @@ void TexCoordAry::SetSize(u8 num)
         {
             for (int i = 0; i < VERTEX_MAX; ++i)
             {
-                mpData[j][i] = texCoords[i];
+                m_pData[j][i] = texCoords[i];
             }
         }
         m_Num = num;
@@ -101,7 +101,7 @@ void TexCoordAry::GetCoord(u32 idx,TexCoordQuad coord) const
 
     for (int i = 0; i < VERTEX_MAX; ++i)
     {
-        coord[i] = mpData[idx][i];
+        coord[i] = m_pData[idx][i];
     }
 }
 
@@ -111,7 +111,7 @@ void TexCoordAry::SetCoord(u32 idx,const TexCoordQuad coord)
 
     for (int i = 0; i < VERTEX_MAX; ++i)
     {
-        mpData[idx][i] = coord[i];
+        m_pData[idx][i] = coord[i];
     }
 }
 
@@ -125,7 +125,7 @@ void TexCoordAry::Copy(const void* pResTexCoord,u8 texCoordNum)
     {
         for (int i = 0; i < VERTEX_MAX; ++i)
         {
-            mpData[j][i] = src[j][i];
+            m_pData[j][i] = src[j][i];
         }
     }
 }

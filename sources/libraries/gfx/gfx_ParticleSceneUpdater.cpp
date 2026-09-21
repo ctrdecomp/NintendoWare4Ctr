@@ -1,3 +1,7 @@
+// Filename: gfx_ParticleSceneUpdater.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_ParticleSceneUpdater.h>
 
 #include <nw/gfx/gfx_SceneContext.h>

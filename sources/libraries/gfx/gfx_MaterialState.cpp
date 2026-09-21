@@ -1,3 +1,7 @@
+// Filename: gfx_MaterialState.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_MaterialState.h>
 #include <nw/gfx/gfx_RenderContext.h>
 #include <nw/math/inlines/math_Matrix44.ipp>
@@ -154,9 +158,8 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
     GraphicsDevice::ActivateLutParameters();
 }
 
-/*void MaterialState::ActivateTextureCoordinators(RenderContext* renderContext, const ShaderProgram* shaderProgram, const ResMaterial texCoordMaterial)
+void MaterialState::ActivateTextureCoordinators(RenderContext* renderContext, const ShaderProgram* shaderProgram, const ResMaterial texCoordMaterial)
 {
-
     enum
     {
         TEXCOORD2_SHIFT = 13,
@@ -201,7 +204,8 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
             {
                 shaderProgram->SetVertexUniformBool(NW_GFX_VERTEX_UNIFORM(ISTEX1) + unit - 1, true);
             }
-            else{
+            else
+            {
                 shaderProgram->SetVertexUniformBool(NW_GFX_VERTEX_UNIFORM(ISTEX1) + unit - 1, false);
             }
         }
@@ -236,7 +240,8 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
             coordinator.GetTextureMatrix().v[2] = texMtx34.v[2];
             coordinator.SetDirty(false);
         }
-        else{
+        else
+        {
             texMtx34 = coordinator.GetTextureMatrix();
         }
 
@@ -380,9 +385,9 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
     }
 
     internal::NWSetVertexUniform3fv(VERTEX_SHADER_UNIFORM_TEXCMAP_INDEX, 1, textureMappings);
-}*/
+}
 
-/*void MaterialState::ActivateParticleTextureCoordinators(RenderContext* renderContext, const ShaderProgram* shaderProgram, const ResMaterial texCoordMaterial)
+void MaterialState::ActivateParticleTextureCoordinators(RenderContext* renderContext, const ShaderProgram* shaderProgram, const ResMaterial texCoordMaterial)
 {
     NW_UNUSED_VARIABLE(renderContext);
 
@@ -465,7 +470,7 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
     }
 
     internal::NWSetVertexUniform3fv(VERTEX_SHADER_UNIFORM_TEXCMAP_INDEX, 1, textureMappings);
-}*/
+}
 
 }
 }

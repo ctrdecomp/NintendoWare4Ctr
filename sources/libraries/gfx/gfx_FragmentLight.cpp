@@ -1,3 +1,7 @@
+// Filename: gfx_FragmentLight.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/os/os_Memory.h>
 
 #include <nw/gfx/gfx_FragmentLight.h>

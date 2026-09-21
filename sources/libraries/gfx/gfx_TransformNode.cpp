@@ -1,3 +1,7 @@
+// Filename: gfx_TransformNode.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_TransformNode.h>
 #include <nw/gfx/gfx_ISceneVisitor.h>
 #include <nw/gfx/gfx_WorldMatrixUpdater.h>

@@ -1,3 +1,7 @@
+// Filename: gfx_TransformAnimEvalulator.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/anim/anim_AnimBlend.h>
 #include <nw/gfx/gfx_AnimObject.h>
 #include <nw/gfx/gfx_CalculatedTransform.h>

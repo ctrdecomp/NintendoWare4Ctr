@@ -1,4 +1,6 @@
-
+// Filename: gfx_ParticleCollection.cpp
+//
+// Project: NintendoWare4Ctr
 
 #include <nw/gfx/gfx_ParticleCollection.h>
 #include <nw/gfx/gfx_ISceneVisitor.h>
@@ -29,6 +31,28 @@ static int ParticleParameterAttributeCreateSize(int prevSize)
     const int size = sizeof(T);
 
     return prevSize + size;
+}
+
+
+template <typename T>
+static bool ParticleParameterAttributeCreate(ParticleCollection::ParticleAttribute* storage, ParticleUsage usage, 
+    const ResParticleParameterAttribute& resource, u8** buffer)
+{
+    NW_NULL_ASSERT(buffer);
+
+    const int size = sizeof(T);
+
+    *buffer = reinterpret_cast<u8*>(ut::RoundUp(*buffer, 4));
+    void* memory = *buffer;
+    *buffer += size;
+
+    nw::os::MemCpy(memory, resource.GetData(), size);
+
+    storage->m_Usage = static_cast<s32>(usage);
+    storage->m_IsStream = false;
+    storage->m_Stream = reinterpret_cast<f32*>(memory);
+
+    return memory != NULL;
 }
 
 template <typename T>
@@ -66,7 +90,7 @@ ParticleCollection::ParticleCollection(os::IAllocator* allocator,os::IAllocator*
     m_DeviceMemory(deviceMemory),
     m_LastBuffer(0)
     {
-    NW_UNUSED_VARIABLE(resObj)
+    NW_UNUSED_VARIABLE(resObj);
 
     for (int i = 0; i < PARTICLEUSAGE_COUNT; ++i)
     {

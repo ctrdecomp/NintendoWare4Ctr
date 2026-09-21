@@ -1,3 +1,7 @@
+// Filename: gfx_ShaderUniforms.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_ShaderProgram.h>
 #include <nw/gfx/gfx_ShaderUniforms.h>
 

@@ -79,17 +79,17 @@ bool TexResource::Set(void* pTexRes, u32 size)
             break;
         }
 
-        mpTop = const_cast<void*>(pTexRes);
-        mpImage = const_cast<res::Image*>(pImage);
-        mpImageSize = const_cast<res::ImageSize*>(pImageSize);
+        m_pTop = const_cast<void*>(pTexRes);
+        m_pImage = const_cast<res::Image*>(pImage);
+        m_pImageSize = const_cast<res::ImageSize*>(pImageSize);
 
         return true;
 
     } while (false);
 
-    mpTop = NULL;
-    mpImage = NULL;
-    mpImageSize = NULL;
+    m_pTop = NULL;
+    m_pImage = NULL;
+    m_pImageSize = NULL;
 
     return false;
 }

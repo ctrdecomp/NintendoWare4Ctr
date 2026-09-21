@@ -1,3 +1,7 @@
+// Filename: gfx_SimpleMaterialActivator.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_SimpleMaterialActivator.h>
 #include <nw/gfx/gfx_MaterialState.h>
 #include <nw/gfx/gfx_Model.h>

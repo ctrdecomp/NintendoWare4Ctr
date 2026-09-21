@@ -1,10 +1,13 @@
+// Filename: gfx_ParticleMaterialActivator.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_ActivateCommand.h>
 #include <nw/gfx/gfx_ParticleMaterialActivator.h>
 #include <nw/gfx/gfx_MaterialState.h>
 #include <nw/gfx/gfx_Model.h>
 #include <nw/gfx/gfx_RenderContext.h>
 #include <nn/gx.h>
-
 
 namespace nw{
 namespace gfx{

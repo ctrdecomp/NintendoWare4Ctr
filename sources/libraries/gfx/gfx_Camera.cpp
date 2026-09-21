@@ -1,3 +1,7 @@
+// Filename: gfx_Camera.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/res/gfx_ResCamera.h>
 #include <nw/gfx/gfx_Camera.h>
 #include <nw/gfx/gfx_ISceneVisitor.h>

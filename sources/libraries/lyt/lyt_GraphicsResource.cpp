@@ -23,7 +23,7 @@ enum ResouceFileID
     RESOURCEFILEID_MAX
 };
 
-const wchar_t* s_ResourceFiles[] =
+const wchar_t* sResourceFiles[] =
 {
     L"/shaders/nwfont_RectDrawerShader.shbin",
     L"/shaders/nwfont_TextWriterShader.shbin",
@@ -129,13 +129,13 @@ wchar_t* StrCopy(wchar_t* dst, const wchar_t* src)
     return dst + i;
 }
 
-wchar_t s_ResourcePaths[RESOURCEFILEID_MAX][FILENAME_MAX];
-bool s_ResourcePathsInitialized = false;
+wchar_t sResourcePaths[RESOURCEFILEID_MAX][FILENAME_MAX];
+bool sResourcePathsInitialized = false;
 
 }
 
 GraphicsResource::GraphicsResource(): 
-    mpRectShaderBinary(NULL), 
+    m_pRectShaderBinary(NULL),
     m_RectShaderBinarySize(0), 
     m_GlProgram(0), 
     m_GlProgramDebug(0), 
@@ -167,11 +167,11 @@ void GraphicsResource::Finalize()
 
     glDeleteBuffers(this->VBO_MAX, this->m_GlVertexBufferObject);
 
-    if (NULL != mpRectShaderBinary)
+    if (NULL != m_pRectShaderBinary)
     {
-        Layout::FreeMemory(this->mpRectShaderBinary);
+        Layout::FreeMemory(this->m_pRectShaderBinary);
     }
-    mpRectShaderBinary = NULL;
+    m_pRectShaderBinary = NULL;
     m_RectShaderBinarySize = 0;
 
     this->m_TextWriter.SetTextWriterResource(0);
@@ -180,22 +180,22 @@ void GraphicsResource::Finalize()
 
 const wchar_t* GraphicsResource::GetResourcePath(int index)
 {
-    if (!s_ResourcePathsInitialized)
+    if (!sResourcePathsInitialized)
     {
         static const wchar_t* pResourceRoot = L"rom:";
         for (int i = 0; i < RESOURCEFILEID_MAX; ++i)
         {
-            wchar_t* buff = s_ResourcePaths[i];
+            wchar_t* buff = sResourcePaths[i];
             buff = StrCopy(buff, pResourceRoot);
-            buff = StrCopy(buff, s_ResourceFiles[i]);
+            buff = StrCopy(buff, sResourceFiles[i]);
         }
 
-        s_ResourcePathsInitialized = true;
+        sResourcePathsInitialized = true;
     }
 
     if (0 <= index && index < RESOURCEFILEID_MAX)
     {
-        return s_ResourcePaths[index];
+        return sResourcePaths[index];
     }
     else
     {
@@ -209,9 +209,9 @@ void GraphicsResource::SetResource(int index, void* content, u32 fileSize, bool 
     {
     case RESOURCEFILEID_RECTDRAWERSHADER:
     {
-            mpRectShaderBinary = Layout::AllocMemory(fileSize);
+            m_pRectShaderBinary = Layout::AllocMemory(fileSize);
             m_RectShaderBinarySize = fileSize;
-            std::memcpy(this->mpRectShaderBinary, content, fileSize);
+            std::memcpy(this->m_pRectShaderBinary, content, fileSize);
             if (bFree)
             {
                 Layout::FreeMemory(content);
@@ -288,7 +288,7 @@ void GraphicsResource::SetResource(int index, void* content, u32 fileSize, bool 
 
 void GraphicsResource::StartSetup()
 {
-    NW_ASSERT(!this->m_Initialized);
+    NW_ASSERT(!m_Initialized);
 }
 
 bool GraphicsResource::FinishSetup()

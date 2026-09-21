@@ -1,3 +1,7 @@
+// Filename: gfx_ParticleShape.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nn/gx.h>
 
 #include <nw/gfx/gfx_ParticleShape.h>
@@ -298,6 +302,7 @@ static void CreatePrimitiveCommandCache(ParticleShape* shape,ResParticleSet resP
 
 
 /* ParticleShape */
+
 void ParticleShape::CreateCommandCache(ParticleSet* particleSet)
 {
     for (int side = 0; side < 2; ++side)

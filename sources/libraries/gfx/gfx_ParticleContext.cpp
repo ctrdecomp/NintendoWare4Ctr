@@ -1,3 +1,7 @@
+// Filename: gfx_ParticleContext.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_ParticleContext.h>
 
 namespace nw{

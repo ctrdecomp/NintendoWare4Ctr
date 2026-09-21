@@ -1,3 +1,7 @@
+// Filename: gfx_Fog.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/os/os_Memory.h>
 
 #include <nw/gfx/gfx_Fog.h>

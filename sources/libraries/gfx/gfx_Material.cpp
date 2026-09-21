@@ -1,10 +1,15 @@
+// Filename: gfx_.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_Material.h>
 #include <nw/gfx/gfx_Model.h>
 #include <nw/gfx/res/gfx_ResMaterial.h>
 #include <nw/gfx/res/gfx_ResShader.h>
 #include <nw/gfx/gfx_AnimObject.h>
 
-namespace{
+namespace
+{
 nw::gfx::ResMaterial GetAvailableResMaterial(nw::gfx::Material* material, nw::gfx::Model::BufferOption bufferOption)
 {
     return nw::ut::CheckFlag(material->GetOwnerModel()->GetBufferOption(), bufferOption) ? material->GetBuffer() : material->GetOriginal();
@@ -20,7 +25,7 @@ Material::Material(nw::os::IAllocator* allocator, ResMaterial resMaterial, s32 b
     SceneObject(allocator, resMaterial),
     m_Owner(owner),
     m_BufferCount(bufferCount)
-    {
+{
     ResBinaryShader resShader = resMaterial.GetShader().Dereference();
 
     NW_ASSERT(resShader.IsValid());
@@ -59,7 +64,8 @@ Material* Material::Create(ResMaterial resource, s32 bufferCount, Model* parent,
         material->m_SceneEnvironmentResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_SCENE_ENVIRONMENT);
         return material;
     }
-    else{
+    else
+    {
         SafeDestroy(material);
         return NULL;
     }

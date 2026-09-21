@@ -74,13 +74,9 @@ private:
     void InitializeCMD(void* vertexBuffer,void* commandBuffer,const void* shaderBinary,u32 size,bool initVertexBuffer);
 protected:
     static u32 SetUniformCommand(u32* buffer,u32 num)
-{
-        #if defined(NW_PLATFORM_CTR)
-                buffer[2] = buffer[3];
-        #else
-                (void)buffer;
-        #endif
-                return sizeof(u32) * (4 + 4 * num);
+    {
+        buffer[2] = buffer[3];
+        return sizeof(u32) * (4 + 4 * num);
     }
     enum
     {

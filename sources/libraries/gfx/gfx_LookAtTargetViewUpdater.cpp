@@ -1,4 +1,6 @@
-
+// Filename: gfx_LookAtTargetViewUpdater.cpp
+//
+// Project: NintendoWare4Ctr
 
 #include <nw/gfx/gfx_LookAtTargetViewUpdater.h>
 #include <nw/os/os_Memory.h>

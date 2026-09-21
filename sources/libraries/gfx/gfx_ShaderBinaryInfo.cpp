@@ -1,3 +1,7 @@
+// Filename: gfx_ShaderBinaryInfo.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_CommandUtil.h>
 #include <nw/gfx/gfx_ShaderBinaryInfo.h>
 

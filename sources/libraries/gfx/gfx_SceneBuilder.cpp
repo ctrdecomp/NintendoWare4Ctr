@@ -1,3 +1,7 @@
+// Filename: gfx_SceneBuilder.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_SceneBuilder.h>
 
 #include <nw/gfx/gfx_SceneNode.h>

@@ -1,3 +1,7 @@
+// Filename: gfx_CameraViewUpdater.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_CameraViewUpdater.h>
 
 namespace nw{

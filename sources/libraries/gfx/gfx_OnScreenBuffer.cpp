@@ -1,4 +1,6 @@
-
+// Filename: gfx_OnScreenBuffer.cpp
+//
+// Project: NintendoWare4Ctr
 
 #include <nw/gfx/gfx_OnScreenBuffer.h>
 
@@ -41,7 +43,8 @@ OnScreenBuffer::OnScreenBuffer(os::IAllocator* pAllocator, const Description& de
     {
         glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_STENCIL_ATTACHMENT,GL_RENDERBUFFER,this->m_DepthBuffer);
     }
-    else{
+    else
+    {
         glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER,this->m_DepthBuffer);
     }
     

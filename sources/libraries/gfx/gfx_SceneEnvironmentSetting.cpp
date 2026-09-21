@@ -1,4 +1,8 @@
-/*#include <nw/os/os_Memory.h>
+// Filename: gfx_SceneEnvironmentSetting.cpp
+//
+// Project: NintendoWare4Ctr
+
+#include <nw/os/os_Memory.h>
 
 #include <nw/gfx/gfx_SceneEnvironmentSetting.h>
 #include <nw/gfx/gfx_ISceneVisitor.h>
@@ -192,4 +196,4 @@ void SceneEnvironmentSetting::GetMemorySizeInternal(os::MemorySizeCalculator* pS
 }
 
 }
-}*/
+}

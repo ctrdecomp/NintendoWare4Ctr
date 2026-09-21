@@ -257,7 +257,7 @@ Window::Window(const res::Window* pBlock,const ResBlockSet& resBlockSet):
 
     {
         const res::Material *const pResMaterial = internal::ConvertOffsToPtr<res::Material>(resBlockSet.pMaterialList, matOffsTbl[pResContent->materialIdx]);
-        mpMaterial = Layout::NewObj<Material>(pResMaterial, resBlockSet);
+        m_pMaterial = Layout::NewObj<Material>(pResMaterial, resBlockSet);
     }
 
     m_FrameNum = 0;
@@ -287,10 +287,10 @@ void Window::InitTexNum(u8 contentTexNum,u8 frameTexNums[],u8 frameNum)
     m_ContentInflation.t = 0;
     m_ContentInflation.b = 0;
 
-    this->mpMaterial = Layout::NewObj<Material>();
-    if (mpMaterial)
+    this->m_pMaterial = Layout::NewObj<Material>();
+    if (m_pMaterial)
     {
-        mpMaterial->ReserveMem(contentTexNum, contentTexNum, contentTexNum);
+        m_pMaterial->ReserveMem(contentTexNum, contentTexNum, contentTexNum);
     }
     this->InitFrame(frameNum);
 
@@ -327,10 +327,10 @@ Window::~Window()
 {
     Layout::DeleteArray(this->m_Frames, this->m_FrameNum);
 
-    if (mpMaterial && ! mpMaterial->IsUserAllocated())
+    if (m_pMaterial && ! m_pMaterial->IsUserAllocated())
     {
-        Layout::DeleteObj(this->mpMaterial);
-        mpMaterial = 0;
+        Layout::DeleteObj(this->m_pMaterial);
+        m_pMaterial = 0;
     }
 
     m_Content.texCoordAry.Free();
@@ -369,11 +369,11 @@ void Window::SetTexCoord(u32 idx,const TexCoordQuad coords)
 
 Material* Window::FindMaterialByName(const char* findName,bool bRecursive)
 {
-    if (mpMaterial)
+    if (m_pMaterial)
     {
-        if (internal::EqualsMaterialName(this->mpMaterial->GetName(), findName))
+        if (internal::EqualsMaterialName(this->m_pMaterial->GetName(), findName))
     {
-            return mpMaterial;
+            return m_pMaterial;
         }
     }
     for (int i = 0; i < m_FrameNum; ++i)
@@ -443,7 +443,7 @@ void Window::DrawSelf(const DrawInfo& drawInfo)
 
 void Window::DrawContent(const DrawInfo& drawInfo,const math::VEC2& basePt,const WindowFrameSize& frameSize,u8 alpha)
 {
-    mpMaterial->SetupGraphics(drawInfo, alpha);
+    m_pMaterial->SetupGraphics(drawInfo, alpha);
 
     internal::DrawQuad(drawInfo,math::VEC2(basePt.x + frameSize.l - this->m_ContentInflation.l, basePt.y - frameSize.t + this->m_ContentInflation.t),
         Size(GetSize().width - frameSize.l + this->m_ContentInflation.l - frameSize.r + this->m_ContentInflation.r, GetSize().height - frameSize.t + this->m_ContentInflation.t - frameSize.b + this->m_ContentInflation.b),
@@ -663,25 +663,25 @@ void Window::SetFrameMaterial(WindowFrame frameIdx, Material* pMaterial)
 
 Material* Window::GetContentMaterial() const
 {
-    return mpMaterial;
+    return m_pMaterial;
 }
 
 void Window::SetContentMaterial(Material* pMaterial)
 {
-    if (mpMaterial == pMaterial)
+    if (m_pMaterial == pMaterial)
     {
         return;
     }
 
-    if (mpMaterial != NULL && !mpMaterial->IsUserAllocated())
+    if (m_pMaterial != NULL && !m_pMaterial->IsUserAllocated())
     {
-        Layout::DeleteObj(this->mpMaterial);
+        Layout::DeleteObj(this->m_pMaterial);
     }
 
-    mpMaterial = pMaterial;
-    if (mpMaterial != NULL)
+    m_pMaterial = pMaterial;
+    if (m_pMaterial != NULL)
     {
-        mpMaterial->SetTextureDirty();
+        m_pMaterial->SetTextureDirty();
     }
 }
 
@@ -693,19 +693,19 @@ void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) con
     {
 
     {
-            pDrawer->SetUpTexEnv(this->mpMaterial);
+            pDrawer->SetUpTexEnv(this->m_pMaterial);
         }
 
         {
-            pDrawer->SetUpTextures(this->mpMaterial);
+            pDrawer->SetUpTextures(this->m_pMaterial);
         }
 
         {
-            if (!m_IsTexCoordInited || mpMaterial->IsTextureDirty())
+            if (!m_IsTexCoordInited || m_pMaterial->IsTextureDirty())
             {
-                m_UniformTexCoordNum = pDrawer->CalcTextureCoords(this->mpMaterial,this->m_Content.texCoordAry.GetArray(),this->m_UniformTexCoords);
+                m_UniformTexCoordNum = pDrawer->CalcTextureCoords(this->m_pMaterial,this->m_Content.texCoordAry.GetArray(),this->m_UniformTexCoords);
                 m_IsTexCoordInited = true;
-                mpMaterial->SetTextureDirty( false );
+                m_pMaterial->SetTextureDirty( false );
             }
             pDrawer->SetUpTextureCoords(this->m_UniformTexCoords, this->m_UniformTexCoordNum);
         }

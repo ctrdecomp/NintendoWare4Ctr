@@ -1,3 +1,7 @@
+// Filename: gfx_SortingMaterialIdGenerator.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_SortingMaterialIdGenerator.h>
 #include <nw/gfx/gfx_Material.h>
 

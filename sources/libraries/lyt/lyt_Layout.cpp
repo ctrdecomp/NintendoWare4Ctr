@@ -72,19 +72,19 @@ nw::os::IAllocator* Layout::s_pDeviceMemoryAllocator = 0;
 bool Layout::s_LayoutDrawEnable = false;
 
 Layout::Layout(): 
-    mpRootPane(0),
-    mpGroupContainer(0),
+    m_pRootPane(0),
+    m_pGroupContainer(0),
     m_LayoutSize(0.f, 0.f)
 {
 }
 
 Layout::~Layout()
 {
-    DeleteObj(this->mpGroupContainer);
+    DeleteObj(this->m_pGroupContainer);
 
-    if (mpRootPane && !this->mpRootPane->IsUserAllocated())
+    if (m_pRootPane && !this->m_pRootPane->IsUserAllocated())
     {
-        DeleteObj(this->mpRootPane);
+        DeleteObj(this->m_pRootPane);
     }
 
     for (AnimTransformList::Iterator it = this->m_AnimTransList.GetBeginIter(); it != this->m_AnimTransList.GetEndIter(); )

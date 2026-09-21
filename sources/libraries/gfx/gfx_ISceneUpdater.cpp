@@ -1,4 +1,6 @@
-
+// Filename: gfx_ISceneUpdater.cpp
+//
+// Project: NintendoWare4Ctr
 
 #include <nw/gfx/gfx_ISceneUpdater.h>
 

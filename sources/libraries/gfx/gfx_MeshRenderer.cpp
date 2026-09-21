@@ -1,3 +1,7 @@
+// Filename: gfx_MeshRenderer.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_Common.h>
 #include <nw/gfx/res/gfx_ResMesh.h>
 #include <nw/gfx/res/gfx_ResParticleShape.h>

@@ -1,9 +1,13 @@
+// Filename: gfx_TransformAnimAdder.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/anim/anim_AnimBlend.h>
 #include <nw/gfx/gfx_AnimObject.h>
 #include <nw/gfx/gfx_CalculatedTransform.h>
 #include <nw/gfx/gfx_TransformAnim.h>
 
-namespace adsl{
+namespace nw{
 namespace gfx{
 
 NW_UT_RUNTIME_TYPEINFO_DEFINITION(TransformAnimAdder, AnimAdder);

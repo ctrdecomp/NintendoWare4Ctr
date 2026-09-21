@@ -1,3 +1,7 @@
+// Filename: gfx_ResTexture.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/ut/ut_ResUtil.h>
 #include <nw/ut/ut_ResDictionary.h>
 #include <nw/gfx/gfx_Common.h>

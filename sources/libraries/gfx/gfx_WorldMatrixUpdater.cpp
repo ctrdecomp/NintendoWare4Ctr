@@ -1,3 +1,7 @@
+// Filename: gfx_WorldMatrixUpdater.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/gfx/gfx_WorldMatrixUpdater.h>
 #include <nw/ut/ut_MoveArray.h>
 #include <nw/math/math_Types.h>
@@ -18,7 +22,7 @@ WorldMatrixUpdater* WorldMatrixUpdater::Builder::Create(os::IAllocator* allocato
 
 WorldMatrixUpdater::WorldMatrixUpdater(os::IAllocator* allocator): 
     GfxObject(allocator)
-    {
+{
     NW_NULL_ASSERT(allocator);
 }
 
@@ -37,7 +41,8 @@ void WorldMatrixUpdater::CalculateWorldXsi(math::MTX34* transformMatrix,math::VE
     {
         math::MTX34Copy(transformMatrix, parentMatrix);
     }
-    else{
+    else
+    {
         bool isParentScaleOne = parentWorldTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE);
         const math::VEC3& parentScale = parentWorldTransform.m_Scale;
 
@@ -51,7 +56,8 @@ void WorldMatrixUpdater::CalculateWorldXsi(math::MTX34* transformMatrix,math::VE
             {
                 math::MTX34MultTranslate(transformMatrix, &parentMatrix, &localTranslate);
             }
-            else{
+            else
+            {
                 math::VEC3Mult(&localTranslate, &localTranslate, &parentScale);
                 math::MTX34MultTranslate(transformMatrix, &parentMatrix, &localTranslate);
             }
@@ -61,7 +67,8 @@ void WorldMatrixUpdater::CalculateWorldXsi(math::MTX34* transformMatrix,math::VE
             {
                 math::MTX34Mult(transformMatrix, &parentMatrix, &localMatrix);
             }
-            else{
+            else
+            {
                 math::MTX34 scaledLocalMatrix;
                 math::MTX34Copy(&scaledLocalMatrix, &localMatrix);
                 scaledLocalMatrix.matrix[0][3] *= parentScale.x;
@@ -76,7 +83,8 @@ void WorldMatrixUpdater::CalculateWorldXsi(math::MTX34* transformMatrix,math::VE
     {
         scale->Set(localTransform.m_Scale);
     }
-    else{
+    else
+    {
         math::VEC3Mult(scale, &parentWorldTransform.m_Scale, &localTransform.m_Scale);
     }
 }
@@ -103,7 +111,8 @@ void WorldMatrixUpdater::CalculateWorldMayaSsc(math::MTX34* transformMatrix,math
 
                 math::MTX34MultTranslate(transformMatrix, &parentMatrix, &localTranslate);
             }
-            else{
+            else
+            {
 
                 math::MTX34Copy(transformMatrix, parentMatrix);
                 math::MTX34 scaledParentRotate(*transformMatrix);
@@ -113,13 +122,15 @@ void WorldMatrixUpdater::CalculateWorldMayaSsc(math::MTX34* transformMatrix,math
                 this->AddTranslate(transformMatrix, localTranslate);
             }
         }
-        else{
+        else
+        {
             if (parentLocalTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE))
             {
                 math::MTX34MultTranslate(transformMatrix, &parentMatrix, &localTranslate);
                 math::MTX33Mult(transformMatrix, transformMatrix, &localMatrix);
             }
-            else{
+            else
+            {
                 math::MTX34Copy(transformMatrix, parentMatrix);
                 math::MTX34 scaledParentRotate(*transformMatrix);
                 const math::VEC3& parentScale = parentLocalTransform.m_Scale;
@@ -135,7 +146,8 @@ void WorldMatrixUpdater::CalculateWorldMayaSsc(math::MTX34* transformMatrix,math
     {
         scale->Set(localTransform.m_Scale);
     }
-    else{
+    else
+    {
         math::VEC3Mult(scale, &parentWorldTransform.m_Scale, &localTransform.m_Scale);
     }
 }
@@ -153,13 +165,15 @@ void WorldMatrixUpdater::CalculateWorldBasic(math::MTX34* transformMatrix, math:
         {
             math::MTX34Copy(transformMatrix, parentMatrix);
         }
-        else{
+        else
+        {
 
             this->MultScale(transformMatrix, &parentMatrix, parentLocalTransform.m_Scale);
             this->CopyTranslate(transformMatrix, parentMatrix);
         }
     }
-    else{
+    else
+    {
         if (localTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_ROTATE_ZERO))
         {
             if (parentLocalTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE))
@@ -177,7 +191,8 @@ void WorldMatrixUpdater::CalculateWorldBasic(math::MTX34* transformMatrix, math:
                 math::MTX34MultTranslate(transformMatrix, transformMatrix, &localTranslate);
             }
         }
-        else{
+        else
+        {
             if (parentLocalTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE))
             {
                 math::VEC3 localTranslate = localTransform.m_TransformMatrix.GetColumn(3);
@@ -185,7 +200,8 @@ void WorldMatrixUpdater::CalculateWorldBasic(math::MTX34* transformMatrix, math:
                 math::MTX34MultTranslate(transformMatrix, &parentMatrix, &localTranslate);
                 math::MTX33Mult(transformMatrix, transformMatrix, &localTransform.m_TransformMatrix);
             }
-            else{
+            else
+            {
                 math::VEC3 localTranslate = localTransform.m_TransformMatrix.GetColumn(3);
 
                 this->MultScale(transformMatrix, &parentMatrix, parentLocalTransform.m_Scale);
@@ -200,7 +216,8 @@ void WorldMatrixUpdater::CalculateWorldBasic(math::MTX34* transformMatrix, math:
     {
         scale->Set(localTransform.m_Scale);
     }
-    else{
+    else
+    {
         math::VEC3Mult(scale, &parentWorldTransform.m_Scale, &localTransform.m_Scale);
     }
 }

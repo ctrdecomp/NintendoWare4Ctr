@@ -67,7 +67,7 @@ public:
     void Reserve(u8 num);
     u8 GetSize() const {return m_Num;}
     void SetSize(u8 num);
-    const TexCoordQuad* GetArray() const {return mpData;}
+    const TexCoordQuad* GetArray() const {return m_pData;}
     void GetCoord(u32 idx,TexCoordQuad coord) const;
     void SetCoord(u32 idx,const TexCoordQuad coord);
     void Copy(const void* pResTexCoord,u8 texCoordNum);
@@ -75,7 +75,7 @@ public:
 protected:
     u8 m_Cap;
     u8 m_Num;
-    math::VEC2 (*mpData)[VERTEX_MAX];
+    math::VEC2 (*m_pData)[VERTEX_MAX];
 };
 
 const ut::Color8 MultipleAlpha(const ut::Color8 col,u8 alpha);

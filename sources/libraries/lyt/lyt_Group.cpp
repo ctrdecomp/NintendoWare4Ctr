@@ -9,6 +9,8 @@
 namespace nw{
 namespace lyt{
 
+/* Group */
+
 Group::Group()
 {
     this->Init();
@@ -27,7 +29,7 @@ Group::Group(const res::Group* pResGroup,Pane* pRootPane)
     for (int i = 0; i < pResGroup->paneNum; ++i)
     {
         if (Pane* pFindPane = pRootPane->FindPaneByName(paneNameBase + i * ResourceNameStrMax, true))
-    {
+        {
             AppendPane(pFindPane);
         }
     }
@@ -82,7 +84,7 @@ Group* GroupContainer::FindGroupByName(const char* findName)
     for (GroupList::Iterator it = this->m_GroupList.GetBeginIter(); it != this->m_GroupList.GetEndIter(); ++it)
     {
         if (internal::EqualsResName(it->GetName(), findName))
-    {
+        {
             return &(*it);
         }
     }
