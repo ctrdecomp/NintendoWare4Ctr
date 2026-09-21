@@ -10,24 +10,25 @@ namespace os{
 namespace gfx
 {
 
-class OffScreenBuffer : public IRenderTarget{
+class OffScreenBuffer : public IRenderTarget
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(OffScreenBuffer);
 
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    virtual const Description& GetDescription() const { return mDescription; }
-    virtual const FrameBufferObject& GetBufferObject() const { return mBackBufferObject; }
+    virtual const Description& GetDescription() const { return m_Description; }
+    virtual const FrameBufferObject& GetBufferObject() const { return m_BackBufferObject; }
 
 private:
     OffScreenBuffer(nw::os::IAllocator* pAllocator, const Description& description, ResPixelBasedTexture resTexture);
     virtual ~OffScreenBuffer();
 
-    FrameBufferObject mBackBufferObject;
-    void* mActivateCommand;
-    Description mDescription;
-    ResTexture mTexture;
+    FrameBufferObject m_BackBufferObject;
+    void* m_ActivateCommand;
+    Description m_Description;
+    ResTexture m_Texture;
 
     friend class IRenderTarget;
 };

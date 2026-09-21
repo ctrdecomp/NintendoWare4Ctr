@@ -1,9 +1,9 @@
 #pragma once
 
-#include "nw/types.h"
-#include "nw/ut/ut_Inlines.h"
-#include "nw/gfx/gfx_GlImplement.h"
-#include "nw/gfx/gfx_MemoryUtil.h"
+#include <nw/types.h>
+#include <nw/ut/ut_Inlines.h>
+#include <nw/gfx/gfx_GlImplement.h>
+#include <nw/gfx/gfx_MemoryUtil.h>
 
 #include <gles2/gl2.h>
 #include <gles2/gl2extern.h>
@@ -12,39 +12,44 @@
 namespace nw {
 namespace gfx {
 
-class CommandCacheManager{
+class CommandCacheManager
+{
 public:
-    static void SetAllocator(nw::os::IAllocator* allocator) { sAllocator = allocator; }
-    static nw::os::IAllocator* GetAllocator() { return sAllocator; }
+    static void SetAllocator(nw::os::IAllocator* allocator) { s_Allocator = allocator; }
+    static nw::os::IAllocator* GetAllocator() { return s_Allocator; }
 
-    static void* Allocate(s32 size){
-        NW_NULL_ASSERT(sAllocator);
-        return sAllocator->Alloc(size, 4);
+    static void* Allocate(s32 size)
+    {
+        NW_NULL_ASSERT(s_Allocator);
+        return s_Allocator->Alloc(size, 4);
     }
 
-    static void Free(void* buffer){
-        if (sAllocator != NULL)
-            sAllocator->Free(buffer);
+    static void Free(void* buffer)
+    {
+        if (s_Allocator != NULL)
+            s_Allocator->Free(buffer);
         else
             NW_WARNING(false, "No allocator available");
     }
 
 private:
-    static nw::os::IAllocator* sAllocator;
+    static nw::os::IAllocator* s_Allocator;
 };
 
 namespace internal {
 
-class CommandHeader{
+class CommandHeader
+{
 public:
-    CommandHeader(u64 rawData): mRawData(rawData >> 32) {}
-    CommandHeader(u32 rawData): mRawData(rawData) {}
+    CommandHeader(u64 rawData): m_RawData(rawData >> 32) {}
+    CommandHeader(u32 rawData): m_RawData(rawData) {}
 
-    u32 GetAddress()  const { return (mRawData & ADDRESS_MASK); }
-    s32 GetSize()     const { return ((mRawData & SIZE_MASK) >> SIZE_SHIFT) + 1; }
-    u8  GetByteEnable() const { return static_cast<u8>((mRawData & BYTE_ENABLE_MASK) >> BYTE_ENABLE_SHIFT); }
+    u32 GetAddress()  const { return (m_RawData & ADDRESS_MASK); }
+    s32 GetSize()     const { return ((m_RawData & SIZE_MASK) >> SIZE_SHIFT) + 1; }
+    u8  GetByteEnable() const { return static_cast<u8>((m_RawData & BYTE_ENABLE_MASK) >> BYTE_ENABLE_SHIFT); }
 
-    u32 GetByteEnableMask() const{
+    u32 GetByteEnableMask() const
+    {
         u8  be   = this->GetByteEnable();
         u32 mask = 0;
         mask |= (be & 0x1) ? 0x000000FF : 0;
@@ -54,10 +59,11 @@ public:
         return mask;
     }
 
-    u32 GetBurstModeFlag() const { return mRawData & BURST_FLAG; }
+    u32 GetBurstModeFlag() const { return m_RawData & BURST_FLAG; }
 
 private:
-    enum{
+    enum
+    {
         ADDRESS_SHIFT     = 0,
         ADDRESS_WIDTH     = 16,
         ADDRESS_MASK      = 0xFFFF,
@@ -71,47 +77,54 @@ private:
     };
 
     CommandHeader() {}
-    u32 mRawData;
+    u32 m_RawData;
 };
 
-inline u32 GetCmdValue(u32 value, u32 mask, s32 shift){
+inline u32 GetCmdValue(u32 value, u32 mask, s32 shift)
+{
     return (value >> shift) & mask;
 }
 
 template<typename TValue>
-inline void SetCmdValue(u32* addr, TValue value, u32 mask, s32 shift){
+inline void SetCmdValue(u32* addr, TValue value, u32 mask, s32 shift)
+{
     u32 result = *addr & ~(mask << shift);
     *addr = result | ((static_cast<u32>(value) & static_cast<u32>(mask)) << shift);
 }
 
-class GlSystem{
+class GlSystem
+{
 public:
     static void SetGlManagers(void*) {}
     static void SetGlVbManager(void*) {}
     static void SetGlTexManager(void*) {}
 
-    static void* GetBufferAddress(u32 bufferId){
+    static void* GetBufferAddress(u32 bufferId)
+    {
         s32 addr;
         glBindBuffer(GL_ARRAY_BUFFER, bufferId);
         glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_DATA_ADDR_DMP, &addr);
         return reinterpret_cast<void*>(addr);
     }
 
-    static void* GetElementBufferAddress(u32 bufferId){
+    static void* GetElementBufferAddress(u32 bufferId)
+    {
         s32 addr;
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferId);
         glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_DATA_ADDR_DMP, &addr);
         return reinterpret_cast<void*>(addr);
     }
 
-    static void* GetTextureAddress(u32 texId){
+    static void* GetTextureAddress(u32 texId)
+    {
         s32 addr;
         glBindTexture(GL_TEXTURE_2D, texId);
         glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_DATA_ADDR_DMP, &addr);
         return reinterpret_cast<void*>(addr);
     }
 
-    static void* GetCubeTextureAddress(u32 texId, int face){
+    static void* GetCubeTextureAddress(u32 texId, int face)
+    {
         s32 addr[6];
         glBindTexture(GL_TEXTURE_CUBE_MAP, texId);
         glGetTexParameteriv(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_DATA_ADDR_DMP, &addr[0]);
@@ -120,7 +133,8 @@ public:
 };
 
 template<typename T>
-__forceinline void NWUseCmdlist(const T* buffer, int size){
+NW_FORCE_INLINE void NWUseCmdlist(const T* buffer, int size)
+{
     NW_ASSERT(size > 0);
     NW_NULL_ASSERT(buffer);
     nw::os::MemCpy(__cb_current_command_buffer, buffer, size);
@@ -128,28 +142,32 @@ __forceinline void NWUseCmdlist(const T* buffer, int size){
 }
 
 template<int size>
-__forceinline void NWUseCmdlist(const void* buffer){
+NW_FORCE_INLINE void NWUseCmdlist(const void* buffer)
+{
     NW_ASSERT(size > 0);
     NW_NULL_ASSERT(buffer);
     __cb_current_command_buffer = internal::FastWordCopy((u32*)__cb_current_command_buffer, (u32*)buffer, size);
 }
 
 template<>
-__forceinline void NWUseCmdlist<4>(const void* buffer){
+NW_FORCE_INLINE void NWUseCmdlist<4>(const void* buffer)
+{
     NW_NULL_ASSERT(buffer);
     *reinterpret_cast<u32*>(__cb_current_command_buffer) = *reinterpret_cast<const u32*>(buffer);
     __cb_current_command_buffer += 1;
 }
 
 template<>
-__forceinline void NWUseCmdlist<8>(const void* buffer){
+NW_FORCE_INLINE void NWUseCmdlist<8>(const void* buffer)
+{
     NW_NULL_ASSERT(buffer);
     *reinterpret_cast<u64*>(__cb_current_command_buffer) = *reinterpret_cast<const u64*>(buffer);
     __cb_current_command_buffer += 2;
 }
 
 template<>
-__forceinline void NWUseCmdlist<12>(const void* buffer){
+NW_FORCE_INLINE void NWUseCmdlist<12>(const void* buffer)
+{
     NW_NULL_ASSERT(buffer);
     *reinterpret_cast<u64*>(__cb_current_command_buffer) = *reinterpret_cast<const u64*>(buffer);
     *reinterpret_cast<u32*>(__cb_current_command_buffer + 2) = *(reinterpret_cast<const u32*>(buffer) + 2);
@@ -157,26 +175,31 @@ __forceinline void NWUseCmdlist<12>(const void* buffer){
 }
 
 template<>
-__forceinline void NWUseCmdlist<16>(const void* buffer){
+NW_FORCE_INLINE void NWUseCmdlist<16>(const void* buffer)
+{
     NW_NULL_ASSERT(buffer);
     *reinterpret_cast<u64*>(__cb_current_command_buffer) = *reinterpret_cast<const u64*>(buffer);
     *reinterpret_cast<u64*>(__cb_current_command_buffer + 2) = *(reinterpret_cast<const u64*>(buffer) + 1);
     __cb_current_command_buffer += 4;
 }
 
-__forceinline void* NWGetCurrentCmdBuffer(){ return __cb_current_command_buffer; }
-__forceinline void* NWGetCmdBufferEnd()    { return __cb_current_max_command_buffer; }
+NW_FORCE_INLINE void* NWGetCurrentCmdBuffer() { return __cb_current_command_buffer; }
+NW_FORCE_INLINE void* NWGetCmdBufferEnd() { return __cb_current_max_command_buffer; }
 
-__forceinline void NWForwardCurrentCmdBuffer(u32 size){
+NW_FORCE_INLINE void NWForwardCurrentCmdBuffer(u32 size)
+{
     __cb_current_command_buffer += size >> 2;
 }
 
-__forceinline void NWBackwardCurrentCmdBuffer(u32 size){
+NW_FORCE_INLINE void NWBackwardCurrentCmdBuffer(u32 size)
+{
     __cb_current_command_buffer -= size >> 2;
 }
 
-inline u32 MakeCommandHeader(u32 address, int count, bool incremental, u8 byteEnable){
-    enum{
+NW_INLINE u32 MakeCommandHeader(u32 address, int count, bool incremental, u8 byteEnable)
+{
+    enum
+    {
         ADDRESS_SHIFT     = 0,
         ADDRESS_WIDTH     = 16,
         BYTE_ENABLE_SHIFT = 16,
@@ -199,7 +222,8 @@ inline u32 MakeCommandHeader(u32 address, int count, bool incremental, u8 byteEn
 
 #define NW_GFX_GPU_HEADER(addr, count, incremental, byteEnable) (u32)((incremental << 31) | (count << 20) | (byteEnable << 16) | address)
 
-enum UniformRegistry{
+enum UniformRegistry
+{
     REG_VERTEX_UNIFORM_FLOAT_INDEX   = 0x2C0,
     REG_VERTEX_UNIFORM_FLOAT_BASE    = 0x2C1,
     REG_GEOMETRY_UNIFORM_FLOAT_INDEX = 0x290,
@@ -240,8 +264,10 @@ void NWCopyMtx41Reverse(f32* dst, const f32* src);
 void NWCopyMtx41WithHeader(f32* dst, const f32* src, u32 header);
 
 template<u32 RegFloatIndex>
-__forceinline void NWSetUniform4fv(u32 index, int count, const f32* data){
-    enum{
+NW_FORCE_INLINE void NWSetUniform4fv(u32 index, int count, const f32* data)
+{
+    enum
+    {
         REG_UNIFORM_FLOAT_INDEX = RegFloatIndex,
         REG_UNIFORM_FLOAT_BASE  = REG_UNIFORM_FLOAT_INDEX + 1,
         SIZE_SHIFT  = 20,
@@ -265,7 +291,8 @@ __forceinline void NWSetUniform4fv(u32 index, int count, const f32* data){
 
     u32* command = (u32*)NWGetCurrentCmdBuffer();
 
-    switch (count){
+    switch (count)
+    {
     case VECTOR4:
         command[0] = SHORT_HEADER[0]; command[1] = SHORT_HEADER[1];
         NWCopyVec4Reverse(reinterpret_cast<f32*>(&command[2]), data);
@@ -293,8 +320,10 @@ __forceinline void NWSetUniform4fv(u32 index, int count, const f32* data){
 }
 
 template<u32 RegFloatIndex>
-__forceinline void NWSetUniform3fv(u32 index, int count, const f32* data){
-    enum{
+NW_FORCE_INLINE void NWSetUniform3fv(u32 index, int count, const f32* data)
+{
+    enum
+    {
         REG_UNIFORM_FLOAT_INDEX = RegFloatIndex,
         REG_UNIFORM_FLOAT_BASE  = REG_UNIFORM_FLOAT_INDEX + 1,
         SIZE_SHIFT  = 20,
@@ -318,7 +347,8 @@ __forceinline void NWSetUniform3fv(u32 index, int count, const f32* data){
 
     u32* command = (u32*)NWGetCurrentCmdBuffer();
 
-    switch (count){
+    switch (count)
+    {
     case VECTOR3:
         command[0] = SHORT_HEADER[0]; command[1] = SHORT_HEADER[1];
         NWCopyVec3Reverse(reinterpret_cast<f32*>(&command[2]), data);
@@ -346,8 +376,10 @@ __forceinline void NWSetUniform3fv(u32 index, int count, const f32* data){
 }
 
 template<u32 RegFloatIndex>
-__forceinline void NWSetUniform2fv(u32 index, int count, const f32* data){
-    enum{
+NW_FORCE_INLINE void NWSetUniform2fv(u32 index, int count, const f32* data)
+{
+    enum
+    {
         REG_UNIFORM_FLOAT_INDEX = RegFloatIndex,
         REG_UNIFORM_FLOAT_BASE  = REG_UNIFORM_FLOAT_INDEX + 1,
         SIZE_SHIFT  = 20,
@@ -371,7 +403,8 @@ __forceinline void NWSetUniform2fv(u32 index, int count, const f32* data){
 
     u32* command = (u32*)NWGetCurrentCmdBuffer();
 
-    switch (count){
+    switch (count)
+    {
     case VECTOR2:
         command[0] = SHORT_HEADER[0]; command[1] = SHORT_HEADER[1];
         NWCopyVec2Reverse(reinterpret_cast<f32*>(&command[2]), data);
@@ -399,8 +432,10 @@ __forceinline void NWSetUniform2fv(u32 index, int count, const f32* data){
 }
 
 template<u32 RegFloatIndex>
-__forceinline void NWSetUniform1fv(u32 index, int count, const f32* data){
-    enum{
+NW_FORCE_INLINE void NWSetUniform1fv(u32 index, int count, const f32* data)
+{
+    enum
+    {
         REG_UNIFORM_FLOAT_INDEX = RegFloatIndex,
         REG_UNIFORM_FLOAT_BASE  = REG_UNIFORM_FLOAT_INDEX + 1,
         SIZE_SHIFT  = 20,
@@ -424,7 +459,8 @@ __forceinline void NWSetUniform1fv(u32 index, int count, const f32* data){
 
     u32* command = (u32*)NWGetCurrentCmdBuffer();
 
-    switch (count){
+    switch (count)
+    {
     case VECTOR1:
         command[0] = SHORT_HEADER[0]; command[1] = SHORT_HEADER[1];
         NWCopyVec1Reverse(reinterpret_cast<f32*>(&command[2]), data);
@@ -452,8 +488,10 @@ __forceinline void NWSetUniform1fv(u32 index, int count, const f32* data){
 }
 
 template<u32 RegFloatIndex>
-__forceinline void NWSetUniform4fvBegin(u32 index, int totalCount, int count, const f32* data){
-    enum{
+NW_FORCE_INLINE void NWSetUniform4fvBegin(u32 index, int totalCount, int count, const f32* data)
+{
+    enum
+    {
         REG_UNIFORM_FLOAT_INDEX = RegFloatIndex,
         REG_UNIFORM_FLOAT_BASE  = REG_UNIFORM_FLOAT_INDEX + 1,
         SIZE_SHIFT  = 20,
@@ -478,7 +516,8 @@ __forceinline void NWSetUniform4fvBegin(u32 index, int totalCount, int count, co
     command[0] = HEADER[0];
     command[1] = HEADER[1];
 
-    switch (count){
+    switch (count)
+    {
     case VECTOR4:
         NWCopyVec4WithHeader(reinterpret_cast<f32*>(&command[2]), data, VALUE_HEADER | ((totalCount * REG_COUNT - 1) << SIZE_SHIFT));
         NWForwardCurrentCmdBuffer(sizeof(u32) * 3 + (REG_COUNT * VECTOR4) * sizeof(f32));
@@ -501,12 +540,15 @@ __forceinline void NWSetUniform4fvBegin(u32 index, int totalCount, int count, co
     }
 }
 
-__forceinline void NWSetUniform4fvContinuous(int count, const f32* data){
-    enum{ VECTOR4 = 1, MATRIX2x4 = 2, MATRIX3x4 = 3, MATRIX4x4 = 4, REG_COUNT = 4 };
+NW_FORCE_INLINE void NWSetUniform4fvContinuous(int count, const f32* data)
+{
+    enum
+{ VECTOR4 = 1, MATRIX2x4 = 2, MATRIX3x4 = 3, MATRIX4x4 = 4, REG_COUNT = 4 };
 
     f32* command = (f32*)NWGetCurrentCmdBuffer();
 
-    switch (count){
+    switch (count)
+    {
     case VECTOR4:   NWCopyVec4Reverse(command, data);  NWForwardCurrentCmdBuffer((REG_COUNT * VECTOR4)   * sizeof(f32)); break;
     case MATRIX2x4: NWCopyMtx24Reverse(command, data); NWForwardCurrentCmdBuffer((REG_COUNT * MATRIX2x4) * sizeof(f32)); break;
     case MATRIX3x4: NWCopyMtx34Reverse(command, data); NWForwardCurrentCmdBuffer((REG_COUNT * MATRIX3x4) * sizeof(f32)); break;
@@ -515,93 +557,106 @@ __forceinline void NWSetUniform4fvContinuous(int count, const f32* data){
     }
 }
 
-__forceinline void NWSetUniform4fvEnd(){ NWForwardCurrentCmdBuffer(sizeof(f32)); }
+NW_FORCE_INLINE void NWSetUniform4fvEnd() { NWForwardCurrentCmdBuffer(sizeof(f32)); }
 
-__forceinline void NWSetVertexUniform4fv(u32 index, int count, const f32* data)   { NWSetUniform4fv<REG_VERTEX_UNIFORM_FLOAT_INDEX>(index, count, data); }
-__forceinline void NWSetVertexUniform3fv(u32 index, int count, const f32* data)   { NWSetUniform3fv<REG_VERTEX_UNIFORM_FLOAT_INDEX>(index, count, data); }
-__forceinline void NWSetVertexUniform2fv(u32 index, int count, const f32* data){NWSetUniform2fv<REG_VERTEX_UNIFORM_FLOAT_INDEX>(index, count, data);}
-__forceinline void NWSetVertexUniform1fv(u32 index, int count, const f32* data)   { NWSetUniform1fv<REG_VERTEX_UNIFORM_FLOAT_INDEX>(index, count, data); }
-__forceinline void NWSetGeometryUniform4fv(u32 index, int count, const f32* data) { NWSetUniform4fv<REG_GEOMETRY_UNIFORM_FLOAT_INDEX>(index, count, data); }
-__forceinline void NWSetGeometryUniform3fv(u32 index, int count, const f32* data) { NWSetUniform3fv<REG_GEOMETRY_UNIFORM_FLOAT_INDEX>(index, count, data); }
-__forceinline void NWSetGeometryUniform2fv(u32 index, int count, const f32* data) { NWSetUniform2fv<REG_GEOMETRY_UNIFORM_FLOAT_INDEX>(index, count, data); }
-__forceinline void NWSetGeometryUniform1fv(u32 index, int count, const f32* data) { NWSetUniform1fv<REG_GEOMETRY_UNIFORM_FLOAT_INDEX>(index, count, data); }
+NW_FORCE_INLINE void NWSetVertexUniform4fv(u32 index, int count, const f32* data) { NWSetUniform4fv<REG_VERTEX_UNIFORM_FLOAT_INDEX>(index, count, data); }
+NW_FORCE_INLINE void NWSetVertexUniform3fv(u32 index, int count, const f32* data) { NWSetUniform3fv<REG_VERTEX_UNIFORM_FLOAT_INDEX>(index, count, data); }
+NW_FORCE_INLINE void NWSetVertexUniform2fv(u32 index, int count, const f32* data) {NWSetUniform2fv<REG_VERTEX_UNIFORM_FLOAT_INDEX>(index, count, data);}
+NW_FORCE_INLINE void NWSetVertexUniform1fv(u32 index, int count, const f32* data) { NWSetUniform1fv<REG_VERTEX_UNIFORM_FLOAT_INDEX>(index, count, data); }
+NW_FORCE_INLINE void NWSetGeometryUniform4fv(u32 index, int count, const f32* data) { NWSetUniform4fv<REG_GEOMETRY_UNIFORM_FLOAT_INDEX>(index, count, data); }
+NW_FORCE_INLINE void NWSetGeometryUniform3fv(u32 index, int count, const f32* data) { NWSetUniform3fv<REG_GEOMETRY_UNIFORM_FLOAT_INDEX>(index, count, data); }
+NW_FORCE_INLINE void NWSetGeometryUniform2fv(u32 index, int count, const f32* data) { NWSetUniform2fv<REG_GEOMETRY_UNIFORM_FLOAT_INDEX>(index, count, data); }
+NW_FORCE_INLINE void NWSetGeometryUniform1fv(u32 index, int count, const f32* data) { NWSetUniform1fv<REG_GEOMETRY_UNIFORM_FLOAT_INDEX>(index, count, data); }
 
-__forceinline void NWSetVertexUniform4fvBegin(u32 index, int totalCount, int count, const f32* data)   { NWSetUniform4fvBegin<REG_VERTEX_UNIFORM_FLOAT_INDEX>(index, totalCount, count, data); }
-__forceinline void NWSetVertexUniform4fvContinuous(int count, const f32* data)                         { NWSetUniform4fvContinuous(count, data); }
-__forceinline void NWSetVertexUniform4fvEnd()                                                          { NWSetUniform4fvEnd(); }
-__forceinline void NWSetGeometryUniform4fvBegin(u32 index, int totalCount, int count, const f32* data) { NWSetUniform4fvBegin<REG_GEOMETRY_UNIFORM_FLOAT_INDEX>(index, totalCount, count, data); }
-__forceinline void NWSetGeometryUniform4fvContinuous(int count, const f32* data)                       { NWSetUniform4fvContinuous(count, data); }
-__forceinline void NWSetGeometryUniform4fvEnd()                                                        { NWSetUniform4fvEnd(); }
+NW_FORCE_INLINE void NWSetVertexUniform4fvBegin(u32 index, int totalCount, int count, const f32* data) { NWSetUniform4fvBegin<REG_VERTEX_UNIFORM_FLOAT_INDEX>(index, totalCount, count, data); }
+NW_FORCE_INLINE void NWSetVertexUniform4fvContinuous(int count, const f32* data) { NWSetUniform4fvContinuous(count, data); }
+NW_FORCE_INLINE void NWSetVertexUniform4fvEnd() { NWSetUniform4fvEnd(); }
+NW_FORCE_INLINE void NWSetGeometryUniform4fvBegin(u32 index, int totalCount, int count, const f32* data) { NWSetUniform4fvBegin<REG_GEOMETRY_UNIFORM_FLOAT_INDEX>(index, totalCount, count, data); }
+NW_FORCE_INLINE void NWSetGeometryUniform4fvContinuous(int count, const f32* data) { NWSetUniform4fvContinuous(count, data); }
+NW_FORCE_INLINE void NWSetGeometryUniform4fvEnd() { NWSetUniform4fvEnd(); }
 
-class CommandBufferInfo{
+class CommandBufferInfo
+{
 public:
-    enum BufferResult{
+    enum BufferResult
+    {
         RESULT_OK            = 0,
         RESULT_OUT_OF_MEMORY = 1 << 1
     };
 
-    CommandBufferInfo(void* buffer, size_t size){
-        mTopAddress     = static_cast<u8*>(buffer);
-        mCurrentAddress = mTopAddress;
-        mSize           = size;
-        mBottomAddress  = reinterpret_cast<u8*>(nw::ut::AddOffsetToPtr(mTopAddress, size));
+    CommandBufferInfo(void* buffer, size_t size)
+    {
+        m_TopAddress     = static_cast<u8*>(buffer);
+        m_CurrentAddress = m_TopAddress;
+        m_Size           = size;
+        m_BottomAddress  = reinterpret_cast<u8*>(nw::ut::AddOffsetToPtr(m_TopAddress, size));
     }
 
-    CommandBufferInfo(){
-        mTopAddress = mCurrentAddress = mBottomAddress = NULL;
-        mSize = 0;
+    CommandBufferInfo()
+    {
+        m_TopAddress = m_CurrentAddress = m_BottomAddress = NULL;
+        m_Size = 0;
     }
 
-    u8*       GetCurrentAddress()       { return (mCurrentAddress != NULL) ? mCurrentAddress : reinterpret_cast<u8*>(__cb_current_command_buffer); }
-    const u8* GetCurrentAddress() const { return (mCurrentAddress != NULL) ? mCurrentAddress : reinterpret_cast<const u8*>(__cb_current_command_buffer); }
-    size_t    GetCurrentSize()    const { return nw::ut::GetOffsetFromPtr(mTopAddress, mCurrentAddress); }
+    u8*       GetCurrentAddress() { return (m_CurrentAddress != NULL) ? m_CurrentAddress : reinterpret_cast<u8*>(__cb_current_command_buffer); }
+    const u8* GetCurrentAddress() const { return (m_CurrentAddress != NULL) ? m_CurrentAddress : reinterpret_cast<const u8*>(__cb_current_command_buffer); }
+    size_t    GetCurrentSize()    const { return nw::ut::GetOffsetFromPtr(m_TopAddress, m_CurrentAddress); }
 
-    Result ForwardCommand(int size){
-        if (!this->CheckRestMemory(size)) return Result(RESULT_OUT_OF_MEMORY);
+    Result ForwardCommand(int size)
+    {
+        if (!this->CheckRestMemory(size))
+            return Result(RESULT_OUT_OF_MEMORY);
         this->ForwardAddress(size);
         return Result(RESULT_OK);
     }
 
-    Result PutCommand(const void* buffer, int size){
+    Result PutCommand(const void* buffer, int size)
+    {
         NW_NULL_ASSERT(buffer);
         NW_ASSERT(size > 0);
-        if (!this->CheckRestMemory(size)) return Result(RESULT_OUT_OF_MEMORY);
+        if (!this->CheckRestMemory(size))
+            return Result(RESULT_OUT_OF_MEMORY);
         nw::os::MemCpy(this->GetCurrentAddress(), buffer, size);
         this->ForwardAddress(size);
         return Result(RESULT_OK);
     }
 
     template<int size>
-    Result PutCommand(const void* buffer){
+    Result PutCommand(const void* buffer)
+    {
         NW_NULL_ASSERT(buffer);
-        if (!this->CheckRestMemory(size)) return Result(RESULT_OUT_OF_MEMORY);
+        if (!this->CheckRestMemory(size))
+            return Result(RESULT_OUT_OF_MEMORY);
         internal::FastWordCopy((u32*)this->GetCurrentAddress(), (u32*)buffer, size);
         this->ForwardAddress(size);
     }
 
 private:
-    u8*    mTopAddress;
-    u8*    mBottomAddress;
-    u8*    mCurrentAddress;
-    size_t mSize;
+    u8*    m_TopAddress;
+    u8*    m_BottomAddress;
+    u8*    m_CurrentAddress;
+    size_t m_Size;
 
-    bool CheckRestMemory(size_t size){
-        if (mCurrentAddress == NULL)
+    bool CheckRestMemory(size_t size)
+    {
+        if (m_CurrentAddress == NULL)
             return nw::ut::AddOffsetToPtr(__cb_current_command_buffer, size) <= __cb_current_max_command_buffer;
         else
-            return nw::ut::AddOffsetToPtr(mCurrentAddress, size) <= mBottomAddress;
+            return nw::ut::AddOffsetToPtr(m_CurrentAddress, size) <= m_BottomAddress;
     }
 
-    void ForwardAddress(int size){
-        if (mCurrentAddress != NULL)
-            mCurrentAddress += size;
+    void ForwardAddress(int size)
+    {
+        if (m_CurrentAddress != NULL)
+            m_CurrentAddress += size;
         else
             NWForwardCurrentCmdBuffer(size);
     }
 };
 
 template<>
-inline Result CommandBufferInfo::PutCommand<4>(const void* buffer){
+inline Result CommandBufferInfo::PutCommand<4>(const void* buffer)
+{
     NW_NULL_ASSERT(buffer);
     if (!this->CheckRestMemory(4)) return Result(RESULT_OUT_OF_MEMORY);
     *reinterpret_cast<u32*>(this->GetCurrentAddress()) = *reinterpret_cast<const u32*>(buffer);
@@ -610,16 +665,19 @@ inline Result CommandBufferInfo::PutCommand<4>(const void* buffer){
 }
 
 template<>
-inline Result CommandBufferInfo::PutCommand<8>(const void* buffer){
+inline Result CommandBufferInfo::PutCommand<8>(const void* buffer)
+{
     NW_NULL_ASSERT(buffer);
-    if (!this->CheckRestMemory(8)) return Result(RESULT_OUT_OF_MEMORY);
+    if (!this->CheckRestMemory(8))
+        return Result(RESULT_OUT_OF_MEMORY);
     *reinterpret_cast<u64*>(this->GetCurrentAddress()) = *reinterpret_cast<const u64*>(buffer);
     this->ForwardAddress(8);
     return Result(RESULT_OK);
 }
 
 template<>
-inline Result CommandBufferInfo::PutCommand<12>(const void* buffer){
+inline Result CommandBufferInfo::PutCommand<12>(const void* buffer)
+{
     NW_NULL_ASSERT(buffer);
     if (!this->CheckRestMemory(12)) return Result(RESULT_OUT_OF_MEMORY);
     *reinterpret_cast<u64*>(this->GetCurrentAddress()) = *reinterpret_cast<const u64*>(buffer);
@@ -629,7 +687,8 @@ inline Result CommandBufferInfo::PutCommand<12>(const void* buffer){
 }
 
 template<>
-inline Result CommandBufferInfo::PutCommand<16>(const void* buffer){
+inline Result CommandBufferInfo::PutCommand<16>(const void* buffer)
+{
     NW_NULL_ASSERT(buffer);
     if (!this->CheckRestMemory(16)) return Result(RESULT_OUT_OF_MEMORY);
     *reinterpret_cast<u64*>(this->GetCurrentAddress()) = *reinterpret_cast<const u64*>(buffer);
@@ -638,38 +697,42 @@ inline Result CommandBufferInfo::PutCommand<16>(const void* buffer){
     return Result(RESULT_OK);
 }
 
-class CommandCacheBuilder{
+class CommandCacheBuilder
+{
 public:
-    CommandCacheBuilder(): mStartAddr(NULL), mEndAddr(NULL) {}
+    CommandCacheBuilder(): m_StartAddr(NULL), m_EndAddr(NULL) {}
 
-    void Begin(){ mStartAddr = NWGetCurrentCmdBuffer(); }
-    void End(){ if (mStartAddr) mEndAddr = NWGetCurrentCmdBuffer(); }
+    void Begin() { m_StartAddr = NWGetCurrentCmdBuffer(); }
+    void End() { if (m_StartAddr) m_EndAddr = NWGetCurrentCmdBuffer(); }
 
-    void Rollback(){
+    void Rollback()
+    {
         void* current = NWGetCurrentCmdBuffer();
-        NWBackwardCurrentCmdBuffer(nw::ut::GetOffsetFromPtr(mStartAddr, current));
+        NWBackwardCurrentCmdBuffer(nw::ut::GetOffsetFromPtr(m_StartAddr, current));
     }
 
-    void Reset(){ mStartAddr = mEndAddr = NULL; }
+    void Reset() { m_StartAddr = m_EndAddr = NULL; }
 
-    s32 GetSize(){
-        if (mStartAddr && mEndAddr)
-            return nw::ut::GetOffsetFromPtr(mStartAddr, mEndAddr);
+    s32 GetSize()
+    {
+        if (m_StartAddr && m_EndAddr)
+            return nw::ut::GetOffsetFromPtr(m_StartAddr, m_EndAddr);
         return 0;
     }
 
-    void* AllocAndCopy(nw::os::IAllocator* allocator = NULL){
+    void* AllocAndCopy(nw::os::IAllocator* allocator = NULL)
+    {
         s32 size = this->GetSize();
         if (size == 0) return NULL;
         void* buffer = (allocator != NULL) ? allocator->Alloc(size, 4) : CommandCacheManager::Allocate(size);
         if (!buffer) return NULL;
-        nw::os::MemCpy(buffer, mStartAddr, size);
+        nw::os::MemCpy(buffer, m_StartAddr, size);
         return buffer;
     }
 
 private:
-    void* mStartAddr;
-    void* mEndAddr;
+    void* m_StartAddr;
+    void* m_EndAddr;
 };
 
 } // namespace internal

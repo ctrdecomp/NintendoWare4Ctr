@@ -13,14 +13,16 @@ namespace nw {
 namespace gfx {
 namespace res {
 
-void ResParticleModel::Setup(){
+void ResParticleModel::Setup()
+{
     NW_ASSERT(this->IsValid());
     NW_ASSERT(internal::ResCheckRevision(*this));
 
 
     s32 particleSetNum = this->GetParticleSetsCount();
 
-    for (int i = 0; i < particleSetNum; ++i){
+    for (int i = 0; i < particleSetNum; ++i)
+    {
         ResParticleSet particleSet = this->GetParticleSets( s32(i) );
         particleSet.Setup();
     }

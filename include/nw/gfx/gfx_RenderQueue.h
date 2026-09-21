@@ -17,7 +17,8 @@ namespace os{
 namespace gfx{
 
 template<typename TElement,typename TElementList,typename TElementKeyFactory = BasicRenderKeyFactory<typename TElement::KeyType> >
-class BasicRenderQueue : public GfxObject{
+class BasicRenderQueue : public GfxObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(BasicRenderQueue);
 
@@ -40,50 +41,62 @@ public:
     typedef std::reverse_iterator<iterator> reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-    struct IsCalculatingOnlyLayer1Functor{
-        IsCalculatingOnlyLayer1Functor(Model* model, ResMesh mesh){
+    struct IsCalculatingOnlyLayer1Functor
+    {
+        IsCalculatingOnlyLayer1Functor(Model* model, ResMesh mesh)
+    {
             isCalculating = model->GetRenderLayerId(mesh) == ResMaterial::TRANSLUCENCY_KIND_LAYER1;
         }
 
-        IsCalculatingOnlyLayer1Functor(ResMaterial::TranslucencyKind renderLayer){
+        IsCalculatingOnlyLayer1Functor(ResMaterial::TranslucencyKind renderLayer)
+        {
             isCalculating = renderLayer == ResMaterial::TRANSLUCENCY_KIND_LAYER1;
         }
 
-        bool operator()() const{
+        bool operator()() const
+        {
             return isCalculating;
         }
 
         bool isCalculating;
     };
 
-    struct AlwaysCalculatingFunctor{
-        AlwaysCalculatingFunctor(Model* model, ResMesh mesh){
+    struct AlwaysCalculatingFunctor
+    {
+        AlwaysCalculatingFunctor(Model* model, ResMesh mesh)
+    {
             NW_UNUSED_VARIABLE(model);
             NW_UNUSED_VARIABLE(mesh);
         }
 
-        AlwaysCalculatingFunctor(ResMaterial::TranslucencyKind renderLayer){
+        AlwaysCalculatingFunctor(ResMaterial::TranslucencyKind renderLayer)
+        {
             NW_UNUSED_VARIABLE(renderLayer);
         }
 
-        bool operator()() const{
+        bool operator()() const
+        {
             return true;
         }
     };
 
-    struct CalculateDepthFunctor{
+    struct CalculateDepthFunctor
+    {
         typedef Model ModelType;
 
         CalculateDepthFunctor(ModelType* model):
-            model(model){
+            model(model)
+            {
             NW_NULL_ASSERT(model);
             resModel = model->GetResModel();
             NW_ASSERT(resModel.IsValid());
         }
 
         template<typename IsCalculating>
-        float operator()(ResMesh mesh, const Camera& camera, IsCalculating isCalculating) const{
-            if (isCalculating()){
+        float operator()(ResMesh mesh, const Camera& camera, IsCalculating isCalculating) const
+        {
+            if (isCalculating())
+            {
                 ResShape shape = resModel.GetShapes(mesh.GetShapeIndex());
                 NW_ASSERT(shape.IsValid());
 
@@ -98,24 +111,29 @@ public:
         ResModel resModel;
     };
 
-    struct CalculateDepthOfSkeletalModelFunctor{
+    struct CalculateDepthOfSkeletalModelFunctor
+    {
         typedef SkeletalModel ModelType;
 
         CalculateDepthOfSkeletalModelFunctor(ModelType* model):
-            model(model){
+            model(model)
+            {
             NW_NULL_ASSERT(model);
             resModel = model->GetResModel();
             NW_ASSERT(resModel.IsValid());
         }
 
         template<typename IsCalculating>
-        float operator()(ResMesh mesh, const Camera& camera, IsCalculating isCalculating) const{
-            if (isCalculating()){
+        float operator()(ResMesh mesh, const Camera& camera, IsCalculating isCalculating) const
+        {
+            if (isCalculating())
+            {
                 float depth;
                 ResShape shape = resModel.GetShapes(mesh.GetShapeIndex());
                 NW_ASSERT(shape.IsValid());
 
-                if (shape.GetPrimitiveSetsCount() == 1){
+                if (shape.GetPrimitiveSetsCount() == 1)
+                {
                     ResPrimitiveSet primitiveSet = shape.GetPrimitiveSets(0);
                     s32 boneIndex = primitiveSet.GetBoneIndexTable(0);
                     Skeleton::MatrixPose& pose = model->GetSkeleton()->WorldMatrixPose();
@@ -143,12 +161,13 @@ public:
             calculateDepth(model),
             renderQueue(renderQueue),
             camera(camera),
-            layerId(layerId)
-        {}
+            layerId(layerId) {}
 
-        result_type operator()(argument_type mesh){
+        result_type operator()(argument_type mesh)
+        {
             NW_ASSERT(mesh.IsValid());
-            if (calculateDepth.model->IsMeshVisible(mesh)){
+            if (calculateDepth.model->IsMeshVisible(mesh))
+            {
                 float depth = calculateDepth(mesh, camera, IsCalculating(calculateDepth.model, mesh));
                 renderQueue->EnqueueMesh(mesh, calculateDepth.model, depth, layerId);
             }
@@ -166,19 +185,23 @@ public:
     typedef BasicEnqueueModelFunctor<SkeletalModel, CalculateDepthOfSkeletalModelFunctor, IsCalculatingOnlyLayer1Functor> FastEnqueueSkeletalModelFunctor;
 
     template<typename ModelType, typename CalculateDepth, typename IsCalculating>
-    struct BasicEnqueueModelTranslucentModelBaseFunctor : public std::unary_function<ResMesh, void>{
+    struct BasicEnqueueModelTranslucentModelBaseFunctor : public std::unary_function<ResMesh, void>
+    {
         BasicEnqueueModelTranslucentModelBaseFunctor(BasicRenderQueue* renderQueue, ModelType* model, u8 layerId, const Camera& camera):
             calculateDepth(model),
             renderQueue(renderQueue),
             camera(camera),
-            layerId(layerId){
+            layerId(layerId)
+            {
             NW_NULL_ASSERT(renderQueue);
             modelDepth = SceneHelper::CalculateDepth(model->WorldMatrix(), camera);
         }
 
-        result_type operator()(argument_type mesh){
+        result_type operator()(argument_type mesh)
+        {
             NW_ASSERT(mesh.IsValid());
-            if (calculateDepth.model->IsMeshVisible(mesh)){
+            if (calculateDepth.model->IsMeshVisible(mesh))
+            {
                 ResMaterial::TranslucencyKind translucencyKind = calculateDepth.model->GetRenderLayerId(mesh);
 
                 float depth = (translucencyKind == ResMaterial::TRANSLUCENCY_KIND_OPAQUE)
@@ -205,16 +228,17 @@ public:
     typedef BasicEnqueueModelTranslucentModelBaseFunctor<SkeletalModel, CalculateDepthOfSkeletalModelFunctor, IsCalculatingOnlyLayer1Functor>
         FastEnqueueSkeletalModelTranslucentModelBaseFunctor;
 
-    struct ReportFunctor : public std::unary_function<void, reference>{
+    struct ReportFunctor : public std::unary_function<void, reference>
+        {
         ReportFunctor():
-            count(0)
-        {}
+            count(0) {}
 
-        void operator()(reference element){
+        void operator()(reference element)
+        {
 #ifdef NW_RELEASE
             NW_UNUSED_VARIABLE(element);
 #else
-            if (element.IsCommand()){}
+            if (element.IsCommand()) {}
             else{
                 const ResMesh mesh = element.GetMesh();
                 const ResModel model = element.GetModel()->GetResModel();
@@ -226,29 +250,32 @@ public:
         int count;
     };
 
-    class Builder{
+    class Builder
+    {
     public:
         Builder():
-            mIsFixedSizeMemory(true),
-            mMaxRenderElements(64)
-        {}
+            m_IsFixedSizeMemory(true),
+            m_MaxRenderElements(64) {}
 
         ~Builder() {}
 
-        Builder& IsFixedSizeMemory(bool isFixedSizeMemory){
-            mIsFixedSizeMemory = isFixedSizeMemory;
+        Builder& IsFixedSizeMemory(bool isFixedSizeMemory)
+        {
+            m_IsFixedSizeMemory = isFixedSizeMemory;
             return *this;
         }
 
-        Builder& MaxRenderElements(int max) { mMaxRenderElements = max; return *this; }
+        Builder& MaxRenderElements(int max) { m_MaxRenderElements = max; return *this; }
 
-        BasicRenderQueue* Create(nw::os::IAllocator* allocator){
+        BasicRenderQueue* Create(nw::os::IAllocator* allocator)
+        {
             void* queueMemory = allocator->Alloc<BasicRenderQueue>(1);
             NW_NULL_ASSERT(queueMemory);
 
             BasicRenderQueue* queue;
-            if (mIsFixedSizeMemory){
-                queue = new(queueMemory) BasicRenderQueue(allocator, mMaxRenderElements);
+            if (m_IsFixedSizeMemory)
+            {
+                queue = new(queueMemory) BasicRenderQueue(allocator, m_MaxRenderElements);
             }
             else{
                 queue = new(queueMemory) BasicRenderQueue(allocator);
@@ -258,24 +285,28 @@ public:
         }
 
     private:
-        bool mIsFixedSizeMemory;
-        int mMaxRenderElements;
+        bool m_IsFixedSizeMemory;
+        int m_MaxRenderElements;
     };
 
-    ElementType* EnqueueElement(const ElementType& element, ResMaterial::TranslucencyKind translucencyKind, float depth, u8 layerId){
-        bool pushed = mList.push_back(element);
-        if (!pushed){
+    ElementType* EnqueueElement(const ElementType& element, ResMaterial::TranslucencyKind translucencyKind, float depth, u8 layerId)
+    {
+        bool pushed = m_List.push_back(element);
+        if (!pushed)
+        {
             return NULL;
         }
 
-        ElementType* back = &mList.back();
+        ElementType* back = &m_List.back();
 
-        if (mKeyCachingState == UNUSE_CACHED_KEY || translucencyKind == ResMaterial::TRANSLUCENCY_KIND_LAYER1){
+        if (m_KeyCachingState == UNUSE_CACHED_KEY || translucencyKind == ResMaterial::TRANSLUCENCY_KIND_LAYER1)
+        {
             RenderKeyFactory* keyFactory = GetKeyFactory(translucencyKind);
             back->Key() = keyFactory->CreateRenderKey(*back, depth, layerId);
         }
         else{
-            if (ut::CheckFlag<u32, u32>(back->GetMesh().GetFlags(), ResMesh::FLAG_VALID_RENDER_KEY_CACHE)){
+            if (ut::CheckFlag<u32, u32>(back->GetMesh().GetFlags(), ResMesh::FLAG_VALID_RENDER_KEY_CACHE))
+        {
                 back->Key() = back->GetMesh().GetRenderKeyCache();
             }
             else{
@@ -290,149 +321,171 @@ public:
         return back;
     }
 
-    ElementType* EnqueueMesh(ResMesh mesh, Model* model, float depth, u8 layerId){
+    ElementType* EnqueueMesh(ResMesh mesh, Model* model, float depth, u8 layerId)
+    {
         NW_ASSERT(mesh.IsValid());
         NW_NULL_ASSERT(model);
 
         return EnqueueElement(ElementType(mesh, model), model->GetRenderLayerId(mesh), depth, layerId);
     }
 
-    void EnqueueModel(Model* model, u8 layerId, const Camera& camera){
+    void EnqueueModel(Model* model, u8 layerId, const Camera& camera)
+    {
         NW_NULL_ASSERT(model);
-        adsl::gfx::ResMeshArray meshs = model->GetResMeshes();
+        nw::gfx::ResMeshArray meshs = model->GetResMeshes();
         std::for_each(meshs.begin(), meshs.end(), EnqueueModelFunctor(this, model, layerId, camera));
     }
 
-    void EnqueueSkeletalModel(SkeletalModel* model, u8 layerId, const Camera& camera){
+    void EnqueueSkeletalModel(SkeletalModel* model, u8 layerId, const Camera& camera)
+    {
         NW_NULL_ASSERT(model);
-        adsl::gfx::ResMeshArray meshs = model->GetResMeshes();
+        nw::gfx::ResMeshArray meshs = model->GetResMeshes();
         std::for_each(meshs.begin(), meshs.end(), EnqueueSkeletalModelFunctor(this, model, layerId, camera));
     }
 
-    ElementType* EnqueueCommand(RenderCommand* command, ResMaterial::TranslucencyKind translucencyKind, u8 priority, u8 layerId){
+    ElementType* EnqueueCommand(RenderCommand* command, ResMaterial::TranslucencyKind translucencyKind, u8 priority, u8 layerId)
+    {
         RenderKeyFactory* keyFactory = GetKeyFactory(translucencyKind);
 
-        bool pushed = mList.push_back(ElementType(keyFactory->CreateCommandRenderKey(command, translucencyKind, priority, layerId)));
+        bool pushed = m_List.push_back(ElementType(keyFactory->CreateCommandRenderKey(command, translucencyKind, priority, layerId)));
 
-        if (pushed){
-            return &this->mList.back();
+        if (pushed)
+        {
+            return &this->m_List.back();
         }
         else{
             return NULL;
         }
     }
 
-    void Reset(bool cacheEnabled = false){
-        this->mList.clear();
-        mKeyCachingState = (cacheEnabled) ? USE_CACHED_KEY : UNUSE_CACHED_KEY;
+    void Reset(bool cacheEnabled = false)
+    {
+        this->m_List.clear();
+        m_KeyCachingState = (cacheEnabled) ? USE_CACHED_KEY : UNUSE_CACHED_KEY;
     }
 
-    void Reset(ElementKeyFactoryType* opacityKeyFactory,ElementKeyFactoryType* translucentKeyFactory,ElementKeyFactoryType* additiveKeyFactory,ElementKeyFactoryType* subtractionKeyFactory,bool cacheEnabled = false){
+    void Reset(ElementKeyFactoryType* opacityKeyFactory,ElementKeyFactoryType* translucentKeyFactory,ElementKeyFactoryType* additiveKeyFactory,ElementKeyFactoryType* subtractionKeyFactory,bool cacheEnabled = false)
+    {
         Reset(cacheEnabled);
 
-        if (opacityKeyFactory != NULL){
-            mOpacityKeyFactory = opacityKeyFactory;
+        if (opacityKeyFactory != NULL)
+        {
+            m_OpacityKeyFactory = opacityKeyFactory;
         }
-        if (translucentKeyFactory != NULL){
-            mTranslucentKeyFactory = translucentKeyFactory;
+        if (translucentKeyFactory != NULL)
+        {
+            m_TranslucentKeyFactory = translucentKeyFactory;
         }
-        if (additiveKeyFactory != NULL){
-            mAdditiveKeyFactory = additiveKeyFactory;
+        if (additiveKeyFactory != NULL)
+        {
+            m_AdditiveKeyFactory = additiveKeyFactory;
         }
-        if (subtractionKeyFactory != NULL){
-            mSubtractionKeyFactory = subtractionKeyFactory;
+        if (subtractionKeyFactory != NULL)
+        {
+            m_SubtractionKeyFactory = subtractionKeyFactory;
         }
     }
 
-    int Size() const{
-        return this->mList.size();
+    int Size() const
+    {
+        return this->m_List.size();
     }
 
-    bool Empty() const{
-        return this->mList.empty();
+    bool Empty() const
+    {
+        return this->m_List.empty();
     }
 
-    ElementType& Peek(){
-        return this->mList.front();
+    ElementType& Peek()
+    {
+        return this->m_List.front();
     }
 
-    const ElementType& Peek() const{
-        return this->mList.front();
+    const ElementType& Peek() const
+    {
+        return this->m_List.front();
     }
 
-    iterator Begin(){
-        return this->mList.begin();
+    iterator Begin()
+    {
+        return this->m_List.begin();
     }
 
-    const_iterator Begin() const{
-        return this->mList.begin();
+    const_iterator Begin() const
+    {
+        return this->m_List.begin();
     }
 
-    iterator End(){
-        return this->mList.end();
+    iterator End()
+    {
+        return this->m_List.end();
     }
 
-    const_iterator End() const{
-        return this->mList.end();
+    const_iterator End() const
+    {
+        return this->m_List.end();
     }
 
-    reverse_iterator ReverseBegin(){
-        return this->mList.rbegin();
+    reverse_iterator ReverseBegin()
+    {
+        return this->m_List.rbegin();
     }
 
-    const_reverse_iterator ReverseBegin() const{
-        return this->mList.rbegin();
+    const_reverse_iterator ReverseBegin() const
+    {
+        return this->m_List.rbegin();
     }
 
-    reverse_iterator ReverseEnd(){
-        return this->mList.rend();
+    reverse_iterator ReverseEnd()
+    {
+        return this->m_List.rend();
     }
 
-    const_reverse_iterator ReverseEnd() const{
-        return this->mList.rend();
+    const_reverse_iterator ReverseEnd() const
+    {
+        return this->m_List.rend();
     }
 
 private:
     explicit BasicRenderQueue(nw::os::IAllocator* allocator):
         GfxObject(allocator),
-        mList(allocator),
-        mOpacityKeyFactory(NULL),
-        mTranslucentKeyFactory(NULL),
-        mAdditiveKeyFactory(NULL),
-        mSubtractionKeyFactory(NULL),
-        mKeyCachingState(UNUSE_CACHED_KEY)
-    {}
+        m_List(allocator),
+        m_OpacityKeyFactory(NULL),
+        m_TranslucentKeyFactory(NULL),
+        m_AdditiveKeyFactory(NULL),
+        m_SubtractionKeyFactory(NULL),
+        m_KeyCachingState(UNUSE_CACHED_KEY) {}
 
     BasicRenderQueue(nw::os::IAllocator* allocator, int maxRenderElements):
         GfxObject(allocator),
-        mList(maxRenderElements, allocator),
-        mOpacityKeyFactory(NULL),
-        mTranslucentKeyFactory(NULL),
-        mAdditiveKeyFactory(NULL),
-        mSubtractionKeyFactory(NULL),
-        mKeyCachingState(UNUSE_CACHED_KEY)
-    {}
+        m_List(maxRenderElements, allocator),
+        m_OpacityKeyFactory(NULL),
+        m_TranslucentKeyFactory(NULL),
+        m_AdditiveKeyFactory(NULL),
+        m_SubtractionKeyFactory(NULL),
+        m_KeyCachingState(UNUSE_CACHED_KEY) {}
 
     virtual ~BasicRenderQueue() {}
 
-    ElementKeyFactoryType* GetKeyFactory(ResMaterial::TranslucencyKind translucencyKind){
+    ElementKeyFactoryType* GetKeyFactory(ResMaterial::TranslucencyKind translucencyKind)
+    {
         ElementKeyFactoryType* keyFactory = NULL;
         switch (translucencyKind)
         {
         case ResMaterial::TRANSLUCENCY_KIND_LAYER0:
-            keyFactory = mOpacityKeyFactory;
+            keyFactory = m_OpacityKeyFactory;
             break;
         case ResMaterial::TRANSLUCENCY_KIND_LAYER1:
-            keyFactory = mTranslucentKeyFactory;
+            keyFactory = m_TranslucentKeyFactory;
             break;
         case ResMaterial::TRANSLUCENCY_KIND_LAYER2:
-            keyFactory = mSubtractionKeyFactory;
+            keyFactory = m_SubtractionKeyFactory;
             break;
         case ResMaterial::TRANSLUCENCY_KIND_LAYER3:
-            keyFactory = mAdditiveKeyFactory;
+            keyFactory = m_AdditiveKeyFactory;
             break;
         default:
-            NW_FAILSAFE_IF(false) { keyFactory = mOpacityKeyFactory; }
+            NW_FAILSAFE_IF(false) { keyFactory = m_OpacityKeyFactory; }
             break;
         }
 
@@ -440,18 +493,19 @@ private:
         return keyFactory;
     }
 
-    TElementList mList;
-    ElementKeyFactoryType* mOpacityKeyFactory;
-    ElementKeyFactoryType* mTranslucentKeyFactory;
-    ElementKeyFactoryType* mAdditiveKeyFactory;
-    ElementKeyFactoryType* mSubtractionKeyFactory;
+    TElementList m_List;
+    ElementKeyFactoryType* m_OpacityKeyFactory;
+    ElementKeyFactoryType* m_TranslucentKeyFactory;
+    ElementKeyFactoryType* m_AdditiveKeyFactory;
+    ElementKeyFactoryType* m_SubtractionKeyFactory;
 
-    enum KeyCachingState{
+    enum KeyCachingState
+    {
         UNUSE_CACHED_KEY,
         USE_CACHED_KEY
     };
 
-    KeyCachingState mKeyCachingState;
+    KeyCachingState m_KeyCachingState;
 };
 
 typedef BasicRenderQueue<
@@ -459,8 +513,10 @@ typedef BasicRenderQueue<
     nw::ut::MoveArray<BasicRenderElement<RenderKeyType> > >
         RenderQueue;
 
-struct RenderElementCompare : public std::binary_function<RenderElement, RenderElement, bool>{
-    bool operator()(const RenderElement& lhs, const RenderElement& rhs){
+struct RenderElementCompare : public std::binary_function<RenderElement, RenderElement, bool>
+        {
+    bool operator()(const RenderElement& lhs, const RenderElement& rhs)
+        {
         return lhs.Key() < rhs.Key();
     }
 };

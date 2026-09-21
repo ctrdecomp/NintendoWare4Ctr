@@ -41,12 +41,12 @@ public:
     public:
         StartResult(): 
             m_Code(START_ERR_UNKNOWN)
-        {
+            {
         }
 
         StartResult(ResultCode code): 
             m_Code(code)
-        {
+            {
         }
 
         bool IsSuccess() const
@@ -58,6 +58,8 @@ public:
         {
             return m_Code;
         }
+
+        
 
     private:
         ResultCode m_Code;
@@ -93,7 +95,7 @@ public:
             SeqSoundInfo(): 
                 seqDataAddress(NULL), 
                 startLocationLabel(NULL)
-            {
+                {
                 for (u32 i = 0; i < SoundArchive::SEQ_BANK_MAX; i++)
                     bankIds[i] = SoundArchive::INVALID_ID;
             }
@@ -109,12 +111,12 @@ public:
 
         StartInfo(): 
             enableFlag(0)
-        {
+            {
         }
     };
 
 public:
-    virtual ~SoundStartable(){ }
+    virtual ~SoundStartable() { }
 
     StartResult StartSound(SoundHandle* pHandle, SoundArchive::ItemId soundId, const StartInfo* pStartInfo = NULL);
     StartResult StartSound(SoundHandle* pHandle, const char* pSoundName, const StartInfo* pStartInfo = NULL);

@@ -61,73 +61,87 @@ const u32 RESOURCETYPE_TEXTURE        = 'timg';
 const u32 RESOURCETYPE_FONT           = 'font';
 const u32 RESOURCETYPE_ARCHIVEFONT    = 'fnta';
 
-struct Lyt{
+struct Lyt
+{
     ut::BinaryFileHeader fileHeader;
 };
 
-struct Layout{
+struct Layout
+{
     ut::BinaryBlockHeader blockHeader;
     ut::ResU8 originType;
     ut::ResU8 padding[3];
     Size layoutSize;
 };
 
-struct Font{
+struct Font
+{
     internal::ResU32 nameStrOffset;
 };
 
-struct FontList{
+struct FontList
+{
     ut::BinaryBlockHeader blockHeader;
     ut::ResU16 fontNum;
     ut::ResU8 padding[2];
 };
 
-struct Texture{
+struct Texture
+{
     internal::ResU32 nameStrOffset;
 };
 
-struct TextureList{
+struct TextureList
+{
     ut::BinaryBlockHeader blockHeader;
     ut::ResU16 texNum;
     ut::ResU8 padding[2];
 };
 
-struct TexMap{
+struct TexMap
+{
     TexMap():   
         texIdx(0),
         wrapSflt(0),
-        wrapTflt(0)
-    {}
+        wrapTflt(0) {}
 
-    TexWrap GetWarpModeS() const{
+    TexWrap GetWarpModeS() const
+    {
         return TexWrap(internal::GetBits(wrapSflt,  0, 2));
     }
 
-    TexWrap GetWarpModeT() const{
+    TexWrap GetWarpModeT() const
+    {
         return TexWrap(internal::GetBits(wrapTflt,  0, 2));
     }
 
-    TexFilter GetMinFilter() const{
+    TexFilter GetMinFilter() const
+    {
         return TexFilter(internal::GetBits(wrapSflt,  2, 2));
     }
 
-    TexFilter GetMagFilter() const{
+    TexFilter GetMagFilter() const
+    {
         return TexFilter(internal::GetBits(wrapTflt,  2, 2));
     }
 
-    void SetWarpModeS(u8 value){
+    void SetWarpModeS(u8 value)
+    {
         internal::SetBits(&wrapSflt,  0, 2, value);
     }
 
-    void SetWarpModeT(u8 value){
+    void SetWarpModeT(u8 value)
+    {
         internal::SetBits(&wrapTflt,  0, 2, value);
     }
 
-    void SetMinFilter(u8 value){
+    void SetMinFilter(u8 value)
+    {
         internal::SetBits(&wrapSflt,  2, 2, value);
     }
 
-    void SetMagFilter(u8 value){
+    void SetMagFilter(u8 value)
+    {
         internal::SetBits(&wrapTflt,  2, 2, value);
     }
 
@@ -136,7 +150,8 @@ struct TexMap{
     ut::ResU8 wrapTflt;                       // TexWrap, TexFilter
 };
 
-struct MaterialResourceNum{
+struct MaterialResourceNum
+{
     MaterialResourceNum(): bits(0) {}
 
     u8   GetTexMapNum()      const { return u8(internal::GetBits(bits, 0,  2)); }
@@ -147,30 +162,33 @@ struct MaterialResourceNum{
     bool HasBlendMode()      const { return internal::TestBit(bits, 10); }
     bool IsTextureOnly()     const { return internal::TestBit(bits, 11); }
 
-    void SetTexMapNum(u32 value)      { SetBits(0, 2, value); }
-    void SetTexSRTNum(u32 value)      { SetBits(2, 2, value); }
+    void SetTexMapNum(u32 value) { SetBits(0, 2, value); }
+    void SetTexSRTNum(u32 value) { SetBits(2, 2, value); }
     void SetTexCoordGenNum(u32 value) { SetBits(4, 2, value); }
-    void SetTevStageNum(u32 value)    { SetBits(6, 3, value); }
-    void SetAlphaCompare(bool b)      { SetBit(9,  b); }
-    void SetBlendMode(bool b)         { SetBit(10, b); }
-    void SetTextureOnly(bool b)       { SetBit(11, b); }
+    void SetTevStageNum(u32 value) { SetBits(6, 3, value); }
+    void SetAlphaCompare(bool b) { SetBit(9,  b); }
+    void SetBlendMode(bool b) { SetBit(10, b); }
+    void SetTextureOnly(bool b) { SetBit(11, b); }
 
     ut::ResU32 bits;
 
 protected:
-    void SetBits(int pos, int len, u32 value){
+    void SetBits(int pos, int len, u32 value)
+    {
         u32 work = bits;
         internal::SetBits(&work, pos, len, value);
         bits = work;
     }
-    void SetBit(int pos, bool value){
+    void SetBit(int pos, bool value)
+    {
         u32 work = bits;
         internal::SetBit(&work, pos, value);
         bits = work;
     }
 };
 
-struct Color{
+struct Color
+{
     operator ut::Color8() const { return ut::Color8(r, g, b, a); }
 
     ut::ResU8 r;
@@ -179,27 +197,32 @@ struct Color{
     ut::ResU8 a;
 };
 
-struct Material{
+struct Material
+{
     char                name[MaterialNameStrMax];
     Color               colors[MatColorMax];
     MaterialResourceNum resNum;
 };
 
-struct MaterialList{
+struct MaterialList
+{
     ut::BinaryBlockHeader blockHeader;
     ut::ResU16 materialNum;
     ut::ResU8  padding[2];
 };
 
-struct PaneBegin{
+struct PaneBegin
+{
     ut::BinaryBlockHeader blockHeader;
 };
 
-struct PaneEnd{
+struct PaneEnd
+{
     ut::BinaryBlockHeader blockHeader;
 };
 
-struct Pane{
+struct Pane
+{
     ut::BinaryBlockHeader blockHeader;
     ut::ResU8 flag;
     ut::ResU8 basePosition;
@@ -213,14 +236,16 @@ struct Pane{
     Size      size;
 };
 
-struct Picture : public Pane{
+struct Picture : public Pane
+{
     Color      vtxCols[VERTEXCOLOR_MAX];
     ut::ResU16 materialIdx;
     ut::ResU8  texCoordNum;
     ut::ResU8  padding[1];
 };
 
-struct TextBox : public Pane{
+struct TextBox : public Pane
+{
     ut::ResU16 textBufBytes;
     ut::ResU16 textStrBytes;
     ut::ResU16 materialIdx;
@@ -235,20 +260,23 @@ struct TextBox : public Pane{
     ut::ResF32 lineSpace;
 };
 
-struct WindowFrame{
+struct WindowFrame
+{
     ut::ResU16 materialIdx;
     ut::ResU8  textureFlip;
     ut::ResU8  padding[1];
 };
 
-struct WindowContent{
+struct WindowContent
+{
     Color      vtxCols[VERTEXCOLOR_MAX];
     ut::ResU16 materialIdx;
     ut::ResU8  texCoordNum;
     ut::ResU8  padding[1];
 };
 
-struct Window : public Pane{
+struct Window : public Pane
+{
     InflationLRTB inflation;
     ut::ResU8     frameNum;
     ut::ResU8     padding[3];
@@ -256,34 +284,41 @@ struct Window : public Pane{
     ut::ResU32    frameOffsetTableOffset;
 };
 
-struct Bounding : public Pane{};
+struct Bounding : public Pane
+{};
 
-struct ExtUserDataList{
+struct ExtUserDataList
+{
     ut::BinaryBlockHeader blockHeader;
     ut::ResU16 num;
     ut::ResU8  padding[2];
 };
 
-struct GroupBegin{
+struct GroupBegin
+{
     ut::BinaryBlockHeader blockHeader;
 };
 
-struct GroupEnd{
+struct GroupEnd
+{
     ut::BinaryBlockHeader blockHeader;
 };
 
-struct Group{
+struct Group
+{
     ut::BinaryBlockHeader blockHeader;
     char       name[ResourceNameStrMax];
     ut::ResU16 paneNum;
     ut::ResU8  padding[2];
 };
 
-struct Lan{
+struct Lan
+{
     ut::BinaryFileHeader fileHeader;
 };
 
-struct AnimationTagBlock{
+struct AnimationTagBlock
+{
     ut::BinaryBlockHeader blockHeader;
     ut::ResU16 tagOrder;
     ut::ResU16 groupNum;
@@ -295,14 +330,16 @@ struct AnimationTagBlock{
     ut::ResU8  padding[3];
 };
 
-struct AnimationShareBlock{
+struct AnimationShareBlock
+{
     ut::BinaryBlockHeader blockHeader;
     ut::ResU32 animShareInfoOffset;
     ut::ResU16 shareNum;
     ut::ResU8  padding[2];
 };
 
-struct AnimationBlock{
+struct AnimationBlock
+{
     ut::BinaryBlockHeader blockHeader;
     ut::ResU16 frameSize;
     ut::ResU8  loop;
@@ -312,20 +349,23 @@ struct AnimationBlock{
     ut::ResU32 animContOffsetsOffset;
 };
 
-struct AnimationContent{
+struct AnimationContent
+{
     char      name[MaterialNameStrMax];
     ut::ResU8 num;
     ut::ResU8 type;
     ut::ResU8 padding[2];
 };
 
-struct AnimationInfo{
+struct AnimationInfo
+{
     ut::ResU32 kind;
     ut::ResU8  num;
     ut::ResU8  padding[3];
 };
 
-struct AnimationTarget{
+struct AnimationTarget
+{
     ut::ResU8  id;
     ut::ResU8  target;
     ut::ResU8  curveType;
@@ -335,23 +375,27 @@ struct AnimationTarget{
     ut::ResU32 keysOffset;
 };
 
-struct HermiteKey{
+struct HermiteKey
+{
     ut::ResF32 frame;
     ut::ResF32 value;
     ut::ResF32 slope;
 };
 
-struct StepKey{
+struct StepKey
+{
     ut::ResF32 frame;
     ut::ResU16 value;
     ut::ResU16 padding[1];
 };
 
-struct Lim{
+struct Lim
+{
     ut::BinaryFileHeader fileHeader;
 };
 
-struct Image{
+struct Image
+{
     ut::BinaryBlockHeader blockHeader;
     ut::ResU16 width;
     ut::ResU16 height;
@@ -360,7 +404,8 @@ struct Image{
     ut::ResU8  padding[2];
 };
 
-struct ImageSize{
+struct ImageSize
+{
     ut::ResU32 imageSize;
 };
 

@@ -13,10 +13,10 @@ NW_UT_RUNTIME_TYPEINFO_DEFINITION( ResSceneNode, ResSceneObject );
 NW_UT_RUNTIME_TYPEINFO_DEFINITION( ResTransformNode, ResSceneNode );
 
 static const nw::ut::internal::RuntimeTypeInfo*
-sGfxTypeInfoTable[] ={
-    &ResSceneObject::sTypeInfo,
-    &ResSceneNode::sTypeInfo,
-    &ResTransformNode::sTypeInfo
+s_GfxTypeInfoTable[] ={
+    &ResSceneObject::s_TypeInfo,
+    &ResSceneNode::s_TypeInfo,
+    &ResTransformNode::s_TypeInfo
 };
 #endif
 

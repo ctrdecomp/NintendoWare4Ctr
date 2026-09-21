@@ -15,50 +15,56 @@ namespace gfx{
 
 typedef nw::ut::FixedSizeArray<FragmentLight*, LIGHT_COUNT> FixedFragmentLightArray;
 
-class LightSet : public GfxObject{
+class LightSet : public GfxObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(LightSet);
 
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    enum{
+    enum
+    {
         DEFAULT_MAX_VERTEX_LIGHTS = 4
     };
 
-    struct Description{
+    struct Description
+    {
         Description(): 
             isFixedSizeMemory(true),
-            maxVertexLights(DEFAULT_MAX_VERTEX_LIGHTS)
-        {}
+            maxVertexLights(DEFAULT_MAX_VERTEX_LIGHTS) {}
         
         bool isFixedSizeMemory;
         s32  maxVertexLights;
     };
 
-    class DynamicBuilder{
+    class DynamicBuilder
+    {
     public:
         DynamicBuilder() {}
         ~DynamicBuilder() {}
 
-        DynamicBuilder& IsFixedSizeMemory(bool isFixedSizeMemory){
-            mDescription.isFixedSizeMemory = isFixedSizeMemory;
+        DynamicBuilder& IsFixedSizeMemory(bool isFixedSizeMemory)
+        {
+            m_Description.isFixedSizeMemory = isFixedSizeMemory;
             return *this;
         }
 
-        DynamicBuilder& MaxVertexLights(s32 maxVertexLights){
-            mDescription.maxVertexLights = maxVertexLights;
+        DynamicBuilder& MaxVertexLights(s32 maxVertexLights)
+        {
+            m_Description.maxVertexLights = maxVertexLights;
             return *this;
         }
 
         LightSet* Create(nw::os::IAllocator* allocator);
 
     private:
-        LightSet::Description mDescription;
+        LightSet::Description m_Description;
     };
 
     static LightSet* Create(ResLightSet resource,nw::os::IAllocator* allocator);
-    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize,ResLightSet resource){
+    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize,ResLightSet resource)
+    {
         nw::os::MemorySizeCalculator& size = *pSize;
 
         size += sizeof(LightSet);
@@ -66,103 +72,123 @@ public:
         size += sizeof(VertexLight*) * resource.GetLightsCount();
     }
 
-    void SetAmbientLight(AmbientLight* light){
-        this->mAmbientLight = light;
+    void SetAmbientLight(AmbientLight* light)
+    {
+        this->m_AmbientLight = light;
     }
 
-    AmbientLight* GetAmbientLight(){
-        return this->mAmbientLight;
+    AmbientLight* GetAmbientLight()
+    {
+        return this->m_AmbientLight;
     }
 
-    const AmbientLight* GetAmbientLight() const{
-        return this->mAmbientLight;
+    const AmbientLight* GetAmbientLight() const
+    {
+        return this->m_AmbientLight;
     }
 
-    void SetHemiSphereLight(HemiSphereLight* light){
-        this->mHemiSphereLight = light;
+    void SetHemiSphereLight(HemiSphereLight* light)
+    {
+        this->m_HemiSphereLight = light;
     }
 
-    HemiSphereLight* GetHemiSphereLight(){
-        return this->mHemiSphereLight;
+    HemiSphereLight* GetHemiSphereLight()
+    {
+        return this->m_HemiSphereLight;
     }
 
-    const HemiSphereLight* GetHemiSphereLight() const{
-        return this->mHemiSphereLight;
+    const HemiSphereLight* GetHemiSphereLight() const
+    {
+        return this->m_HemiSphereLight;
     }
 
-    void SetVertexLight(VertexLight* light){
-        this->mVertexLights.push_back(light);
+    void SetVertexLight(VertexLight* light)
+    {
+        this->m_VertexLights.push_back(light);
     }
 
-    VertexLightArray::iterator GetVertexLightBegin(){
-        return this->mVertexLights.begin();
+    VertexLightArray::iterator GetVertexLightBegin()
+    {
+        return this->m_VertexLights.begin();
     }
 
-    VertexLightArray::const_iterator GetVertexLightBegin() const{
-        return this->mVertexLights.begin();
+    VertexLightArray::const_iterator GetVertexLightBegin() const
+    {
+        return this->m_VertexLights.begin();
     }
 
-    VertexLightArray::iterator GetVertexLightEnd(){
-        return this->mVertexLights.end();
+    VertexLightArray::iterator GetVertexLightEnd()
+    {
+        return this->m_VertexLights.end();
     }
 
-    VertexLightArray::const_iterator GetVertexLightEnd() const{
-        return this->mVertexLights.end();
+    VertexLightArray::const_iterator GetVertexLightEnd() const
+    {
+        return this->m_VertexLights.end();
     }
 
-    s32 GetVertexLightCount() const{
-        return this->mVertexLights.size();
+    s32 GetVertexLightCount() const
+    {
+        return this->m_VertexLights.size();
     }
 
-    void SetFragmentLight(FragmentLight* light){
-        this->mFragmentLights.push_back(light);
+    void SetFragmentLight(FragmentLight* light)
+    {
+        this->m_FragmentLights.push_back(light);
     }
 
-    FixedFragmentLightArray::iterator GetFragmentLightBegin(){
-        return this->mFragmentLights.begin();
+    FixedFragmentLightArray::iterator GetFragmentLightBegin()
+    {
+        return this->m_FragmentLights.begin();
     }
 
-    FixedFragmentLightArray::const_iterator GetFragmentLightBegin() const{
-        return this->mFragmentLights.begin();
+    FixedFragmentLightArray::const_iterator GetFragmentLightBegin() const
+    {
+        return this->m_FragmentLights.begin();
     }
 
-    FixedFragmentLightArray::iterator GetFragmentLightEnd(){
-        return this->mFragmentLights.end();
+    FixedFragmentLightArray::iterator GetFragmentLightEnd()
+    {
+        return this->m_FragmentLights.end();
     }
 
-    FixedFragmentLightArray::const_iterator GetFragmentLightEnd() const{
-        return this->mFragmentLights.end();
+    FixedFragmentLightArray::const_iterator GetFragmentLightEnd() const
+    {
+        return this->m_FragmentLights.end();
     }
 
-    s32 GetFragmentLightCount() const{
-        return this->mFragmentLights.size();
+    s32 GetFragmentLightCount() const
+    {
+        return this->m_FragmentLights.size();
     }
 
-    void ClearAll(){
-        this->mAmbientLight = NULL;
-        this->mHemiSphereLight = NULL;
-        this->mVertexLights.clear();
-        this->mFragmentLights.clear();
+    void ClearAll()
+    {
+        this->m_AmbientLight = NULL;
+        this->m_HemiSphereLight = NULL;
+        this->m_VertexLights.clear();
+        this->m_FragmentLights.clear();
     }
 
 protected:
     LightSet(nw::os::IAllocator* allocator,ResLightSet resObj,const LightSet::Description& description): 
         GfxObject(allocator),
-        mResource(resObj),
-        mAmbientLight(NULL),
-        mHemiSphereLight(NULL){
+        m_Resource(resObj),
+        m_AmbientLight(NULL),
+        m_HemiSphereLight(NULL)
+        {
         NW_UNUSED_VARIABLE(description);
     }
 
     virtual ~LightSet() {}
     
 private:
-    ResLightSet mResource;
+    ResLightSet m_Resource;
 
-    AmbientLight* mAmbientLight;
-    HemiSphereLight* mHemiSphereLight;
-    VertexLightArray mVertexLights;
-    FixedFragmentLightArray mFragmentLights;
+    AmbientLight* m_AmbientLight;
+    HemiSphereLight* m_HemiSphereLight;
+    VertexLightArray m_VertexLights;
+    FixedFragmentLightArray m_FragmentLights;
 };
 
 }

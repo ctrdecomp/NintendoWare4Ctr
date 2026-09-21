@@ -61,5 +61,6 @@
 #if !defined(NW_RELEASE)
 #define NW_FAILSAFE_IF(exp) if (exp)
 #else
-#define NW_FAILSAFE_IF(exp) if (exp) { NW_FATAL_ERROR(#exp); } if (false)
+#define NW_FAILSAFE_IF(exp) if (exp) 
+{ NW_FATAL_ERROR(#exp); } if (false)
 #endif

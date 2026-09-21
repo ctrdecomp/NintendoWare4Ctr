@@ -10,7 +10,8 @@ namespace os{
 
 namespace gfx{
 
-class RotateViewUpdater : public CameraViewUpdater{
+class RotateViewUpdater : public CameraViewUpdater
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(RotateViewUpdater);
 
@@ -21,26 +22,31 @@ public:
 
     static RotateViewUpdater* Create(nw::os::IAllocator* allocator,ResRotateViewUpdater resUpdater);
 
-    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize,bool isDynamicBuild){
+    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize,bool isDynamicBuild)
+    {
         nw::os::MemorySizeCalculator& size = *pSize;
 
         size += sizeof(RotateViewUpdater);
-        if (isDynamicBuild){
+        if (isDynamicBuild)
+        {
             size += sizeof(ResRotateViewUpdaterData);
         }
     }
 
     void virtual Update(nw::math::MTX34* viewMatrix,const nw::math::MTX34& worldMatrix,const nw::math::VEC3& cameraPosition);
 
-    virtual ResCameraViewUpdater GetResource() {
-        return this->mResource;
+    virtual ResCameraViewUpdater GetResource() 
+    {
+        return this->m_Resource;
     }
 
-    virtual const ResCameraViewUpdater GetResource() const {
-        return this->mResource;
+    virtual const ResCameraViewUpdater GetResource() const 
+    {
+        return this->m_Resource;
     }
 
-    virtual anim::ResCameraAnimData::ViewUpdaterKind Kind() const{
+    virtual anim::ResCameraAnimData::ViewUpdaterKind Kind() const
+    {
         return anim::ResCameraAnimData::VIEW_UPDATER_ROTATE;
     }
     
@@ -49,7 +55,7 @@ private:
 
     virtual ~RotateViewUpdater();
 
-    ResRotateViewUpdater mResource;
+    ResRotateViewUpdater m_Resource;
 };
 
 }

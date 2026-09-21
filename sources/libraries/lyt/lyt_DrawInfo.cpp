@@ -11,14 +11,14 @@ namespace nw{
 namespace lyt{
 
 DrawInfo::DrawInfo():   
-    mLocationAdjustScale(1.f, 1.f),
-    mGlobalAlpha(1.f),
+    m_LocationAdjustScale(1.f, 1.f),
+    m_GlobalAlpha(1.f),
     mpGraphicsResource(0),
     mpLayout(0)
-{
-    std::memset(&this->mFlag, 0, sizeof(this->mFlag));
+    {
+    std::memset(&this->m_Flag, 0, sizeof(this->m_Flag));
 
-    MTX34Identity(&this->mViewMtx);
+    MTX34Identity(&this->m_ViewMtx);
 }
 
 DrawInfo::~DrawInfo()
@@ -27,7 +27,7 @@ DrawInfo::~DrawInfo()
 
 void DrawInfo::SetProjectionMtx(const nw::math::MTX44& mtx)
 {
-    math::MTX44Copy(&this->mProjMtx, &mtx);
+    math::MTX44Copy(&this->m_ProjMtx, &mtx);
 }
 
 }

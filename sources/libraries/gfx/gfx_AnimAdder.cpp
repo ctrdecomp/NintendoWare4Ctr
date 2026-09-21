@@ -1,4 +1,8 @@
-﻿#include <nw/anim/anim_AnimBlend.h>
+// Filename: gfx_AnimAdder.cpp
+//
+// Project: NintendoWare4Ctr
+
+#include <nw/anim/anim_AnimBlend.h>
 #include <nw/gfx/gfx_AnimObject.h>
 
 namespace nw{
@@ -6,15 +10,20 @@ namespace gfx{
 
 NW_UT_RUNTIME_TYPEINFO_DEFINITION(AnimAdder, AnimBlender);
 
-const anim::AnimResult* AnimAdder::GetResult(void* target,int memberIdx) const{
-    const anim::AnimBlendOp* blendOp = this->mAnimGroup->GetBlendOperation(memberIdx);
-    if (blendOp == NULL || !blendOp->HasBlend()){
-        for (int animIdx = this->mAnimObjects.Size() - 1; animIdx >= 0; --animIdx){
-            if (mAnimObjects[animIdx] == NULL){
+const anim::AnimResult* AnimAdder::GetResult(void* target,int memberIdx) const
+{
+    const anim::AnimBlendOp* blendOp = this->m_AnimGroup->GetBlendOperation(memberIdx);
+    if (blendOp == NULL || !blendOp->HasBlend())
+    {
+        for (int animIdx = this->m_AnimObjects.Size() - 1; animIdx >= 0; --animIdx)
+        {
+            if (m_AnimObjects[animIdx] == NULL)
+            {
                 continue;
             }
-            const anim::AnimResult* childResult = mAnimObjects[animIdx]->GetResult(target, memberIdx);
-            if (childResult != NULL){
+            const anim::AnimResult* childResult = m_AnimObjects[animIdx]->GetResult(target, memberIdx);
+            if (childResult != NULL)
+            {
                 return childResult;
             }
         }
@@ -27,34 +36,42 @@ const anim::AnimResult* AnimAdder::GetResult(void* target,int memberIdx) const{
 
     anim::AnimResult workResult;
     bool written = false;
-    for (int animIdx = this->mAnimObjects.Size() - 1; animIdx >= 0; --animIdx){
-        if (mAnimObjects[animIdx] == NULL){
+    for (int animIdx = this->m_AnimObjects.Size() - 1; animIdx >= 0; --animIdx)
+    {
+        if (m_AnimObjects[animIdx] == NULL)
+        {
             continue;
         }
-        const float childWeight = mWeights[animIdx];
-        if (!AnimWeightNearlyEqualZero(childWeight)){
+        const float childWeight = m_Weights[animIdx];
+        if (!AnimWeightNearlyEqualZero(childWeight))
+        {
 
             workResult.EnableFlags(anim::AnimResult::FLAG_CONVERTED, convertedBak);
 
-            const anim::AnimResult* childResult = this->mAnimObjects[animIdx]->GetResult(&workResult, memberIdx);
-            if (childResult != NULL){
+            const anim::AnimResult* childResult = this->m_AnimObjects[animIdx]->GetResult(&workResult, memberIdx);
+            if (childResult != NULL)
+            {
                 written = true;
-                if (!blendOp->Blend(result, NULL, childResult, &childWeight)){
+                if (!blendOp->Blend(result, NULL, childResult, &childWeight))
+                {
                     break;
                 }
             }
         }
     }
 
-    if (!convertedBak){
+    if (!convertedBak)
+    {
         result->DisableFlags(anim::AnimResult::FLAG_CONVERTED);   
     }
 
-    if (!written){
+    if (!written)
+    {
         return NULL;
     }
 
-    if (!convertedBak && blendOp->HasPostBlend()){
+    if (!convertedBak && blendOp->HasPostBlend())
+    {
         blendOp->PostBlend(result, NULL);    
     }
     return result;

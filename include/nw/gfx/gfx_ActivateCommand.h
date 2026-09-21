@@ -14,19 +14,24 @@
 
 namespace nw{
 namespace gfx{
+namespace res{
+    class ResIndexStream;
+}
 
 class ShaderProgram;
 
 namespace internal{
 
 void ClearVertexAttribute();
-s32 SetupDrawIndexStreamCommand(CommandBufferInfo& bufferInfo,ResIndexStream indexStream,bool hasGeometryShader);
+s32 SetupDrawIndexStreamCommand(CommandBufferInfo& bufferInfo, res::ResIndexStream indexStream, bool hasGeometryShader);
 s32 CalcSetupDrawIndexStreamCommand(ResIndexStream indexStream);
 s32 SetupShaderProgramMode(bool useGeometry);
 
-class CommandCacheHelper{
+class CommandCacheHelper
+{
 public:
-    inline static u32 MultU32Color(u32 lhs, u32 rhs){
+    NW_INLINE static u32 MultU32Color(u32 lhs, u32 rhs)
+{
         const u32 MASKx2 = (0xff << 1);
 
         u32 r = ((((lhs << 1) & MASKx2) + 1) * (((rhs << 1) & MASKx2) + 1)) >> 10;
@@ -36,7 +41,8 @@ public:
         return (r << 20) | (g << 10) | b;
     }
 
-    inline static u32 MultAddU32Color(u32 lhs, u32 rhs, u32 add){
+    NW_INLINE static u32 MultAddU32Color(u32 lhs, u32 rhs, u32 add)
+    {
         const u32 MASK = 0xff;
         const u32 MASKx2 = (0xff << 1);
 
@@ -50,10 +56,12 @@ public:
             nw::ut::Clamp<u32>(b, 0, 255);
     }
 
-    inline static u32 GetVertexFormat(s32 dimension, GLuint format){
+    NW_INLINE static u32 GetVertexFormat(s32 dimension, GLuint format)
+    {
         u32 result = 0;
 
-        switch(format){
+        switch (format)
+        {
         case GL_BYTE:
             result = 0;
             break;
@@ -77,8 +85,10 @@ public:
         return result + ((dimension - 1) << 2);
     }
 
-    inline static u32 GetVertexSize(s32 dimension, GLuint format){
-        switch(format){
+    NW_INLINE static u32 GetVertexSize(s32 dimension, GLuint format)
+    {
+        switch (format)
+        {
         case GL_BYTE:
         case GL_UNSIGNED_BYTE:
             return dimension;
@@ -97,8 +107,10 @@ public:
     }
 };
 
-inline void ActivateFragmentLightCount(s32 count){
-    enum { 
+NW_INLINE void ActivateFragmentLightCount(s32 count)
+{
+    enum
+    {
         REG_FRAGMENT_LIGHT_COUNT    = 0x1c2,
         REG_FRAGMENT_LIGHT_MASK     = 0x1d9
     };
@@ -106,48 +118,54 @@ inline void ActivateFragmentLightCount(s32 count){
     const u32 COUNT_HEADER    = internal::MakeCommandHeader(REG_FRAGMENT_LIGHT_COUNT, 1, false, 0x1);
     const u32 LIGHT_MASK_HEADER = internal::MakeCommandHeader(REG_FRAGMENT_LIGHT_MASK, 1, false, 0xF);
     
-    u32 LIGHT_COUNT_COMMAND[] ={
+    u32 LIGHT_COUNT_COMMAND[] =
+    {
         0,
-        COUNT_HEADER
-        ,0,
+        COUNT_HEADER,
+        0,
         LIGHT_MASK_HEADER
     };
     
     LIGHT_COUNT_COMMAND[0] = (count > 0) ? count - 1 : 0;
 
-    for (int i = 0; i < count; ++i){
+    for (int i = 0; i < count; ++i)
+    {
         LIGHT_COUNT_COMMAND[2] |= i << (4 * i);
     }
     
     internal::NWUseCmdlist<sizeof(LIGHT_COUNT_COMMAND)>( &LIGHT_COUNT_COMMAND[0] );
 }
 
-inline void ActivateFragmentLight(s32 index, ResMaterialColor materialColor, const FragmentLight* light, bool useReflection){
+NW_INLINE void ActivateFragmentLight(s32 index, ResMaterialColor materialColor, const FragmentLight* light, bool useReflection)
+{
     enum { REG_FRAGMENT_COLOR_BASE = 0x140 };
     
     const u32 HEADER = internal::MakeCommandHeader(REG_FRAGMENT_COLOR_BASE, 4, true, 0xF);
     
-    NW_NULL_ASSERT( light );
+    NW_NULL_ASSERT(light);
     
     ResFragmentLight resLight = light->GetResFragmentLight();
     
-    u32 specular0U32  = CommandCacheHelper::MultU32Color(resLight.GetSpecular0U32(), materialColor.GetSpecular0U32());
-    u32 diffuseU32    = CommandCacheHelper::MultU32Color(resLight.GetDiffuseU32(), materialColor.GetDiffuseU32());
-    u32 ambientU32    = CommandCacheHelper::MultU32Color(resLight.GetAmbientU32(), materialColor.GetAmbientU32());
-    u32 specular1U32  = resLight.GetSpecular1U32();
+    u32 specular0U32 = CommandCacheHelper::MultU32Color(resLight.GetSpecular0U32(), materialColor.GetSpecular0U32());
+    u32 diffuseU32 = CommandCacheHelper::MultU32Color(resLight.GetDiffuseU32(), materialColor.GetDiffuseU32());
+    u32 ambientU32 = CommandCacheHelper::MultU32Color(resLight.GetAmbientU32(), materialColor.GetAmbientU32());
+    u32 specular1U32 = resLight.GetSpecular1U32();
     
-    if (useReflection){
+    if (useReflection)
+    {
         const u32 MASK = 0xff;
         u8 r = (specular1U32 & MASK);
         u8 g = ((specular1U32 >> 8) & MASK);
         u8 b = ((specular1U32 >> 16) & MASK);
         specular1U32 = (static_cast<u32>(r) << 20) | (static_cast<u32>(g) << 10) | (static_cast<u32>(b));
     }
-    else{
+    else
+    {
         specular1U32 = CommandCacheHelper::MultU32Color(resLight.GetSpecular1U32(), materialColor.GetSpecular1U32());
     }
     
-    u32 LIGHT_COMMAND[6] ={
+    u32 LIGHT_COMMAND[6] =
+    {
         specular0U32,
         HEADER + (0x10 * index),
         specular1U32,
@@ -159,17 +177,21 @@ inline void ActivateFragmentLight(s32 index, ResMaterialColor materialColor, con
     internal::NWUseCmdlist<sizeof(LIGHT_COMMAND)>( &LIGHT_COMMAND[0] );
 }
 
-inline void ActivateFragmentAmbientLight(ResMaterialColor materialColor, const AmbientLight* light){
-    enum { REG_FRAGMENT_COLOR_AMBIENT = 0x1c0 };
+inline void ActivateFragmentAmbientLight(ResMaterialColor materialColor, const AmbientLight* light)
+{
+    enum
+{ REG_FRAGMENT_COLOR_AMBIENT = 0x1c0 };
     
     u32 ambientU32 = 0x0;
     const u32 HEADER = internal::MakeCommandHeader(REG_FRAGMENT_COLOR_AMBIENT, 1, false, 0xF);
     
-    if (light){
+    if (light)
+    {
         ResAmbientLight resLight = light->GetResAmbientLight();
         ambientU32 = CommandCacheHelper::MultAddU32Color(resLight.GetAmbientU32(), materialColor.GetAmbientU32(), materialColor.GetEmissionU32());
     }
-    else{
+    else
+    {
         u32 emissionU32 = materialColor.GetEmissionU32();
         const u32 MASK = 0xff;
         u8 r = (emissionU32 & MASK);
@@ -186,44 +208,53 @@ inline void ActivateFragmentAmbientLight(ResMaterialColor materialColor, const A
     internal::NWUseCmdlist<sizeof(LIGHT_COMMAND)>( &LIGHT_COMMAND[0] );
 }
 
-inline void ActivateFragmentLightParameters(s32 index, bool isDirectional, bool twoSided, bool geomFactor0, bool geomFactor1){
-    enum {
+NW_INLINE void ActivateFragmentLightParameters(s32 index, bool isDirectional, bool twoSided, bool geomFactor0, bool geomFactor1)
+{
+    enum
+    {
         REG_FRAGMENT_LIGHT_TYPE = 0x149
     };
     
     const u32 HEADER = internal::MakeCommandHeader(REG_FRAGMENT_LIGHT_TYPE, 1, false, 0x1);
     
-    u32 LIGHT_COMMAND[2] ={
+    u32 LIGHT_COMMAND[2] =
+    {
         0, HEADER + 0x10 * index
     };
     
-    if (isDirectional){
+    if (isDirectional)
+    {
         LIGHT_COMMAND[0] |= 0x1;
     }
     
-    if (twoSided){
+    if (twoSided)
+    {
         LIGHT_COMMAND[0] |= 0x2;
     }
     
-    if (geomFactor0){
+    if (geomFactor0)
+    {
         LIGHT_COMMAND[0] |= 0x4;
     }
     
-    if (geomFactor1){
+    if (geomFactor1)
+    {
         LIGHT_COMMAND[0] |= 0x8;
     }
     
     internal::NWUseCmdlist<sizeof(LIGHT_COMMAND)>( &LIGHT_COMMAND[0] );
 }
 
-inline void ActivateFragmentLighting(const ResFragmentLighting fragmentLighting){
+inline void ActivateFragmentLighting(const ResFragmentLighting fragmentLighting)
+{
     const u32 REG_LIGHT_ENV  = 0x1c3;
     const u32 REG_LIGHT_ENV2 = 0x1c4;
 
     const u32 HEADER  = internal::MakeCommandHeader(REG_LIGHT_ENV,  1, false, 0xf);
     const u32 HEADER2 = internal::MakeCommandHeader(REG_LIGHT_ENV2, 1, false, 0x4);
     
-    u32 LIGHT_COMMAND[4] ={
+    u32 LIGHT_COMMAND[4] =
+    {
         0, HEADER, 0, HEADER2
     };
     

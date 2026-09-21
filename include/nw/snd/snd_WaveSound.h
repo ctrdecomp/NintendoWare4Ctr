@@ -8,19 +8,31 @@
 #include <nw/snd/snd_PlayerHeapDataManager.h>
 
 namespace nw { 
+namespace snd {
 
 class WaveSoundHandle;
 
-namespace snd { 
 namespace internal {
 
 class WaveSound;
+class SoundDataManager;
 
 class WaveSound : public BasicSound
 {
 public:
     NW_UT_RUNTIME_TYPEINFO;
-private:
+
+    struct StartInfo
+    {
+        s32 index;
+        driver::WaveSoundPlayer::StartOffsetType startOffsetType;
+        s32 startOffset;
+        const driver::WaveSoundPlayer::WaveSoundCallback* callback;
+        u32 callbackData;
+    };
+protected:
+    typedef void (*NotifyAsyncLoadFinished)(bool result, const LoadItemInfo* wsd, void* userData);
+
     class DataLoadTask : public Task
     {
     public:
@@ -38,6 +50,7 @@ private:
 
         s32 m_Index;
     };
+public:
 
     driver::WaveSoundPlayer m_WaveSoundPlayerInstance;
     WaveSoundHandle* m_pTempSpecialHandle;

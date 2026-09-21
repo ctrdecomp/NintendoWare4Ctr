@@ -8,25 +8,31 @@ namespace nw{
 namespace ut{
 
 template<typename TSlot>
-struct SlotDestroyer : public std::unary_function<TSlot&, void>{
-    void operator()(TSlot& slot) const{
+struct SlotDestroyer : public std::unary_function<TSlot&, void>
+{
+    void operator()(TSlot& slot) const
+    {
         slot->Destroy();
     }
 };
 
 template<typename TArray>
-inline void DestroyAllSlots(TArray& array){
+inline void DestroyAllSlots(TArray& array)
+{
     std::for_each(array.begin(), array.end(), SlotDestroyer<typename TArray::value_type>());
     array.clear();
 }
 
 template<typename TResult>
-struct LastValueResult{
+struct LastValueResult
+{
     typedef TResult ResultType;
     template<typename TInputIterator, typename TInvoker>
-    ResultType operator()(TInputIterator first, TInputIterator last, const TInvoker& invoker){
+    ResultType operator()(TInputIterator first, TInputIterator last, const TInvoker& invoker)
+    {
         ResultType result;
-        while (first != last){
+        while (first != last)
+        {
             result = invoker(*first);
             ++first;
         }
@@ -35,10 +41,13 @@ struct LastValueResult{
 };
 
 template<>
-struct LastValueResult<void>{
+struct LastValueResult<void>
+{
     template<typename TInputIterator, typename TInvoker>
-    void operator()(TInputIterator first, TInputIterator last, const TInvoker& invoker){
-        while (first != last){
+    void operator()(TInputIterator first, TInputIterator last, const TInvoker& invoker)
+    {
+        while (first != last)
+        {
             invoker(*first);
             ++first;
         }
@@ -46,24 +55,27 @@ struct LastValueResult<void>{
 };
 
 template<typename TResult,typename TArg0, typename TArg1, typename TAllocator = nw::os::IAllocator>
-class Slot2{
+class Slot2
+{
 public:
     typedef TResult ResultType;
     typedef TAllocator AllocatorType;
 
     explicit Slot2(AllocatorType* allocator): 
-        mAllocator(allocator) 
-    {}
+        m_Allocator(allocator) {}
 
-    void Destroy(){
+    void Destroy()
+    {
         AllocatorType* allocator = this->GetAllocator();
-        if (allocator){
+        if (allocator)
+        {
             this->~Slot2();
             allocator->Free(this);
         }
     }
 
-    void Destroy(AllocatorType* allocator){
+    void Destroy(AllocatorType* allocator)
+    {
         NW_NULL_ASSERT(allocator);
         this->~Slot2();
         allocator->Free(this);
@@ -71,34 +83,37 @@ public:
 
     virtual ResultType Invoke(TArg0 arg0, TArg1 arg1) = 0;
     
-    AllocatorType* GetAllocator() { return mAllocator; }
+    AllocatorType* GetAllocator() { return m_Allocator; }
     
 protected:
     virtual ~Slot2() {}
     
 private:
-    AllocatorType* mAllocator;
+    AllocatorType* m_Allocator;
 };
 
 template<typename TResult,typename TArg0, typename TArg1, typename TArg2, typename TAllocator = os::IAllocator>
-class Slot3{
+class Slot3
+{
 public:
     typedef TResult ResultType;
     typedef TAllocator AllocatorType;
 
     explicit Slot3(AllocatorType* allocator) : 
-        mAllocator(allocator) 
-    {}
+        m_Allocator(allocator) {}
 
-    void Destroy(){
+    void Destroy()
+    {
         AllocatorType* allocator = this->GetAllocator();
-        if (allocator){
+        if (allocator)
+        {
             this->~Slot3();
             allocator->Free(this);
         }
     }
 
-    void Destroy(AllocatorType* allocator){
+    void Destroy(AllocatorType* allocator)
+    {
         NW_NULL_ASSERT(allocator);
         this->~Slot3();
         allocator->Free(this);
@@ -106,18 +121,19 @@ public:
 
     virtual ResultType Invoke(TArg0 arg0, TArg1 arg1, TArg2 arg2) = 0;
     
-    AllocatorType* GetAllocator() { return mAllocator; }
+    AllocatorType* GetAllocator() { return m_Allocator; }
     
 protected:
     virtual ~Slot3() {}
     
 private:
-    AllocatorType* mAllocator;
+    AllocatorType* m_Allocator;
 };
 
 
 template<typename TResult,typename TArg0, typename TArg1, typename TResultCombiner = LastValueResult<TResult>,typename TAllocator = os::IAllocator,typename TSlot = Slot2<TResult, TArg0, TArg1, TAllocator> >
-class Signal2{
+class Signal2
+{
     NW_DISALLOW_COPY_AND_ASSIGN(Signal2);
     
 public:
@@ -128,12 +144,13 @@ public:
     typedef TResultCombiner ResultCombinerType;
     typedef TAllocator AllocatorType;
 
-    struct Invoker{
+    struct Invoker
+    {
         Invoker(TArg0 arg0, TArg1 arg1): 
             marg0(arg0), 
-            marg1(arg1) 
-        {}
-        ResultType operator()(SlotType* slot) const{
+            marg1(arg1) {}
+        ResultType operator()(SlotType* slot) const
+        {
             return slot->Invoke(marg0, marg1);
         }
         TArg0 marg0;
@@ -141,9 +158,11 @@ public:
     };
 
 
-    static SelfType* CreateInvalidateSignal(AllocatorType* allocator){
+    static SelfType* CreateInvalidateSignal(AllocatorType* allocator)
+    {
         void* memory = allocator->Alloc(sizeof(SelfType));
-        if (memory){
+        if (memory)
+        {
             return new(memory) SelfType(NULL, 0, allocator);
         }
         else{
@@ -152,41 +171,51 @@ public:
     }
 
 
-    static SelfType* CreateFixedSizedSignal(size_t maxSlots, AllocatorType* allocator){
+    static SelfType* CreateFixedSizedSignal(size_t maxSlots, AllocatorType* allocator)
+    {
         void* memory = allocator->Alloc(sizeof(SelfType));
-        if (memory){
+        if (memory)
+        {
             void* elements = allocator->Alloc(sizeof(SlotType*) * maxSlots);
-            if (elements != NULL){
+            if (elements != NULL)
+            {
                 return new(memory) SelfType(elements, maxSlots, allocator);
             }
-            else{
+            else
+            {
                 allocator->Free(memory);
                 return NULL;
             }
         }
-        else{
+        else
+        {
             return NULL;
         }
     }
 
-    static SelfType* CreateVariableSizeSignal(AllocatorType* allocator){
+    static SelfType* CreateVariableSizeSignal(AllocatorType* allocator)
+    {
         void* memory = allocator->Alloc(sizeof(SelfType));
-        if (memory){
+        if (memory)
+        {
             return new(memory) SelfType(allocator);
         }
-        else{
+        else
+        {
             return NULL;
         }
     }
 
-    void Destroy() { this->~Signal2(); this->mAllocator->Free(this); }
+    void Destroy() { this->~Signal2(); this->m_Allocator->Free(this); }
 
-    ResultType operator()(TArg0 arg0, TArg1 arg1){
+    ResultType operator()(TArg0 arg0, TArg1 arg1)
+    {
         ResultCombinerType combiner;
-        return combiner(this->mSlots.begin(), this->mSlots.end(), Invoker(arg0, arg1));
+        return combiner(this->m_Slots.begin(), this->m_Slots.end(), Invoker(arg0, arg1));
     }
 
-    static size_t GetMemorySizeForInvalidateSignal(size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT){
+    static size_t GetMemorySizeForInvalidateSignal(size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT)
+    {
         nw::os::MemorySizeCalculator size(alignment);
 
         GetMemorySizeForInvalidateSignalInternal(&size);
@@ -194,22 +223,24 @@ public:
         return size.GetSizeWithPadding(alignment);
     }
 
-    static void GetMemorySizeForInvalidateSignalInternal(nw::os::MemorySizeCalculator* pSize){
+    static void GetMemorySizeForInvalidateSignalInternal(nw::os::MemorySizeCalculator* pSize)
+    {
         nw::os::MemorySizeCalculator& size = *pSize;
 
         size += sizeof(SelfType);
     }
 
-    static size_t GetMemorySizeForFixedSizedSignal(size_t maxSlots, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT){
+    static size_t GetMemorySizeForFixedSizedSignal(size_t maxSlots, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT)
+    {
         nw::os::MemorySizeCalculator size(alignment);
 
         GetMemorySizeForFixedSizedSignalInternal(&size, maxSlots);
 
         return size.GetSizeWithPadding(alignment);
     }
-    
-    //! @details :private
-    static void GetMemorySizeForFixedSizedSignalInternal(nw::os::MemorySizeCalculator* pSize, size_t maxSlots){
+
+    static void GetMemorySizeForFixedSizedSignalInternal(nw::os::MemorySizeCalculator* pSize, size_t maxSlots)
+    {
         os::MemorySizeCalculator& size = *pSize;
 
         size += sizeof(SelfType);
@@ -219,21 +250,20 @@ public:
 
 private:
     Signal2(void* elements, size_t maxSlots, AllocatorType* allocator): 
-        mAllocator(allocator), mSlots(elements, maxSlots, allocator) 
-    {}
+        m_Allocator(allocator), m_Slots(elements, maxSlots, allocator) {}
     explicit Signal2(AllocatorType* allocator): 
-        mAllocator(allocator), mSlots(allocator) 
-    {}
+        m_Allocator(allocator), m_Slots(allocator) {}
 
-    ~Signal2() { DestroyAllSlots(this->mSlots); }
+    ~Signal2() { DestroyAllSlots(this->m_Slots); }
 
-    AllocatorType* mAllocator;
+    AllocatorType* m_Allocator;
 
-    SlotList mSlots;
+    SlotList m_Slots;
 };
 
 template<typename TResult,typename TArg0, typename TArg1, typename TArg2, typename TResultCombiner = LastValueResult<TResult>,typename TAllocator = os::IAllocator,typename TSlot = Slot3<TResult, TArg0, TArg1, TArg2, TAllocator> >
-class Signal3{
+class Signal3
+{
     NW_DISALLOW_COPY_AND_ASSIGN(Signal3);
     
 public:
@@ -244,13 +274,14 @@ public:
     typedef TResultCombiner ResultCombinerType;
     typedef TAllocator AllocatorType;
 
-    struct Invoker{
+    struct Invoker
+    {
         Invoker(TArg0 arg0, TArg1 arg1, TArg2 arg2): 
             marg0(arg0),
             marg1(arg1),
-            marg2(arg2)
-        {}
-        ResultType operator()(SlotType* slot) const{
+            marg2(arg2) {}
+        ResultType operator()(SlotType* slot) const
+        {
             return slot->Invoke(marg0, marg1, marg2);
         }
         TArg0 marg0;
@@ -259,52 +290,65 @@ public:
     };
 
 
-    static SelfType* CreateInvalidateSignal(AllocatorType* allocator){
+    static SelfType* CreateInvalidateSignal(AllocatorType* allocator)
+    {
         void* memory = allocator->Alloc(sizeof(SelfType));
-        if (memory){
+        if (memory)
+        {
             return new(memory) SelfType(NULL, 0, allocator);
         }
-        else{
+        else
+        {
             return NULL;
         }
     }
 
 
-    static SelfType* CreateFixedSizedSignal(size_t maxSlots, AllocatorType* allocator){
+    static SelfType* CreateFixedSizedSignal(size_t maxSlots, AllocatorType* allocator)
+    {
         void* memory = allocator->Alloc(sizeof(SelfType));
-        if (memory){
+        if (memory)
+        {
             void* elements = allocator->Alloc(sizeof(SlotType*) * maxSlots);
-            if (elements != NULL){
+            if (elements != NULL)
+            {
                 return new(memory) SelfType(elements, maxSlots, allocator);
             }
-            else{
+            else
+            {
                 allocator->Free(memory);
                 return NULL;
             }
         }
-        else{
+        else
+        {
             return NULL;
         }
     }
 
-    static SelfType* CreateVariableSizeSignal(AllocatorType* allocator){
+    static SelfType* CreateVariableSizeSignal(AllocatorType* allocator)
+    {
         void* memory = allocator->Alloc(sizeof(SelfType));
-        if (memory){
+        if (memory)
+        {
             return new(memory) SelfType(allocator);
         }
-        else{
+        else
+        {
             return NULL;
         }
     }
 
-    void Destroy() { this->~Signal3(); this->mAllocator->Free(this); }
+    void Destroy() { this->~Signal3(); this->m_Allocator->Free(this); }
 
-    ResultType operator()(TArg0 arg0, TArg1 arg1){
+    ResultType operator()(TArg0 arg0, TArg1 arg1)
+    {
         ResultCombinerType combiner;
-        return combiner(this->mSlots.begin(), this->mSlots.end(), Invoker(arg0, arg1));
+        return combiner(this->m_Slots.begin(), this->m_Slots.end(), Invoker(arg0, arg1));
     }
 
-    static size_t GetMemorySizeForInvalidateSignal(size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT){
+    static size_t GetMemorySizeForInvalidateSignal(size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT)
+    {
         nw::os::MemorySizeCalculator size(alignment);
 
         GetMemorySizeForInvalidateSignalInternal(&size);
@@ -312,13 +356,15 @@ public:
         return size.GetSizeWithPadding(alignment);
     }
 
-    static void GetMemorySizeForInvalidateSignalInternal(nw::os::MemorySizeCalculator* pSize){
+    static void GetMemorySizeForInvalidateSignalInternal(nw::os::MemorySizeCalculator* pSize)
+    {
         nw::os::MemorySizeCalculator& size = *pSize;
 
         size += sizeof(SelfType);
     }
 
-    static size_t GetMemorySizeForFixedSizedSignal(size_t maxSlots, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT){
+    static size_t GetMemorySizeForFixedSizedSignal(size_t maxSlots, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT)
+    {
         nw::os::MemorySizeCalculator size(alignment);
 
         GetMemorySizeForFixedSizedSignalInternal(&size, maxSlots);
@@ -326,7 +372,8 @@ public:
         return size.GetSizeWithPadding(alignment);
     }
 
-    static void GetMemorySizeForFixedSizedSignalInternal(nw::os::MemorySizeCalculator* pSize, size_t maxSlots){
+    static void GetMemorySizeForFixedSizedSignalInternal(nw::os::MemorySizeCalculator* pSize, size_t maxSlots)
+    {
         os::MemorySizeCalculator& size = *pSize;
 
         size += sizeof(SelfType);
@@ -336,16 +383,14 @@ public:
 
 private:
     Signal3(void* elements, size_t maxSlots, AllocatorType* allocator): 
-        mAllocator(allocator), mSlots(elements, maxSlots, allocator) 
-    {}
+        m_Allocator(allocator), m_Slots(elements, maxSlots, allocator) {}
     explicit Signal3(AllocatorType* allocator): 
-        mAllocator(allocator), mSlots(allocator) 
-    {}
+        m_Allocator(allocator), m_Slots(allocator) {}
 
-    ~Signal3() { DestroyAllSlots(this->mSlots); }
+    ~Signal3() { DestroyAllSlots(this->m_Slots); }
 
-    AllocatorType* mAllocator;
-    SlotList mSlots;
+    AllocatorType* m_Allocator;
+    SlotList m_Slots;
 };
 }
 }

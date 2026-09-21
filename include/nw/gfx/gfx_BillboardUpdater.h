@@ -11,7 +11,8 @@ namespace gfx{
 
 class Matrix34;
 
-class BillboardUpdater : public GfxObject{
+class BillboardUpdater : public GfxObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(BillboardUpdater);
 
@@ -32,9 +33,9 @@ private:
 
     void CalculateLocalMatrix(nw::math::MTX34* localMatrix,const CalculatedTransform& transform,nw::math::VEC3 zAxis,bool recalculateYAxis = true) const;
 
-    void CalculateScreenLocalMatrix(nw::math::MTX34* localMatrix,const CalculatedTransform& transform,const nw::math::MTX34& inverseViewMatrix,
-        nw::math::VEC3 yAxis,
-        nw::math::VEC3& zAxis) const;
+    void CalculateScreenLocalMatrix(nw::math::MTX34* localMatrix,const CalculatedTransform& transform,
+        const nw::math::MTX34& inverseViewMatrix,
+        nw::math::VEC3 yAxis, nw::math::VEC3& zAxis) const;
 };
 
 }

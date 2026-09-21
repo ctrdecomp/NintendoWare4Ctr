@@ -48,7 +48,7 @@ public:
             taskThreadCommandBufferSize(DEFAULT_TASK_THREAD_COMMAND_BUFFER_SIZE),
             autoCreateSoundThread(true),
             enableGetSoundThreadTick(true)
-        {
+            {
         }
     };
 
@@ -134,6 +134,7 @@ public:
         return internal::driver::HardwareManager::GetInstance().GetMasterVolume();
     }
 
+    static bool AppendEffect(AuxBus bus, FxBase* effect);
     static bool AppendEffect(AuxBus bus, nn::snd::CTR::FxDelay* fxDelay);
     static bool AppendEffect(AuxBus bus, nn::snd::CTR::FxReverb* fxReverb);
     static void ClearEffect(AuxBus bus, int fadeTimes = 0);
@@ -163,7 +164,7 @@ public:
         return internal::driver::VoiceManager::GetInstance().GetVoiceCount();
     }
 
-    static int GetMaxVoiceCount(){ return s_MaxVoiceCount; }
+    static int GetMaxVoiceCount() { return s_MaxVoiceCount; }
 
     static void SetBiquadFilterCallback(int type, const BiquadFilterCallback* biquad)
     { 
@@ -183,4 +184,4 @@ private:
 } // namespace snd
 } // namespace nw
 
-#endif /* NW_SND_SOUND_SYSTEM_H_ */
+#endif // NW_SND_SOUND_SYSTEM_H_

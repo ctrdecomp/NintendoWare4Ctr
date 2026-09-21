@@ -8,7 +8,8 @@ namespace gfx{
 
 NW_UT_RUNTIME_TYPEINFO_DEFINITION(RotateViewUpdater, CameraViewUpdater);
 
-RotateViewUpdater* RotateViewUpdater::Create(os::IAllocator* allocator){
+RotateViewUpdater* RotateViewUpdater::Create(os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
     
     void* updaterMemory = allocator->Alloc(sizeof(RotateViewUpdater));
@@ -20,8 +21,8 @@ RotateViewUpdater* RotateViewUpdater::Create(os::IAllocator* allocator){
     ResRotateViewUpdaterData* buffer = new(dataMemory) ResRotateViewUpdaterData();
 
     buffer->typeInfo     = ResRotateViewUpdater::TYPE_INFO;
-    buffer->mViewRotate = VIEW_VIEW_ROTATE;
-    buffer->mFlags      = 0x0;
+    buffer->m_ViewRotate = VIEW_VIEW_ROTATE;
+    buffer->m_Flags      = 0x0;
 
     ResRotateViewUpdater resUpdater = ResRotateViewUpdater(buffer);
 
@@ -29,7 +30,8 @@ RotateViewUpdater* RotateViewUpdater::Create(os::IAllocator* allocator){
     return new(updaterMemory) RotateViewUpdater(allocator, true, resUpdater);
 }
 
-RotateViewUpdater* RotateViewUpdater::Create(os::IAllocator* allocator, ResRotateViewUpdater resUpdater){
+RotateViewUpdater* RotateViewUpdater::Create(os::IAllocator* allocator, ResRotateViewUpdater resUpdater)
+{
     NW_NULL_ASSERT(allocator);
     
     void* updaterMemory = allocator->Alloc(sizeof(RotateViewUpdater));
@@ -40,19 +42,22 @@ RotateViewUpdater* RotateViewUpdater::Create(os::IAllocator* allocator, ResRotat
 
 RotateViewUpdater::RotateViewUpdater(os::IAllocator* allocator,bool isDynamic,ResRotateViewUpdater resUpdater): 
     CameraViewUpdater(allocator, isDynamic),
-    mResource(resUpdater)
-{}
+    m_Resource(resUpdater) {}
 
-RotateViewUpdater::~RotateViewUpdater(){
-    if (this->IsDynamic() && this->mResource.IsValid()){
-        this->GetAllocator().Free(this->mResource.ptr());
+RotateViewUpdater::~RotateViewUpdater()
+{
+    if (this->IsDynamic() && this->m_Resource.IsValid())
+    {
+        this->GetAllocator().Free(this->m_Resource.ptr());
     }
 }
 
-void  RotateViewUpdater::Update(math::MTX34* viewMatrix,const math::MTX34& worldMatrix,const math::VEC3& cameraPosition){
-    NW_ASSERT(this->mResource.IsValid());
-    u32 flags = this->mResource.GetFlags();
-    if (ut::CheckFlag(flags, ResRotateViewUpdaterData::FLAG_INHERITING_ROTATE)){
+void  RotateViewUpdater::Update(math::MTX34* viewMatrix,const math::MTX34& worldMatrix,const math::VEC3& cameraPosition)
+{
+    NW_ASSERT(this->m_Resource.IsValid());
+    u32 flags = this->m_Resource.GetFlags();
+    if (ut::CheckFlag(flags, ResRotateViewUpdaterData::FLAG_INHERITING_ROTATE))
+    {
         math::MTX33 rotateMatrix;
         math::MTX34ToMTX33(&rotateMatrix, &worldMatrix);
 
@@ -63,9 +68,9 @@ void  RotateViewUpdater::Update(math::MTX34* viewMatrix,const math::MTX34& world
         math::MTX34 rotateMatrixX;
         math::MTX34 rotateMatrixY;
         math::MTX34 rotateMatrixZ;
-        math::MTX34RotXYZRad(&rotateMatrixX, this->mResource.GetViewRotate().x, 0.0f, 0.0f);
-        math::MTX34RotXYZRad(&rotateMatrixY, 0.0f, this->mResource.GetViewRotate().y, 0.0f);
-        math::MTX34RotXYZRad(&rotateMatrixZ, 0.0f, 0.0f, this->mResource.GetViewRotate().z);
+        math::MTX34RotXYZRad(&rotateMatrixX, this->m_Resource.GetViewRotate().x, 0.0f, 0.0f);
+        math::MTX34RotXYZRad(&rotateMatrixY, 0.0f, this->m_Resource.GetViewRotate().y, 0.0f);
+        math::MTX34RotXYZRad(&rotateMatrixZ, 0.0f, 0.0f, this->m_Resource.GetViewRotate().z);
 
         math::MTX34Mult(&transformMatrix, &rotateMatrixY, &rotateMatrixX);
         math::MTX34Mult(&transformMatrix, &transformMatrix, &rotateMatrixZ);
@@ -80,7 +85,7 @@ void  RotateViewUpdater::Update(math::MTX34* viewMatrix,const math::MTX34& world
         math::MTX34LookAt(viewMatrix,&cameraPosition,&upwardVector,&targetPosition);
     }
     else{
-        math::MTX34CameraRotateRad(viewMatrix, &cameraPosition, &this->mResource.GetViewRotate());
+        math::MTX34CameraRotateRad(viewMatrix, &cameraPosition, &this->m_Resource.GetViewRotate());
     }
 }
 

@@ -23,37 +23,40 @@ Camera::Camera(
     f32 wscale,
     bool isDynamic):
     TransformNode(allocator, resObj, description),
-    mViewMatrix(math::MTX34::Identity()),
-    mInverseViewMatrix(math::MTX34::Identity()),
-    mProjectionMatrix(math::MTX44::Identity()),
-    mInverseProjectionMatrix(math::MTX44::Identity()),
-    mTextureProjectionMatrix(math::MTX34::Identity()),
-    mViewUpdater(viewUpdater),
-    mProjectionUpdater(projectionUpdater),
-    mAnimGroup(NULL),
-    mOriginalValue(),
-    mWScale(wscale),
-    mIsDynamic(isDynamic)
-{}
+    m_ViewMatrix(math::MTX34::Identity()),
+    m_InverseViewMatrix(math::MTX34::Identity()),
+    m_ProjectionMatrix(math::MTX44::Identity()),
+    m_InverseProjectionMatrix(math::MTX44::Identity()),
+    m_TextureProjectionMatrix(math::MTX34::Identity()),
+    m_ViewUpdater(viewUpdater),
+    m_ProjectionUpdater(projectionUpdater),
+    m_AnimGroup(NULL),
+    m_OriginalValue(),
+    m_WScale(wscale),
+    m_IsDynamic(isDynamic) {}
 
-Camera::~Camera(){
+Camera::~Camera()
+{
     ResCamera resCamera = ResDynamicCast<ResCamera>(GetResSceneNode());
-    if (mIsDynamic && resCamera.IsValid()){
+    if (m_IsDynamic && resCamera.IsValid())
+    {
         GetAllocator().Free(resCamera.ptr());
     }
 
     ResCameraDestroyer(&GetAllocator());
-    mOriginalValue = ResCamera(NULL);
+    m_OriginalValue = ResCamera(NULL);
 
-    ut::SafeDestroy(mAnimGroup);
+    ut::SafeDestroy(m_AnimGroup);
 }
 
-Result Camera::CreateAnimGroup(nw::os::IAllocator* allocator){
+Result Camera::CreateAnimGroup(nw::os::IAllocator* allocator)
+{
     Result result = INITIALIZE_RESULT_OK;
 
-    NW_ASSERT(mOriginalValue.IsValid());
+    NW_ASSERT(m_OriginalValue.IsValid());
 
-    if (!mAnimBinding){
+    if (!m_AnimBinding)
+    {
         return result;
     }
 
@@ -71,39 +74,44 @@ Result Camera::CreateAnimGroup(nw::os::IAllocator* allocator){
         .UseOriginalValue(true)
         .Create(allocator);
 
-    if (animGroup == NULL){
+    if (animGroup == NULL)
+    {
         result |= Result::MASK_FAIL_BIT;
     }
 
     NW_ENSURE_AND_RETURN(result);
 
-    mAnimGroup = animGroup;
+    m_AnimGroup = animGroup;
 
-    const int animMemberCount = mAnimGroup->GetMemberCount();
-    for (int memberIdx = 0; memberIdx < animMemberCount; ++memberIdx){
-        anim::ResAnimGroupMember member = mAnimGroup->GetResAnimGroupMember(memberIdx);
+    const int animMemberCount = m_AnimGroup->GetMemberCount();
+    for (int memberIdx = 0; memberIdx < animMemberCount; ++memberIdx)
+    {
+        anim::ResAnimGroupMember member = m_AnimGroup->GetResAnimGroupMember(memberIdx);
 
         void* object = GetAnimTargetObject(member);
-        mAnimGroup->SetTargetObject(memberIdx, object);
+        m_AnimGroup->SetTargetObject(memberIdx, object);
 
         if (member.GetObjectType() == anim::ResAnimGroupMember::OBJECT_TYPE_TRANSFORM &&
-            member.GetMemberType() == anim::ResTransformMember::MEMBER_TYPE_TRANSFORM){
-            mAnimGroup->SetTargetPtr(memberIdx, &Transform());
+            member.GetMemberType() == anim::ResTransformMember::MEMBER_TYPE_TRANSFORM)
+            {
+            m_AnimGroup->SetTargetPtr(memberIdx, &Transform());
         }
         else{
             u8* target = static_cast<u8*>(object);
             target += member.GetMemberOffset();
-            mAnimGroup->SetTargetPtr(memberIdx, target);
+            m_AnimGroup->SetTargetPtr(memberIdx, target);
         }
 
-        mAnimGroup->SetTargetObjectIndex(memberIdx, 0);
+        m_AnimGroup->SetTargetObjectIndex(memberIdx, 0);
 
         void* originalValue = NULL;
-        switch (member.GetObjectType()){
+        switch (member.GetObjectType())
+        {
         case anim::ResAnimGroupMember::OBJECT_TYPE_TRANSFORM:{
-                switch (member.GetMemberType()){
+                switch (member.GetMemberType())
+                {
                 case anim::ResTransformMember::MEMBER_TYPE_TRANSFORM:
-                    originalValue = &mOriginalTransform;
+                    originalValue = &m_OriginalTransform;
                     break;
                 default:
                     NW_ASSERT(false);
@@ -111,11 +119,11 @@ Result Camera::CreateAnimGroup(nw::os::IAllocator* allocator){
             }
             break;
         case anim::ResAnimGroupMember::OBJECT_TYPE_VIEW_UPDATER:{
-                originalValue = ut::AddOffsetToPtr(mOriginalValue.GetViewUpdater().ptr(), member.GetMemberOffset());
+                originalValue = ut::AddOffsetToPtr(m_OriginalValue.GetViewUpdater().ptr(), member.GetMemberOffset());
             }
             break;
         case anim::ResAnimGroupMember::OBJECT_TYPE_PROJECTION_UPDATER:{
-                originalValue = ut::AddOffsetToPtr(mOriginalValue.GetProjectionUpdater().ptr(), member.GetMemberOffset());
+                originalValue = ut::AddOffsetToPtr(m_OriginalValue.GetProjectionUpdater().ptr(), member.GetMemberOffset());
             }
             break;
         default:
@@ -123,104 +131,111 @@ Result Camera::CreateAnimGroup(nw::os::IAllocator* allocator){
         }
 
         NW_NULL_ASSERT(originalValue);
-        mAnimGroup->SetOriginalValue(memberIdx, originalValue);
+        m_AnimGroup->SetOriginalValue(memberIdx, originalValue);
     }
 
-    mAnimBinding->SetAnimGroup(0, mAnimGroup);
+    m_AnimBinding->SetAnimGroup(0, m_AnimGroup);
 
     return result;
 }
 
-Camera* Camera::DynamicBuilder::Create(nw::os::IAllocator* allocator){
+Camera* Camera::DynamicBuilder::Create(nw::os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
 
-    if (!mViewUpdater){
-        mViewUpdater.Reset(LookAtTargetViewUpdater::Create(allocator));
+    if (!m_ViewUpdater)
+    {
+        m_ViewUpdater.Reset(LookAtTargetViewUpdater::Create(allocator));
     }
 
-    if (!mProjectionUpdater){
-        mProjectionUpdater.Reset(PerspectiveProjectionUpdater::Create(allocator));
+    if (!m_ProjectionUpdater)
+    {
+        m_ProjectionUpdater.Reset(PerspectiveProjectionUpdater::Create(allocator));
     }
 
     ResCameraData* resCamera = AllocateAndFillN<ResCameraData>(allocator, sizeof(ResCameraData), 0);
 
-    resCamera->toViewUpdater.set_ptr(mViewUpdater->GetResource().ptr());
-    resCamera->toProjectionUpdater.set_ptr(mProjectionUpdater->GetResource().ptr());
+    resCamera->toViewUpdater.set_ptr(m_ViewUpdater->GetResource().ptr());
+    resCamera->toProjectionUpdater.set_ptr(m_ProjectionUpdater->GetResource().ptr());
 
-    switch (mViewUpdater->GetResource().GetTypeInfo()){
+    switch (m_ViewUpdater->GetResource().GetTypeInfo())
+    {
     case ResAimTargetViewUpdater::TYPE_INFO:
-        resCamera->mViewType = ResCamera::VIEWTYPE_AIM;
+        resCamera->m_ViewType = ResCamera::VIEWTYPE_AIM;
         break;
     case ResLookAtTargetViewUpdater::TYPE_INFO:
-        resCamera->mViewType = ResCamera::VIEWTYPE_LOOKAT;
+        resCamera->m_ViewType = ResCamera::VIEWTYPE_LOOKAT;
         break;
     case ResRotateViewUpdater::TYPE_INFO:
-        resCamera->mViewType = ResCamera::VIEWTYPE_ROTATE;
+        resCamera->m_ViewType = ResCamera::VIEWTYPE_ROTATE;
         break;
     default:
         NW_ASSERT(false);
     }
 
-    switch (mProjectionUpdater->GetResource().GetTypeInfo()){
+    switch (m_ProjectionUpdater->GetResource().GetTypeInfo())
+    {
     case ResPerspectiveProjectionUpdater::TYPE_INFO:
-        resCamera->mProjectionType = ResCamera::PROJTYPE_PERSPECTIVE;
+        resCamera->m_ProjectionType = ResCamera::PROJTYPE_PERSPECTIVE;
         break;
     case ResFrustumProjectionUpdater::TYPE_INFO:
-        resCamera->mProjectionType = ResCamera::PROJTYPE_FRUSTUM;
+        resCamera->m_ProjectionType = ResCamera::PROJTYPE_FRUSTUM;
         break;
     case ResOrthoProjectionUpdater::TYPE_INFO:
-        resCamera->mProjectionType = ResCamera::PROJTYPE_ORTHO;
+        resCamera->m_ProjectionType = ResCamera::PROJTYPE_ORTHO;
         break;
     default:
         NW_ASSERT(false);
     }
 
     resCamera->typeInfo = ResCamera::TYPE_INFO;
-    resCamera->mHeader.revision = ResCamera::BINARY_REVISION;
-    resCamera->mHeader.signature = ResCamera::SIGNATURE;
+    resCamera->m_Header.revision = ResCamera::BINARY_REVISION;
+    resCamera->m_Header.signature = ResCamera::SIGNATURE;
 
-    resCamera->mUserDataDicCount = 0;
+    resCamera->m_UserDataDicCount = 0;
     resCamera->toUserDataDic.set_ptr(NULL);
 
     const char* name = NULL;
     resCamera->toName.set_ptr(AllocateAndCopyString(name, allocator, MAX_NAME_LENGTH));
 
-    resCamera->mChildrenTableCount = 0;
+    resCamera->m_ChildrenTableCount = 0;
     resCamera->toChildrenTable.set_ptr(NULL);
-    resCamera->mAnimGroupsDicCount = 0;
+    resCamera->m_AnimGroupsDicCount = 0;
     resCamera->toAnimGroupsDic.set_ptr(NULL);
 
     const math::VEC3 scale(1.0f, 1.0f, 1.0f);
     const math::VEC3 rotate(0.0f, 0.0f, 0.0f);
     const math::VEC3 translate(0.0f, 0.0f, 0.0f);
-    resCamera->mTransform = math::Transform3(scale, rotate, translate);
-    resCamera->mWorldMatrix = math::MTX34::Identity();
+    resCamera->m_Transform = math::Transform3(scale, rotate, translate);
+    resCamera->m_WorldMatrix = math::MTX34::Identity();
     ResTransformNode(resCamera).SetBranchVisible(true);
 
     void* memory = allocator->Alloc(sizeof(Camera));
     NW_NULL_ASSERT(memory);
 
-    Camera* camera = new(memory) Camera(allocator, ResCamera(resCamera), mDescription, mViewUpdater, mProjectionUpdater, 0.0f, true);
+    Camera* camera = new(memory) Camera(allocator, ResCamera(resCamera), m_Description, m_ViewUpdater, m_ProjectionUpdater, 0.0f, true);
 
     camera->Initialize(allocator);
 
     return camera;
 }
 
-size_t Camera::DynamicBuilder::GetMemorySize(size_t alignment) const{
-    NW_ASSERT(mDescription.isFixedSizeMemory);
+size_t Camera::DynamicBuilder::GetMemorySize(size_t alignment) const
+{
+    NW_ASSERT(m_Description.isFixedSizeMemory);
 
     nw::os::MemorySizeCalculator size(alignment);
 
     ResCamera::ViewType viewType;
     ResCamera::ProjType projType;
 
-    if (!mViewUpdater){
+    if (!m_ViewUpdater)
+    {
         LookAtTargetViewUpdater::GetMemorySizeInternal(&size, true);
         viewType = ResCamera::VIEWTYPE_LOOKAT;
     }
     else{
-        switch (mViewUpdater->GetResource().GetTypeInfo())
+        switch (m_ViewUpdater->GetResource().GetTypeInfo())
         {
         case ResAimTargetViewUpdater::TYPE_INFO:
             viewType = ResCamera::VIEWTYPE_AIM;
@@ -236,12 +251,14 @@ size_t Camera::DynamicBuilder::GetMemorySize(size_t alignment) const{
         }
     }
 
-    if (!mProjectionUpdater){
+    if (!m_ProjectionUpdater)
+    {
         PerspectiveProjectionUpdater::GetMemorySizeInternal(&size, true);
         projType = ResCamera::PROJTYPE_PERSPECTIVE;
     }
     else{
-        switch (mProjectionUpdater->GetResource().GetTypeInfo()){
+        switch (m_ProjectionUpdater->GetResource().GetTypeInfo())
+        {
         case ResPerspectiveProjectionUpdater::TYPE_INFO:
             projType = ResCamera::PROJTYPE_PERSPECTIVE;
             break;
@@ -259,11 +276,12 @@ size_t Camera::DynamicBuilder::GetMemorySize(size_t alignment) const{
     size += sizeof(ResCameraData);
     size += sizeof(Camera);
 
-    TransformNode::GetMemorySizeForInitialize(&size, res::ResTransformNode(), mDescription);
+    TransformNode::GetMemorySizeForInitialize(&size, res::ResTransformNode(), m_Description);
 
     size += sizeof(ResCameraData);
 
-    switch (viewType){
+    switch (viewType)
+    {
     case ResCamera::VIEWTYPE_AIM:
         size += sizeof(ResAimTargetViewUpdaterData);
         break;
@@ -277,7 +295,8 @@ size_t Camera::DynamicBuilder::GetMemorySize(size_t alignment) const{
         NW_ASSERT(false);
     }
 
-    switch (projType){
+    switch (projType)
+    {
     case ResCamera::PROJTYPE_PERSPECTIVE:
         size += sizeof(ResPerspectiveProjectionUpdaterData);
         break;
@@ -294,7 +313,8 @@ size_t Camera::DynamicBuilder::GetMemorySize(size_t alignment) const{
     return size.GetSizeWithPadding(alignment);
 }
 
-Camera* Camera::Create(SceneNode* parent, ResSceneObject resource, const Camera::Description& description, nw::os::IAllocator* allocator){
+Camera* Camera::Create(SceneNode* parent, ResSceneObject resource, const Camera::Description& description, nw::os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
 
     ResCamera resCamera = ResDynamicCast<ResCamera>(resource);
@@ -309,18 +329,21 @@ Camera* Camera::Create(SceneNode* parent, ResSceneObject resource, const Camera:
     NW_ASSERT(resViewUpdater.IsValid());
     NW_ASSERT(viewType < ResCamera::VIEWTYPE_COUNT);
     CameraViewUpdater* cameraView = NULL;
-    if (viewType == ResCamera::VIEWTYPE_AIM){
+    if (viewType == ResCamera::VIEWTYPE_AIM)
+    {
         ResAimTargetViewUpdater resAimView(resViewUpdater.ptr());
         AimTargetViewUpdater* aimView = AimTargetViewUpdater::Create(allocator, resAimView);
         cameraView = aimView;
     }
-    else if (viewType == ResCamera::VIEWTYPE_LOOKAT){
+    else if (viewType == ResCamera::VIEWTYPE_LOOKAT)
+    {
         ResLookAtTargetViewUpdater resLookAtView(resViewUpdater.ptr());
         LookAtTargetViewUpdater* lookAtView = LookAtTargetViewUpdater::Create(allocator, resLookAtView);
 
         cameraView = lookAtView;
     }
-    else if (viewType == ResCamera::VIEWTYPE_ROTATE){
+    else if (viewType == ResCamera::VIEWTYPE_ROTATE)
+    {
         ResRotateViewUpdater resRotateView(resViewUpdater.ptr());
         RotateViewUpdater* rotateView = RotateViewUpdater::Create(allocator, resRotateView);
 
@@ -333,19 +356,22 @@ Camera* Camera::Create(SceneNode* parent, ResSceneObject resource, const Camera:
     NW_ASSERT(resProjectionUpdater.IsValid());
     NW_ASSERT(projType < ResCamera::PROJTYPE_COUNT);
     CameraProjectionUpdater* cameraProjection = NULL;
-    if (projType == ResCamera::PROJTYPE_PERSPECTIVE){
+    if (projType == ResCamera::PROJTYPE_PERSPECTIVE)
+    {
         ResPerspectiveProjectionUpdater resPersProjection(resProjectionUpdater.ptr());
         PerspectiveProjectionUpdater* persProjection = PerspectiveProjectionUpdater::Create(allocator, resPersProjection);
 
         cameraProjection = persProjection;
     }
-    else if (projType == ResCamera::PROJTYPE_FRUSTUM){
+    else if (projType == ResCamera::PROJTYPE_FRUSTUM)
+    {
         ResFrustumProjectionUpdater resFrustumProjection(resProjectionUpdater.ptr());
         FrustumProjectionUpdater* frustumProjection = FrustumProjectionUpdater::Create(allocator, resFrustumProjection);
 
         cameraProjection = frustumProjection;
     }
-    else if (projType == ResCamera::PROJTYPE_ORTHO){
+    else if (projType == ResCamera::PROJTYPE_ORTHO)
+    {
         ResOrthoProjectionUpdater resOrthoProjection(resProjectionUpdater.ptr());
         OrthoProjectionUpdater* orthoProjection = OrthoProjectionUpdater::Create(allocator, resOrthoProjection);
 
@@ -357,7 +383,8 @@ Camera* Camera::Create(SceneNode* parent, ResSceneObject resource, const Camera:
 
     camera->Initialize(allocator);
 
-    if (parent){
+    if (parent)
+    {
         bool result = parent->AttachChild(camera);
         NW_ASSERT(result);
     }
@@ -365,7 +392,8 @@ Camera* Camera::Create(SceneNode* parent, ResSceneObject resource, const Camera:
     return camera;
 }
 
-void Camera::GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResCamera resCamera, Description description){
+void Camera::GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResCamera resCamera, Description description)
+{
     NW_ASSERT(description.isFixedSizeMemory);
 
     nw::os::MemorySizeCalculator& size = *pSize;
@@ -374,25 +402,31 @@ void Camera::GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResCamer
 
     ResCamera::ViewType viewType = resCamera.GetViewType();
     NW_ASSERT(viewType < ResCamera::VIEWTYPE_COUNT);
-    if (viewType == ResCamera::VIEWTYPE_AIM){
+    if (viewType == ResCamera::VIEWTYPE_AIM)
+    {
         AimTargetViewUpdater::GetMemorySizeInternal(&size, false);
     }
-    else if (viewType == ResCamera::VIEWTYPE_LOOKAT){
+    else if (viewType == ResCamera::VIEWTYPE_LOOKAT)
+    {
         LookAtTargetViewUpdater::GetMemorySizeInternal(&size, false);
     }
-    else if (viewType == ResCamera::VIEWTYPE_ROTATE){
+    else if (viewType == ResCamera::VIEWTYPE_ROTATE)
+    {
         RotateViewUpdater::GetMemorySizeInternal(&size, false);
     }
 
     ResCamera::ProjType projType = resCamera.GetProjectionType();
     NW_ASSERT(projType < ResCamera::PROJTYPE_COUNT);
-    if (projType == ResCamera::PROJTYPE_PERSPECTIVE){
+    if (projType == ResCamera::PROJTYPE_PERSPECTIVE)
+    {
         PerspectiveProjectionUpdater::GetMemorySizeInternal(&size, false);
     }
-    else if (projType == ResCamera::PROJTYPE_FRUSTUM){
+    else if (projType == ResCamera::PROJTYPE_FRUSTUM)
+    {
         FrustumProjectionUpdater::GetMemorySizeInternal(&size, false);
     }
-    else if (projType == ResCamera::PROJTYPE_ORTHO){
+    else if (projType == ResCamera::PROJTYPE_ORTHO)
+    {
         OrthoProjectionUpdater::GetMemorySizeInternal(&size, false);
     }
 
@@ -400,7 +434,8 @@ void Camera::GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResCamer
 
     size += sizeof(ResCameraData);
 
-    switch (viewType){
+    switch (viewType)
+    {
     case ResCamera::VIEWTYPE_AIM:
         size += sizeof(ResAimTargetViewUpdaterData);
         break;
@@ -414,7 +449,8 @@ void Camera::GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResCamer
         NW_ASSERT(false);
     }
 
-    switch (projType){
+    switch (projType)
+    {
     case ResCamera::PROJTYPE_PERSPECTIVE:
         size += sizeof(ResPerspectiveProjectionUpdaterData);
         break;
@@ -428,7 +464,8 @@ void Camera::GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResCamer
         NW_ASSERT(false);
     }
 
-    if (description.isAnimationEnabled && resCamera.GetAnimGroupsCount() > 0){
+    if (description.isAnimationEnabled && resCamera.GetAnimGroupsCount() > 0)
+    {
         AnimGroup::Builder()
             .ResAnimGroup(resCamera.GetAnimGroups(0))
             .UseOriginalValue(true)
@@ -436,45 +473,53 @@ void Camera::GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResCamer
     }
 }
 
-void Camera::Accept(ISceneVisitor* visitor){
+void Camera::Accept(ISceneVisitor* visitor)
+{
     visitor->VisitCamera(this);
     AcceptChildren(visitor);
 }
 
-void Camera::UpdateCameraMatrix(){
-    NW_NULL_ASSERT(mViewUpdater);
-    NW_NULL_ASSERT(mProjectionUpdater);
+void Camera::UpdateCameraMatrix()
+{
+    NW_NULL_ASSERT(m_ViewUpdater);
+    NW_NULL_ASSERT(m_ProjectionUpdater);
 
     SceneNode* parentNode = GetParent();
 
     math::VEC3 cameraPosition(WorldMatrix().GetColumn(3));
 
-    if (parentNode != NULL){
-        mViewUpdater->Update(&mViewMatrix, parentNode->TrackbackWorldMatrix(), cameraPosition);
+    if (parentNode != NULL)
+    {
+        m_ViewUpdater->Update(&m_ViewMatrix, parentNode->TrackbackWorldMatrix(), cameraPosition);
     }
     else{
-        mViewUpdater->Update(&mViewMatrix, math::MTX34::Identity(), cameraPosition);
+        m_ViewUpdater->Update(&m_ViewMatrix, math::MTX34::Identity(), cameraPosition);
     }
 
-    NW_FAILSAFE_IF(math::MTX34Inverse(&mInverseViewMatrix, &mViewMatrix) == 0){
-        mInverseViewMatrix = math::MTX34::Identity();
+    NW_FAILSAFE_IF(math::MTX34Inverse(&m_InverseViewMatrix, &m_ViewMatrix) == 0)
+    {
+        m_InverseViewMatrix = math::MTX34::Identity();
     }
 
-    mProjectionUpdater->Update(&mProjectionMatrix, &mTextureProjectionMatrix);
+    m_ProjectionUpdater->Update(&m_ProjectionMatrix, &m_TextureProjectionMatrix);
 
-    NW_FAILSAFE_IF(math::MTX44Inverse(&mInverseProjectionMatrix, &mProjectionMatrix) == 0){
-        mInverseProjectionMatrix = math::MTX44::Identity();
+    NW_FAILSAFE_IF(math::MTX44Inverse(&m_InverseProjectionMatrix, &m_ProjectionMatrix) == 0)
+    {
+        m_InverseProjectionMatrix = math::MTX44::Identity();
     }
 }
 
-const nw::math::VEC3& Camera::GetTargetPosition() const{
+const nw::math::VEC3& Camera::GetTargetPosition() const
+{
     const ResAimTargetViewUpdater resAim = ResDynamicCast<const ResAimTargetViewUpdater>(GetViewUpdater()->GetResource());
     const ResLookAtTargetViewUpdater resLookAt = ResDynamicCast<const ResLookAtTargetViewUpdater>(GetViewUpdater()->GetResource());
 
-    if (resAim.IsValid()){
+    if (resAim.IsValid())
+    {
         return resAim.GetTargetPosition();
     }
-    else if (resLookAt.IsValid()){
+    else if (resLookAt.IsValid())
+    {
         return resLookAt.GetTargetPosition();
     }
     else{
@@ -483,14 +528,17 @@ const nw::math::VEC3& Camera::GetTargetPosition() const{
     }
 }
 
-void Camera::SetTargetPosition(const nw::math::VEC3& targetPosition){
+void Camera::SetTargetPosition(const nw::math::VEC3& targetPosition)
+{
     ResAimTargetViewUpdater resAim = ResDynamicCast<ResAimTargetViewUpdater>(GetViewUpdater()->GetResource());
     ResLookAtTargetViewUpdater resLookAt = ResDynamicCast<ResLookAtTargetViewUpdater>(GetViewUpdater()->GetResource());
 
-    if (resAim.IsValid()){
+    if (resAim.IsValid())
+    {
         resAim.SetTargetPosition(targetPosition);
     }
-    else if (resLookAt.IsValid()){
+    else if (resLookAt.IsValid())
+    {
         resLookAt.SetTargetPosition(targetPosition);
     }
     else{
@@ -498,7 +546,8 @@ void Camera::SetTargetPosition(const nw::math::VEC3& targetPosition){
     }
 }
 
-const nw::math::VEC3& Camera::GetUpwardVector() const{
+const nw::math::VEC3& Camera::GetUpwardVector() const
+{
     const ResLookAtTargetViewUpdater resLookAt = ResDynamicCast<const ResLookAtTargetViewUpdater>(GetViewUpdater()->GetResource());
 
     NW_ASSERTMSG(resLookAt.IsValid(), "View updater isn't \"LookAt\"");
@@ -506,7 +555,8 @@ const nw::math::VEC3& Camera::GetUpwardVector() const{
     return resLookAt.GetUpwardVector();
 }
 
-void Camera::SetUpwardVector(const nw::math::VEC3& upwardVector){
+void Camera::SetUpwardVector(const nw::math::VEC3& upwardVector)
+{
     ResLookAtTargetViewUpdater resLookAt = ResDynamicCast<ResLookAtTargetViewUpdater>(GetViewUpdater()->GetResource());
 
     NW_ASSERTMSG(resLookAt.IsValid(), "View updater isn't \"LookAt\"");
@@ -514,7 +564,8 @@ void Camera::SetUpwardVector(const nw::math::VEC3& upwardVector){
     resLookAt.SetUpwardVector(upwardVector);
 }
 
-f32 Camera::GetTwist() const{
+f32 Camera::GetTwist() const
+{
     ResAimTargetViewUpdater resAim = ResDynamicCast<ResAimTargetViewUpdater>(GetViewUpdater()->GetResource());
 
     NW_ASSERTMSG(resAim.IsValid(), "View updater isn't \"LookAt\"");
@@ -522,7 +573,8 @@ f32 Camera::GetTwist() const{
     return resAim.GetTwist();
 }
 
-void Camera::SetTwist(f32 twist){
+void Camera::SetTwist(f32 twist)
+{
     ResAimTargetViewUpdater resAim = ResDynamicCast<ResAimTargetViewUpdater>(GetViewUpdater()->GetResource());
 
     NW_ASSERTMSG(resAim.IsValid(), "View updater isn't \"LookAt\"");
@@ -530,7 +582,8 @@ void Camera::SetTwist(f32 twist){
     resAim.SetTwist(twist);
 }
 
-const nw::math::VEC3& Camera::GetViewRotate() const{
+const nw::math::VEC3& Camera::GetViewRotate() const
+{
     const ResRotateViewUpdater resRotate = ResDynamicCast<const ResRotateViewUpdater>(GetViewUpdater()->GetResource());
 
     NW_ASSERTMSG(resRotate.IsValid(), "View updater isn't \"Rotate\"");
@@ -538,7 +591,8 @@ const nw::math::VEC3& Camera::GetViewRotate() const{
     return resRotate.GetViewRotate();
 }
 
-void Camera::SetViewRotate(const nw::math::VEC3& viewRotate){
+void Camera::SetViewRotate(const nw::math::VEC3& viewRotate)
+{
     ResRotateViewUpdater resRotate = ResDynamicCast<ResRotateViewUpdater>(GetViewUpdater()->GetResource());
 
     NW_ASSERTMSG(resRotate.IsValid(), "View updater isn't \"Rotate\"");
@@ -546,26 +600,32 @@ void Camera::SetViewRotate(const nw::math::VEC3& viewRotate){
     resRotate.SetViewRotate(viewRotate);
 }
 
-void Camera::GetPerspective(f32* fovy, f32* aspectRatio, f32* nearClip, f32* farClip) const{
+void Camera::GetPerspective(f32* fovy, f32* aspectRatio, f32* nearClip, f32* farClip) const
+{
     const ResPerspectiveProjectionUpdater resource = ResDynamicCast<const ResPerspectiveProjectionUpdater>(GetProjectionUpdater()->GetResource());
 
     NW_ASSERTMSG(resource.IsValid(), "Projection updater isn't perspective");
 
-    if (fovy){
+    if (fovy)
+    {
         *fovy = resource.GetFovy();
     }
-    if (aspectRatio){
+    if (aspectRatio)
+    {
         *aspectRatio = resource.GetAspectRatio();
     }
-    if (nearClip){
+    if (nearClip)
+    {
         *nearClip = resource.GetNear();
     }
-    if (farClip){
+    if (farClip)
+    {
         *farClip = resource.GetFar();
     }
 }
 
-void Camera::SetPerspective(f32 fovy, f32 aspectRatio, f32 nearClip, f32 farClip){
+void Camera::SetPerspective(f32 fovy, f32 aspectRatio, f32 nearClip, f32 farClip)
+{
     ResPerspectiveProjectionUpdater resource = ResDynamicCast<ResPerspectiveProjectionUpdater>(GetProjectionUpdater()->GetResource());
 
     NW_ASSERTMSG(resource.IsValid(), "Projection updater isn't perspective");
@@ -576,35 +636,44 @@ void Camera::SetPerspective(f32 fovy, f32 aspectRatio, f32 nearClip, f32 farClip
     resource.SetFar(farClip);
 }
 
-void Camera::GetFrustum(f32* left, f32* right, f32* bottom, f32* top, f32* nearClip, f32* farClip) const{
+void Camera::GetFrustum(f32* left, f32* right, f32* bottom, f32* top, f32* nearClip, f32* farClip) const
+{
     const ResFrustumProjectionUpdater resource = ResDynamicCast<const ResFrustumProjectionUpdater>(GetProjectionUpdater()->GetResource());
 
     NW_ASSERTMSG(resource.IsValid(), "Projection updater isn't frustum");
 
-    if (left && right && bottom && top){
+    if (left && right && bottom && top)
+    {
         const ut::Rect rect = resource.GetRect();
-        if (left){
+        if (left)
+        {
             *left = rect.left;
         }
-        if (right){
+        if (right)
+        {
             *right = rect.right;
         }
-        if (bottom){
+        if (bottom)
+        {
             *bottom = rect.bottom;
         }
-        if (top){
+        if (top)
+        {
             *top = rect.top;
         }
     }
-    if (nearClip){
+    if (nearClip)
+    {
         *nearClip = resource.GetNear();
     }
-    if (farClip){
+    if (farClip)
+    {
         *farClip = resource.GetFar();
     }
 }
 
-void Camera::SetFrustum(f32 left, f32 right, f32 bottom, f32 top, f32 nearClip, f32 farClip){
+void Camera::SetFrustum(f32 left, f32 right, f32 bottom, f32 top, f32 nearClip, f32 farClip)
+{
     ResFrustumProjectionUpdater resource = ResDynamicCast<ResFrustumProjectionUpdater>(GetProjectionUpdater()->GetResource());
 
     NW_ASSERTMSG(resource.IsValid(), "Projection updater isn't frustum");
@@ -614,35 +683,44 @@ void Camera::SetFrustum(f32 left, f32 right, f32 bottom, f32 top, f32 nearClip, 
     resource.SetFar(farClip);
 }
 
-void Camera::GetOrtho(f32* left, f32* right, f32* bottom, f32* top, f32* nearClip, f32* farClip) const{
+void Camera::GetOrtho(f32* left, f32* right, f32* bottom, f32* top, f32* nearClip, f32* farClip) const
+{
     const ResOrthoProjectionUpdater resource = ResDynamicCast<const ResOrthoProjectionUpdater>(GetProjectionUpdater()->GetResource());
 
     NW_ASSERTMSG(resource.IsValid(), "Projection updater isn't ortho");
 
-    if (left && right && bottom && top){
+    if (left && right && bottom && top)
+    {
         const ut::Rect rect = resource.GetRect();
-        if (left){
+        if (left)
+        {
             *left = rect.left;
         }
-        if (right){
+        if (right)
+        {
             *right = rect.right;
         }
-        if (bottom){
+        if (bottom)
+        {
             *bottom = rect.bottom;
         }
-        if (top){
+        if (top)
+        {
             *top = rect.top;
         }
     }
-    if (nearClip){
+    if (nearClip)
+    {
         *nearClip = resource.GetNear();
     }
-    if (farClip){
+    if (farClip)
+    {
         *farClip = resource.GetFar();
     }
 }
 
-void Camera::SetOrtho(f32 left, f32 right, f32 bottom, f32 top, f32 nearClip, f32 farClip){
+void Camera::SetOrtho(f32 left, f32 right, f32 bottom, f32 top, f32 nearClip, f32 farClip)
+{
     ResOrthoProjectionUpdater resource = ResDynamicCast<ResOrthoProjectionUpdater>(GetProjectionUpdater()->GetResource());
 
     NW_ASSERTMSG(resource.IsValid(), "Projection updater isn't ortho");
@@ -652,55 +730,68 @@ void Camera::SetOrtho(f32 left, f32 right, f32 bottom, f32 top, f32 nearClip, f3
     resource.SetFar(farClip);
 }
 
-void Camera::GetFrustum(ut::Rect* rect, f32* nearClip, f32* farClip) const{
+void Camera::GetFrustum(ut::Rect* rect, f32* nearClip, f32* farClip) const
+{
     const ResFrustumProjectionUpdater resource = ResDynamicCast<const ResFrustumProjectionUpdater>(GetProjectionUpdater()->GetResource());
 
     NW_ASSERTMSG(resource.IsValid(), "Projection updater isn't frustum");
 
-    if (rect){
+    if (rect)
+    {
         *rect = resource.GetRect();
     }
-    if (nearClip){
+    if (nearClip)
+    {
         *nearClip = resource.GetNear();
     }
-    if (farClip){
+    if (farClip)
+    {
         *farClip = resource.GetFar();
     }
 }
 
-void Camera::SetFrustum(const ut::Rect& rect, f32 nearClip, f32 farClip){
+void Camera::SetFrustum(const ut::Rect& rect, f32 nearClip, f32 farClip)
+{
     SetFrustum(rect.left, rect.right, rect.bottom, rect.top, nearClip, farClip);
 }
 
-void Camera::GetOrtho(ut::Rect* rect, f32* nearClip, f32* farClip) const{
+void Camera::GetOrtho(ut::Rect* rect, f32* nearClip, f32* farClip) const
+{
     const ResOrthoProjectionUpdater resource = ResDynamicCast<const ResOrthoProjectionUpdater>(GetProjectionUpdater()->GetResource());
 
     NW_ASSERTMSG(resource.IsValid(), "Projection updater isn't ortho");
 
-    if (rect){
+    if (rect)
+    {
         *rect = resource.GetRect();
     }
-    if (nearClip){
+    if (nearClip)
+    {
         *nearClip = resource.GetNear();
     }
-    if (farClip){
+    if (farClip)
+    {
         *farClip = resource.GetFar();
     }
 }
 
-void Camera::SetOrtho(const ut::Rect& rect, f32 nearClip, f32 farClip){
+void Camera::SetOrtho(const ut::Rect& rect, f32 nearClip, f32 farClip)
+{
     SetOrtho(rect.left, rect.right, rect.bottom, rect.top, nearClip, farClip);
 }
 
-void Camera::SetFrustum(const Viewport& viewport){
+void Camera::SetFrustum(const Viewport& viewport)
+{
     SetFrustum(viewport.GetBound(), viewport.GetDepthNear(), viewport.GetDepthFar());
 }
 
-void Camera::SetOrtho(const Viewport& viewport){
+void Camera::SetOrtho(const Viewport& viewport)
+{
     SetOrtho(viewport.GetBound(), viewport.GetDepthNear(), viewport.GetDepthFar());
 }
 
-f32 Camera::GetNear() const{
+f32 Camera::GetNear() const
+{
     const ResCameraProjectionUpdater resource = ResDynamicCast<const ResCameraProjectionUpdater>(GetProjectionUpdater()->GetResource());
 
     NW_ASSERT(resource.IsValid());
@@ -708,7 +799,8 @@ f32 Camera::GetNear() const{
     return resource.GetNear();
 }
 
-void Camera::SetNear(f32 near){
+void Camera::SetNear(f32 near)
+{
     ResCameraProjectionUpdater resource = ResDynamicCast<ResCameraProjectionUpdater>(GetProjectionUpdater()->GetResource());
 
     NW_ASSERT(resource.IsValid());
@@ -716,7 +808,8 @@ void Camera::SetNear(f32 near){
     resource.SetNear(near);
 }
 
-f32 Camera::GetFar() const{
+f32 Camera::GetFar() const
+{
     const ResCameraProjectionUpdater resource = ResDynamicCast<const ResCameraProjectionUpdater>(GetProjectionUpdater()->GetResource());
 
     NW_ASSERT(resource.IsValid());
@@ -724,7 +817,8 @@ f32 Camera::GetFar() const{
     return resource.GetFar();
 }
 
-void Camera::SetFar(f32 far){
+void Camera::SetFar(f32 far)
+{
     ResCameraProjectionUpdater resource = ResDynamicCast<ResCameraProjectionUpdater>(GetProjectionUpdater()->GetResource());
 
     NW_ASSERT(resource.IsValid());
@@ -732,7 +826,8 @@ void Camera::SetFar(f32 far){
     resource.SetFar(far);
 }
 
-Result Camera::StoreOriginal(nw::os::IAllocator* allocator){
+Result Camera::StoreOriginal(nw::os::IAllocator* allocator)
+{
     Result result = INITIALIZE_RESULT_OK;
 
     ResCamera original = GetResCamera();
@@ -781,7 +876,8 @@ Result Camera::StoreOriginal(nw::os::IAllocator* allocator){
     void* projectionUpdaterMemory = NULL;
     ResCameraProjectionUpdaterData* projectionUpdaterData = NULL;
 
-    switch (original.GetProjectionType()){
+    switch (original.GetProjectionType())
+    {
     case ResCamera::PROJTYPE_PERSPECTIVE:
         projectionUpdaterMemory = allocator->Alloc(sizeof(ResPerspectiveProjectionUpdaterData));
         NW_NULL_ASSERT(projectionUpdaterMemory);
@@ -809,21 +905,25 @@ Result Camera::StoreOriginal(nw::os::IAllocator* allocator){
 
     cameraData->toProjectionUpdater.set_ptr(projectionUpdaterData);
 
-    mOriginalValue = ResCamera(cameraData);
+    m_OriginalValue = ResCamera(cameraData);
 
-    mOriginalTransform = GetResTransformNode().GetTransform();
+    m_OriginalTransform = GetResTransformNode().GetTransform();
 
     return result;
 }
 
-void Camera::DestroyResCamera(nw::os::IAllocator* allocator, ResCamera resCamera){
+void Camera::DestroyResCamera(nw::os::IAllocator* allocator, ResCamera resCamera)
+{
     NW_NULL_ASSERT(allocator);
-    if (resCamera.IsValid()){
-        if (resCamera.GetProjectionUpdater().IsValid()){
+    if (resCamera.IsValid())
+    {
+        if (resCamera.GetProjectionUpdater().IsValid())
+        {
             allocator->Free(resCamera.GetProjectionUpdater().ptr());
             resCamera.ref().toProjectionUpdater.set_ptr(NULL);
         }
-        if (resCamera.GetViewUpdater().IsValid()){
+        if (resCamera.GetViewUpdater().IsValid())
+        {
             allocator->Free(resCamera.GetViewUpdater().ptr());
             resCamera.ref().toViewUpdater.set_ptr(NULL);
         }
@@ -832,10 +932,12 @@ void Camera::DestroyResCamera(nw::os::IAllocator* allocator, ResCamera resCamera
     }
 }
 
-void* Camera::GetAnimTargetObject(const anim::ResAnimGroupMember& anim){
-    switch (anim.GetObjectType()){
+void* Camera::GetAnimTargetObject(const anim::ResAnimGroupMember& anim)
+{
+    switch (anim.GetObjectType())
+    {
     case anim::ResAnimGroupMember::OBJECT_TYPE_TRANSFORM:{
-            return static_cast<adsl::gfx::TransformNode*>(this);
+            return static_cast<nw::gfx::TransformNode*>(this);
         }
 
     case anim::ResAnimGroupMember::OBJECT_TYPE_VIEW_UPDATER:{
@@ -854,7 +956,8 @@ void* Camera::GetAnimTargetObject(const anim::ResAnimGroupMember& anim){
     }
 }
 
-Result Camera::Initialize(nw::os::IAllocator* allocator){
+Result Camera::Initialize(nw::os::IAllocator* allocator)
+{
     Result result = INITIALIZE_RESULT_OK;
 
     result |= TransformNode::Initialize(allocator);
@@ -866,19 +969,24 @@ Result Camera::Initialize(nw::os::IAllocator* allocator){
     return result;
 }
 
-bool Camera::ValidateCameraAnimType(AnimObject* animObject){
-    if (animObject == NULL){
+bool Camera::ValidateCameraAnimType(AnimObject* animObject)
+{
+    if (animObject == NULL)
+    {
         return true;
     }
 
     AnimBlender* blender = ut::DynamicCast<AnimBlender*>(animObject);
 
-    if (blender != NULL){
+    if (blender != NULL)
+    {
         const int animObjCount = blender->GetAnimObjectCount();
-        for (int i = 0; i < animObjCount; ++i){
+        for (int i = 0; i < animObjCount; ++i)
+        {
             AnimObject* animObj = blender->GetAnimObject(i);
 
-            if (!ValidateCameraAnimType(animObj)){
+            if (!ValidateCameraAnimType(animObj))
+            {
                 return false;
             }
         }
@@ -892,8 +1000,8 @@ bool Camera::ValidateCameraAnimType(AnimObject* animObject){
         anim::ResCameraAnim cameraAnim(evaluator->GetAnimData().ptr());
 
         return (
-            (cameraAnim.GetProjectionUpdaterKind() == mProjectionUpdater->Kind()) &&
-            (cameraAnim.GetViewUpdaterKind() == mViewUpdater->Kind()));
+            (cameraAnim.GetProjectionUpdaterKind() == m_ProjectionUpdater->Kind()) &&
+            (cameraAnim.GetViewUpdaterKind() == m_ViewUpdater->Kind()));
     }
 }
 

@@ -11,31 +11,33 @@ namespace ut {
 namespace internal {
 
 CmdCache::CmdCache():   
-    mCmdBuffer(NULL),
-    mCmdBufferSize(0),
-    mCmdMaxBufferSize(0),
-    mIsCopy(false)
-{}
+    m_CmdBuffer(NULL),
+    m_CmdBufferSize(0),
+    m_CmdMaxBufferSize(0),
+    m_IsCopy(false) {}
 
-void CmdCache::Init(void* buffer,u32 size,bool isCopy){
-    mCmdBuffer = static_cast<u8*>(ut::RoundUp(buffer, 4));
+void CmdCache::Init(void* buffer,u32 size,bool isCopy)
+    {
+    m_CmdBuffer = static_cast<u8*>(ut::RoundUp(buffer, 4));
     void *const bufferEnd = AddOffsetToPtr(buffer, size);
-    mCmdMaxBufferSize = RoundDown(GetOffsetFromPtr(this->mCmdBuffer, bufferEnd), 8);
-    mIsCopy = isCopy;
+    m_CmdMaxBufferSize = RoundDown(GetOffsetFromPtr(this->m_CmdBuffer, bufferEnd), 8);
+    m_IsCopy = isCopy;
 
     Clear();
 }
 
-void CmdCache::Add(const u32* command,u32 size){
-    std::memcpy(mCmdBuffer + mCmdBufferSize,command,size);
-    mCmdBufferSize += size;
+void CmdCache::Add(const u32* command,u32 size)
+{
+    std::memcpy(m_CmdBuffer + m_CmdBufferSize,command,size);
+    m_CmdBufferSize += size;
 }
 
-void CmdCache::RoundUp(u8 align){
-    const GLsizei alignedBufferSize = ut::RoundUp(this->mCmdBufferSize, align);
+void CmdCache::RoundUp(u8 align)
+{
+    const GLsizei alignedBufferSize = ut::RoundUp(this->m_CmdBufferSize, align);
 
-    std::memset(this->mCmdBuffer + this->mCmdBufferSize, 0, alignedBufferSize - this->mCmdBufferSize);
-    mCmdBufferSize = alignedBufferSize;
+    std::memset(this->m_CmdBuffer + this->m_CmdBufferSize, 0, alignedBufferSize - this->m_CmdBufferSize);
+    m_CmdBufferSize = alignedBufferSize;
 }
 
 }

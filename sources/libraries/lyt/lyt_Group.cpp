@@ -13,21 +13,21 @@ Group::Group()
 {
     this->Init();
 
-    std::memset(this->mName, 0, sizeof(mName));
+    std::memset(this->m_Name, 0, sizeof(m_Name));
 }
 
 Group::Group(const res::Group* pResGroup,Pane* pRootPane)
 {
     Init();
 
-    ut::strcpy(this->mName, sizeof(this->mName), pResGroup->name);
+    ut::strcpy(this->m_Name, sizeof(this->m_Name), pResGroup->name);
 
     const char *const paneNameBase = internal::ConvertOffsToPtr<char>(pResGroup, sizeof(res::Group));
 
     for (int i = 0; i < pResGroup->paneNum; ++i)
     {
         if (Pane* pFindPane = pRootPane->FindPaneByName(paneNameBase + i * ResourceNameStrMax, true))
-        {
+    {
             AppendPane(pFindPane);
         }
     }
@@ -35,15 +35,15 @@ Group::Group(const res::Group* pResGroup,Pane* pRootPane)
 
 void Group::Init()
 {
-    mUserAllocated = false;
+    m_UserAllocated = false;
 }
 
 Group::~Group()
 {
-    for (PaneLinkList::Iterator it = this->mPaneLinkList.GetBeginIter(); it != this->mPaneLinkList.GetEndIter();)
+    for (PaneLinkList::Iterator it = this->m_PaneLinkList.GetBeginIter(); it != this->m_PaneLinkList.GetEndIter();)
     {
         PaneLinkList::Iterator currIt = it++;
-        this->mPaneLinkList.Erase(currIt);
+        this->m_PaneLinkList.Erase(currIt);
         Layout::DeleteObj(&(*currIt));
     }
 }
@@ -53,7 +53,7 @@ void Group::AppendPane(Pane* pPane)
     if (PaneLink* pPaneLink = Layout::NewObj<PaneLink>())
     {
         pPaneLink->target = pPane;
-        this->mPaneLinkList.PushBack(pPaneLink);
+        this->m_PaneLinkList.PushBack(pPaneLink);
     }
 }
 
@@ -61,10 +61,10 @@ void Group::AppendPane(Pane* pPane)
 
 GroupContainer::~GroupContainer()
 {
-    for (GroupList::Iterator it = this->mGroupList.GetBeginIter(); it != this->mGroupList.GetEndIter();)
+    for (GroupList::Iterator it = this->m_GroupList.GetBeginIter(); it != this->m_GroupList.GetEndIter();)
     {
         GroupList::Iterator currIt = it++;
-        this->mGroupList.Erase(currIt);
+        this->m_GroupList.Erase(currIt);
         if (!currIt->IsUserAllocated())
         {
             Layout::DeleteObj(&(*currIt));
@@ -74,15 +74,15 @@ GroupContainer::~GroupContainer()
 
 void GroupContainer::AppendGroup(Group* pGroup)
 {
-    this->mGroupList.PushBack(pGroup);
+    this->m_GroupList.PushBack(pGroup);
 }
 
 Group* GroupContainer::FindGroupByName(const char* findName)
 {
-    for (GroupList::Iterator it = this->mGroupList.GetBeginIter(); it != this->mGroupList.GetEndIter(); ++it)
+    for (GroupList::Iterator it = this->m_GroupList.GetBeginIter(); it != this->m_GroupList.GetEndIter(); ++it)
     {
         if (internal::EqualsResName(it->GetName(), findName))
-        {
+    {
             return &(*it);
         }
     }

@@ -14,234 +14,267 @@ typedef f32 ParticleTime;
 
 #ifndef NW_GFX_NO_USE_PARTICLETIME
 
-class ParticleTime{
+class ParticleTime
+{
     friend ParticleTime operator -(const ParticleTime& rhs);
 public:
     ParticleTime(): 
-        mParticleTime(0) 
-    {}
-    ParticleTime(const ParticleTime& value){
-        mParticleTime = value.mParticleTime;
+        m_ParticleTime(0) {}
+    ParticleTime(const ParticleTime& value)
+    {
+        m_ParticleTime = value.m_ParticleTime;
     }
 
-    ParticleTime(s32 value){
-        mParticleTime = S32ToParticleTime(value);
+    ParticleTime(s32 value)
+    {
+        m_ParticleTime = S32ToParticleTime(value);
     }
 
-    ParticleTime(f32 value){
-        mParticleTime = Float32ToParticleTime(value);
+    ParticleTime(f32 value)
+    {
+        m_ParticleTime = Float32ToParticleTime(value);
     }
 
-    f32     GetFloat32Value() const { return ParticleTimeToFloat32(mParticleTime); }
-    s32     GetS32Value() const { return mParticleTime / 0x100; }
-    s32     GetParticleTimeValue() const { return mParticleTime; }
+    f32     GetFloat32Value() const { return ParticleTimeToFloat32(m_ParticleTime); }
+    s32     GetS32Value() const { return m_ParticleTime / 0x100; }
+    s32     GetParticleTimeValue() const { return m_ParticleTime; }
 
-    ParticleTime operator +(ParticleTime right) const{
+    ParticleTime operator +(ParticleTime right) const
+    {
         ParticleTime result;
-        result.mParticleTime = this->mParticleTime + right.mParticleTime;
+        result.m_ParticleTime = this->m_ParticleTime + right.m_ParticleTime;
         return result;
     }
 
-    ParticleTime operator -(ParticleTime right) const{
+    ParticleTime operator -(ParticleTime right) const
+    {
         ParticleTime result;
-        result.mParticleTime = this->mParticleTime - right.mParticleTime;
+        result.m_ParticleTime = this->m_ParticleTime - right.m_ParticleTime;
         return result;
     }
 
-    ParticleTime operator *(ParticleTime right) const{
+    ParticleTime operator *(ParticleTime right) const
+    {
         ParticleTime result;
-        result.mParticleTime = (this->mParticleTime / right.mParticleTime) / 0x100;
+        result.m_ParticleTime = (this->m_ParticleTime / right.m_ParticleTime) / 0x100;
         return result;
     }
 
-    ParticleTime operator /(ParticleTime right) const{
+    ParticleTime operator /(ParticleTime right) const
+    {
         ParticleTime result;
-        result.mParticleTime = 0x100 * this->mParticleTime / right.mParticleTime;
+        result.m_ParticleTime = 0x100 * this->m_ParticleTime / right.m_ParticleTime;
         return result;
     }
 
-    s32 GetIntegralParts() const{
-        return mParticleTime / 0x100;
+    s32 GetIntegralParts() const
+    {
+        return m_ParticleTime / 0x100;
     }
 
-    f32 GetFractionalParts() const{
-        return (mParticleTime & 0xff) / 0x100;
+    f32 GetFractionalParts() const
+    {
+        return (m_ParticleTime & 0xff) / 0x100;
     }
 
-    s32 Floor() const{
-        return mParticleTime / 0x100;
+    s32 Floor() const
+    {
+        return m_ParticleTime / 0x100;
     }
 
-    s32 Ceil() const{
-        return (mParticleTime + 0xff) / 0x100;
+    s32 Ceil() const
+    {
+        return (m_ParticleTime + 0xff) / 0x100;
     }
 
-    ParticleTime& FMod(s32 value){
-        this->mParticleTime %= S32ToParticleTime(value);
+    ParticleTime& FMod(s32 value)
+    {
+        this->m_ParticleTime %= S32ToParticleTime(value);
         return *this;
     }
 
-    ParticleTime& operator =(f32 value) { this->mParticleTime = Float32ToParticleTime(value); return *this; }
-    ParticleTime& operator =(s32 value) { this->mParticleTime = S32ToParticleTime(value); return *this; }
-    ParticleTime& operator =(ParticleTime value) { this->mParticleTime = value.mParticleTime; return *this; }
-    ParticleTime& operator +=(f32 value) { this->mParticleTime += Float32ToParticleTime(value); return *this; }
-    ParticleTime& operator +=(s32 value) { this->mParticleTime += S32ToParticleTime(value); return *this; }
-    ParticleTime& operator +=(ParticleTime value) { this->mParticleTime += value.mParticleTime; return *this; }
-    ParticleTime& operator -=(f32 value) { this->mParticleTime -= Float32ToParticleTime(value); return *this; }
-    ParticleTime& operator -=(s32 value) { this->mParticleTime -= S32ToParticleTime(value); return *this; }
-    ParticleTime& operator -=(ParticleTime value) { this->mParticleTime -= value.mParticleTime; return *this; }
+    ParticleTime& operator =(f32 value) { this->m_ParticleTime = Float32ToParticleTime(value); return *this; }
+    ParticleTime& operator =(s32 value) { this->m_ParticleTime = S32ToParticleTime(value); return *this; }
+    ParticleTime& operator =(ParticleTime value) { this->m_ParticleTime = value.m_ParticleTime; return *this; }
+    ParticleTime& operator +=(f32 value) { this->m_ParticleTime += Float32ToParticleTime(value); return *this; }
+    ParticleTime& operator +=(s32 value) { this->m_ParticleTime += S32ToParticleTime(value); return *this; }
+    ParticleTime& operator +=(ParticleTime value) { this->m_ParticleTime += value.m_ParticleTime; return *this; }
+    ParticleTime& operator -=(f32 value) { this->m_ParticleTime -= Float32ToParticleTime(value); return *this; }
+    ParticleTime& operator -=(s32 value) { this->m_ParticleTime -= S32ToParticleTime(value); return *this; }
+    ParticleTime& operator -=(ParticleTime value) { this->m_ParticleTime -= value.m_ParticleTime; return *this; }
 
-    bool operator ==(const ParticleTime& rhs) const { return this->mParticleTime == rhs.mParticleTime; }
-    bool operator !=(const ParticleTime& rhs) const { return this->mParticleTime == rhs.mParticleTime; }
-    bool operator >=(const ParticleTime& rhs) const { return this->mParticleTime >= rhs.mParticleTime; }
-    bool operator <=(const ParticleTime& rhs) const { return this->mParticleTime <= rhs.mParticleTime; }
-    bool operator >(const ParticleTime& rhs) const { return this->mParticleTime > rhs.mParticleTime; }
-    bool operator <(const ParticleTime& rhs) const { return this->mParticleTime < rhs.mParticleTime; }
+    bool operator ==(const ParticleTime& rhs) const { return this->m_ParticleTime == rhs.m_ParticleTime; }
+    bool operator !=(const ParticleTime& rhs) const { return this->m_ParticleTime == rhs.m_ParticleTime; }
+    bool operator >=(const ParticleTime& rhs) const { return this->m_ParticleTime >= rhs.m_ParticleTime; }
+    bool operator <=(const ParticleTime& rhs) const { return this->m_ParticleTime <= rhs.m_ParticleTime; }
+    bool operator >(const ParticleTime& rhs) const { return this->m_ParticleTime > rhs.m_ParticleTime; }
+    bool operator <(const ParticleTime& rhs) const { return this->m_ParticleTime < rhs.m_ParticleTime; }
 
-    bool operator ==(s32 rhs) const { return this->mParticleTime == S32ToParticleTime(rhs); }
-    bool operator !=(s32 rhs) const { return this->mParticleTime == S32ToParticleTime(rhs); }
-    bool operator >=(s32 rhs) const { return this->mParticleTime >= S32ToParticleTime(rhs); }
-    bool operator <=(s32 rhs) const { return this->mParticleTime <= S32ToParticleTime(rhs); }
-    bool operator >(s32 rhs) const { return this->mParticleTime > S32ToParticleTime(rhs); }
-    bool operator <(s32 rhs) const { return this->mParticleTime < S32ToParticleTime(rhs); }
+    bool operator ==(s32 rhs) const { return this->m_ParticleTime == S32ToParticleTime(rhs); }
+    bool operator !=(s32 rhs) const { return this->m_ParticleTime == S32ToParticleTime(rhs); }
+    bool operator >=(s32 rhs) const { return this->m_ParticleTime >= S32ToParticleTime(rhs); }
+    bool operator <=(s32 rhs) const { return this->m_ParticleTime <= S32ToParticleTime(rhs); }
+    bool operator >(s32 rhs) const { return this->m_ParticleTime > S32ToParticleTime(rhs); }
+    bool operator <(s32 rhs) const { return this->m_ParticleTime < S32ToParticleTime(rhs); }
 
-    ParticleTime Interp(const ParticleTime& length, s32 factor) const{
-        s32 work = this->mParticleTime * factor * 0x100;
-        work /= length.mParticleTime;
+    ParticleTime Interp(const ParticleTime& length, s32 factor) const
+    {
+        s32 work = this->m_ParticleTime * factor * 0x100;
+        work /= length.m_ParticleTime;
 
         ParticleTime result;
-        result.mParticleTime = work;
+        result.m_ParticleTime = work;
         return result;
     }
 
-    static f32 ParticleTimeToFloat32(s32 particleTime){
+    static f32 ParticleTimeToFloat32(s32 particleTime)
+    {
         f32 float32 = static_cast<f32>(particleTime);
         return float32 / 0x100;
     }
 
-    static s32 Float32ToParticleTime(f32 value){
+    static s32 Float32ToParticleTime(f32 value)
+    {
         s32 fixed = (int)(value * 0x100);
         return fixed;
     }
 
-    static s32 S32ToParticleTime(s32 value){
+    static s32 S32ToParticleTime(s32 value)
+    {
         return value * 0x100;
     }
 
 private:
-    s32 mParticleTime;
+    s32 m_ParticleTime;
 };
 
-NW_FORCE_INLINE ParticleTime operator -(const ParticleTime& rhs){
+NW_FORCE_INLINE ParticleTime operator -(const ParticleTime& rhs)
+{
     ParticleTime result;
-    result.mParticleTime = -rhs.mParticleTime;
+    result.m_ParticleTime = -rhs.m_ParticleTime;
     return result;
 }
 
 #else
 
-class ParticleTime{
+class ParticleTime
+{
     friend ParticleTime operator -(const ParticleTime& rhs);
 public:
     ParticleTime(): 
-        mParticleTime(0)
-    {}
+        m_ParticleTime(0) {}
 
-    ParticleTime(const ParticleTime& value){
-        mParticleTime = value.mParticleTime;
+    ParticleTime(const ParticleTime& value)
+    {
+        m_ParticleTime = value.m_ParticleTime;
     }
 
-    ParticleTime(s32 ivalue){
-        mParticleTime = ivalue;
+    ParticleTime(s32 ivalue)
+    {
+        m_ParticleTime = ivalue;
     }
 
-    ParticleTime(f32 fvalue){
-        mParticleTime = Float32ToParticleTime(fvalue);
+    ParticleTime(f32 fvalue)
+    {
+        m_ParticleTime = Float32ToParticleTime(fvalue);
     }
 
-    f32     GetFloat32Value() const { return mParticleTime; }
-    s32     GetS32Value() const { return mParticleTime; }
-    f32     GetParticleTimeValue() const { return mParticleTime; }
+    f32     GetFloat32Value() const { return m_ParticleTime; }
+    s32     GetS32Value() const { return m_ParticleTime; }
+    f32     GetParticleTimeValue() const { return m_ParticleTime; }
 
-    ParticleTime operator +(ParticleTime right) const{
-        return ParticleTime(this->mParticleTime + right.mParticleTime);
+    ParticleTime operator +(ParticleTime right) const
+    {
+        return ParticleTime(this->m_ParticleTime + right.m_ParticleTime);
     }
 
-    ParticleTime operator -(ParticleTime right) const{
-        return ParticleTime(this->mParticleTime - right.mParticleTime);
+    ParticleTime operator -(ParticleTime right) const
+    {
+        return ParticleTime(this->m_ParticleTime - right.m_ParticleTime);
     }
 
-    ParticleTime operator *(ParticleTime right) const{
-        return ParticleTime(this->mParticleTime * right.mParticleTime);
+    ParticleTime operator *(ParticleTime right) const
+    {
+        return ParticleTime(this->m_ParticleTime * right.m_ParticleTime);
     }
 
-    ParticleTime operator /(ParticleTime right) const{
-        return ParticleTime(this->mParticleTime / right.mParticleTime);
+    ParticleTime operator /(ParticleTime right) const
+    {
+        return ParticleTime(this->m_ParticleTime / right.m_ParticleTime);
     }
 
-    s32 GetIntegralParts() const{
-        return (int)mParticleTime;
+    s32 GetIntegralParts() const
+    {
+        return (int)m_ParticleTime;
     }
 
-    f32 GetFractionalParts() const{
-        return mParticleTime - (int)mParticleTime;
+    f32 GetFractionalParts() const
+    {
+        return m_ParticleTime - (int)m_ParticleTime;
     }
 
-    s32 Floor() const{
-        return math::FFloor(mParticleTime);
+    s32 Floor() const
+    {
+        return math::FFloor(m_ParticleTime);
     }
 
-    s32 Ceil() const{
-        return math::FCeil(mParticleTime);
+    s32 Ceil() const
+    {
+        return math::FCeil(m_ParticleTime);
     }
 
-    ParticleTime& FMod(s32 value){
-        this->mParticleTime = nw::math::FMod(this->mParticleTime, static_cast<f32>(value));
+    ParticleTime& FMod(s32 value)
+    {
+        this->m_ParticleTime = nw::math::FMod(this->m_ParticleTime, static_cast<f32>(value));
         return *this;
     }
 
-    ParticleTime& operator =(f32 value) { this->mParticleTime = Float32ToParticleTime(value); return *this; }
-    ParticleTime& operator =(s32 value) { this->mParticleTime = value; return *this; }
-    ParticleTime& operator =(ParticleTime value) { this->mParticleTime = value.mParticleTime; return *this; }
-    ParticleTime& operator +=(f32 value) { this->mParticleTime += value; return *this; }
-    ParticleTime& operator +=(s32 value) { this->mParticleTime += value; return *this; }
-    ParticleTime& operator +=(ParticleTime value) { this->mParticleTime += value.mParticleTime; return *this; }
-    ParticleTime& operator -=(f32 value) { this->mParticleTime -= value; return *this; }
-    ParticleTime& operator -=(s32 value) { this->mParticleTime -= value; return *this; }
-    ParticleTime& operator -=(ParticleTime value) { this->mParticleTime -= value.mParticleTime; return *this; }
+    ParticleTime& operator =(f32 value) { this->m_ParticleTime = Float32ToParticleTime(value); return *this; }
+    ParticleTime& operator =(s32 value) { this->m_ParticleTime = value; return *this; }
+    ParticleTime& operator =(ParticleTime value) { this->m_ParticleTime = value.m_ParticleTime; return *this; }
+    ParticleTime& operator +=(f32 value) { this->m_ParticleTime += value; return *this; }
+    ParticleTime& operator +=(s32 value) { this->m_ParticleTime += value; return *this; }
+    ParticleTime& operator +=(ParticleTime value) { this->m_ParticleTime += value.m_ParticleTime; return *this; }
+    ParticleTime& operator -=(f32 value) { this->m_ParticleTime -= value; return *this; }
+    ParticleTime& operator -=(s32 value) { this->m_ParticleTime -= value; return *this; }
+    ParticleTime& operator -=(ParticleTime value) { this->m_ParticleTime -= value.m_ParticleTime; return *this; }
 
-    bool operator ==(const ParticleTime& rhs) const { return this->mParticleTime == rhs.mParticleTime; }
-    bool operator !=(const ParticleTime& rhs) const { return this->mParticleTime == rhs.mParticleTime; }
-    bool operator >=(const ParticleTime& rhs) const { return this->mParticleTime >= rhs.mParticleTime; }
-    bool operator <=(const ParticleTime& rhs) const { return this->mParticleTime <= rhs.mParticleTime; }
-    bool operator >(const ParticleTime& rhs) const { return this->mParticleTime > rhs.mParticleTime; }
-    bool operator <(const ParticleTime& rhs) const { return this->mParticleTime < rhs.mParticleTime; }
+    bool operator ==(const ParticleTime& rhs) const { return this->m_ParticleTime == rhs.m_ParticleTime; }
+    bool operator !=(const ParticleTime& rhs) const { return this->m_ParticleTime == rhs.m_ParticleTime; }
+    bool operator >=(const ParticleTime& rhs) const { return this->m_ParticleTime >= rhs.m_ParticleTime; }
+    bool operator <=(const ParticleTime& rhs) const { return this->m_ParticleTime <= rhs.m_ParticleTime; }
+    bool operator >(const ParticleTime& rhs) const { return this->m_ParticleTime > rhs.m_ParticleTime; }
+    bool operator <(const ParticleTime& rhs) const { return this->m_ParticleTime < rhs.m_ParticleTime; }
 
-    bool operator ==(s32 rhs) const { return this->mParticleTime == rhs; }
-    bool operator !=(s32 rhs) const { return this->mParticleTime == rhs; }
-    bool operator >=(s32 rhs) const { return this->mParticleTime >= rhs; }
-    bool operator <=(s32 rhs) const { return this->mParticleTime <= rhs; }
-    bool operator >(s32 rhs) const { return this->mParticleTime > rhs; }
-    bool operator <(s32 rhs) const { return this->mParticleTime < rhs; }
+    bool operator ==(s32 rhs) const { return this->m_ParticleTime == rhs; }
+    bool operator !=(s32 rhs) const { return this->m_ParticleTime == rhs; }
+    bool operator >=(s32 rhs) const { return this->m_ParticleTime >= rhs; }
+    bool operator <=(s32 rhs) const { return this->m_ParticleTime <= rhs; }
+    bool operator >(s32 rhs) const { return this->m_ParticleTime > rhs; }
+    bool operator <(s32 rhs) const { return this->m_ParticleTime < rhs; }
 
-    ParticleTime Interp(const ParticleTime& length, s32 factor) const{
+    ParticleTime Interp(const ParticleTime& length, s32 factor) const
+    {
         return ParticleTime(this->GetFloat32Value() / length.GetFloat32Value() * factor);
     }
 
-    static f32 ParticleTimeToFloat32(f32 particleTime){
+    static f32 ParticleTimeToFloat32(f32 particleTime)
+    {
         return particleTime;
     }
 
-    static f32 Float32ToParticleTime(f32 value){
+    static f32 Float32ToParticleTime(f32 value)
+    {
         return value;
     }
 
 private:
-    f32 mParticleTime;
+    f32 m_ParticleTime;
 };
 
-NW_FORCE_INLINE ParticleTime operator -(const ParticleTime& rhs){
-    return ParticleTime(-rhs.mParticleTime);
+NW_FORCE_INLINE ParticleTime operator -(const ParticleTime& rhs)
+{
+    return ParticleTime(-rhs.m_ParticleTime);
 }
 
 #endif

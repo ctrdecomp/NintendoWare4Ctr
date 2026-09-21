@@ -7,7 +7,7 @@ namespace gfx{
 
 NW_UT_RUNTIME_TYPEINFO_ROOT_DEFINITION(IMaterialActivator);
 
-IMaterialActivator::~IMaterialActivator(){ }
+IMaterialActivator::~IMaterialActivator() { }
 
 }
 }

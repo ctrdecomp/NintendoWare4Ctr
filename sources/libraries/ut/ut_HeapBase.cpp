@@ -17,15 +17,15 @@
                     (void)(maskBits <<= st);                                 \
                     (data) &= ~maskBits; /* セットする領域をクリア */        \
                     (data) |= newVal <<(st);                                 \
-                } while(false);
+                } while (false);
 
 namespace nw {
 namespace ut {
 namespace{
 
-HeapBase::HeapList sRootList;
+HeapBase::HeapList s_RootList;
 
-u32 sFillVals[HeapBase::HEAP_FILL_MAX] ={
+u32 s_FillVals[HeapBase::HEAP_FILL_MAX] ={
     0xC3C3C3C3,
     0xF3F3F3F3,
     0xD3D3D3D3,
@@ -33,25 +33,31 @@ u32 sFillVals[HeapBase::HEAP_FILL_MAX] ={
 
 }
 
-HeapBase::HeapList* HeapBase::FindListContainHeap(HeapBase* pHeapBase){
-    HeapBase::HeapList* pList = &sRootList;
-    HeapBase* pContainHeapBase = HeapBase::FindContainHeap(&sRootList, pHeapBase);
+HeapBase::HeapList* HeapBase::FindListContainHeap(HeapBase* pHeapBase)
+{
+    HeapBase::HeapList* pList = &s_RootList;
+    HeapBase* pContainHeapBase = HeapBase::FindContainHeap(&s_RootList, pHeapBase);
 
-    if (pContainHeapBase){
-        pList = &pContainHeapBase->mChildList;
+    if (pContainHeapBase)
+    {
+        pList = &pContainHeapBase->m_ChildList;
     }
 
     return pList;
 }
 
-HeapBase* HeapBase::FindContainHeap(HeapBase::HeapList* pList, const void* memBlock){
+HeapBase* HeapBase::FindContainHeap(HeapBase::HeapList* pList, const void* memBlock)
+{
     u32 memBlockAddress = reinterpret_cast<u32>(memBlock);
 
-    for (HeapList::iterator itr = pList->begin(); itr != pList->end();){
+    for (HeapList::iterator itr = pList->begin(); itr != pList->end();)
+    {
         HeapList::iterator curItr = itr++;
-        if (reinterpret_cast<u32>(curItr->mHeapStart) <= memBlockAddress && reinterpret_cast<u32>(curItr->mHeapEnd) > memBlockAddress ){
-            HeapBase* pChildHeapBase = FindContainHeap( &curItr->mChildList, memBlock );
-            if (pChildHeapBase){
+        if (reinterpret_cast<u32>(curItr->m_HeapStart) <= memBlockAddress && reinterpret_cast<u32>(curItr->m_HeapEnd) > memBlockAddress )
+        {
+            HeapBase* pChildHeapBase = FindContainHeap( &curItr->m_ChildList, memBlock );
+            if (pChildHeapBase)
+            {
                 return pChildHeapBase;
             }
             return &(*curItr);
@@ -60,21 +66,24 @@ HeapBase* HeapBase::FindContainHeap(HeapBase::HeapList* pList, const void* memBl
     return NULL;
 }
 
-HeapBase* HeapBase::FindContainHeap(const void* memBlock){
-    return FindContainHeap(&sRootList, memBlock);
+HeapBase* HeapBase::FindContainHeap(const void* memBlock)
+{
+    return FindContainHeap(&s_RootList, memBlock);
 }
 
-u32 HeapBase::GetFillValue(FillType type){
-    return sFillVals[type];
+u32 HeapBase::GetFillValue(FillType type)
+{
+    return s_FillVals[type];
 }
 
-void HeapBase::Initialize(u32 signature, void* heapStart, void* heapEnd, u16 optFlag){
-    mSignature = signature;
+void HeapBase::Initialize(u32 signature, void* heapStart, void* heapEnd, u16 optFlag)
+{
+    m_Signature = signature;
 
-    mHeapStart = heapStart;
-    mHeapEnd = heapEnd;
+    m_HeapStart = heapStart;
+    m_HeapEnd = heapEnd;
 
-    mAttribute = 0;
+    m_Attribute = 0;
     SetOptionFlag(optFlag);
     
     FillNoUseMemory(heapStart, (u32)GetOffsetFromPtr(heapStart, heapEnd));
@@ -83,45 +92,55 @@ void HeapBase::Initialize(u32 signature, void* heapStart, void* heapEnd, u16 opt
     pList->push_back(this);
 }
 
-void HeapBase::Finalize(){
+void HeapBase::Finalize()
+{
     HeapList* pList = FindListContainHeap(this);
     pList->erase(this);
-    mSignature = 0;
+    m_Signature = 0;
 }
 
-void HeapBase::LockHeap(){}
+void HeapBase::LockHeap() {}
 
-void HeapBase::UnlockHeap(){}
+void HeapBase::UnlockHeap() {}
 
-void HeapBase::FillFreeMemory(void* address, u32 size){
-    if (this->GetOptionFlag() & OPT_DEBUG_FILL){
+void HeapBase::FillFreeMemory(void* address, u32 size)
+{
+    if (this->GetOptionFlag() & OPT_DEBUG_FILL)
+    {
         std::memset(address, GetFillValue( HEAP_FILL_FREE), size);
     }
 }
 
-void HeapBase::FillNoUseMemory(void* address, u32 size){
-    if (this->GetOptionFlag() & OPT_DEBUG_FILL){
+void HeapBase::FillNoUseMemory(void* address, u32 size)
+{
+    if (this->GetOptionFlag() & OPT_DEBUG_FILL)
+    {
         std::memset(address, GetFillValue(HEAP_FILL_NOUSE), size);
     }
 }
 
-void HeapBase::FillAllocMemory(void* address, u32 size){
-    if (this->GetOptionFlag() & OPT_0_CLEAR){
+void HeapBase::FillAllocMemory(void* address, u32 size)
+{
+    if (this->GetOptionFlag() & OPT_0_CLEAR)
+    {
         std::memset(address, 0, size);
     }
     else{
-        if (this->GetOptionFlag() & OPT_DEBUG_FILL){
+        if (this->GetOptionFlag() & OPT_DEBUG_FILL)
+        {
             std::memset(address, GetFillValue(HEAP_FILL_ALLOC), size);
         }
     }
 }
 
-u16 HeapBase::GetOptionFlag(){
-    return (u16)GetBitValue(this->mAttribute, 0, 8);
+u16 HeapBase::GetOptionFlag()
+{
+    return (u16)GetBitValue(this->m_Attribute, 0, 8);
 }
 
-void HeapBase::SetOptionFlag(u16 optFlag){
-    SetBitValue(this->mAttribute, 0, 8, optFlag);
+void HeapBase::SetOptionFlag(u16 optFlag)
+{
+    SetBitValue(this->m_Attribute, 0, 8, optFlag);
 }
 
 }

@@ -16,7 +16,8 @@ namespace gfx{
 class Material;
 class RenderContext;
 
-class RenderCommand{
+class RenderCommand
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(RenderCommand);
 
@@ -29,11 +30,13 @@ protected:
 };
 
 template<typename TKey>
-class BasicRenderElement{
+class BasicRenderElement
+{
 public:
     typedef TKey KeyType;
 
-    enum Bit64RenderKeyFormat{
+    enum Bit64RenderKeyFormat
+    {
         BIT64_LAYER_SHIFT = 56,
         BIT64_LAYER_BIT_SIZE = 8,
         BIT64_LAYER_MASK = (1 << BIT64_LAYER_BIT_SIZE) - 1,
@@ -70,45 +73,54 @@ public:
         BIT64_SIMPLE_MATERIAL_PRIORITY_MASK = (1 << BIT64_SIMPLE_MATERIAL_PRIORITY_BIT_SIZE) - 1
     };
 
-    struct Depth24bitQuantizer : public std::unary_function<float, KeyType>{
-        KeyType operator()(float depth){
+    struct Depth24bitQuantizer : public std::unary_function<float, KeyType>
+    {
+        KeyType operator()(float depth)
+        {
             return static_cast<KeyType>(depth * static_cast<float>(BIT64_DEPTH_MAX_VALUE)) & BIT64_DEPTH_MASK;
         }
     };
 
-    struct ReverseDepth24bitQuantizer : public std::unary_function<float, KeyType>{
-        KeyType operator()(float depth){
+    struct ReverseDepth24bitQuantizer : public std::unary_function<float, KeyType>
+    {
+        KeyType operator()(float depth)
+        {
             return static_cast<KeyType>((1.0f - depth) * static_cast<float>(BIT64_DEPTH_MAX_VALUE)) & BIT64_DEPTH_MASK;
         }
     };
 
-    struct ZeroQuantizer : public std::unary_function<float, KeyType>{
-        KeyType operator()(float depth){
+    struct ZeroQuantizer : public std::unary_function<float, KeyType>
+    {
+        KeyType operator()(float depth)
+        {
             NW_UNUSED_VARIABLE(depth);
             return 0;
         }
     };
 
     template<typename TDepthQuantizer = Depth24bitQuantizer>
-    class Bit64RenderKey{
+    class Bit64RenderKey
+    {
     private:
         NW_DISALLOW_COPY_AND_ASSIGN(Bit64RenderKey);
 
     public:
         Bit64RenderKey():
-            mKey(0)
-        {}
+            m_Key(0) {}
 
-        void SetLayerId(u8 layerId){
-            mKey |= static_cast<KeyType>(layerId & BIT64_LAYER_MASK) << BIT64_LAYER_SHIFT;
+        void SetLayerId(u8 layerId)
+        {
+            m_Key |= static_cast<KeyType>(layerId & BIT64_LAYER_MASK) << BIT64_LAYER_SHIFT;
         }
 
-        void SetPriorityForDetailedMaterial(u8 priority, u32 shift){
-            mKey |= static_cast<KeyType>(priority & BIT64_MATERIAL_PRIORITY_MASK)
+        void SetPriorityForDetailedMaterial(u8 priority, u32 shift)
+        {
+            m_Key |= static_cast<KeyType>(priority & BIT64_MATERIAL_PRIORITY_MASK)
                 << (shift + BIT64_MATERIAL_RESOURCE_ID_BIT_SIZE + BIT64_MATERIAL_INSTANCE_ID_BIT_SIZE);
         }
 
-        void SetDetailedMaterialIdAndTranslucencyKind(const Material* material, u32 materialIdShift){
+        void SetDetailedMaterialIdAndTranslucencyKind(const Material* material, u32 materialIdShift)
+        {
             NW_NULL_ASSERT(material);
 
             ResMaterial resMaterial = material->GetOriginal();
@@ -117,106 +129,111 @@ public:
             KeyType id =
                 ((reinterpret_cast<KeyType>(material->GetOwnerModel()) >> 2) & BIT64_MATERIAL_INSTANCE_ID_MASK) |
                 (static_cast<KeyType>(resMaterial.GetMaterialId() & BIT64_MATERIAL_RESOURCE_ID_MASK) << BIT64_MATERIAL_INSTANCE_ID_BIT_SIZE);
-            mKey |= (id & BIT64_MATERIAL_ID_MASK) << materialIdShift;
+            m_Key |= (id & BIT64_MATERIAL_ID_MASK) << materialIdShift;
 
             ResMaterial shadingParametersResMaterial = material->GetShadingParameterResMaterial();
             NW_ASSERT(shadingParametersResMaterial.IsValid());
 
             ResMaterial::TranslucencyKind translucencyKind = shadingParametersResMaterial.GetTranslucencyKind();
 
-            mKey |= static_cast<KeyType>(translucencyKind & BIT64_TRANSLUCENCY_KIND_MASK) << BIT64_TRANSLUCENCY_KIND_SHIFT;
+            m_Key |= static_cast<KeyType>(translucencyKind & BIT64_TRANSLUCENCY_KIND_MASK) << BIT64_TRANSLUCENCY_KIND_SHIFT;
         }
 
-        void SetPriorityForSimpleMaterial(u8 priority, u32 shift){
-            mKey |= static_cast<KeyType>(priority & BIT64_SIMPLE_MATERIAL_PRIORITY_MASK) << (shift + BIT64_SIMPLE_MATERIAL_ID_BIT_SIZE);
+        void SetPriorityForSimpleMaterial(u8 priority, u32 shift)
+        {
+            m_Key |= static_cast<KeyType>(priority & BIT64_SIMPLE_MATERIAL_PRIORITY_MASK) << (shift + BIT64_SIMPLE_MATERIAL_ID_BIT_SIZE);
         }
 
-        void SetSimpleMaterialIdAndTranslucencyKind(const Material* material, u32 materialIdShift){
+        void SetSimpleMaterialIdAndTranslucencyKind(const Material* material, u32 materialIdShift)
+        {
             NW_NULL_ASSERT(material);
 
             ResMaterial resMaterial = material->GetOriginal();
             NW_ASSERT(resMaterial.IsValid());
 
-            mKey |= static_cast<KeyType>(resMaterial.GetMaterialId() & BIT64_SIMPLE_MATERIAL_ID_MASK) << materialIdShift;
+            m_Key |= static_cast<KeyType>(resMaterial.GetMaterialId() & BIT64_SIMPLE_MATERIAL_ID_MASK) << materialIdShift;
 
             ResMaterial shadingParametersResMaterial = material->GetShadingParameterResMaterial();
             NW_ASSERT(shadingParametersResMaterial.IsValid());
 
             ResMaterial::TranslucencyKind translucencyKind = shadingParametersResMaterial.GetTranslucencyKind();
 
-            mKey |= (static_cast<KeyType>(translucencyKind) & BIT64_TRANSLUCENCY_KIND_MASK) << BIT64_TRANSLUCENCY_KIND_SHIFT;
+            m_Key |= (static_cast<KeyType>(translucencyKind) & BIT64_TRANSLUCENCY_KIND_MASK) << BIT64_TRANSLUCENCY_KIND_SHIFT;
         }
 
-        void SetTranslucencyKind(ResMaterial::TranslucencyKind translucencyKind){
-            mKey |= (static_cast<KeyType>(translucencyKind) & BIT64_TRANSLUCENCY_KIND_MASK) << BIT64_TRANSLUCENCY_KIND_SHIFT;
+        void SetTranslucencyKind(ResMaterial::TranslucencyKind translucencyKind)
+        {
+            m_Key |= (static_cast<KeyType>(translucencyKind) & BIT64_TRANSLUCENCY_KIND_MASK) << BIT64_TRANSLUCENCY_KIND_SHIFT;
         }
 
-        void SetDepth(float depth, u32 shift){
-            mKey |= TDepthQuantizer()(depth) << shift;
+        void SetDepth(float depth, u32 shift)
+        {
+            m_Key |= TDepthQuantizer()(depth) << shift;
         }
 
-        void SetCommand(RenderCommand* command){
-            mKey |= static_cast<KeyType>(1) << BIT64_COMMAND_FLAG_SHIFT;
-            mKey |= reinterpret_cast<KeyType>(command);
+        void SetCommand(RenderCommand* command)
+        {
+            m_Key |= static_cast<KeyType>(1) << BIT64_COMMAND_FLAG_SHIFT;
+            m_Key |= reinterpret_cast<KeyType>(command);
         }
 
-        const KeyType Key() const { return mKey; }
+        const KeyType Key() const { return m_Key; }
 
     private:
-        KeyType mKey;
+        KeyType m_Key;
     };
 
     explicit BasicRenderElement(const KeyType& key):
-        mKey(key),
-        mModel(NULL)
-    {}
+        m_Key(key),
+        m_Model(NULL) {}
 
     BasicRenderElement(ResMesh mesh, Model* model):
-        mKey(0),
-        mMesh(mesh),
-        mModel(model)
-    {}
+        m_Key(0),
+        m_Mesh(mesh),
+        m_Model(model) {}
 
     BasicRenderElement(const BasicRenderElement& element):
-        mKey(element.mKey),
-        mMesh(element.mMesh),
-        mModel(element.mModel)
-    {}
+        m_Key(element.m_Key),
+        m_Mesh(element.m_Mesh),
+        m_Model(element.m_Model) {}
 
     ~BasicRenderElement() {}
 
     bool IsCommand() const { return GetBool(BIT64_COMMAND_FLAG_SHIFT); }
 
-    ResMesh GetMesh() { return mMesh; }
-    const ResMesh GetMesh() const { return mMesh; }
+    ResMesh GetMesh() { return m_Mesh; }
+    const ResMesh GetMesh() const { return m_Mesh; }
 
-    Model* GetModel() { return mModel; }
-    const Model* GetModel() const { return mModel; }
+    Model* GetModel() { return m_Model; }
+    const Model* GetModel() const { return m_Model; }
 
-    RenderCommand* GetCommand(){
+    RenderCommand* GetCommand()
+    {
         NW_ASSERT(IsCommand());
-        return reinterpret_cast<RenderCommand*>(static_cast<u32>(mKey) & BIT64_COMMAND_MASK);
+        return reinterpret_cast<RenderCommand*>(static_cast<u32>(m_Key) & BIT64_COMMAND_MASK);
     }
 
-    const RenderCommand* GetCommand() const{
+    const RenderCommand* GetCommand() const
+    {
         NW_ASSERT(IsCommand());
-        return reinterpret_cast<RenderCommand*>(static_cast<u32>(mKey) & BIT64_COMMAND_MASK);
+        return reinterpret_cast<RenderCommand*>(static_cast<u32>(m_Key) & BIT64_COMMAND_MASK);
     }
 
-    KeyType& Key() { return mKey; }
-    const KeyType& Key() const { return mKey; }
+    KeyType& Key() { return m_Key; }
+    const KeyType& Key() const { return m_Key; }
 
 private:
-    bool GetBool(int shift) const { return (mKey >> shift) & 0x1; }
+    bool GetBool(int shift) const { return (m_Key >> shift) & 0x1; }
 
-    KeyType mKey;
+    KeyType m_Key;
 
-    ResMesh mMesh;
-    Model* mModel;
+    ResMesh m_Mesh;
+    Model* m_Model;
 };
 
 template<typename TKey>
-class BasicRenderKeyFactory : public GfxObject{
+class BasicRenderKeyFactory : public GfxObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(BasicRenderKeyFactory);
 
@@ -230,14 +247,14 @@ public:
 
 protected:
     BasicRenderKeyFactory(nw::os::IAllocator* allocator):
-        GfxObject(allocator)
-    {}
+        GfxObject(allocator) {}
 
     virtual ~BasicRenderKeyFactory() {}
 };
 
 template<typename TKey,typename TDepthQuantizer = typename BasicRenderElement<TKey>::Depth24bitQuantizer>
-class PriorMaterialRenderKeyFactory : public BasicRenderKeyFactory<TKey>{
+class PriorMaterialRenderKeyFactory : public BasicRenderKeyFactory<TKey>
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(PriorMaterialRenderKeyFactory);
 
@@ -246,13 +263,15 @@ public:
     typedef BasicRenderElement<KeyType> RenderElementType;
     typedef typename BasicRenderElement<KeyType>::template Bit64RenderKey<TDepthQuantizer> Bit64RenderKeyType;
 
-    static PriorMaterialRenderKeyFactory* Create(nw::os::IAllocator* allocator){
+    static PriorMaterialRenderKeyFactory* Create(nw::os::IAllocator* allocator)
+    {
         void* factoryMemory = allocator->Alloc<PriorMaterialRenderKeyFactory>(1);
         NW_NULL_ASSERT(factoryMemory);
         return new(factoryMemory) PriorMaterialRenderKeyFactory(allocator);
     }
 
-    virtual KeyType CreateRenderKey(const RenderElementType& renderElement, float depth, u8 layerId){
+    virtual KeyType CreateRenderKey(const RenderElementType& renderElement, float depth, u8 layerId)
+    {
         Bit64RenderKeyType renderKey;
 
         renderKey.SetDepth(depth, 0);
@@ -260,7 +279,8 @@ public:
         const ResMesh mesh = renderElement.GetMesh();
         const Model* model = renderElement.GetModel();
 
-        if (mesh.IsValid() && model){
+        if (mesh.IsValid() && model)
+        {
             const Material* material = model->GetMaterial(mesh.GetMaterialIndex());
             renderKey.SetDetailedMaterialIdAndTranslucencyKind(material, RenderElementType::BIT64_DEPTH_BIT_SIZE);
             renderKey.SetPriorityForDetailedMaterial(mesh.GetRenderPriority(), RenderElementType::BIT64_DEPTH_BIT_SIZE);
@@ -271,7 +291,8 @@ public:
         return renderKey.Key();
     }
 
-    virtual KeyType CreateCommandRenderKey(RenderCommand* command, ResMaterial::TranslucencyKind translucencyKind, u8 priority, u8 layerId){
+    virtual KeyType CreateCommandRenderKey(RenderCommand* command, ResMaterial::TranslucencyKind translucencyKind, u8 priority, u8 layerId)
+    {
         Bit64RenderKeyType renderKey;
 
         renderKey.SetLayerId(layerId);
@@ -284,12 +305,12 @@ public:
 
 private:
     PriorMaterialRenderKeyFactory(nw::os::IAllocator* allocator):
-        BasicRenderKeyFactory<KeyType>(allocator)
-    {}
+        BasicRenderKeyFactory<KeyType>(allocator) {}
 };
 
 template<typename TKey,typename TDepthQuantizer = typename BasicRenderElement<TKey>::Depth24bitQuantizer>
-class PriorDepthRenderKeyFactory : public BasicRenderKeyFactory<TKey>{
+class PriorDepthRenderKeyFactory : public BasicRenderKeyFactory<TKey>
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(PriorDepthRenderKeyFactory);
 
@@ -298,13 +319,15 @@ public:
     typedef BasicRenderElement<KeyType> RenderElementType;
     typedef typename BasicRenderElement<KeyType>::template Bit64RenderKey<TDepthQuantizer> Bit64RenderKeyType;
 
-    static PriorDepthRenderKeyFactory* Create(nw::os::IAllocator* allocator){
+    static PriorDepthRenderKeyFactory* Create(nw::os::IAllocator* allocator)
+    {
         void* factoryMemory = allocator->Alloc<PriorDepthRenderKeyFactory>(1);
         NW_NULL_ASSERT(factoryMemory);
         return new(factoryMemory) PriorDepthRenderKeyFactory(allocator);
     }
 
-    virtual KeyType CreateRenderKey(const RenderElementType& renderElement, float depth, u8 layerId){
+    virtual KeyType CreateRenderKey(const RenderElementType& renderElement, float depth, u8 layerId)
+    {
         Bit64RenderKeyType renderKey;
 
         renderKey.SetDepth(depth, RenderElementType::BIT64_SIMPLE_MATERIAL_ID_BIT_SIZE);
@@ -312,7 +335,8 @@ public:
         const ResMesh mesh = renderElement.GetMesh();
         const Model* model = renderElement.GetModel();
 
-        if (mesh.IsValid() && model){
+        if (mesh.IsValid() && model)
+        {
             const Material* material = model->GetMaterial(mesh.GetMaterialIndex());
             renderKey.SetSimpleMaterialIdAndTranslucencyKind(material, 0);
             renderKey.SetPriorityForSimpleMaterial(mesh.GetRenderPriority(), RenderElementType::BIT64_DEPTH_BIT_SIZE);
@@ -323,7 +347,8 @@ public:
         return renderKey.Key();
     }
 
-    virtual KeyType CreateCommandRenderKey(RenderCommand* command, ResMaterial::TranslucencyKind translucencyKind, u8 priority, u8 layerId){
+    virtual KeyType CreateCommandRenderKey(RenderCommand* command, ResMaterial::TranslucencyKind translucencyKind, u8 priority, u8 layerId)
+    {
         Bit64RenderKeyType renderKey;
 
         renderKey.SetLayerId(layerId);
@@ -336,12 +361,12 @@ public:
 
 private:
     PriorDepthRenderKeyFactory(nw::os::IAllocator* allocator):
-        BasicRenderKeyFactory<KeyType>(allocator)
-    {}
+        BasicRenderKeyFactory<KeyType>(allocator) {}
 };
 
 template<typename TKey,typename TDepthQuantizer = typename BasicRenderElement<TKey>::Depth24bitQuantizer>
-class TopPriorDepthRenderKeyFactory : public BasicRenderKeyFactory<TKey>{
+class TopPriorDepthRenderKeyFactory : public BasicRenderKeyFactory<TKey>
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(TopPriorDepthRenderKeyFactory);
 
@@ -350,13 +375,15 @@ public:
     typedef BasicRenderElement<KeyType> RenderElementType;
     typedef typename BasicRenderElement<KeyType>::template Bit64RenderKey<TDepthQuantizer> Bit64RenderKeyType;
 
-    static TopPriorDepthRenderKeyFactory* Create(nw::os::IAllocator* allocator){
+    static TopPriorDepthRenderKeyFactory* Create(nw::os::IAllocator* allocator)
+    {
         void* factoryMemory = allocator->Alloc<TopPriorDepthRenderKeyFactory>(1);
         NW_NULL_ASSERT(factoryMemory);
         return new(factoryMemory) TopPriorDepthRenderKeyFactory(allocator);
     }
 
-    virtual KeyType CreateRenderKey(const RenderElementType& renderElement, float depth, u8 layerId){
+    virtual KeyType CreateRenderKey(const RenderElementType& renderElement, float depth, u8 layerId)
+    {
         Bit64RenderKeyType renderKey;
 
         renderKey.SetDepth(
@@ -366,7 +393,8 @@ public:
         const ResMesh mesh = renderElement.GetMesh();
         const Model* model = renderElement.GetModel();
 
-        if (mesh.IsValid() && model){
+        if (mesh.IsValid() && model)
+        {
             const Material* material = model->GetMaterial(mesh.GetMaterialIndex());
             renderKey.SetSimpleMaterialIdAndTranslucencyKind(material, 0);
             renderKey.SetPriorityForSimpleMaterial(mesh.GetRenderPriority(), 0);
@@ -377,7 +405,8 @@ public:
         return renderKey.Key();
     }
 
-    virtual KeyType CreateCommandRenderKey(RenderCommand* command, ResMaterial::TranslucencyKind translucencyKind, u8 priority, u8 layerId){
+    virtual KeyType CreateCommandRenderKey(RenderCommand* command, ResMaterial::TranslucencyKind translucencyKind, u8 priority, u8 layerId)
+    {
         Bit64RenderKeyType renderKey;
 
         renderKey.SetLayerId(layerId);
@@ -390,39 +419,45 @@ public:
 
 private:
     TopPriorDepthRenderKeyFactory(nw::os::IAllocator* allocator):
-        BasicRenderKeyFactory<KeyType>(allocator)
-    {}
+        BasicRenderKeyFactory<KeyType>(allocator) {}
 };
 
 typedef bit64 RenderKeyType;
 typedef BasicRenderElement<RenderKeyType> RenderElement;
 typedef BasicRenderKeyFactory<RenderKeyType> RenderKeyFactory;
 
-inline RenderKeyFactory* CreatePriorMaterialRenderKeyFactory(nw::os::IAllocator* allocator){
+inline RenderKeyFactory* CreatePriorMaterialRenderKeyFactory(nw::os::IAllocator* allocator)
+{
     return PriorMaterialRenderKeyFactory<RenderKeyType>::Create(allocator);
 }
 
-inline RenderKeyFactory* CreatePriorMaterialReverseDepthRenderKeyFactory(nw::os::IAllocator* allocator){
+inline RenderKeyFactory* CreatePriorMaterialReverseDepthRenderKeyFactory(nw::os::IAllocator* allocator)
+{
     return PriorMaterialRenderKeyFactory<RenderKeyType, RenderElement::ReverseDepth24bitQuantizer>::Create(allocator);
 }
 
-inline RenderKeyFactory* CreatePriorMaterialAndZeroDepthRenderKeyFactory(nw::os::IAllocator* allocator){
+inline RenderKeyFactory* CreatePriorMaterialAndZeroDepthRenderKeyFactory(nw::os::IAllocator* allocator)
+{
     return PriorMaterialRenderKeyFactory<RenderKeyType, RenderElement::ZeroQuantizer>::Create(allocator);
 }
 
-inline RenderKeyFactory* CreatePriorDepthRenderKeyFactory(nw::os::IAllocator* allocator){
+inline RenderKeyFactory* CreatePriorDepthRenderKeyFactory(nw::os::IAllocator* allocator)
+{
     return PriorDepthRenderKeyFactory<RenderKeyType>::Create(allocator);
 }
 
-inline RenderKeyFactory* CreatePriorDepthReverseDepthRenderKeyFactory(nw::os::IAllocator* allocator){
+inline RenderKeyFactory* CreatePriorDepthReverseDepthRenderKeyFactory(nw::os::IAllocator* allocator)
+{
     return PriorDepthRenderKeyFactory<RenderKeyType, RenderElement::ReverseDepth24bitQuantizer>::Create(allocator);
 }
 
-inline RenderKeyFactory* CreateTopPriorDepthRenderKeyFactory(nw::os::IAllocator* allocator){
+inline RenderKeyFactory* CreateTopPriorDepthRenderKeyFactory(nw::os::IAllocator* allocator)
+{
     return TopPriorDepthRenderKeyFactory<RenderKeyType>::Create(allocator);
 }
 
-inline RenderKeyFactory* CreateTopPriorDepthReverseDepthRenderKeyFactory(nw::os::IAllocator* allocator){
+inline RenderKeyFactory* CreateTopPriorDepthReverseDepthRenderKeyFactory(nw::os::IAllocator* allocator)
+{
     return TopPriorDepthRenderKeyFactory<RenderKeyType, RenderElement::ReverseDepth24bitQuantizer>::Create(allocator);
 }
 

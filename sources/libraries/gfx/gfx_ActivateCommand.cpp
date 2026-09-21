@@ -1,14 +1,19 @@
+// Filename: gfx_ActivateCommand.cpp
+//
+// Project: NintendoWare4Ctr
+
 #include <nw/os/os_Memory.h>
 #include <nw/gfx/gfx_ActivateCommand.h>
 //#include <nw/gfx/gfx_DisplayList.h>
 #include <nw/gfx/res/gfx_ResVertex.h>
 #include <nw/gfx/res/gfx_ResShape.h>
 #include <nw/gfx/gfx_ShaderBinaryInfo.h>
+#include <nn/gx.h>
 
 namespace nw{
 namespace gfx{
 
-nw::os::IAllocator* CommandCacheManager::sAllocator = NULL;
+nw::os::IAllocator* CommandCacheManager::s_Allocator = NULL;
 
 namespace internal{
 namespace{
@@ -42,15 +47,18 @@ const u32 CLEAR_VERTEX_COMMAND[] ={
 };
 
 template <typename TShape>
-s32 CalcSetupActivateVertexAttributeCommandSize_(TShape shape, ResShaderProgramDescription shaderProgramDesc){
+s32 CalcSetupActivateVertexAttributeCommandSize_(TShape shape, ResShaderProgramDescription shaderProgramDesc)
+{
     s32 commandSize = 12;
 
     s32 vtxAttrNum = shape.GetVertexAttributesCount();
 
-    for (s32 i = 0; i < vtxAttrNum; ++i){
+    for (s32 i = 0; i < vtxAttrNum; ++i)
+    {
         ResVertexAttribute attribute = shape.GetVertexAttributes(i);
 
-        if (attribute.GetFlags() & ResVertexAttributeData::FLAG_VERTEX_PARAM){
+        if (attribute.GetFlags() & ResVertexAttributeData::FLAG_VERTEX_PARAM)
+        {
             commandSize += 6;
         }
         else{
@@ -58,7 +66,8 @@ s32 CalcSetupActivateVertexAttributeCommandSize_(TShape shape, ResShaderProgramD
         }
     }
 
-    if (shaderProgramDesc.GetGeometryShaderIndex() >= 0){
+    if (shaderProgramDesc.GetGeometryShaderIndex() >= 0)
+    {
         commandSize += 4;
     }
 
@@ -66,27 +75,32 @@ s32 CalcSetupActivateVertexAttributeCommandSize_(TShape shape, ResShaderProgramD
 }
 
 template <typename TShape>
-s32 CalcSetupDeactivateVertexAttributeCommandSize_(TShape shape, ResShaderProgramDescription shaderProgramDesc){
+s32 CalcSetupDeactivateVertexAttributeCommandSize_(TShape shape, ResShaderProgramDescription shaderProgramDesc)
+{
     NW_UNUSED_VARIABLE(shaderProgramDesc);
 
     int inputIndex = 0;
     s32 vtxAttrNum = shape.GetVertexAttributesCount();
     s32 commandIndex = 0;
 
-    for (s32 i = 0; i < vtxAttrNum; ++i){
+    for (s32 i = 0; i < vtxAttrNum; ++i)
+    {
         ResVertexAttribute attribute = shape.GetVertexAttributes(i);
 
-        if (attribute.GetFlags() & ResVertexAttributeData::FLAG_VERTEX_PARAM){
+        if (attribute.GetFlags() & ResVertexAttributeData::FLAG_VERTEX_PARAM)
+        {
             ++inputIndex;
             continue;
         }
 
-        if (attribute.GetFlags() & ResVertexAttributeData::FLAG_INTERLEAVE){
+        if (attribute.GetFlags() & ResVertexAttributeData::FLAG_INTERLEAVE)
+        {
             ResInterleavedVertexStream interleave = ResStaticCast<ResInterleavedVertexStream>(attribute);
             s32 streamCount = interleave.GetVertexStreamsCount();
             inputIndex += streamCount;
         }
-        else{
+        else
+        {
             ++inputIndex;
         }
 
@@ -95,26 +109,31 @@ s32 CalcSetupDeactivateVertexAttributeCommandSize_(TShape shape, ResShaderProgra
 
     commandIndex += 6;
 
-    for (int i = 1; i < inputIndex; ++i){
+    for (int i = 1; i < inputIndex; ++i)
+    {
         commandIndex += 6;
     }
 
     return sizeof(u32) * commandIndex;
 }
 
-inline s32 GetAttributeIndexFromUsage(ResShaderProgramDescription shaderProgramDesc, s32 usage){
+inline s32 GetAttributeIndexFromUsage(ResShaderProgramDescription shaderProgramDesc, s32 usage)
+{
     return shaderProgramDesc.GetAttributeIndices(usage);
 }
 
 } // namespace
 
-void ClearVertexAttribute(){
+void ClearVertexAttribute()
+{
     NWUseCmdlist(CLEAR_VERTEX_COMMAND, sizeof(CLEAR_VERTEX_COMMAND));
 }
 
 template <typename TShape>
-static s32 SetupActivateVertexAttributeCommand_(CommandBufferInfo& bufferInfo, TShape shape, ResShaderProgramDescription shaderProgramDesc){
-    enum{
+static s32 SetupActivateVertexAttributeCommand_(CommandBufferInfo& bufferInfo, TShape shape, ResShaderProgramDescription shaderProgramDesc)
+{
+    enum
+    {
         MAX_ATTRIBUTES_NUM = 12,
 
         REG_VTX_SHADER_ATTR_NUM = 0x2b9,
@@ -134,7 +153,7 @@ static s32 SetupActivateVertexAttributeCommand_(CommandBufferInfo& bufferInfo, T
     u32 shaderVtxAttrNum = shaderInfo->GetInputRegisterNum(shaderProgramDesc.GetVertexShaderIndex());
 
     u32 baseAddr = nngxGetPhysicalAddr(nn::gx::CTR::GetVramStartAddr(nn::gx::CTR::MEM_VRAMA));
-    shape.ref().mBaseAddress = baseAddr;
+    shape.ref().m_BaseAddress = baseAddr;
 
     s32 vtxAttrNum = shape.GetVertexAttributesCount();
     s32 inputRegNum = shaderVtxAttrNum;
@@ -167,14 +186,17 @@ static s32 SetupActivateVertexAttributeCommand_(CommandBufferInfo& bufferInfo, T
 
     u32 usedFlag = 0;
 
-    for (s32 i = 0; i < vtxAttrNum; ++i){
+    for (s32 i = 0; i < vtxAttrNum; ++i)
+    {
         ResVertexAttribute attribute = shape.GetVertexAttributes(i);
 
-        if (attribute.GetFlags() & ResVertexAttributeData::FLAG_VERTEX_PARAM){
+        if (attribute.GetFlags() & ResVertexAttributeData::FLAG_VERTEX_PARAM)
+        {
             continue;
         }
 
-        if (attribute.GetFlags() & ResVertexAttributeData::FLAG_INTERLEAVE){
+        if (attribute.GetFlags() & ResVertexAttributeData::FLAG_INTERLEAVE)
+        {
             ResInterleavedVertexStream interleave = ResStaticCast<ResInterleavedVertexStream>(attribute);
 
             u32 bufferAddr = nngxGetPhysicalAddr(interleave.GetImageAddress());
@@ -188,7 +210,8 @@ static s32 SetupActivateVertexAttributeCommand_(CommandBufferInfo& bufferInfo, T
             u32* arraySetting = &command[commandIndex + 2];
             commandIndex += 4;
 
-            for (s32 streamIdx = 0; streamIdx < streamCount; ++streamIdx){
+            for (s32 streamIdx = 0; streamIdx < streamCount; ++streamIdx)
+            {
                 ResVertexStream stream = interleave.GetVertexStreams(streamIdx);
 
                 s32 usage = stream.GetUsage();
@@ -203,7 +226,8 @@ static s32 SetupActivateVertexAttributeCommand_(CommandBufferInfo& bufferInfo, T
 
                 inputFormat[inputIndex / 8] |= CommandCacheHelper::GetVertexFormat(dimension, format) << ((inputIndex % 8) * 4);
 
-                if (streamIdx < 8){
+                if (streamIdx < 8)
+                {
                     arraySetting[0] |= inputIndex << (streamIdx * 4);
                 }
                 else{
@@ -244,10 +268,12 @@ static s32 SetupActivateVertexAttributeCommand_(CommandBufferInfo& bufferInfo, T
 
     const u32 HEADER_VTX_PARAM_INDEX = internal::MakeCommandHeader(REG_VTX_PARAM_INDEX, 4, true, 0xF);
 
-    for (s32 i = 0; i < vtxAttrNum; ++i){
+    for (s32 i = 0; i < vtxAttrNum; ++i)
+    {
         ResVertexAttribute attribute = shape.GetVertexAttributes(i);
 
-        if (attribute.GetFlags() & ResVertexAttributeData::FLAG_VERTEX_PARAM){
+        if (attribute.GetFlags() & ResVertexAttributeData::FLAG_VERTEX_PARAM)
+        {
             ResVertexParamAttribute param = ResStaticCast<ResVertexParamAttribute>(attribute);
 
             s32 usage = param.GetUsage();
@@ -261,7 +287,8 @@ static s32 SetupActivateVertexAttributeCommand_(CommandBufferInfo& bufferInfo, T
             int count = param.GetAttributeCount();
             f32* fdata = param.GetAttribute();
 
-            for (int j = 0; j < count; ++j){
+            for (int j = 0; j < count; ++j)
+            {
                 data[j] = ut::Float24::Float32ToBits24(fdata[j]);
             }
 
@@ -279,10 +306,12 @@ static s32 SetupActivateVertexAttributeCommand_(CommandBufferInfo& bufferInfo, T
         }
     }
 
-    while (inputIndex < shaderVtxAttrNum){
+    while (inputIndex < shaderVtxAttrNum)
+    {
         s32 usage = shaderVtxAttrNum - 1;
         s32 usageIndex = GetAttributeIndexFromUsage(shaderProgramDesc, usage);
-        while (usedFlag & (0x1 << usageIndex)){
+        while (usedFlag & (0x1 << usageIndex))
+        {
             --usageIndex;
         }
         inputMapTable[(inputIndex / 8) * 2] |= (usageIndex & 0xF) << (4 * (inputIndex % 8));
@@ -303,7 +332,8 @@ static s32 SetupActivateVertexAttributeCommand_(CommandBufferInfo& bufferInfo, T
     const u32 HEADER_GEOM_MAP_0 = internal::MakeCommandHeader(REG_GEOM_MAP_0, 1, false, 0xF);
     const u32 HEADER_GEOM_MAP_1 = internal::MakeCommandHeader(REG_GEOM_MAP_1, 1, false, 0xF);
 
-    if (shaderProgramDesc.GetGeometryShaderIndex() >= 0){
+    if (shaderProgramDesc.GetGeometryShaderIndex() >= 0)
+    {
         command[commandIndex + 0] = 0x76543210;
         command[commandIndex + 1] = HEADER_GEOM_MAP_0;
         command[commandIndex + 2] = 0xfedcba98;
@@ -315,10 +345,12 @@ static s32 SetupActivateVertexAttributeCommand_(CommandBufferInfo& bufferInfo, T
 }
 
 template <typename TShape>
-static s32 SetupDeactivateVertexAttributeCommand_(CommandBufferInfo& bufferInfo, TShape shape, ResShaderProgramDescription shaderProgramDesc){
+static s32 SetupDeactivateVertexAttributeCommand_(CommandBufferInfo& bufferInfo, TShape shape, ResShaderProgramDescription shaderProgramDesc)
+{
     NW_UNUSED_VARIABLE(shaderProgramDesc);
 
-    enum{
+    enum
+    {
         REG_VTX_ARRAY_VTXMASK = 0x202,
         REG_VTX_ARRAY_OFFSET = 0x203,
         REG_VTX_PARAM_INDEX = 0x232,
@@ -334,15 +366,18 @@ static s32 SetupDeactivateVertexAttributeCommand_(CommandBufferInfo& bufferInfo,
     int arrayIndex = 0;
     u32 commandIndex = 0;
 
-    for (s32 i = 0; i < vtxAttrNum; ++i){
+    for (s32 i = 0; i < vtxAttrNum; ++i)
+    {
         ResVertexAttribute attribute = shape.GetVertexAttributes(i);
 
-        if (attribute.GetFlags() & ResVertexAttributeData::FLAG_VERTEX_PARAM){
+        if (attribute.GetFlags() & ResVertexAttributeData::FLAG_VERTEX_PARAM)
+        {
             ++inputIndex;
             continue;
         }
 
-        if (attribute.GetFlags() & ResVertexAttributeData::FLAG_INTERLEAVE){
+        if (attribute.GetFlags() & ResVertexAttributeData::FLAG_INTERLEAVE)
+        {
             ResInterleavedVertexStream interleave = ResStaticCast<ResInterleavedVertexStream>(attribute);
 
             command[commandIndex] = 0;
@@ -378,7 +413,8 @@ static s32 SetupDeactivateVertexAttributeCommand_(CommandBufferInfo& bufferInfo,
 
     const u32 HEADER_VTX_PARAM_INDEX = internal::MakeCommandHeader(REG_VTX_PARAM_INDEX, 4, true, 0xF);
 
-    for (int i = 1; i < inputIndex; ++i){
+    for (int i = 1; i < inputIndex; ++i)
+    {
         command[commandIndex] = i;
         command[commandIndex + 1] = HEADER_VTX_PARAM_INDEX;
         command[commandIndex + 2] = 0;
@@ -391,39 +427,48 @@ static s32 SetupDeactivateVertexAttributeCommand_(CommandBufferInfo& bufferInfo,
     return static_cast<s32>(commandIndex * sizeof(u32));
 }
 
-s32 SetupVertexAttributeCommand(CommandBufferInfo& bufferInfo, ResSeparateDataShape shape, ResShaderProgramDescription shaderProgramDesc){
+s32 SetupVertexAttributeCommand(CommandBufferInfo& bufferInfo, ResSeparateDataShape shape, ResShaderProgramDescription shaderProgramDesc)
+{
     return SetupActivateVertexAttributeCommand_(bufferInfo, shape, shaderProgramDesc);
 }
 
-s32 SetupVertexAttributeCommand(CommandBufferInfo& bufferInfo, ResParticleShape shape, ResShaderProgramDescription shaderProgramDesc){
+s32 SetupVertexAttributeCommand(CommandBufferInfo& bufferInfo, ResParticleShape shape, ResShaderProgramDescription shaderProgramDesc)
+{
     return SetupActivateVertexAttributeCommand_(bufferInfo, shape, shaderProgramDesc);
 }
 
-s32 SetupDeactivateVertexAttributeCommand(CommandBufferInfo& bufferInfo, ResSeparateDataShape shape, ResShaderProgramDescription shaderProgramDesc){
+s32 SetupDeactivateVertexAttributeCommand(CommandBufferInfo& bufferInfo, ResSeparateDataShape shape, ResShaderProgramDescription shaderProgramDesc)
+{
     return SetupDeactivateVertexAttributeCommand_(bufferInfo, shape, shaderProgramDesc);
 }
 
-s32 SetupDeactivateVertexAttributeCommand(CommandBufferInfo& bufferInfo, ResParticleShape shape, ResShaderProgramDescription shaderProgramDesc){
+s32 SetupDeactivateVertexAttributeCommand(CommandBufferInfo& bufferInfo, ResParticleShape shape, ResShaderProgramDescription shaderProgramDesc)
+{
     return SetupDeactivateVertexAttributeCommand_(bufferInfo, shape, shaderProgramDesc);
 }
 
-s32 CalcSetupActivateVertexAttributeCommandSize(ResSeparateDataShape shape, ResShaderProgramDescription shaderProgramDesc){
+s32 CalcSetupActivateVertexAttributeCommandSize(ResSeparateDataShape shape, ResShaderProgramDescription shaderProgramDesc)
+{
     return CalcSetupActivateVertexAttributeCommandSize_(shape, shaderProgramDesc);
 }
 
-s32 CalcSetupActivateVertexAttributeCommandSize_(ResParticleShape shape, ResShaderProgramDescription shaderProgramDesc){
+s32 CalcSetupActivateVertexAttributeCommandSize_(ResParticleShape shape, ResShaderProgramDescription shaderProgramDesc)
+{
     return CalcSetupActivateVertexAttributeCommandSize_(shape, shaderProgramDesc);
 }
 
-s32 CalcSetupDeactivateVertexAttributeCommandSize(ResSeparateDataShape shape, ResShaderProgramDescription shaderProgramDesc){
+s32 CalcSetupDeactivateVertexAttributeCommandSize(ResSeparateDataShape shape, ResShaderProgramDescription shaderProgramDesc)
+{
     return CalcSetupDeactivateVertexAttributeCommandSize_(shape, shaderProgramDesc);
 }
 
-s32 CalcSetupDeactivateVertexAttributeCommandSize_(ResParticleShape shape, ResShaderProgramDescription shaderProgramDesc){
+s32 CalcSetupDeactivateVertexAttributeCommandSize_(ResParticleShape shape, ResShaderProgramDescription shaderProgramDesc)
+{
     return CalcSetupDeactivateVertexAttributeCommandSize_(shape, shaderProgramDesc);
 }
 
-s32 SetupShaderProgramMode(bool useGeometry){
+s32 SetupShaderProgramMode(bool useGeometry)
+{
     static u32 USE_GEOMETRY_COMMAND[] ={
         0x00000000, 0x00900251, 0x00000000, 0x00000000,
         0x00000000, 0x00000000, 0x00000000, 0x00000000,
@@ -451,7 +496,8 @@ s32 SetupShaderProgramMode(bool useGeometry){
 
     const u32 IDX_REG_229 = 44;
 
-    if (useGeometry){
+    if (useGeometry)
+    {
         USE_GEOMETRY_COMMAND[IDX_REG_229] = 0x00000002;
     }
     else{
@@ -463,7 +509,8 @@ s32 SetupShaderProgramMode(bool useGeometry){
     return sizeof(USE_GEOMETRY_COMMAND);
 }
 
-static inline GLuint ToPrimitiveModeGL(u8 mode, bool isGeometryShaderEnabled){
+static inline GLuint ToPrimitiveModeGL(u8 mode, bool isGeometryShaderEnabled)
+{
     static const GLuint PRIM_MODE_TABLE[] ={
         GL_TRIANGLES,
         GL_TRIANGLE_STRIP,
@@ -473,21 +520,25 @@ static inline GLuint ToPrimitiveModeGL(u8 mode, bool isGeometryShaderEnabled){
     NW_ASSERT(mode < (sizeof(PRIM_MODE_TABLE) / sizeof(GLuint)));
 
     GLuint glMode = PRIM_MODE_TABLE[mode];
-    if (isGeometryShaderEnabled){
+    if (isGeometryShaderEnabled)
+    {
         glMode = GL_GEOMETRY_PRIMITIVE_DMP;
     }
 
     return glMode;
 }
 
-s32 CalcSetupDrawIndexStreamCommand(ResIndexStream indexStream){
+s32 CalcSetupDrawIndexStreamCommand(ResIndexStream indexStream)
+{
     NW_UNUSED_VARIABLE(indexStream);
 
     return 28 * sizeof(u32);
 }
 
-s32 SetupDrawIndexStreamCommand(CommandBufferInfo& bufferInfo, ResIndexStream indexStream, bool hasGeometryShader){
-    enum{
+s32 SetupDrawIndexStreamCommand(CommandBufferInfo& bufferInfo, ResIndexStream indexStream, bool hasGeometryShader)
+{
+    enum
+    {
         REG_INDEX_STREAM_OFFSET = 0x227,
         REG_INDEX_STREAM_COUNT = 0x228,
         REG_ELEMENTS_MODE = 0x229,
@@ -519,7 +570,8 @@ s32 SetupDrawIndexStreamCommand(CommandBufferInfo& bufferInfo, ResIndexStream in
     command[2] = indexStream.GetStreamCount();
     command[3] = HEADER_INDEX_STREAM_COUNT;
 
-    if (indexStream.GetFormatType() == GL_UNSIGNED_SHORT){
+    if (indexStream.GetFormatType() == GL_UNSIGNED_SHORT)
+    {
         command[0] |= 0x80000000;
         command[2] /= 2;
     }
@@ -527,7 +579,8 @@ s32 SetupDrawIndexStreamCommand(CommandBufferInfo& bufferInfo, ResIndexStream in
     const u32 HEADER_ELEMENTS_MODE = internal::MakeCommandHeader(REG_ELEMENTS_MODE, 1, false, 0x2);
     const u32 HEADER_ELEMENTS_MODE_2 = internal::MakeCommandHeader(REG_ELEMENTS_MODE_2, 1, false, 0x2);
 
-    if (mode == GL_TRIANGLES){
+    if (mode == GL_TRIANGLES)
+    {
         command[4] = 1 << 8;
         command[5] = HEADER_ELEMENTS_MODE;
         command[6] = 1 << 8;
@@ -540,7 +593,8 @@ s32 SetupDrawIndexStreamCommand(CommandBufferInfo& bufferInfo, ResIndexStream in
         command[7] = HEADER_ELEMENTS_MODE_2;
     }
 
-    switch (mode){
+    switch (mode)
+    {
     case GL_TRIANGLES:              command[8] = 3 << 8; break;
     case GL_TRIANGLE_STRIP:         command[8] = 1 << 8; break;
     case GL_TRIANGLE_FAN:           command[8] = 2 << 8; break;

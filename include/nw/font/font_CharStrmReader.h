@@ -6,42 +6,48 @@
 namespace nw {
 namespace font {
 
-class CharStrmReader{
+class CharStrmReader
+{
     friend class Font;
 public:
     CharStrmReader(const CharStrmReader& rhs):
-        mCharStrm(rhs.mCharStrm),
-        mReadFunc(rhs.mReadFunc)
-    {}
+        m_CharStrm(rhs.m_CharStrm),
+        m_ReadFunc(rhs.m_ReadFunc) {}
+
     ~CharStrmReader() {}
-    void Set(const char* stream){
-        this->mCharStrm = stream;
+
+    void Set(const char* stream)
+    {
+        this->m_CharStrm = stream;
     }
-    void Set(const wchar_t* stream){
-        this->mCharStrm = stream;
+
+    void Set(const wchar_t* stream)
+    {
+        this->m_CharStrm = stream;
     }
-    const void* GetCurrentPos() const { return mCharStrm; }
-    u16 Next() { return (this->*mReadFunc)(); }
+    const void* GetCurrentPos() const { return m_CharStrm; }
+    u16 Next() { return (this->*m_ReadFunc)(); }
 private:
     typedef u16 (CharStrmReader::*ReadNextCharFunc)();
 
-    const void* mCharStrm;
-    const ReadNextCharFunc mReadFunc;
+    const void* m_CharStrm;
+    const ReadNextCharFunc m_ReadFunc;
 
     explicit CharStrmReader(ReadNextCharFunc func):
-        mCharStrm(NULL),
-        mReadFunc(func)
-    {}
+        m_CharStrm(NULL),
+        m_ReadFunc(func) {}
 
     template<typename CharType>
-    CharType GetChar(int offset = 0) const{
-        const CharType* charStrm = reinterpret_cast<const CharType*>(mCharStrm);
+    CharType GetChar(int offset = 0) const
+    {
+        const CharType* charStrm = reinterpret_cast<const CharType*>(m_CharStrm);
         return *(charStrm + offset);
     }
 
     template<typename CharType>
-    void StepStrm(int step = 1){
-        const CharType*& charStrm = reinterpret_cast<const CharType*&>(mCharStrm);
+    void StepStrm(int step = 1)
+    {
+        const CharType*& charStrm = reinterpret_cast<const CharType*&>(m_CharStrm);
         charStrm += step;
     }
 

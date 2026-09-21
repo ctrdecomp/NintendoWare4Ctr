@@ -12,27 +12,30 @@ NW_UT_RUNTIME_TYPEINFO_DEFINITION(TransformNode, SceneNode);
 
 TransformNode::TransformNode(os::IAllocator* allocator,ResTransformNode resObj,const TransformNode::Description& description): 
     SceneNode(allocator, resObj, description),
-    mInverseWorldMatrix(math::MTX34::Identity()),
-    mIsInverseWorldMatrixValid(false),
-    mPostCalculateWorldMatrixSignal(NULL),
-    mIsBranchWorldMatrixCalculationEnabled(true),
-    mDescription(description){
-    if (resObj.IsValid()){
-        this->mTransform.SetTransform(resObj.GetTransform());
-        this->mWorldMatrix = resObj.GetWorldMatrix();
+    m_InverseWorldMatrix(math::MTX34::Identity()),
+    m_IsInverseWorldMatrixValid(false),
+    m_PostCalculateWorldMatrixSignal(NULL),
+    m_IsBranchWorldMatrixCalculationEnabled(true),
+    m_Description(description)
+    {
+    if (resObj.IsValid())
+    {
+        this->m_Transform.SetTransform(resObj.GetTransform());
+        this->m_WorldMatrix = resObj.GetWorldMatrix();
     }
     else{
-        math::MTX34Identity(&this->mWorldMatrix);
+        math::MTX34Identity(&this->m_WorldMatrix);
     }
 }
 
-TransformNode* TransformNode::DynamicBuilder::Create(os::IAllocator* allocator){
+TransformNode* TransformNode::DynamicBuilder::Create(os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
 
     void* memory = allocator->Alloc(sizeof(TransformNode));
     NW_NULL_ASSERT(memory);
 
-    TransformNode* node = new(memory) TransformNode(allocator,ResTransformNode(),this->mDescription);
+    TransformNode* node = new(memory) TransformNode(allocator,ResTransformNode(),this->m_Description);
     
     Result result = node->Initialize(allocator);
 
@@ -41,7 +44,8 @@ TransformNode* TransformNode::DynamicBuilder::Create(os::IAllocator* allocator){
     return node;
 }
 
-TransformNode* TransformNode::Create(SceneNode* parent,ResSceneObject resource,const TransformNode::Description& description,os::IAllocator* allocator){
+TransformNode* TransformNode::Create(SceneNode* parent,ResSceneObject resource,const TransformNode::Description& description,os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
     
     ResTransformNode resNode = ResStaticCast<ResTransformNode>(resource);
@@ -55,65 +59,79 @@ TransformNode* TransformNode::Create(SceneNode* parent,ResSceneObject resource,c
 
     NW_ASSERT(result.IsSuccess());
 
-    if (parent){
+    if (parent)
+    {
         bool isAttached = parent->AttachChild(node);
         NW_ASSERT(isAttached);
     }
     return node;
 }
 
-Result TransformNode::CreateCallbacks(os::IAllocator* allocator){
+Result TransformNode::CreateCallbacks(os::IAllocator* allocator)
+{
     Result result = INITIALIZE_RESULT_OK;
 
-    if (mDescription.isFixedSizeMemory){
-        if (mDescription.maxCallbacks == 0){
-            mPostCalculateWorldMatrixSignal = 
+    if (m_Description.isFixedSizeMemory)
+    {
+        if (m_Description.maxCallbacks == 0)
+        {
+            m_PostCalculateWorldMatrixSignal = 
                 CalculateMatrixSignal::CreateInvalidateSignal(allocator);
         }
         else{
-            mPostCalculateWorldMatrixSignal =  CalculateMatrixSignal::CreateFixedSizedSignal(this->mDescription.maxCallbacks, allocator);
+            m_PostCalculateWorldMatrixSignal =  CalculateMatrixSignal::CreateFixedSizedSignal(this->m_Description.maxCallbacks, allocator);
         }
     }
     else{
-        mPostCalculateWorldMatrixSignal =  CalculateMatrixSignal::CreateVariableSizeSignal(allocator);
+        m_PostCalculateWorldMatrixSignal =  CalculateMatrixSignal::CreateVariableSizeSignal(allocator);
     }
 
-    if (mPostCalculateWorldMatrixSignal == NULL){
+    if (m_PostCalculateWorldMatrixSignal == NULL)
+    {
         result |= Result::MASK_FAIL_BIT;
     }
 
     return result;
 }
 
-void TransformNode::Accept(ISceneVisitor* visitor){
+void TransformNode::Accept(ISceneVisitor* visitor)
+{
     visitor->VisitTransformNode(this);
     AcceptChildren(visitor);
 }
 
-const math::MTX34& TransformNode::InverseWorldMatrix() const{
-    if (!mIsInverseWorldMatrixValid){
-        NW_FAILSAFE_IF(math::MTX34Inverse(&this->mInverseWorldMatrix, this->mWorldMatrix) == 0){
-            mInverseWorldMatrix = math::MTX34::Identity();
+const math::MTX34& TransformNode::InverseWorldMatrix() const
+{
+    if (!m_IsInverseWorldMatrixValid)
+    {
+        NW_FAILSAFE_IF(math::MTX34Inverse(&this->m_InverseWorldMatrix, this->m_WorldMatrix) == 0)
+    {
+            m_InverseWorldMatrix = math::MTX34::Identity();
         }
 
-        mIsInverseWorldMatrixValid = true;
+        m_IsInverseWorldMatrixValid = true;
     }
 
-    return mInverseWorldMatrix;
+    return m_InverseWorldMatrix;
 }
 
-void TransformNode::InvalidateInverseWorldMatrix(){
-    mIsInverseWorldMatrixValid = false;
+void TransformNode::InvalidateInverseWorldMatrix()
+{
+    m_IsInverseWorldMatrixValid = false;
 }
 
-void TransformNode::UpdateTransform(WorldMatrixUpdater* worldMatrixUpdater,SceneContext* sceneContext){
-    if (this->Transform().IsEnabledFlags(CalculatedTransform::FLAG_IS_WORLDMATRIX_CALCULATION_ENABLED)){
+void TransformNode::UpdateTransform(WorldMatrixUpdater* worldMatrixUpdater,SceneContext* sceneContext)
+{
+    if (this->Transform().IsEnabledFlags(CalculatedTransform::FLAG_IS_WORLDMATRIX_CALCULATION_ENABLED))
+    {
 
-        if (this->IsEnabledResults(SceneNode::FLAG_IS_DIRTY)){
+        if (this->IsEnabledResults(SceneNode::FLAG_IS_DIRTY))
+        {
             const CalculatedTransform* parentWorldTransform;
             const CalculatedTransform* parentLocalTransform;
 
-            if (this->GetParent() == NULL){
+            if (this->GetParent() == NULL)
+            {
                 parentWorldTransform = &CalculatedTransform::Identity();
                 parentLocalTransform = &CalculatedTransform::Identity();
             }
@@ -134,7 +152,8 @@ void TransformNode::UpdateTransform(WorldMatrixUpdater* worldMatrixUpdater,Scene
     this->PostCalculateWorldMatrixSignal()(this, sceneContext);
 }
 
-Result TransformNode::Initialize(os::IAllocator* allocator){
+Result TransformNode::Initialize(os::IAllocator* allocator)
+{
     Result result = INITIALIZE_RESULT_OK;
 
     result |= SceneNode::Initialize(allocator);

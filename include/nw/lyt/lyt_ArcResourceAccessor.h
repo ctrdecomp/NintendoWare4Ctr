@@ -11,7 +11,8 @@
 
 namespace nw{
 namespace lyt{
-class ArcResourceAccessor : public ResourceAccessor{
+class ArcResourceAccessor : public ResourceAccessor
+{
 public:
     static const int ROOTPATH_MAX = 64;
 
@@ -23,15 +24,15 @@ public:
     virtual const TextureInfo GetTexture(const char* name);
     virtual font::Font* GetFont(const char* name);
 
-    bool IsAttached() const{return mArcBuf != 0;}
-    const void* GetArchiveDataStart() const{return mArcBuf;}
+    bool IsAttached() const {return m_ArcBuf != 0;}
+    const void* GetArchiveDataStart() const {return m_ArcBuf;}
 protected:
-    ARCHandle mArcHandle;
-    void* mArcBuf;
-    FontContainer mFontList;
-    TextureContainer mTextureList;
-    wchar_t mResRootDir[ROOTPATH_MAX];
-    wchar_t mResNameWork[ROOTPATH_MAX];
+    ARCHandle m_ArcHandle;
+    void* m_ArcBuf;
+    FontContainer m_FontList;
+    TextureContainer m_TextureList;
+    wchar_t m_ResRootDir[ROOTPATH_MAX];
+    wchar_t m_ResNameWork[ROOTPATH_MAX];
 };
 }
 }

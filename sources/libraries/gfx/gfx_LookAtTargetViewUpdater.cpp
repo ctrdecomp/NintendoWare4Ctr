@@ -10,16 +10,18 @@ NW_UT_RUNTIME_TYPEINFO_DEFINITION(LookAtTargetViewUpdater, CameraViewUpdater);
 
 LookAtTargetViewUpdater::LookAtTargetViewUpdater(os::IAllocator* allocator,bool isDynamic,ResLookAtTargetViewUpdater resUpdater): 
     CameraViewUpdater(allocator, isDynamic),
-    mResource(resUpdater)
-{}
+    m_Resource(resUpdater) {}
 
-LookAtTargetViewUpdater::~LookAtTargetViewUpdater(){
-    if (this->IsDynamic() && this->mResource.IsValid()){
-        this->GetAllocator().Free(mResource.ptr());
+LookAtTargetViewUpdater::~LookAtTargetViewUpdater()
+{
+    if (this->IsDynamic() && this->m_Resource.IsValid())
+    {
+        this->GetAllocator().Free(m_Resource.ptr());
     }
 }
 
-LookAtTargetViewUpdater* LookAtTargetViewUpdater::Create(os::IAllocator* allocator){
+LookAtTargetViewUpdater* LookAtTargetViewUpdater::Create(os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
     
     void* updaterMemory = allocator->Alloc(sizeof(LookAtTargetViewUpdater));
@@ -30,16 +32,17 @@ LookAtTargetViewUpdater* LookAtTargetViewUpdater::Create(os::IAllocator* allocat
     ResLookAtTargetViewUpdaterData* buffer = new(dataMemory) ResLookAtTargetViewUpdaterData();
     
     buffer->typeInfo         = ResLookAtTargetViewUpdater::TYPE_INFO;
-    buffer->mTargetPosition = VIEW_TARGET_POSITION;
-    buffer->mUpwardVector   = VIEW_UPWARD_VECTOR;
-    buffer->mFlags          = 0x0;
+    buffer->m_TargetPosition = VIEW_TARGET_POSITION;
+    buffer->m_UpwardVector   = VIEW_UPWARD_VECTOR;
+    buffer->m_Flags          = 0x0;
 
     ResLookAtTargetViewUpdater resUpdater = ResLookAtTargetViewUpdater(buffer);
 
     return new(updaterMemory) LookAtTargetViewUpdater(allocator, true, resUpdater);
 }
 
-LookAtTargetViewUpdater* LookAtTargetViewUpdater::Create(os::IAllocator* allocator, ResLookAtTargetViewUpdater resUpdater){
+LookAtTargetViewUpdater* LookAtTargetViewUpdater::Create(os::IAllocator* allocator, ResLookAtTargetViewUpdater resUpdater)
+{
     NW_NULL_ASSERT(allocator);
     
     void* updaterMemory = allocator->Alloc(sizeof(LookAtTargetViewUpdater));
@@ -48,25 +51,30 @@ LookAtTargetViewUpdater* LookAtTargetViewUpdater::Create(os::IAllocator* allocat
     return new(updaterMemory) LookAtTargetViewUpdater(allocator, false, resUpdater);
 }
 
-void LookAtTargetViewUpdater::Update(math::MTX34* viewMatrix, const math::MTX34& worldMatrixconst math::VEC3& cameraPosition){
-    NW_ASSERT(mResource.IsValid());
+void LookAtTargetViewUpdater::Update(math::MTX34* viewMatrix, const math::MTX34& worldMatrix, const math::VEC3& cameraPosition)
+{
+    NW_ASSERT(m_Resource.IsValid());
 
-    u32 flags = mResource.GetFlags();
-    math::VEC3 targetPosition(this->mResource.GetTargetPosition());
-    math::VEC3 upwardVector(this->mResource.GetUpwardVector());
+    u32 flags = m_Resource.GetFlags();
+    math::VEC3 targetPosition(this->m_Resource.GetTargetPosition());
+    math::VEC3 upwardVector(this->m_Resource.GetUpwardVector());
 
     if (ut::CheckFlagOr(flags,ResLookAtTargetViewUpdaterData::FLAG_INHERITING_TARGET_ROTATE | ResLookAtTargetViewUpdaterData::FLAG_INHERITING_TARGET_TRANSLATE |
-        ResLookAtTargetViewUpdaterData::FLAG_INHERITING_UP_ROTATE)){
+        ResLookAtTargetViewUpdaterData::FLAG_INHERITING_UP_ROTATE))
+        {
         math::MTX33 rotateMatrix;
         math::MTX34ToMTX33(&rotateMatrix, &worldMatrix);
 
-        if (ut::CheckFlag(flags, ResLookAtTargetViewUpdaterData::FLAG_INHERITING_UP_ROTATE)){
+        if (ut::CheckFlag(flags, ResLookAtTargetViewUpdaterData::FLAG_INHERITING_UP_ROTATE))
+        {
             math::VEC3Transform(&upwardVector, &rotateMatrix, &upwardVector);
         }
-        if (ut::CheckFlag(flags, ResLookAtTargetViewUpdaterData::FLAG_INHERITING_TARGET_ROTATE)){
+        if (ut::CheckFlag(flags, ResLookAtTargetViewUpdaterData::FLAG_INHERITING_TARGET_ROTATE))
+        {
             math::VEC3Transform(&targetPosition, &rotateMatrix, &targetPosition);
         }
-        if (ut::CheckFlag(flags, ResLookAtTargetViewUpdaterData::FLAG_INHERITING_TARGET_TRANSLATE)){
+        if (ut::CheckFlag(flags, ResLookAtTargetViewUpdaterData::FLAG_INHERITING_TARGET_TRANSLATE))
+        {
             math::VEC3Add(&targetPosition, &targetPosition, &cameraPosition);
         }
     }

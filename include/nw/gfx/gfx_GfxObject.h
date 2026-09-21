@@ -9,109 +9,115 @@
 namespace nw {
 namespace gfx {
 
-class GfxObject{
+class GfxObject
+{
 public:
-    void Destroy() { this->~GfxObject(); mAllocator.Free(this); }  
+    void Destroy()
+    {
+        this->~GfxObject();
+        m_Allocator.Free(this);
+    }
 protected:
     static void* operator new(size_t, void* buf) { return buf; }
     static void operator delete(void*) {}
     GfxObject(nw::os::IAllocator* allocator): 
-    mAllocator(*allocator) {
-        NW_NULL_ASSERT( allocator );
+        m_Allocator(*allocator)
+        {
+        NW_NULL_ASSERT(allocator);
     }
 
     virtual  ~GfxObject() {}
 
-    nw::os::IAllocator& GetAllocator() { return mAllocator; }
+    nw::os::IAllocator& GetAllocator() { return m_Allocator; }
 private:
-    nw::os::IAllocator& mAllocator;
+    nw::os::IAllocator& m_Allocator;
 };
 
 using nw::ut::SafeDestroy;
 using nw::ut::SafeDestroyer;
 using nw::ut::SafeDestroyAll;
 
-class GfxDeleter{
+class GfxDeleter
+{
 public:
     GfxDeleter(): 
-        mHasOwnership(true)
-    {}
+        m_HasOwnership(true) {}
     GfxDeleter(bool hasOwnership): 
-        mHasOwnership(hasOwnership)
-    {}
+        m_HasOwnership(hasOwnership) {}
 
-    void operator()(GfxObject* object){
-        if(mHasOwnership && object){
+    void operator()(GfxObject* object)
+    {
+        if (m_HasOwnership && object)
+        {
             object->Destroy();
         }
     }
 
 
 private:    
-    bool mHasOwnership;
+    bool m_HasOwnership;
 };
 
 template<typename TObject>
-class GfxPtr{
+class GfxPtr
+{
 public:
     typedef nw::ut::MovePtr<TObject, GfxDeleter> GfxMovePtr;
     typedef typename GfxMovePtr::element_type element_type;
     typedef typename GfxMovePtr::SafeBool SafeBool;
 
     GfxPtr(): 
-        mMovePtr() 
-    {}
+        m_MovePtr() {}
 
     GfxPtr(const GfxPtr& pointer): 
-        mMovePtr(const_cast<GfxPtr*>(&pointer)->mMovePtr) 
-    {}
+        m_MovePtr(const_cast<GfxPtr*>(&pointer)->m_MovePtr) {}
 
     template<typename TTObject>
     explicit GfxPtr(TTObject* pointer)
-    : mMovePtr(pointer) {}
+        :m_MovePtr(pointer) {}
 
     template<typename TTObject>
     GfxPtr(TTObject* pointer, bool hasOwnership): 
-        mMovePtr(pointer, GfxDeleter(hasOwnership)) 
-    {}
+        m_MovePtr(pointer, GfxDeleter(hasOwnership)) {}
 
     template<typename TTObject, typename TTDeleter>
     GfxPtr(nw::ut::internal::MoveSource< nw::ut::MovePtr<TTObject, TTDeleter> > source): 
-        mMovePtr(source) 
-    {}
+        m_MovePtr(source) {}
 
     ~GfxPtr() {}
 
-    GfxPtr& operator=(GfxPtr<TObject> rhs){
-        mMovePtr.operator=(rhs.mMovePtr);
+    GfxPtr& operator=(GfxPtr<TObject> rhs)
+    {
+        m_MovePtr.operator=(rhs.m_MovePtr);
         return *this;
     }
 
-    element_type* Get() const { return mMovePtr.Get(); }
-    element_type& operator*() const { return *mMovePtr; }
-    element_type* operator->() const { return mMovePtr.operator->(); }
-    element_type& operator[](std::size_t i) const { return mMovePtr[i]; }
-    element_type* Release() { return mMovePtr.Release(); }
+    element_type* Get() const { return m_MovePtr.Get(); }
+    element_type& operator*() const { return *m_MovePtr; }
+    element_type* operator->() const { return m_MovePtr.operator->(); }
+    element_type& operator[](std::size_t i) const { return m_MovePtr[i]; }
+    element_type* Release() { return m_MovePtr.Release(); }
     
-    void Reset() { mMovePtr.Reset(); }
+    void Reset() { m_MovePtr.Reset(); }
 
     template<typename TTObject>
     void Reset(TTObject* object) { GfxPtr(object).Swap(*this); }
 
     template<typename TTObject>
-    void Reset(TTObject* object, bool hasOwnership){
+    void Reset(TTObject* object, bool hasOwnership)
+    {
         GfxPtr(object, hasOwnership).Swap(*this);
     }
 
-    operator SafeBool() const { return mMovePtr.operator SafeBool(); }
+    operator SafeBool() const { return m_MovePtr.operator SafeBool(); }
 
-    void Swap(GfxPtr& pointer) { mMovePtr.Swap(pointer.mMovePtr); }
+    void Swap(GfxPtr& pointer) { m_MovePtr.Swap(pointer.m_MovePtr); }
 
-    typename GfxMovePtr::deleter_reference GetDeleter() { return mMovePtr.GetDeleter(); }
-    typename GfxMovePtr::deleter_const_reference GetDeleter() const { return mMovePtr.GetDeleter(); }
+    typename GfxMovePtr::deleter_reference GetDeleter() { return m_MovePtr.GetDeleter(); }
+    typename GfxMovePtr::deleter_const_reference GetDeleter() const { return m_MovePtr.GetDeleter(); }
 
 private:
-    GfxMovePtr mMovePtr;
+    GfxMovePtr m_MovePtr;
 };
 
 }

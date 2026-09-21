@@ -11,7 +11,8 @@ namespace nw {
 namespace gfx {
 namespace res {
 
-void ResParticleSet::Setup(){
+void ResParticleSet::Setup()
+{
     NW_ASSERT(this->IsValid());
 }
 

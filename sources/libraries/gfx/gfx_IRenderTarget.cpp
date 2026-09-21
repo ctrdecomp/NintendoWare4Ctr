@@ -10,7 +10,8 @@ namespace gfx{
 
 NW_UT_RUNTIME_TYPEINFO_ROOT_DEFINITION(IRenderTarget);
 
-IRenderTarget* IRenderTarget::Builder::Create(os::IAllocator* allocator){
+IRenderTarget* IRenderTarget::Builder::Create(os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
     IRenderTarget* renderTarget = NULL;
 
@@ -23,7 +24,8 @@ IRenderTarget* IRenderTarget::Builder::Create(os::IAllocator* allocator){
     return renderTarget;
 }
 
-IRenderTarget* IRenderTarget::CreateOffScreenBuffer(os::IAllocator* allocator, ResTexture resTexture){
+IRenderTarget* IRenderTarget::CreateOffScreenBuffer(os::IAllocator* allocator, ResTexture resTexture)
+{
     NW_NULL_ASSERT(allocator);
     IRenderTarget* renderTarget = NULL;
 
@@ -67,7 +69,8 @@ IRenderTarget* IRenderTarget::CreateOffScreenBuffer(os::IAllocator* allocator, R
     description.depthFormat = RENDER_DEPTH_FORMAT_NONE;
     description.depthArea = MEMORY_AREA_NONE;
 
-    switch (texture.GetTypeInfo()){
+    switch (texture.GetTypeInfo())
+    {
     case ResImageTexture::TYPE_INFO:{
             description.shadowKind = SHADOW_KIND_NONE;
         }

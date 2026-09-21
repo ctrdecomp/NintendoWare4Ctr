@@ -14,28 +14,32 @@ namespace res{
 class ResCamera;
 class ResLight;
 
-struct ResReferenceSceneObjectData{
-    nw::ut::ResS32 mIndex;
+struct ResReferenceSceneObjectData
+{
+    nw::ut::ResS32 m_Index;
     nw::ut::BinString toPath;
     nw::ut::Offset toTarget;
 };
 
-struct ResLightSetData{
-    nw::ut::ResS32 mIndex;
-    nw::ut::ResS32 mLightsTableCount;
+struct ResLightSetData
+{
+    nw::ut::ResS32 m_Index;
+    nw::ut::ResS32 m_LightsTableCount;
     nw::ut::Offset toLightsTable;
 };
 
-struct ResSceneEnvironmentSettingData : public ResSceneObjectData{
-    nw::ut::ResS32 mCamerasTableCount;
+struct ResSceneEnvironmentSettingData : public ResSceneObjectData
+{
+    nw::ut::ResS32 m_CamerasTableCount;
     nw::ut::Offset toCamerasTable;
-    nw::ut::ResS32 mLightSetsTableCount;
+    nw::ut::ResS32 m_LightSetsTableCount;
     nw::ut::Offset toLightSetsTable;
-    nw::ut::ResS32 mFogsTableCount;
+    nw::ut::ResS32 m_FogsTableCount;
     nw::ut::Offset toFogsTable;
 };
 
-class ResReferenceSceneObject : public nw::ut::ResCommon<ResReferenceSceneObjectData>{
+class ResReferenceSceneObject : public nw::ut::ResCommon<ResReferenceSceneObjectData>
+{
 public:
     NW_RES_CTOR( ResReferenceSceneObject )
     
@@ -46,7 +50,8 @@ public:
     NW_RES_FIELD_CLASS_DECL(ResSceneObject, Target)
 };
 
-class ResLightSet : public nw::ut::ResCommon<ResLightSetData>{
+class ResLightSet : public nw::ut::ResCommon<ResLightSetData>
+{
 public:
     NW_RES_CTOR(ResLightSet);
     
@@ -55,7 +60,8 @@ public:
     NW_RES_FIELD_CLASS_LIST_DECL(ResReferenceSceneObject, Lights)
 };
 
-class ResSceneEnvironmentSetting : public ResSceneObject{
+class ResSceneEnvironmentSetting : public ResSceneObject
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResSceneEnvironmentSetting) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('CENV') };

@@ -43,10 +43,24 @@ typedef volatile f64      vf64;
 typedef unsigned char           bit8;
 typedef unsigned short          bit16;
 typedef unsigned int            bit32;
-typedef unsigned long long int  bit64; 
+typedef unsigned long long int  bit64;
+
+typedef unsigned int SigWord;
+
+namespace nw
+{
+typedef unsigned long IntPtr;
+typedef signed long PtrDiff;
+}
 
 #ifndef nullptr
 #define nullptr NULL
 #endif
 
+#ifndef NW_ANY_TO_PTR_VALUE
+#define NW_ANY_TO_PTR_VALUE(ptr) reinterpret_cast<nw::IntPtr>(reinterpret_cast<const void*>(ptr))
+#endif
+
 #define NW_INLINE inline
+#define NW_FORCE_INLINE __forceinline
+#define NW_UNUSED_VARIABLE(x) ((void)(x))

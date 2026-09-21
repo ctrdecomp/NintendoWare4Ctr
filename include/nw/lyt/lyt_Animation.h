@@ -27,17 +27,18 @@ class ResourceAccessor;
 class TextureInfo;
 class AnimationLink;
 
-class AnimTransform{
+class AnimTransform
+{
 public:
     AnimTransform();
     virtual ~AnimTransform();
 
-    f32  GetFrame()    const { return mFrame; }
-    void SetFrame(f32 frame) { mFrame = frame; }
+    f32  GetFrame()    const { return m_Frame; }
+    void SetFrame(f32 frame) { m_Frame = frame; }
     u16  GetFrameSize() const;
     f32  GetFrameMax()  const { return GetFrameSize(); }
 
-    const res::AnimationBlock* GetAnimResource() const { return mpRes; }
+    const res::AnimationBlock* GetAnimResource() const { return m_pRes; }
 
     bool IsLoopData() const;
 
@@ -49,17 +50,18 @@ public:
     virtual void Bind(Pane* pPane, bool bRecursive, bool bDisable = false) = 0;
     virtual void Bind(Material* pMaterial, bool bDisable = false) = 0;
 
-    ut::LinkListNode mLink;
+    ut::LinkListNode m_Link;
 
 protected:
-    void SetAnimResource(const res::AnimationBlock* pRes) { mpRes = pRes; }
+    void SetAnimResource(const res::AnimationBlock* pRes) { m_pRes = pRes; }
 
 protected:
-    const res::AnimationBlock* mpRes;
-    f32 mFrame;
+    const res::AnimationBlock* m_pRes;
+    f32 m_Frame;
 };
 
-class AnimTransformBasic : public AnimTransform{
+class AnimTransformBasic : public AnimTransform
+{
 private:
     typedef AnimTransform Base;
 public:
@@ -73,9 +75,11 @@ public:
     virtual void Bind(Material* pMaterial, bool bDisable = false);
 
     template<typename T>
-    AnimationLink* Bind(T* pTarget, AnimationLink* pAnimLink, u16 idx, bool bDisable){
+    AnimationLink* Bind(T* pTarget, AnimationLink* pAnimLink, u16 idx, bool bDisable)
+    {
         pAnimLink = this->FindUnbindLink(pAnimLink);
-        if (!pAnimLink){
+        if (!pAnimLink)
+        {
             return 0;
         }
         pAnimLink->Set(this, idx, bDisable);
@@ -85,21 +89,22 @@ public:
 protected:
     AnimationLink* FindUnbindLink(AnimationLink* pLink) const;
 
-    TextureInfo*   mpTexAry;
-    AnimationLink* mpAnimLinkAry;
-    u16            mAnimLinkNum;
+    TextureInfo*   m_pTexAry;
+    AnimationLink* m_pAnimLinkAry;
+    u16            m_AnimLinkNum;
 };
 
-class AnimResource{
+class AnimResource
+{
 public:
     AnimResource();
-    explicit AnimResource(const void* anmResBuf){ Set(anmResBuf); }
+    explicit AnimResource(const void* anmResBuf) { Set(anmResBuf); }
 
     void Set(const void* anmResBuf);
 
-    const ut::BinaryFileHeader* GetFileHeader() const { return mpFileHeader; }
-    const res::AnimationBlock* GetResourceBlock() const { return mpResBlock; }
-    const res::AnimationTagBlock* GetTagBlock() const { return mpTagBlock; }
+    const ut::BinaryFileHeader* GetFileHeader() const { return m_pFileHeader; }
+    const res::AnimationBlock* GetResourceBlock() const { return m_pResBlock; }
+    const res::AnimationTagBlock* GetTagBlock() const { return m_pTagBlock; }
 
     u16 GetTagOrder() const;
     const char* GetTagName() const;
@@ -117,15 +122,16 @@ protected:
     void Init();
     bool CheckResource() const;
 
-    const ut::BinaryFileHeader*      mpFileHeader;
-    const res::AnimationBlock*       mpResBlock;
-    const res::AnimationTagBlock*    mpTagBlock;
-    const res::AnimationShareBlock*  mpShareBlock;
+    const ut::BinaryFileHeader*      m_pFileHeader;
+    const res::AnimationBlock*       m_pResBlock;
+    const res::AnimationTagBlock*    m_pTagBlock;
+    const res::AnimationShareBlock*  m_pShareBlock;
 };
 
 namespace internal {
 
-class AnimPaneTree{
+class AnimPaneTree
+{
 public:
     AnimPaneTree();
     AnimPaneTree(Pane* pTargetPane, const AnimResource& animRes);
@@ -134,8 +140,8 @@ public:
 
     AnimTransform* Bind(Layout* pLayout, Pane* pTargetPane, ResourceAccessor* pResAccessor) const;
 
-    bool IsEnabled() const { return mLinkNum > 0; }
-    const AnimResource& GetAnimResource() const { return mAnimRes; }
+    bool IsEnabled() const { return m_LinkNum > 0; }
+    const AnimResource& GetAnimResource() const { return m_AnimRes; }
 
 protected:
     static u16 FindAnimContent(const res::AnimationBlock* pAnimBlock, const char* animContName, u8 animContType);
@@ -144,11 +150,11 @@ protected:
     static const u16 NOBIND = u16(-1);
     static const int MATERIAL_NUM_MAX = 1 + 4 + 4;
 
-    AnimResource mAnimRes;
-    u16          mAnimPaneIdx;
-    u16          mLinkNum;
-    u16          mAnimMatIdxs[MATERIAL_NUM_MAX];
-    u8           mAnimMatCnt;
+    AnimResource m_AnimRes;
+    u16          m_AnimPaneIdx;
+    u16          m_LinkNum;
+    u16          m_AnimMatIdxs[MATERIAL_NUM_MAX];
+    u8           m_AnimMatCnt;
 };
 
 AnimationLink* FindAnimationLink(AnimationList* pAnimList, AnimTransform* pAnimTrans);

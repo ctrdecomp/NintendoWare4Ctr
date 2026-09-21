@@ -3,8 +3,9 @@
 namespace nw{
 namespace gfx{
 
-asm f32 ParticleRandom::NextFloatSignedOne(){
-    LDR      r2, [r0, #__cpp(offsetof(ParticleRandom, mSeed))]
+asm f32 ParticleRandom::NextFloatSignedOne()
+{
+    LDR      r2, [r0, #__cpp(offsetof(ParticleRandom, m_Seed))]
     LDR      r3, mix1
     LDR      r1, mix2
     MLA      r1, r2, r3, r1
@@ -26,8 +27,9 @@ mix2 DCD      0x269ec3
 mask DCD      0x00007fff
 }
 
-asm f32 ParticleRandom::NextFloatSignedHalf(){
-    LDR      r2, [r0, #__cpp(offsetof(ParticleRandom, mSeed))]
+asm f32 ParticleRandom::NextFloatSignedHalf()
+{
+    LDR      r2, [r0, #__cpp(offsetof(ParticleRandom, m_Seed))]
     LDR      r3, mixh1
     LDR      r1, mixh2
     MLA      r1, r2, r3, r1

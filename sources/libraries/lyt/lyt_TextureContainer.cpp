@@ -11,18 +11,18 @@ namespace lyt{
 
 TextureRefLink::TextureRefLink()
 {
-    mName[0] = '\0';
+    m_Name[0] = '\0';
 }
 
 TextureRefLink::~TextureRefLink()
 {
-    lyt::DeleteTexture(this->mTexInfo);
+    lyt::DeleteTexture(this->m_TexInfo);
 }
 
 void TextureRefLink::Set(const char* name,const TextureInfo& texInfo)
 {
-    ut::strcpy(this->mName, sizeof(mName), name);
-    mTexInfo = texInfo;
+    ut::strcpy(this->m_Name, sizeof(m_Name), name);
+    m_TexInfo = texInfo;
 }
 
 /* Texture Container */
@@ -47,7 +47,7 @@ const TextureInfo TextureContainer::FindTextureByName(const char* name)
     for (Iterator it = this->GetBeginIter(); it != this->GetEndIter(); ++it)
     {
         if (0 == std::strcmp(name, it->GetResourceName()))
-        {
+    {
             return it->GetTextureInfo();
         }
     }

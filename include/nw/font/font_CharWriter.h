@@ -22,7 +22,8 @@ namespace font {
     
     static const u32 DEFAULT_COLOR_MAPPING_MIN = 0x00000000UL;
     static const u32 DEFAULT_COLOR_MAPPING_MAX = 0xFFFFFFFFUL;
-class CharWriter{
+class CharWriter
+{
 private:
     typedef nn::math::VEC2 CharScale;
     typedef nn::math::VEC3 CursorPos;
@@ -34,12 +35,14 @@ private:
     void SetupGXWithColorMapping(bool bAlphaTex = false);
     void SetupVertexFormat();
 
-    struct ColorMapping{
+    struct ColorMapping
+    {
         ut::Color8 min;
         ut::Color8 max;
     };
 public:
-    enum GradationMode{
+    enum GradationMode
+    {
         GRADMODE_NONE,
         GRADMODE_H,
         GRADMODE_V,
@@ -51,12 +54,12 @@ public:
 
     void SetupGX();
     void UseCommandBuffer();
-    static void FinalizeGX(){TextWriterResource::FinalizeGX();}
+    static void FinalizeGX() {TextWriterResource::FinalizeGX();}
     static u32 GetDispStringBufferSize(u32 charNum);
     static DispStringBuffer* InitDispStringBuffer(void* drawBuffer,u32 charNum);
     void SetFontSize(f32 width,f32 height);
     void SetFontSize(f32 height);
-    void SetAlpha(u8 alpha){mAlpha = alpha;}
+    void SetAlpha(u8 alpha) {m_Alpha = alpha;}
     f32 GetFontWidth() const;
     f32 GetFontHeight() const;
     f32 GetFontAscent() const;
@@ -67,87 +70,98 @@ public:
     void DrawGlyph(const Glyph& glyph);
     void UpdateVertexColor();
 
-    void SetColorMapping(ut::Color8  min,ut::Color8  max){
-        mColorMapping.min = min;
-        mColorMapping.max = max;
+    void SetColorMapping(ut::Color8  min,ut::Color8  max)
+    {
+        m_ColorMapping.min = min;
+        m_ColorMapping.max = max;
     }
 
-    void ResetColorMapping(){
+    void ResetColorMapping()
+    {
         this->SetColorMapping(DEFAULT_COLOR_MAPPING_MIN, DEFAULT_COLOR_MAPPING_MAX);
     }
 
-    void SetGradationMode(GradationMode mode){
-        mGradationMode = mode;
+    void SetGradationMode(GradationMode mode)
+    {
+        m_GradationMode = mode;
         this->UpdateVertexColor();
     }
 
-    void SetTextColor(ut::Color8 color){
-        mTextColors[internal::TEXTCOLOR_START] = color;
+    void SetTextColor(ut::Color8 color)
+    {
+        m_TextColors[internal::TEXTCOLOR_START] = color;
         this->UpdateVertexColor();
     }
 
-    void SetTextColor(ut::Color8 start,ut::Color8 end){
-        mTextColors[internal::TEXTCOLOR_START] = start;
-        mTextColors[internal::TEXTCOLOR_END  ] = end;
+    void SetTextColor(ut::Color8 start,ut::Color8 end)
+    {
+        m_TextColors[internal::TEXTCOLOR_START] = start;
+        m_TextColors[internal::TEXTCOLOR_END  ] = end;
         this->UpdateVertexColor();
     }
 
-    void SetDispStringBuffer(DispStringBuffer* buffer){
+    void SetDispStringBuffer(DispStringBuffer* buffer)
+    {
         mpDispStringBuffer = buffer;
     }
 
-    void SetFont(const Font* pFont){
+    void SetFont(const Font* pFont)
+    {
         mpFont = pFont; 
     }
 
-    void SetScale(f32 hScale,f32 vScale){
-        mScale.x = hScale;
-        mScale.y = vScale;
+    void SetScale(f32 hScale,f32 vScale)
+    {
+        m_Scale.x = hScale;
+        m_Scale.y = vScale;
     }
 
-    void SetCursor(f32 x,f32 y){
-        mCursorPos.x = x;
-        mCursorPos.y = y;
+    void SetCursor(f32 x,f32 y)
+    {
+        m_CursorPos.x = x;
+        m_CursorPos.y = y;
     }
 
-    void SetCursor(f32 x,f32 y,f32 z){
-        mCursorPos.x = x;
-        mCursorPos.y = y;
-        mCursorPos.z = z;
+    void SetCursor(f32 x,f32 y,f32 z)
+    {
+        m_CursorPos.x = x;
+        m_CursorPos.y = y;
+        m_CursorPos.z = z;
     }
-    void SetCursorX(f32 x){ mCursorPos.x = x; }
-    void SetCursorY(f32 y){ mCursorPos.y = y; }
-    void SetCursorZ(f32 z){ mCursorPos.z = z; }
+    void SetCursorX(f32 x) { m_CursorPos.x = x; }
+    void SetCursorY(f32 y) { m_CursorPos.y = y; }
+    void SetCursorZ(f32 z) { m_CursorPos.z = z; }
 
-    void SetTextWriterResource(TextWriterResource* pTextWriterResource){
+    void SetTextWriterResource(TextWriterResource* pTextWriterResource)
+    {
         mpTextWriterResource = pTextWriterResource;
     }
 
 
-    bool IsWidthFixed() const { return mIsWidthFixed; }
-    f32 GetFixedWidth() const { return mFixedWidth; }
-    const Font* GetFont() const{ return mpFont; }
-    f32 GetScaleH() const { return mScale.x; }
-    f32 GetScaleV() const { return mScale.y; }
+    bool IsWidthFixed() const { return m_IsWidthFixed; }
+    f32 GetFixedWidth() const { return m_FixedWidth; }
+    const Font* GetFont() const { return mpFont; }
+    f32 GetScaleH() const { return m_Scale.x; }
+    f32 GetScaleV() const { return m_Scale.y; }
 
-    f32 GetCursorX() const { return mCursorPos.x; }
-    f32 GetCursorY() const { return mCursorPos.y; }
-    f32 GetCursorZ() const { return mCursorPos.z; }
+    f32 GetCursorX() const { return m_CursorPos.x; }
+    f32 GetCursorY() const { return m_CursorPos.y; }
+    f32 GetCursorZ() const { return m_CursorPos.z; }
 
-    static const GLushort sVertexIndexs[];
+    static const GLushort s_VertexIndexs[];
 
-    ColorMapping mColorMapping;
-    ut::Color8 mVertexColors[internal::TRIFAN_VTX_MAX];
-    ut::Color8 mTextColors[internal::TEXTCOLOR_MAX];
-    GradationMode mGradationMode;
-    CharScale mScale;
-    CursorPos mCursorPos;
-    f32 mFixedWidth;
+    ColorMapping m_ColorMapping;
+    ut::Color8 m_VertexColors[internal::TRIFAN_VTX_MAX];
+    ut::Color8 m_TextColors[internal::TEXTCOLOR_MAX];
+    GradationMode m_GradationMode;
+    CharScale m_Scale;
+    CursorPos m_CursorPos;
+    f32 m_FixedWidth;
     const Font* mpFont;
     TextWriterResource* mpTextWriterResource;
     DispStringBuffer* mpDispStringBuffer;
-    bool mIsWidthFixed;
-    u8 mAlpha;
+    bool m_IsWidthFixed;
+    u8 m_Alpha;
 };
 
 struct DispStringBuffer;

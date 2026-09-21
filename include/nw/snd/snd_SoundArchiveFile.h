@@ -52,12 +52,12 @@ struct SoundArchiveFile
         const char* GetString( SoundArchive::ItemId stringId ) const;
         u32 GetStringCount() const { return GetStringTable()->GetCount(); }
 
-        u32 GetItemId(const char* str) const{ return GetItemIdImpl(Sections_PatriciaTree, str); }
+        u32 GetItemId(const char* str) const { return GetItemIdImpl(Sections_PatriciaTree, str); }
 
     private:
         const void* GetSection( Sections section ) const;
-        const StringTable* GetStringTable() const{ return reinterpret_cast<const StringTable*>(GetSection(Sections_StringTable)); }
-        const PatriciaTree* GetPatriciaTree(Sections section) const{ return reinterpret_cast<const PatriciaTree*>(GetSection(section)); }
+        const StringTable* GetStringTable() const { return reinterpret_cast<const StringTable*>(GetSection(Sections_StringTable)); }
+        const PatriciaTree* GetPatriciaTree(Sections section) const { return reinterpret_cast<const PatriciaTree*>(GetSection(section)); }
         u32 GetItemIdImpl( Sections section, const char* str ) const;
     };
 
@@ -115,7 +115,7 @@ struct SoundArchiveFile
         Util::ReferenceWithSizeTable table;
 
         const char* GetString(int stringId) const { return reinterpret_cast<const char*>(ut::AddOffsetToPtr(this, table.item[stringId].offset)); }
-        u32 GetCount() const{ return table.count; }
+        u32 GetCount() const { return table.count; }
     };
 
     struct SoundInfo;
@@ -138,13 +138,13 @@ struct SoundArchiveFile
         Util::Reference toFileInfoReferenceTable;
         Util::Reference toSoundArchivePlayerInfo;
 
-        u32 GetSoundCount() const       { return GetSoundInfoReferenceTable().count; }
-        u32 GetBankCount() const        { return GetBankInfoReferenceTable().count; }
-        u32 GetPlayerCount() const      { return GetPlayerInfoReferenceTable().count; }
-        u32 GetSoundGroupCount() const  { return GetSoundGroupInfoReferenceTable().count; }
-        u32 GetGroupCount() const       { return GetGroupInfoReferenceTable().count; }
+        u32 GetSoundCount() const { return GetSoundInfoReferenceTable().count; }
+        u32 GetBankCount() const { return GetBankInfoReferenceTable().count; }
+        u32 GetPlayerCount() const { return GetPlayerInfoReferenceTable().count; }
+        u32 GetSoundGroupCount() const { return GetSoundGroupInfoReferenceTable().count; }
+        u32 GetGroupCount() const { return GetGroupInfoReferenceTable().count; }
         u32 GetWaveArchiveCount() const { return GetWaveArchiveInfoReferenceTable().count; }
-        u32 GetFileCount() const        { return GetFileInfoReferenceTable().count; }
+        u32 GetFileCount() const { return GetFileInfoReferenceTable().count; }
 
         const SoundInfo*        GetSoundInfo( SoundArchive::ItemId soundId ) const;
         const BankInfo*         GetBankInfo( SoundArchive::ItemId bankId ) const;

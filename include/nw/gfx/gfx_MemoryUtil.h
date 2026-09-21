@@ -36,7 +36,8 @@ DECL_SUB(78)
 
 #undef DECL_SUB
 
-NW_FORCE_INLINE u32* FastWordCopy(u32* dst, u32* src, u32 size){
+NW_FORCE_INLINE u32* FastWordCopy(u32* dst, u32* src, u32 size)
+{
     size /= 4;
     NW_ASSERT(size % 2 == 0);
 

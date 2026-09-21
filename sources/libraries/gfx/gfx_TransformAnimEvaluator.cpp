@@ -8,17 +8,20 @@ namespace gfx{
 
 NW_UT_RUNTIME_TYPEINFO_DEFINITION(TransformAnimEvaluator, BaseAnimEvaluator);
 
-void TransformAnimEvaluator::EvaluateMemberAnim(CalculatedTransform* result,anim::ResTransformAnim transformAnim,float frame,const math::Transform3* originalTransform,bool writeNoAnimMember) const{
+void TransformAnimEvaluator::EvaluateMemberAnim(CalculatedTransform* result,anim::ResTransformAnim transformAnim,float frame,const math::Transform3* originalTransform,bool writeNoAnimMember) const
+{
     const u32 flags = transformAnim.GetFlags();
     
     const u32 FLAG_TRANSLATE_NOT_EXIST = anim::ResTransformAnimData::FLAG_TRANSLATE_NOT_EXIST;
     const u32 FLAG_ROTATE_NOT_EXIST = anim::ResTransformAnimData::FLAG_ROTATE_NOT_EXIST;
     const u32 FLAG_SCALE_NOT_EXIST = anim::ResTransformAnimData::FLAG_SCALE_NOT_EXIST;
 
-    if (writeNoAnimMember){
+    if (writeNoAnimMember)
+    {
         math::Transform3 transform;
 
-        if (mIsScaleDisabled){
+        if (m_IsScaleDisabled)
+        {
             transform.scale = originalTransform->scale;
         }
         else{
@@ -27,7 +30,8 @@ void TransformAnimEvaluator::EvaluateMemberAnim(CalculatedTransform* result,anim
             transform.scale.z = (flags & anim::ResTransformAnimData::FLAG_SCALE_Z_NOT_EXIST) ? originalTransform->scale.z : transformAnim.EvaluateScaleZ(frame);
         }
 
-        if (mIsRotateDisabled){
+        if (m_IsRotateDisabled)
+        {
             transform.rotate = originalTransform->rotate;
         }
         else{
@@ -36,7 +40,8 @@ void TransformAnimEvaluator::EvaluateMemberAnim(CalculatedTransform* result,anim
             transform.rotate.z = (flags & anim::ResTransformAnimData::FLAG_ROTATE_Z_NOT_EXIST) ? originalTransform->rotate.z : transformAnim.EvaluateRotateZ(frame);
         }
 
-        if (mIsTranslateDisabled){
+        if (m_IsTranslateDisabled)
+        {
             transform.translate = originalTransform->translate;
         }
         else{
@@ -48,21 +53,27 @@ void TransformAnimEvaluator::EvaluateMemberAnim(CalculatedTransform* result,anim
         result->SetTransform(transform);
     }
     else{
-        if (!mIsScaleDisabled){
-            if (!(flags & anim::ResTransformAnimData::FLAG_SCALE_X_NOT_EXIST)){
+        if (!m_IsScaleDisabled)
+        {
+            if (!(flags & anim::ResTransformAnimData::FLAG_SCALE_X_NOT_EXIST))
+            {
                 result->DirectScale().x = transformAnim.EvaluateScaleX(frame);
             }
-            if (!(flags & anim::ResTransformAnimData::FLAG_SCALE_Y_NOT_EXIST)){
+            if (!(flags & anim::ResTransformAnimData::FLAG_SCALE_Y_NOT_EXIST))
+            {
                 result->DirectScale().y = transformAnim.EvaluateScaleY(frame);
             }
-            if (!(flags & anim::ResTransformAnimData::FLAG_SCALE_Z_NOT_EXIST)){
+            if (!(flags & anim::ResTransformAnimData::FLAG_SCALE_Z_NOT_EXIST))
+            {
                 result->DirectScale().z = transformAnim.EvaluateScaleZ(frame);
             }
         }
 
-        if (!mIsRotateDisabled){
+        if (!m_IsRotateDisabled)
+        {
 
-            if ((flags & FLAG_ROTATE_NOT_EXIST) != FLAG_ROTATE_NOT_EXIST){
+            if ((flags & FLAG_ROTATE_NOT_EXIST) != FLAG_ROTATE_NOT_EXIST)
+            {
                 const f32 rotX = (flags & anim::ResTransformAnimData::FLAG_ROTATE_X_NOT_EXIST) ? originalTransform->rotate.x : transformAnim.EvaluateRotateX(frame);
                 const f32 rotY = (flags & anim::ResTransformAnimData::FLAG_ROTATE_Y_NOT_EXIST) ? originalTransform->rotate.y : transformAnim.EvaluateRotateY(frame);
                 const f32 rotZ = (flags & anim::ResTransformAnimData::FLAG_ROTATE_Z_NOT_EXIST) ? originalTransform->rotate.z : transformAnim.EvaluateRotateZ(frame);
@@ -70,11 +81,14 @@ void TransformAnimEvaluator::EvaluateMemberAnim(CalculatedTransform* result,anim
             }
         }
 
-        if (!mIsTranslateDisabled){
-            if (!(flags & anim::ResTransformAnimData::FLAG_TRANSLATE_X_NOT_EXIST)){
+        if (!m_IsTranslateDisabled)
+        {
+            if (!(flags & anim::ResTransformAnimData::FLAG_TRANSLATE_X_NOT_EXIST))
+            {
                 result->DirectTransformMatrix().matrix[0][3] = transformAnim.EvaluateTranslateX(frame);
             }
-            if (!(flags & anim::ResTransformAnimData::FLAG_TRANSLATE_Y_NOT_EXIST)){
+            if (!(flags & anim::ResTransformAnimData::FLAG_TRANSLATE_Y_NOT_EXIST))
+            {
                 result->DirectTransformMatrix().matrix[1][3] = transformAnim.EvaluateTranslateY(frame);
             }
             if (!(flags & anim::ResTransformAnimData::FLAG_TRANSLATE_Z_NOT_EXIST))
@@ -87,63 +101,76 @@ void TransformAnimEvaluator::EvaluateMemberAnim(CalculatedTransform* result,anim
     }
     UpdateFlagsCommon(result);
 
-    if ((flags & FLAG_ROTATE_NOT_EXIST) != FLAG_ROTATE_NOT_EXIST){
+    if ((flags & FLAG_ROTATE_NOT_EXIST) != FLAG_ROTATE_NOT_EXIST)
+    {
         result->DisableFlags(CalculatedTransform::FLAG_IS_ROTATE_ZERO);
     }
 
-    if ((flags & FLAG_TRANSLATE_NOT_EXIST) != FLAG_TRANSLATE_NOT_EXIST){
+    if ((flags & FLAG_TRANSLATE_NOT_EXIST) != FLAG_TRANSLATE_NOT_EXIST)
+    {
         result->DisableFlags(CalculatedTransform::FLAG_IS_TRANSLATE_ZERO);
     }
 
-    if ((flags & FLAG_SCALE_NOT_EXIST) != FLAG_SCALE_NOT_EXIST){
+    if ((flags & FLAG_SCALE_NOT_EXIST) != FLAG_SCALE_NOT_EXIST)
+    {
         result->DisableFlags(CalculatedTransform::FLAG_IS_SCALE_ONE);
     }
     result->UpdateCompositeFlags();
 }
 
-void TransformAnimEvaluator::EvaluateMemberBakedAnim(CalculatedTransform* result,anim::ResBakedTransformAnim transformAnim,float frame,const math::Transform3* originalTransform,bool writeNoAnimMember) const{
+void TransformAnimEvaluator::EvaluateMemberBakedAnim(CalculatedTransform* result,anim::ResBakedTransformAnim transformAnim,float frame,const math::Transform3* originalTransform,bool writeNoAnimMember) const
+{
     const u32 flags = transformAnim.GetFlags();
     bit32 frameFlags = 0;
 
-    if (!writeNoAnimMember){
+    if (!writeNoAnimMember)
+    {
         frameFlags = result->GetFlags();
     }
 
-    if (!(flags & anim::ResBakedTransformAnimData::FLAG_ROTATE_NOT_EXIST)){
+    if (!(flags & anim::ResBakedTransformAnimData::FLAG_ROTATE_NOT_EXIST))
+    {
         frameFlags = ut::DisableFlag(frameFlags, gfx::CalculatedTransform::FLAG_IS_ROTATE_ZERO);
 
-        transformAnim.EvaluateRotate(&result->mTransformMatrix, &frameFlags, frame);
+        transformAnim.EvaluateRotate(&result->m_TransformMatrix, &frameFlags, frame);
         result->EnableFlags(CalculatedTransform::FLAG_IS_DIRTY);
     }
 
-    if (!(flags & anim::ResBakedTransformAnimData::FLAG_TRANSLATE_NOT_EXIST)){
+    if (!(flags & anim::ResBakedTransformAnimData::FLAG_TRANSLATE_NOT_EXIST))
+    {
         frameFlags = ut::DisableFlag(frameFlags,
             gfx::CalculatedTransform::FLAG_IS_TRANSLATE_ZERO);
 
-        transformAnim.EvaluateTranslate(&result->mTransformMatrix, &frameFlags, frame);
+        transformAnim.EvaluateTranslate(&result->m_TransformMatrix, &frameFlags, frame);
         result->EnableFlags(CalculatedTransform::FLAG_IS_DIRTY);
     }
 
-    if (!(flags & anim::ResBakedTransformAnimData::FLAG_SCALE_NOT_EXIST)){
+    if (!(flags & anim::ResBakedTransformAnimData::FLAG_SCALE_NOT_EXIST))
+    {
         frameFlags = ut::DisableFlag(frameFlags, gfx::CalculatedTransform::FLAG_IS_UNIFORM_SCALE | gfx::CalculatedTransform::FLAG_IS_SCALE_ONE);
 
-        transformAnim.EvaluateScale(&result->mScale, &frameFlags, frame);
+        transformAnim.EvaluateScale(&result->m_Scale, &frameFlags, frame);
         result->EnableFlags(CalculatedTransform::FLAG_IS_DIRTY);
     }
 
-    if (writeNoAnimMember){
-        if (flags & anim::ResBakedTransformAnimData::FLAG_ROTATE_NOT_EXIST){
+    if (writeNoAnimMember)
+    {
+        if (flags & anim::ResBakedTransformAnimData::FLAG_ROTATE_NOT_EXIST)
+        {
             result->SetRotateXYZ(originalTransform->rotate.x, originalTransform->rotate.y, originalTransform->rotate.z);
 
-            if (originalTransform->rotate.IsZero()){
+            if (originalTransform->rotate.IsZero())
+            {
                 frameFlags |= gfx::CalculatedTransform::FLAG_IS_ROTATE_ZERO;
             }
         }
 
-        if (flags & anim::ResBakedTransformAnimData::FLAG_TRANSLATE_NOT_EXIST){
+        if (flags & anim::ResBakedTransformAnimData::FLAG_TRANSLATE_NOT_EXIST)
+        {
             result->SetTranslate(originalTransform->translate);
 
-            if (originalTransform->translate.IsZero()){
+            if (originalTransform->translate.IsZero())
+            {
                 frameFlags |= gfx::CalculatedTransform::FLAG_IS_TRANSLATE_ZERO;
             }
         }
@@ -153,10 +180,12 @@ void TransformAnimEvaluator::EvaluateMemberBakedAnim(CalculatedTransform* result
             result->SetScale(originalTransform->scale);
 
             const math::VEC3& scale = originalTransform->scale;
-            if (scale.x == scale.y && scale.x == scale.z){
+            if (scale.x == scale.y && scale.x == scale.z)
+            {
                 frameFlags |= gfx::CalculatedTransform::FLAG_IS_UNIFORM_SCALE;
 
-                if (scale.x == 1.f){
+                if (scale.x == 1.f)
+                {
                     frameFlags |= gfx::CalculatedTransform::FLAG_IS_SCALE_ONE;
                 }
             }
@@ -166,15 +195,17 @@ void TransformAnimEvaluator::EvaluateMemberBakedAnim(CalculatedTransform* result
     ApplyBakedFlags(result, frameFlags);
 }
 
-void TransformAnimEvaluator::UpdateFlagsCommon(CalculatedTransform* transform) const{
+void TransformAnimEvaluator::UpdateFlagsCommon(CalculatedTransform* transform) const
+{
     transform->DisableFlags(CalculatedTransform::FLAG_CONVERTED_FOR_BLEND);
 
-    transform->EnableFlags(CalculatedTransform::FLAG_IS_IGNORE_SCALE, this->mIsScaleDisabled);
-    transform->EnableFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE, this->mIsRotateDisabled);
-    transform->EnableFlags(CalculatedTransform::FLAG_IS_IGNORE_TRANSLATE, this->mIsTranslateDisabled);
+    transform->EnableFlags(CalculatedTransform::FLAG_IS_IGNORE_SCALE, this->m_IsScaleDisabled);
+    transform->EnableFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE, this->m_IsRotateDisabled);
+    transform->EnableFlags(CalculatedTransform::FLAG_IS_IGNORE_TRANSLATE, this->m_IsTranslateDisabled);
 }
 
-void TransformAnimEvaluator::UpdateFlags(CalculatedTransform* transform) const{
+void TransformAnimEvaluator::UpdateFlags(CalculatedTransform* transform) const
+{
     UpdateFlagsCommon(transform);
     transform->UpdateScaleFlags();
     transform->UpdateRotateFlags();
@@ -182,29 +213,35 @@ void TransformAnimEvaluator::UpdateFlags(CalculatedTransform* transform) const{
     transform->UpdateCompositeFlags();
 }
 
-void TransformAnimEvaluator::ApplyBakedFlags(CalculatedTransform* transform, bit32 flags) const{
+void TransformAnimEvaluator::ApplyBakedFlags(CalculatedTransform* transform, bit32 flags) const
+{
     UpdateFlagsCommon(transform);
     anim::ResBakedTransformAnim::ApplyBakedFlags(transform, flags);
 }
 
-const anim::AnimResult* TransformAnimEvaluator::GetResult(void* target,int memberIdx) const{
+const anim::AnimResult* TransformAnimEvaluator::GetResult(void* target,int memberIdx) const
+{
     return this->GetResultCommon(target, memberIdx, true);
 }
 
-void TransformAnimEvaluator::ResetNoAnimMember(AnimGroup* animGroup, anim::ResAnim animData){
+void TransformAnimEvaluator::ResetNoAnimMember(AnimGroup* animGroup, anim::ResAnim animData)
+{
     using namespace anim;
 
-    for (int memberIdx = 0; memberIdx < animGroup->GetMemberCount(); ++memberIdx){
-        const int animIdx = mBindIndexTable[memberIdx];
-        if (animIdx == NotFoundIndex){ continue; }
+    for (int memberIdx = 0; memberIdx < animGroup->GetMemberCount(); ++memberIdx)
+    {
+        const int animIdx = m_BindIndexTable[memberIdx];
+        if (animIdx == NotFoundIndex) { continue; }
 
         ResMemberAnim memberAnim = animData.GetMemberAnimSet(animIdx);
-        switch (memberAnim.GetPrimitiveType()){
+        switch (memberAnim.GetPrimitiveType())
+        {
         case ResMemberAnim::PRIMITIVETYPE_TRANSFORM:
         case ResMemberAnim::PRIMITIVETYPE_BAKED_TRANSFORM:{
                 u32 rotateAndTranslateMask;
                 u32 scaleMask;
-                if (memberAnim.GetPrimitiveType() == ResMemberAnim::PRIMITIVETYPE_TRANSFORM){
+                if (memberAnim.GetPrimitiveType() == ResMemberAnim::PRIMITIVETYPE_TRANSFORM)
+                {
                     rotateAndTranslateMask = ResTransformAnimData::FLAG_ROTATE_NOT_EXIST | ResTransformAnimData::FLAG_TRANSLATE_NOT_EXIST;
                     scaleMask = ResTransformAnimData::FLAG_SCALE_NOT_EXIST;
                 }
@@ -220,21 +257,25 @@ void TransformAnimEvaluator::ResetNoAnimMember(AnimGroup* animGroup, anim::ResAn
                 const u32 flags = memberAnim.GetFlags();
                 bool modified = false;
 
-                if (flags & rotateAndTranslateMask){
+                if (flags & rotateAndTranslateMask)
+                {
                     target->SetRotateAndTranslate(originalValue->rotate, originalValue->translate);
                     modified = true;
                 }
 
-                if (flags & scaleMask){
+                if (flags & scaleMask)
+                {
                     target->SetScale(originalValue->scale);
                     modified = true;
                 }
 
-                if (modified){
+                if (modified)
+                {
                     UpdateFlags(target);
 
-                    if (!mCacheTransforms.Empty()){
-                        mCacheTransforms[animIdx] = *target;
+                    if (!m_CacheTransforms.Empty())
+                    {
+                        m_CacheTransforms[animIdx] = *target;
                     }
                 }
             }
@@ -247,45 +288,51 @@ void TransformAnimEvaluator::ResetNoAnimMember(AnimGroup* animGroup, anim::ResAn
     }
 }
 
-const anim::AnimResult* TransformAnimEvaluator::GetResultFast(void* target, int memberIdx) const{
+const anim::AnimResult* TransformAnimEvaluator::GetResultFast(void* target, int memberIdx) const
+{
     return this->GetResultCommon(target, memberIdx, false);
 }
 
-const anim::AnimResult* TransformAnimEvaluator::GetResultCommon(void* target, int memberIdx, bool writeNoAnimMember) const{
+const anim::AnimResult* TransformAnimEvaluator::GetResultCommon(void* target, int memberIdx, bool writeNoAnimMember) const
+{
     using namespace anim;
 
-    if (!HasMemberAnim(memberIdx)){
+    if (!HasMemberAnim(memberIdx))
+    {
         return NULL;
     }
 
     CalculatedTransform* transform = reinterpret_cast<CalculatedTransform*>(target);
-    if (!this->mCacheTransforms.Empty() && !mIsCacheDirty && this->mAnimData.ptr() != NULL){
-        const int animIdx = mBindIndexTable[memberIdx];
-        *transform = mCacheTransforms[animIdx];
+    if (!this->m_CacheTransforms.Empty() && !m_IsCacheDirty && this->m_AnimData.ptr() != NULL)
+    {
+        const int animIdx = m_BindIndexTable[memberIdx];
+        *transform = m_CacheTransforms[animIdx];
     }
     else{
         const math::Transform3* originalValue =
-            static_cast<const math::Transform3*>(this->mAnimGroup->GetOriginalValue(memberIdx));
-        if (this->mAnimData.ptr() != NULL){
-            const int animIdx = mBindIndexTable[memberIdx];
-            ResMemberAnim memberAnim = this->mAnimData.GetMemberAnimSet(animIdx);
+            static_cast<const math::Transform3*>(this->m_AnimGroup->GetOriginalValue(memberIdx));
+        if (this->m_AnimData.ptr() != NULL)
+        {
+            const int animIdx = m_BindIndexTable[memberIdx];
+            ResMemberAnim memberAnim = this->m_AnimData.GetMemberAnimSet(animIdx);
 
-            switch (memberAnim.GetPrimitiveType()){
+            switch (memberAnim.GetPrimitiveType())
+            {
             case ResMemberAnim::PRIMITIVETYPE_TRANSFORM:{
                     ResTransformAnim transformAnim = static_cast<ResTransformAnim>(memberAnim);
-                    EvaluateMemberAnim(transform, transformAnim, this->mAnimFrameController.GetFrame(), originalValue, writeNoAnimMember);
+                    EvaluateMemberAnim(transform, transformAnim, this->m_AnimFrameController.GetFrame(), originalValue, writeNoAnimMember);
                 }
                 break;
             case ResMemberAnim::PRIMITIVETYPE_BAKED_TRANSFORM:{
                     ResBakedTransformAnim transformAnim = static_cast<ResBakedTransformAnim>(memberAnim);
-                    EvaluateMemberBakedAnim(transform, transformAnim, this->mAnimFrameController.GetFrame(), originalValue, writeNoAnimMember);
+                    EvaluateMemberBakedAnim(transform, transformAnim, this->m_AnimFrameController.GetFrame(), originalValue, writeNoAnimMember);
                 }
                 break;
             case ResMemberAnim::PRIMITIVETYPE_FULL_BAKED:{
                     ResFullBakedAnim transformAnim = static_cast<ResFullBakedAnim>(memberAnim);
                     math::MTX34* worldMatrix = reinterpret_cast<math::MTX34*>(target);
 
-                    transformAnim.EvaluateTransform(worldMatrix, this->mAnimFrameController.GetFrame());
+                    transformAnim.EvaluateTransform(worldMatrix, this->m_AnimFrameController.GetFrame());
                 }
                 break;
             default:
@@ -302,17 +349,19 @@ const anim::AnimResult* TransformAnimEvaluator::GetResultCommon(void* target, in
     return reinterpret_cast<AnimResult*>(target);
 }
 
-Result TransformAnimEvaluator::TryBind(AnimGroup* animGroup){
+Result TransformAnimEvaluator::TryBind(AnimGroup* animGroup)
+{
     Result result;
     NW_NULL_ASSERT(m_AnimData.ptr());
 
     result = BaseAnimEvaluator::TryBind(animGroup);
-    if (result.IsFailure()){
+    if (result.IsFailure())
+    {
         return result;
     }
 
-    ResetNoAnimMember(animGroup, this->mAnimData);
-    mAnimGroup = animGroup;
+    ResetNoAnimMember(animGroup, this->m_AnimData);
+    m_AnimGroup = animGroup;
 
     return result;
 }

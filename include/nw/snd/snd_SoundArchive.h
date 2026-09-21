@@ -85,7 +85,7 @@ public:
             allocateTrackFlags(0), 
             channelPriority(0), 
             isReleasePriorityFix(false)
-        {
+            {
             for (u32 i = 0; i < SEQ_BANK_MAX; i++)
                 bankIds[i] = INVALID_ID;
         }
@@ -101,7 +101,7 @@ public:
         StreamSoundInfo(): 
             allocTrackCount(0),
             allocChannelCount(0)
-        {
+            {
         }
     };
 
@@ -116,7 +116,7 @@ public:
             allocTrackCount(0), 
             channelPriority(0), 
             isReleasePriorityFix(false)
-        {
+            {
         }
     };
 
@@ -126,7 +126,7 @@ public:
 
         BankInfo(): 
             fileId(INVALID_ID) 
-        {
+            {
         }
     };
 
@@ -138,7 +138,7 @@ public:
         PlayerInfo(): 
             playableSoundMax(0),
             playerHeapSize(0) 
-        {
+            {
         }
     };
 
@@ -152,7 +152,7 @@ public:
             startId(INVALID_ID),
             endId(INVALID_ID),
             fileIdTable(NULL) 
-        {
+            {
         }
     };
 
@@ -178,7 +178,7 @@ public:
         WaveArchiveInfo(): 
             fileId(INVALID_ID), 
             isLoadIndividual(false) 
-        {
+            {
         }
     };
 
@@ -187,7 +187,7 @@ public:
         FileId fileId;
         GroupInfo(): 
             fileId(INVALID_ID) 
-        {
+            {
         }
     };
 
@@ -201,7 +201,7 @@ public:
             fileSize(0xffffffff),
             offsetFromFileBlockHead(0xffffffff),
             externalFilePath(NULL)
-        {
+            {
         }
     };
 

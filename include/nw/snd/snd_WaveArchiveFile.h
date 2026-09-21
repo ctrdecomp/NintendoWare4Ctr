@@ -36,8 +36,8 @@ struct WaveArchiveFile
         Util::Table<Util::ReferenceWithSize> table;
 
         u32 GetWaveFileCount() const { return table.count; }
-        u32 GetSize(u32 index) const{ return table.item[index].size; }
-        u32 GetOffsetFromFileBlockBody(u32 index) const{ return table.item[index].offset; }
+        u32 GetSize(u32 index) const { return table.item[index].size; }
+        u32 GetOffsetFromFileBlockBody(u32 index) const { return table.item[index].offset; }
 
         static const u32 INVALID_OFFSET = 0xffffffff;
     };

@@ -36,20 +36,22 @@ bool EqualsMaterialName(const char* name1, const char* name2)
 }
 
 TexCoordAry::TexCoordAry():   
-    mCap(0),
-    mNum(0),
+    m_Cap(0),
+    m_Num(0),
     mpData(NULL)
-{
+    {
 }
 
-void TexCoordAry::Free(){
-    if (mpData){
-        const u32 coordNum = mCap;
+void TexCoordAry::Free()
+{
+    if (mpData)
+    {
+        const u32 coordNum = m_Cap;
         Layout::DeleteArray<math::VEC2>(&mpData[0][0], VERTEX_MAX * coordNum);
         mpData = 0;
 
-        mCap = 0;
-        mNum = 0;
+        m_Cap = 0;
+        m_Num = 0;
     }
 }
 
@@ -57,7 +59,7 @@ void TexCoordAry::Reserve(u8 num)
 {
     NW_ASSERT(num <= TexMapMax);
 
-    if (mCap < num)
+    if (m_Cap < num)
     {
         Free();
 
@@ -66,14 +68,14 @@ void TexCoordAry::Reserve(u8 num)
         mpData = reinterpret_cast<TexCoordQuad *>(pVecAry);
         if (mpData)
         {
-            mCap = num;
+            m_Cap = num;
         }
     }
 }
 
 void TexCoordAry::SetSize(u8 num)
 {
-    if (mpData && num <= mCap)
+    if (mpData && num <= m_Cap)
     {
         static const VEC2 texCoords[] ={
             VEC2(0.f, 0.f),
@@ -82,20 +84,20 @@ void TexCoordAry::SetSize(u8 num)
             VEC2(1.f, 1.f)
         };
 
-        for (int j = mNum; j < num; ++j)
+        for (int j = m_Num; j < num; ++j)
         {
             for (int i = 0; i < VERTEX_MAX; ++i)
             {
                 mpData[j][i] = texCoords[i];
             }
         }
-        mNum = num;
+        m_Num = num;
     }
 }
 
 void TexCoordAry::GetCoord(u32 idx,TexCoordQuad coord) const
 {
-    NW_ASSERT(idx < mNum);
+    NW_ASSERT(idx < m_Num);
 
     for (int i = 0; i < VERTEX_MAX; ++i)
     {
@@ -105,7 +107,7 @@ void TexCoordAry::GetCoord(u32 idx,TexCoordQuad coord) const
 
 void TexCoordAry::SetCoord(u32 idx,const TexCoordQuad coord)
 {
-    NW_ASSERT(idx < mNum);
+    NW_ASSERT(idx < m_Num);
 
     for (int i = 0; i < VERTEX_MAX; ++i)
     {
@@ -113,10 +115,11 @@ void TexCoordAry::SetCoord(u32 idx,const TexCoordQuad coord)
     }
 }
 
-void TexCoordAry::Copy(const void* pResTexCoord,u8 texCoordNum){
-    NW_ASSERT(texCoordNum <= mCap);
+void TexCoordAry::Copy(const void* pResTexCoord,u8 texCoordNum)
+{
+    NW_ASSERT(texCoordNum <= m_Cap);
 
-    mNum = ut::Max(mNum, texCoordNum);
+    m_Num = ut::Max(m_Num, texCoordNum);
     const math::VEC2 (*src)[VERTEX_MAX] = static_cast<const math::VEC2 (*)[VERTEX_MAX]>(pResTexCoord);
     for (int j = 0; j < texCoordNum; ++j)
     {
@@ -127,7 +130,8 @@ void TexCoordAry::Copy(const void* pResTexCoord,u8 texCoordNum){
     }
 }
 
-void DrawQuad(const DrawInfo& drawInfo,const VEC2& basePt,const Size& size,u8 texCoordNum,const VEC2 (*texCoords)[VERTEX_MAX],const ut::Color8*    vtxColors){
+void DrawQuad(const DrawInfo& drawInfo, const VEC2& basePt,const Size& size,u8 texCoordNum,const VEC2 (*texCoords)[VERTEX_MAX],const ut::Color8* vtxColors)
+{
     GraphicsResource& gres = *drawInfo.GetGraphicsResource();
 
     gres.SetupProgram();

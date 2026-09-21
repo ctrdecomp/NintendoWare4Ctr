@@ -19,11 +19,11 @@ public:
     
     bool IsCreated() const { return m_IsCreated != 0; }
     
-    void SetPriority(s32 priority){ m_Thread.ChangePriority(priority); }
+    void SetPriority(s32 priority) { m_Thread.ChangePriority(priority); }
 
-    bool TryLock(){ return m_CriticalSection.TryEnter(); }
-    void Lock(){ m_CriticalSection.Enter(); }
-    void Unlock(){ m_CriticalSection.Leave(); }
+    bool TryLock() { return m_CriticalSection.TryEnter(); }
+    void Lock() { m_CriticalSection.Enter(); }
+    void Unlock() { m_CriticalSection.Leave(); }
 public:
     static TaskThread& GetInstance();
 

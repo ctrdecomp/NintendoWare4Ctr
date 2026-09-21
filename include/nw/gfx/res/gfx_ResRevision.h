@@ -6,7 +6,8 @@ namespace nw {
 namespace gfx {
 namespace res {
 
-enum GraphicsBinaryRevisions{
+enum GraphicsBinaryRevisions
+{
     REVISION_RES_GRAPHICS_FILE = 0x05000000,
     REVISION_RES_SHADER        = 0x06000000,
     REVISION_RES_LUT_SET       = 0x04000000,

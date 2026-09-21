@@ -33,7 +33,7 @@ private:
     public:
         SequenceNoteOnCallback(): 
             m_pSoundArchivePlayer(NULL)
-        {
+            {
         }
 
         void Initialize(const SoundArchivePlayer& player)
@@ -51,7 +51,7 @@ private:
 public:
     SoundArchivePlayer();
     virtual ~SoundArchivePlayer();
-    virtual SoundArchive::ItemId detail_GetItemId(const char* pString){ return m_pSoundArchive->GetItemId(pString); }
+    virtual SoundArchive::ItemId detail_GetItemId(const char* pString) { return m_pSoundArchive->GetItemId(pString); }
 
     size_t GetRequiredMemSize(const SoundArchive* arc, size_t userParamSizePerSound = 0) const;
     size_t GetRequiredStreamBufferSize(const SoundArchive* arc) const;

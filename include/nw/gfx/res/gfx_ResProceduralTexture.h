@@ -14,46 +14,52 @@ namespace nw {
 namespace gfx {
 namespace res {
 
-struct ResProceduralNoiseData{
-    nw::ut::ResBool mIsNoiseEnabled;
+struct ResProceduralNoiseData
+{
+    nw::ut::ResBool m_IsNoiseEnabled;
     u8 _padding_0[3];
-    nw::ut::ResVec3 mNoiseU;
-    nw::ut::ResVec3 mNoiseV;
+    nw::ut::ResVec3 m_NoiseU;
+    nw::ut::ResVec3 m_NoiseV;
     nw::ut::Offset toNoiseTable;
 };
 
-struct ResProceduralClampShiftData{
-    nw::ut::ResU32 mClampU;
-    nw::ut::ResU32 mClampV;
-    nw::ut::ResU32 mShiftU;
-    nw::ut::ResU32 mShiftV;
+struct ResProceduralClampShiftData
+{
+    nw::ut::ResU32 m_ClampU;
+    nw::ut::ResU32 m_ClampV;
+    nw::ut::ResU32 m_ShiftU;
+    nw::ut::ResU32 m_ShiftV;
 };
 
-struct ResProceduralMappingData{
-    nw::ut::ResBool mIsAlphaSeparate;
+struct ResProceduralMappingData
+{
+    nw::ut::ResBool m_IsAlphaSeparate;
     u8 _padding_0[3];
-    nw::ut::ResU32 mMappingFunction;
-    nw::ut::ResU32 mAlphaMappingFunction;
+    nw::ut::ResU32 m_MappingFunction;
+    nw::ut::ResU32 m_AlphaMappingFunction;
     nw::ut::Offset toMappingTable;
     nw::ut::Offset toAlphaMappingTable;
 };
 
-struct ResProceduralColorData{
-    nw::ut::ResS32 mTextureWidth;
-    nw::ut::ResS32 mTextureOffset;
-    nw::ut::ResF32 mTextureLodBias;
-    nw::ut::ResU32 mMinFilter;
+struct ResProceduralColorData
+{
+    nw::ut::ResS32 m_TextureWidth;
+    nw::ut::ResS32 m_TextureOffset;
+    nw::ut::ResF32 m_TextureLodBias;
+    nw::ut::ResU32 m_MinFilter;
     nw::ut::Offset toColorTables[4];
 };
 
-struct ResProceduralTextureData : public ResTextureData{
-    ResProceduralNoiseData mNoise;
-    ResProceduralClampShiftData mClampShift;
-    ResProceduralMappingData mMapping;
-    ResProceduralColorData mColor;
+struct ResProceduralTextureData : public ResTextureData
+{
+    ResProceduralNoiseData m_Noise;
+    ResProceduralClampShiftData m_ClampShift;
+    ResProceduralMappingData m_Mapping;
+    ResProceduralColorData m_Color;
 };
 
-class ResProceduralNoise : public nw::ut::ResCommon<ResProceduralNoiseData>{
+class ResProceduralNoise : public nw::ut::ResCommon<ResProceduralNoiseData>
+{
 public:
     NW_RES_CTOR(ResProceduralNoise)
 
@@ -63,9 +69,11 @@ public:
     NW_RES_FIELD_CLASS_DECL(ResImageLookupTable, NoiseTable)
 };
 
-class ResProceduralClampShift : public nw::ut::ResCommon<ResProceduralClampShiftData>{
+class ResProceduralClampShift : public nw::ut::ResCommon<ResProceduralClampShiftData>
+{
 public:
-    enum Clamp{
+    enum Clamp
+    {
         CLAMP_REPEAT    = GL_SYMMETRICAL_REPEAT_DMP,
         CLAMP_MIRRORED  = GL_MIRRORED_REPEAT,
         CLAMP_PULSE     = GL_PULSE_DMP,
@@ -73,7 +81,8 @@ public:
         CLAMP_ZERO      = GL_CLAMP_TO_ZERO_DMP
     };
     
-    enum Shift{
+    enum Shift
+    {
         SHIFT_EVEN = GL_EVEN_DMP,
         SHIFT_ODD  = GL_ODD_DMP,
         SHIFT_NONE = GL_NONE_DMP
@@ -87,9 +96,11 @@ public:
     NW_RES_FIELD_PRIMITIVE_DECL(Shift, ShiftV)
 };
 
-class ResProceduralMapping : public nw::ut::ResCommon<ResProceduralMappingData>{
+class ResProceduralMapping : public nw::ut::ResCommon<ResProceduralMappingData>
+{
 public:
-    enum Function{
+    enum Function
+    {
         FUNCTION_U        = GL_PROCTEX_U_DMP,
         FUNCTION_V        = GL_PROCTEX_V_DMP,
         FUNCTION_U2       = GL_PROCTEX_U2_DMP,
@@ -111,9 +122,11 @@ public:
     NW_RES_FIELD_CLASS_DECL(ResImageLookupTable, AlphaMappingTable)
 };
 
-class ResProceduralColor : public nw::ut::ResCommon<ResProceduralColorData>{
+class ResProceduralColor : public nw::ut::ResCommon<ResProceduralColorData>
+{
 public:
-    enum MinFilter{
+    enum MinFilter
+    {
         MINFILTER_NEAREST                = GL_NEAREST,
         MINFILTER_LINEAR                 = GL_LINEAR,
         MINFILTER_NEAREST_MIPMAP_NEAREST = GL_NEAREST_MIPMAP_NEAREST,
@@ -131,7 +144,8 @@ public:
     NW_RES_FIELD_CLASS_FIXED_LIST_DECL(ResImageLookupTable, ColorTables)
 };
 
-class ResProceduralTexture : public ResTexture{
+class ResProceduralTexture : public ResTexture
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResProceduralTexture) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('TXPR') };

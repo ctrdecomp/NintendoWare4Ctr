@@ -17,7 +17,7 @@ public:
 
     virtual ~RomSoundArchive();
     virtual size_t detail_GetRequiredStreamBufferSize() const;
-    virtual const void* detail_GetFileAddress( FileId fileId ) const{ return NULL; }
+    virtual const void* detail_GetFileAddress( FileId fileId ) const { return NULL; }
     virtual io::FileStream* OpenStream(void* buffer, int size, u32 begin, u32 length);
     virtual io::FileStream* OpenExtStream(void* buffer, int size, const char* extFilePath, u32 begin, u32 length) const;
 
@@ -40,7 +40,8 @@ private:
     bool m_IsOpened;
 };
 
-class RomSoundArchive::RomFileStream : public io::RomFileStream{
+class RomSoundArchive::RomFileStream : public io::RomFileStream
+{
 public:
     RomFileStream(const char* path, u32 offset, u32 size );
     RomFileStream(nn::fs::FileReader* fileReader, u32 offset, u32 size );

@@ -23,7 +23,7 @@ void Drawer::SetUpTexEnv(const Material* __restrict pMaterial)
 {
     if (pMaterial->GetTextureOnly())
     {
-        switch (mCurrentTexEnvType)
+        switch (m_CurrentTexEnvType)
         {
         case TEX_ENV_TYPE_0_TEX:
         case TEX_ENV_TYPE_1_TEX:
@@ -40,14 +40,14 @@ void Drawer::SetUpTexEnv(const Material* __restrict pMaterial)
     if (pMaterial->IsAlphaCompareCap())
     {
         this->FlushBuffer();
-        mAlphaTestEnable = true;
+        m_AlphaTestEnable = true;
 
         SetUpAlphaTest(pMaterial);
     }
-    else if (mAlphaTestEnable)
+    else if (m_AlphaTestEnable)
     {
         this->FlushBuffer();
-        mAlphaTestEnable = false;
+        m_AlphaTestEnable = false;
 
         NW_FONT_RECTDRAWER_ADD_SINGLE_COMMAND(PICA_REG_FRAGOP_ALPHA_TEST,PICA_CMD_DATA_FRAGOP_ALPHA_TEST_DISABLE() );
     }
@@ -56,14 +56,14 @@ void Drawer::SetUpTexEnv(const Material* __restrict pMaterial)
     if (pMaterial->IsBlendModeCap())
     {
         this->FlushBuffer();
-        mIsBlendDefault = false;
+        m_IsBlendDefault = false;
 
         this->SetUpBlendMode(pMaterial);
     }
-    else if (mIsBlendDefault == false)
+    else if (m_IsBlendDefault == false)
     {
         this->FlushBuffer();
-        mIsBlendDefault = true;
+        m_IsBlendDefault = true;
 
         const u32 command[] ={
             NW_FONT_COMMAND_SET_BLEND_DEFAULT
@@ -79,7 +79,7 @@ void Drawer::SetUpTexEnv(const Material* __restrict pMaterial)
 
         this->SetUpGLTexEnvUser( pMaterial );
 
-        mCurrentTexEnvType = TEX_ENV_TYPE_USER;
+        m_CurrentTexEnvType = TEX_ENV_TYPE_USER;
 
         return;
     }
@@ -105,7 +105,7 @@ void Drawer::SetUpTexEnv(const Material* __restrict pMaterial)
             PICA_CMD_DATA_TEX_ENV_SCALE( PICA_DATA_TEX_ENV_SCALE_1, PICA_DATA_TEX_ENV_SCALE_1 ),
         };
 
-            if (mCurrentTexEnvType != TEX_ENV_TYPE_0_TEX)
+            if (m_CurrentTexEnvType != TEX_ENV_TYPE_0_TEX)
             {
                 this->FlushBuffer();
 
@@ -113,7 +113,7 @@ void Drawer::SetUpTexEnv(const Material* __restrict pMaterial)
 
                 NW_FONT_RECTDRAWER_ADD_COMMAND(command, sizeof(command));
 
-                mCurrentTexEnvType = TEX_ENV_TYPE_0_TEX;
+                m_CurrentTexEnvType = TEX_ENV_TYPE_0_TEX;
             }
             else if (*reinterpret_cast<nw::ut::Color8*>(&command[4]) != white)
             {
@@ -185,7 +185,7 @@ void Drawer::SetUpTexEnv(const Material* __restrict pMaterial)
                 PICA_CMD_DATA_TEX_ENV_SCALE(PICA_DATA_TEX_ENV_SCALE_1, PICA_DATA_TEX_ENV_SCALE_1),
             };
 
-            if (mCurrentTexEnvType != TEX_ENV_TYPE_1_TEX)
+            if (m_CurrentTexEnvType != TEX_ENV_TYPE_1_TEX)
             {
                 this->FlushBuffer();
 
@@ -194,7 +194,7 @@ void Drawer::SetUpTexEnv(const Material* __restrict pMaterial)
 
                 NW_FONT_RECTDRAWER_ADD_COMMAND( command, sizeof(command));
 
-                mCurrentTexEnvType = TEX_ENV_TYPE_1_TEX;
+                m_CurrentTexEnvType = TEX_ENV_TYPE_1_TEX;
             }
             else if (*reinterpret_cast<nw::ut::Color8*>(&command[4]) != black || *reinterpret_cast< nw::ut::Color8* >(&command[10]) != white)
             {
@@ -216,7 +216,7 @@ void Drawer::SetUpTexEnv(const Material* __restrict pMaterial)
 
             this->SetUpTexEnvType2(pMaterial);
 
-            mCurrentTexEnvType = TEX_ENV_TYPE_2_TEX;
+            m_CurrentTexEnvType = TEX_ENV_TYPE_2_TEX;
 
             return;
         }
@@ -225,7 +225,7 @@ void Drawer::SetUpTexEnv(const Material* __restrict pMaterial)
 
             this->SetUpTexEnvType3(pMaterial);
 
-            mCurrentTexEnvType = TEX_ENV_TYPE_3_TEX;
+            m_CurrentTexEnvType = TEX_ENV_TYPE_3_TEX;
             return;
         }
     }
@@ -302,7 +302,7 @@ void Drawer::SetUpTexEnvType2(const Material* __restrict pMaterial)
     const int cmdPosWhite = 10;
     const int cmdPosBlack = 12;
 
-    if (mCurrentTexEnvType != TEX_ENV_TYPE_2_TEX)
+    if (m_CurrentTexEnvType != TEX_ENV_TYPE_2_TEX)
     {
         *reinterpret_cast< nw::ut::Color8* >( &command[ cmdPosBlend ] ) = blend;
         *reinterpret_cast< nw::ut::Color8* >( &command[ cmdPosWhite ] ) = white;
@@ -436,7 +436,7 @@ void Drawer::SetUpTexEnvType3(const Material* __restrict pMaterial)
     const int cmdPosWhite = 22;
     const int cmdPosBlack = 24;
 
-    if (mCurrentTexEnvType != TEX_ENV_TYPE_3_TEX)
+    if (m_CurrentTexEnvType != TEX_ENV_TYPE_3_TEX)
     {
         *reinterpret_cast< nw::ut::Color8* >( &command[ cmdPosBlend0 ] ) = blend;
         *reinterpret_cast< nw::ut::Color8* >( &command[ cmdPosBlend1 ] ) = blend;
@@ -511,18 +511,19 @@ void Drawer::SetUpTextures(const Material* __restrict pMaterial, bool addDisable
     {
         command[idxTextureAddr] = PICA_CMD_DATA_ZERO();
         
-        NW_ASSERT(mUniformAddrIndex == 0);
+        NW_ASSERT(m_UniformAddrIndex == 0);
 
-        if (addDisableCommand){
+        if (addDisableCommand)
+        {
             DisableTextures();
         }
         return;
     }
 
     bool isTexCoordModified = true;
-        if (mUniformAddrIndex > 0)
+        if (m_UniformAddrIndex > 0)
         {
-            NW_ASSERT(mPreviousTexEnvType == mCurrentTexEnvType&&  (mCurrentTexEnvType == TEX_ENV_TYPE_0_TEX || mCurrentTexEnvType == TEX_ENV_TYPE_1_TEX)); 
+            NW_ASSERT(m_PreviousTexEnvType == m_CurrentTexEnvType&&  (m_CurrentTexEnvType == TEX_ENV_TYPE_0_TEX || m_CurrentTexEnvType == TEX_ENV_TYPE_1_TEX)); 
             isTexCoordModified = false;
         }
 
@@ -573,38 +574,40 @@ void Drawer::SetUpTextures(const Material* __restrict pMaterial, bool addDisable
     }
 }
 
-void Drawer::UniformAndDraw(){
+void Drawer::UniformAndDraw()
+{
 
-    {
-    	const u32 size = SetUniformCommand(this->mUniformAddrBuffer, this->mUniformAddrIndex);
-        NW_FONT_RECTDRAWER_ADD_COMMAND(this->mUniformAddrBuffer, size);
+{
+    	const u32 size = SetUniformCommand(this->m_UniformAddrBuffer, this->m_UniformAddrIndex);
+        NW_FONT_RECTDRAWER_ADD_COMMAND(this->m_UniformAddrBuffer, size);
     }
 
-    if (mUniformMtxIndex > 0)
+    if (m_UniformMtxIndex > 0)
     {
         Base::AddUniformMtx();
     }
 
-    if (mUniformDataIndex > 0)
+    if (m_UniformDataIndex > 0)
     {
-        const u32 size = SetUniformCommand(this->mUniformDataBuffer, this->mUniformDataIndex);
-        NW_FONT_RECTDRAWER_ADD_COMMAND(this->mUniformDataBuffer, size);
-        mUniformDataIndex = 0;
+        const u32 size = SetUniformCommand(this->m_UniformDataBuffer, this->m_UniformDataIndex);
+        NW_FONT_RECTDRAWER_ADD_COMMAND(this->m_UniformDataBuffer, size);
+        m_UniformDataIndex = 0;
     }
-    const int vtxNum = DRAW_VTX_NUM * mUniformAddrIndex;
+    const int vtxNum = DRAW_VTX_NUM * m_UniformAddrIndex;
 
     const u32 vtxIdxAddrOffset = GetVertexIndexAddressOffset(vtxNum);
 
-    NW_FONT_RECTDRAWER_ADD_SINGLE_COMMAND(PICA_CMD_HEADER_SINGLE(PICA_REG_VS_INT0),PICA_CMD_DATA_VS_INT(this->mTexCoordNum, 0, 0));
+    NW_FONT_RECTDRAWER_ADD_SINGLE_COMMAND(PICA_CMD_HEADER_SINGLE(PICA_REG_VS_INT0),PICA_CMD_DATA_VS_INT(this->m_TexCoordNum, 0, 0));
 
     font::internal::SetVertexNumCmd(&__cb_current_command_buffer, vtxIdxAddrOffset, vtxNum);
 
     NW_FONT_RECTDRAWER_ADD_COMMAND(GetDrawCommands(), GetDrawCommandSize());
 
-    mUniformAddrIndex = 0;
+    m_UniformAddrIndex = 0;
 }
 
-void Drawer::SetUpTextBox(const TextBox*  __restrict pTextBox,const Material* __restrict pMaterial,const DrawInfo& drawInfo){
+void Drawer::SetUpTextBox(const TextBox*  __restrict pTextBox,const Material* __restrict pMaterial,const DrawInfo& drawInfo)
+{
     font::DispStringBuffer* __restrict pStringBuffer = pTextBox->GetDispStringBuffer();
 
     if (pStringBuffer->IsCommandEmpty())
@@ -612,14 +615,14 @@ void Drawer::SetUpTextBox(const TextBox*  __restrict pTextBox,const Material* __
         return;
     }
 
-    mCurrentTexEnvType = TEX_ENV_TYPE_TEXT;
+    m_CurrentTexEnvType = TEX_ENV_TYPE_TEXT;
 
-    mIsBlendDefault = true;
+    m_IsBlendDefault = true;
 
-    mAlphaTestEnable = false;
+    m_AlphaTestEnable = false;
 
-    pTextBox->GetTextGlobalMtx((nw::math::MTX34*)this->mUniformMtx);
-    mUniformMtxIndex = 3;
+    pTextBox->GetTextGlobalMtx((nw::math::MTX34*)this->m_UniformMtx);
+    m_UniformMtxIndex = 3;
     Base::AddUniformMtx();
 
     font::WideTextWriter& writer = drawInfo.GetGraphicsResource()->GetTextWriter();
@@ -640,7 +643,8 @@ void Drawer::SetUpTextBox(const TextBox*  __restrict pTextBox,const Material* __
     this->SetUpTextures( NULL );
 }
 
-void Drawer::SetUpGLTexEnvUser(const Material* __restrict pMaterial){
+void Drawer::SetUpGLTexEnvUser(const Material* __restrict pMaterial)
+{
     const int tevSrc[] =
     {
         PICA_DATA_TEX_ENV_SRC_RGBA_TEXTURE0,

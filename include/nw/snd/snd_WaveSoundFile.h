@@ -29,10 +29,10 @@ struct WaveSoundFile
         const Util::WaveIdTable& GetWaveIdTable() const;
         const Util::ReferenceTable& GetWaveSoundDataReferenceTable() const;
 
-        u32 GetWaveIdCount() const{ return GetWaveIdTable().GetCount(); }
-        u32 GetWaveSoundCount() const{ return GetWaveSoundDataReferenceTable().count; }
+        u32 GetWaveIdCount() const { return GetWaveIdTable().GetCount(); }
+        u32 GetWaveSoundCount() const { return GetWaveSoundDataReferenceTable().count; }
 
-        const Util::WaveId* GetWaveId(u32 index) const{ return GetWaveIdTable().GetWaveId(index); }
+        const Util::WaveId* GetWaveId(u32 index) const { return GetWaveIdTable().GetWaveId(index); }
         const WaveSoundData& GetWaveSoundData( u32 index ) const;
     };
 
@@ -58,8 +58,8 @@ struct WaveSoundFile
         const Util::ReferenceTable& GetTrackInfoReferenceTable() const;
         const Util::ReferenceTable& GetNoteInfoReferenceTable() const;
 
-        u32 GetTrackCount() const{ return GetTrackInfoReferenceTable().count; }
-        u32 GetNoteCount() const{ return GetNoteInfoReferenceTable().count; }
+        u32 GetTrackCount() const { return GetTrackInfoReferenceTable().count; }
+        u32 GetNoteCount() const { return GetNoteInfoReferenceTable().count; }
 
         const TrackInfo& GetTrackInfo( u32 index ) const;
         const NoteInfo& GetNoteInfo( u32 index ) const;
@@ -84,7 +84,7 @@ struct WaveSoundFile
 
         const Util::ReferenceTable& GetNoteEventReferenceTable() const;
 
-        u32 GetNoteEventCount() const{ return GetNoteEventReferenceTable().count; }
+        u32 GetNoteEventCount() const { return GetNoteEventReferenceTable().count; }
 
         const NoteEvent& GetNoteEvent( u32 index ) const;
     };

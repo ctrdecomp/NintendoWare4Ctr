@@ -15,32 +15,36 @@ namespace internal {
 class LinkListImpl;
 } // namespace internal
 
-class LinkListNode{
+class LinkListNode
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(LinkListNode);
 
 public:
     typedef LinkListNode Self;
     
-    explicit LinkListNode(): mNext(NULL), mPrev(NULL) {}
+    explicit LinkListNode():
+        m_Next(NULL),
+        m_Prev(NULL) {}
 
-    Self* GetNext() const { return mNext; }
-    Self* GetPrev() const { return mPrev; }
+    Self* GetNext() const { return m_Next; }
+    Self* GetPrev() const { return m_Prev; }
     friend class internal::LinkListImpl;
 
     friend bool operator==(const Self& r1, const Self& r2) { return &r1 == &r2; }
     friend bool operator!=(const Self& r1, const Self& r2) { return !(r1 == r2); }
 
 private:
-    Self* mNext;
-    Self* mPrev;
+    Self* m_Next;
+    Self* m_Prev;
 
     friend class internal::LinkListImpl;
 };
 
 namespace internal {
 
-class LinkListImpl{
+class LinkListImpl
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(LinkListImpl);
 
@@ -60,27 +64,29 @@ public:
     class iterator;
     class const_iterator;
 
-    class iterator : public internal::iterator<iterator_category, value_type>{
+    class iterator : public internal::iterator<iterator_category, value_type>
+    {
     public:
         typedef iterator TIt;
         typedef internal::iterator<iterator_category, value_type> TBaseIt;
 
-        explicit iterator(): mPointer(NULL) {}
+        explicit iterator():
+            m_Pointer(NULL) {}
 
-        reference operator*() const { return *mPointer; }
-        pointer operator->() const { return mPointer; }
+        reference operator*() const { return *m_Pointer; }
+        pointer operator->() const { return m_Pointer; }
 
-        TIt& operator++() { mPointer = mPointer->GetNext(); return *this; }
+        TIt& operator++() { m_Pointer = m_Pointer->GetNext(); return *this; }
         TIt operator++(int) { const TIt it(*this); (void)++*this; return it; }
-        TIt& operator--() { mPointer = mPointer->GetPrev(); return *this; }
+        TIt& operator--() { m_Pointer = m_Pointer->GetPrev(); return *this; }
         TIt operator--(int) { const TIt it(*this); (void)--*this; return it; }
 
-        friend bool operator==(TIt it1, TIt it2) { return it1.mPointer == it2.mPointer; }
+        friend bool operator==(TIt it1, TIt it2) { return it1.m_Pointer == it2.m_Pointer; }
         friend bool operator!=(TIt it1, TIt it2) { return !(it1 == it2); }
 
     private:
-        explicit iterator(pointer p): mPointer(p) {}
-        pointer mPointer;
+        explicit iterator(pointer p): m_Pointer(p) {}
+        pointer m_Pointer;
 
         friend class LinkListImpl;
         friend class const_iterator;
@@ -88,30 +94,31 @@ public:
 
     typedef iterator Iterator_alias_;
 
-    class const_iterator : public internal::iterator<iterator_category, value_type>{
+    class const_iterator : public internal::iterator<iterator_category, value_type>
+    {
     public:
         typedef const_iterator TIt;
         typedef internal::iterator<iterator_category, value_type> TBaseIt;
         typedef const_pointer pointer;
         typedef const_reference reference;
 
-        explicit const_iterator(): mPointer(NULL) {}
-        const_iterator(Iterator_alias_ it): mPointer(it.mPointer) {}
+        explicit const_iterator(): m_Pointer(NULL) {}
+        const_iterator(Iterator_alias_ it): m_Pointer(it.m_Pointer) {}
 
-        reference operator*() const { return *mPointer; }
-        pointer operator->() const { return mPointer; }
+        reference operator*() const { return *m_Pointer; }
+        pointer operator->() const { return m_Pointer; }
 
-        TIt& operator++() { mPointer = mPointer->GetNext(); return *this; }
+        TIt& operator++() { m_Pointer = m_Pointer->GetNext(); return *this; }
         TIt operator++(int) { const TIt it(*this); (void)++*this; return it; }
-        TIt& operator--() { mPointer = mPointer->GetPrev(); return *this; }
+        TIt& operator--() { m_Pointer = m_Pointer->GetPrev(); return *this; }
         TIt operator--(int) { const TIt it(*this); (void)--*this; return it; }
 
-        friend bool operator==(TIt it1, TIt it2) { return it1.mPointer == it2.mPointer; }
+        friend bool operator==(TIt it1, TIt it2) { return it1.m_Pointer == it2.m_Pointer; }
         friend bool operator!=(TIt it1, TIt it2) { return !(it1 == it2); }
 
     private:
-        explicit const_iterator(pointer p): mPointer(p) {}
-        pointer mPointer;
+        explicit const_iterator(pointer p): m_Pointer(p) {}
+        pointer m_Pointer;
 
         friend class LinkListImpl;
     };
@@ -122,29 +129,33 @@ public:
     explicit LinkListImpl() { Initialize_(); }
     ~LinkListImpl() { clear(); }
 
-    size_type size() const { return mSize; }
-    bool empty() const { return mSize == 0; }
+    size_type size() const { return m_Size; }
+    bool empty() const { return m_Size == 0; }
 
-    iterator begin() { return iterator(mBaseNode.GetNext()); }
-    const_iterator begin() const { return const_iterator(mBaseNode.GetNext()); }
-    iterator end() { return iterator(&mBaseNode); }
-    const_iterator end() const { return const_iterator(const_cast<Node*>(&mBaseNode)); }
+    iterator begin() { return iterator(m_BaseNode.GetNext()); }
+    const_iterator begin() const { return const_iterator(m_BaseNode.GetNext()); }
+    iterator end() { return iterator(&m_BaseNode); }
+    const_iterator end() const { return const_iterator(const_cast<Node*>(&m_BaseNode)); }
 
     reverse_iterator rbegin() { return reverse_iterator(end()); }
     const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
     reverse_iterator rend() { return reverse_iterator(begin()); }
     const_reverse_iterator rend() const { return const_reverse_iterator(begin()); }
 
-    reference front(){
+    reference front()
+    {
         return *begin();
     }
-    const_reference front() const{
+    const_reference front() const
+    {
         return *begin();
     }
-    reference back(){
+    reference back()
+    {
         return *--end();
     }
-    const_reference back() const{
+    const_reference back() const
+    {
         return *--end();
     }
 
@@ -161,32 +172,36 @@ public:
 
     void reverse();
 
-    static iterator GetIteratorFromPointer(pointer p){
+    static iterator GetIteratorFromPointer(pointer p)
+    {
         return iterator(p);
     }
-    static const_iterator GetIteratorFromPointer(const_pointer p){
+    static const_iterator GetIteratorFromPointer(const_pointer p)
+    {
         return const_iterator(p);
     }
 
 protected:
-    Node* GetBaseNode() { return &mBaseNode; }
-    const Node* GetBaseNode() const { return &mBaseNode; }
+    Node* GetBaseNode() { return &m_BaseNode; }
+    const Node* GetBaseNode() const { return &m_BaseNode; }
 
 private:
-    void Initialize_(){
-        mSize = 0;
-        mBaseNode.mNext = &mBaseNode;
-        mBaseNode.mPrev = &mBaseNode;
+    void Initialize_()
+    {
+        m_Size = 0;
+        m_BaseNode.m_Next = &m_BaseNode;
+        m_BaseNode.m_Prev = &m_BaseNode;
     }
 
-    size_type mSize;
-    Node mBaseNode;
+    size_type m_Size;
+    Node m_BaseNode;
 };
 
 } // namespace internal
 
 template<typename T, PtrDiff TNOffset>
-class LinkList : private internal::LinkListImpl{
+class LinkList : private internal::LinkListImpl
+{
 private:
     typedef internal::LinkListImpl Base;
 
@@ -211,7 +226,8 @@ public:
     class iterator;
     class const_iterator;
 
-    class iterator : public internal::iterator<iterator_category, value_type>{
+    class iterator : public internal::iterator<iterator_category, value_type>
+    {
     public:
         typedef iterator TIt;
         typedef internal::iterator<iterator_category, value_type> TBaseIt;
@@ -239,7 +255,8 @@ public:
 
     typedef iterator Iterator_alias_;
 
-    class const_iterator : public internal::iterator<iterator_category, value_type>{
+    class const_iterator : public internal::iterator<iterator_category, value_type>
+    {
     public:
         typedef const_iterator TIt;
         typedef internal::iterator<iterator_category, value_type> TBaseIt;
@@ -301,26 +318,32 @@ public:
     iterator erase(iterator itFirst, iterator itLast) { return iterator(Base::erase(itFirst.it_, itLast.it_)); }
     iterator erase(pointer p) { return iterator(Base::erase(GetNodeFromPointer(p))); }
 
-    pointer GetPrev(pointer p){
+    pointer GetPrev(pointer p)
+    {
         Node* baseNode = GetBaseNode();
         Node* node = (p == NULL) ? baseNode : GetNodeFromPointer(p);
         node = node->GetPrev();
         return (node == baseNode) ? NULL : GetPointerFromNode(node);
     }
-    const_pointer GetPrev(const_pointer p) const{
+
+    const_pointer GetPrev(const_pointer p) const
+    {
         const Node* baseNode = GetBaseNode();
         const Node* node = (p == NULL) ? baseNode : GetNodeFromPointer(p);
         node = node->GetPrev();
         return (node == baseNode) ? NULL : GetPointerFromNode(node);
     }
 
-    pointer GetNext(pointer p){
+    pointer GetNext(pointer p)
+    {
         Node* baseNode = GetBaseNode();
         Node* node = (p == NULL) ? baseNode : GetNodeFromPointer(p);
         node = node->GetNext();
         return (node == baseNode) ? NULL : GetPointerFromNode(node);
     }
-    const_pointer GetNext(const_pointer p) const{
+
+    const_pointer GetNext(const_pointer p) const
+    {
         const Node* baseNode = GetBaseNode();
         const Node* node = (p == NULL) ? baseNode : GetNodeFromPointer(p);
         node = node->GetNext();
@@ -330,37 +353,50 @@ public:
     using Base::clear;
     using Base::reverse;
 
-    static iterator GetIteratorFromPointer(Node* p){
+    static iterator GetIteratorFromPointer(Node* p)
+    {
         NW_NULL_ASSERT(p);
         return iterator(Base::GetIteratorFromPointer(p));
     }
-    static const_iterator GetIteratorFromPointer(const Node* p){
+
+    static const_iterator GetIteratorFromPointer(const Node* p)
+    {
         NW_NULL_ASSERT(p);
         return const_iterator(Base::GetIteratorFromPointer(p));
     }
-    static iterator GetIteratorFromPointer(pointer p){
-        NW_NULL_ASSERT(p);
-        return GetIteratorFromPointer(GetNodeFromPointer(p));
-    }
-    static const_iterator GetIteratorFromPointer(const_pointer p){
+
+    static iterator GetIteratorFromPointer(pointer p)
+    {
         NW_NULL_ASSERT(p);
         return GetIteratorFromPointer(GetNodeFromPointer(p));
     }
 
-    static Node* GetNodeFromPointer(pointer p){
+    static const_iterator GetIteratorFromPointer(const_pointer p)
+    {
+        NW_NULL_ASSERT(p);
+        return GetIteratorFromPointer(GetNodeFromPointer(p));
+    }
+
+    static Node* GetNodeFromPointer(pointer p)
+    {
         NW_NULL_ASSERT(p);
         return reinterpret_cast<Node*>(reinterpret_cast<IntPtr>(p) + TNOffset);
     }
-    static const Node* GetNodeFromPointer(const_pointer p){
+
+    static const Node* GetNodeFromPointer(const_pointer p)
+    {
         NW_NULL_ASSERT(p);
         return reinterpret_cast<const Node*>(reinterpret_cast<IntPtr>(p) + TNOffset);
     }
 
-    static pointer GetPointerFromNode(Node* p){
+    static pointer GetPointerFromNode(Node* p)
+    {
         NW_NULL_ASSERT(p);
         return reinterpret_cast<pointer>(reinterpret_cast<IntPtr>(p) - TNOffset);
     }
-    static const_pointer GetPointerFromNode(const Node* p){
+
+    static const_pointer GetPointerFromNode(const Node* p)
+    {
         NW_NULL_ASSERT(p);
         return reinterpret_cast<const_pointer>(reinterpret_cast<IntPtr>(p) - TNOffset);
     }
@@ -413,6 +449,17 @@ LIST = list member, for instance like `ut::LinkList m_ListTask` goes in here,as 
 lastly inside its { NAME->Function(); }
 
 */
+
+#define NW_UT_LINKLIST_FOREACH(NAME, LIST, ...)                                 \
+    {                                                                          \
+        typedef decltype((LIST).GetBeginIter()) IterType;                      \
+                                                                               \
+        for (IterType NAME = (LIST).GetBeginIter();                            \
+             NAME != (LIST).GetEndIter(); ++NAME){                              \
+            __VA_ARGS__;                                                       \
+        }                                                                      \
+    }
+
 
 #define NW_UT_LINKLIST_FOREACH_SAFE(NAME, LIST, ...)                         \
     {                                                                          \

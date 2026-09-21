@@ -19,7 +19,8 @@ class ISceneVisitor;
 class SceneContext;
 class WorldMatrixUpdater;
 
-class SceneNode : public SceneObject{
+class SceneNode : public SceneObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(SceneNode);
 
@@ -28,7 +29,8 @@ private:
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    enum TraversalResults{
+    enum TraversalResults
+    {
         FLAG_IS_VISIBLE_SHIFT = 0,
         FLAG_IS_DIRTY_SHIFT = 1,
 
@@ -41,7 +43,8 @@ public:
     typedef nw::ut::Signal2<void, SceneNode*, SceneContext*> UpdateSignal;
     typedef UpdateSignal::SlotType UpdateSlot;
 
-    struct Description{
+    struct Description
+    {
         bool isFixedSizeMemory;
         bool isAnimationEnabled;
         s32 maxCallbacks;
@@ -53,75 +56,86 @@ public:
             isAnimationEnabled(true),
             maxCallbacks(DEFAULT_MAX_CALLBACKS),
             maxChildren(DEFAULT_MAX_CHILDREN),
-            maxAnimObjectsPerGroup(DEFAULT_MAX_ANIMOBJECTS)
-        {}
+            maxAnimObjectsPerGroup(DEFAULT_MAX_ANIMOBJECTS) {}
     };
 
-    class DynamicBuilder{
+    class DynamicBuilder
+    {
     public:
         DynamicBuilder() {}
         ~DynamicBuilder() {}
 
-        DynamicBuilder& IsFixedSizeMemory(bool isFixedSizeMemory){
-            mDescription.isFixedSizeMemory = isFixedSizeMemory;
+        DynamicBuilder& IsFixedSizeMemory(bool isFixedSizeMemory)
+        {
+            m_Description.isFixedSizeMemory = isFixedSizeMemory;
             return *this;
         }
 
-        DynamicBuilder& MaxChildren(int maxChildren){
-            mDescription.maxChildren = maxChildren;
+        DynamicBuilder& MaxChildren(int maxChildren)
+        {
+            m_Description.maxChildren = maxChildren;
             return *this;
         }
 
-        DynamicBuilder& MaxCallbacks(int maxCallbacks){
-            mDescription.maxCallbacks = maxCallbacks;
+        DynamicBuilder& MaxCallbacks(int maxCallbacks)
+        {
+            m_Description.maxCallbacks = maxCallbacks;
             return *this;
         }
 
-        DynamicBuilder& MaxAnimObjectsPerGroup(s32 maxAnimObjects){
-            mDescription.maxAnimObjectsPerGroup = maxAnimObjects;
+        DynamicBuilder& MaxAnimObjectsPerGroup(s32 maxAnimObjects)
+        {
+            m_Description.maxAnimObjectsPerGroup = maxAnimObjects;
             return *this;
         }
 
-        DynamicBuilder& IsAnimationEnabled(bool isAnimationEnabled){
-            mDescription.isAnimationEnabled = isAnimationEnabled;
+        DynamicBuilder& IsAnimationEnabled(bool isAnimationEnabled)
+        {
+            m_Description.isAnimationEnabled = isAnimationEnabled;
             return *this;
         }
 
         SceneNode* Create(nw::os::IAllocator* allocator);
 
-        size_t GetMemorySize(size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT) const{
+        size_t GetMemorySize(size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT) const
+        {
             nw::os::MemorySizeCalculator size(alignment);
 
             size += sizeof(SceneNode);
-            GetMemorySizeForInitialize(&size, ResSceneNode(), mDescription);
+            GetMemorySizeForInitialize(&size, ResSceneNode(), m_Description);
 
             return size.GetSizeWithPadding(alignment);
         }
 
     private:
-        SceneNode::Description mDescription;
+        SceneNode::Description m_Description;
     };
 
     static SceneNode* Create(SceneNode* parent, ResSceneObject resource, const SceneNode::Description& description, nw::os::IAllocator* allocator);
 
-    static size_t GetMemorySize(ResSceneNode resSceneNode, Description description, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT){
+    static size_t GetMemorySize(ResSceneNode resSceneNode, Description description, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT)
+    {
         nw::os::MemorySizeCalculator size(alignment);
         GetMemorySizeInternal(&size, resSceneNode, description);
         return size.GetSizeWithPadding(alignment);
     }
 
-    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResSceneNode resSceneNode, Description description){
+    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResSceneNode resSceneNode, Description description)
+    {
         nw::os::MemorySizeCalculator& size = *pSize;
 
         size += sizeof(SceneNode);
         GetMemorySizeForInitialize(pSize, resSceneNode, description);
     }
 
-    void DestroyBranch(){
-        SceneNodeChildren::iterator end = mChildren.end();
-        for (SceneNodeChildren::iterator child = mChildren.begin(); child != end; ++child){
+    void DestroyBranch()
+    {
+        SceneNodeChildren::iterator end = m_Children.end();
+        for (SceneNodeChildren::iterator child = m_Children.begin(); child != end; ++child)
+        {
 
-            if (*child){
+            if (*child)
+            {
                 (*child)->SetParent(NULL);
                 (*child)->DestroyBranch();
                 *child = NULL;
@@ -130,158 +144,189 @@ public:
         Destroy();
     }
 
-    static size_t GetDeviceMemorySize(ResSceneObject, Description, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT){
+    static size_t GetDeviceMemorySize(ResSceneObject, Description, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT)
+    {
         NW_UNUSED_VARIABLE(alignment);
         return 0;
     }
 
     
 
-    static void GetDeviceMemorySizeInternal(nw::os::MemorySizeCalculator*, ResSceneObject, Description){ }
+    static void GetDeviceMemorySizeInternal(nw::os::MemorySizeCalculator*, ResSceneObject, Description) { }
 
-    ResSceneNode GetResSceneNode(){
+    ResSceneNode GetResSceneNode()
+    {
         return ResStaticCast<ResSceneNode>(GetResSceneObject());
     }
 
-    const ResSceneNode GetResSceneNode() const{
+    const ResSceneNode GetResSceneNode() const
+    {
         return ResStaticCast<ResSceneNode>(GetResSceneObject());
     }
 
-    virtual void UpdateTransform(WorldMatrixUpdater* worldMatrixUpdater, SceneContext* sceneContext){
+    virtual void UpdateTransform(WorldMatrixUpdater* worldMatrixUpdater, SceneContext* sceneContext)
+    {
         NW_UNUSED_VARIABLE(worldMatrixUpdater);
         NW_UNUSED_VARIABLE(sceneContext);
     }
 
-    bool AttachChild(SceneNode* child){
-        if (IsCircularReference(child)){
+    bool AttachChild(SceneNode* child)
+    {
+        if (IsCircularReference(child))
+        {
             return false;
         }
 
-        return mChildren.Attach(child);
+        return m_Children.Attach(child);
     }
 
-    void DetachChild(SceneNode* child){
+    void DetachChild(SceneNode* child)
+    {
         NW_NULL_ASSERT(child);
         NW_ASSERT(child->GetParent() == this);
 
-        mChildren.Detach(child);
+        m_Children.Detach(child);
     }
 
-    SceneNodeChildren::iterator GetChildBegin() { return mChildren.begin(); }
-    SceneNodeChildren::const_iterator GetChildBegin() const { return mChildren.begin(); }
-    SceneNodeChildren::iterator GetChildEnd() { return mChildren.end(); }
-    SceneNodeChildren::const_iterator GetChildEnd() const { return mChildren.end(); }
+    SceneNodeChildren::iterator GetChildBegin() { return m_Children.begin(); }
+    SceneNodeChildren::const_iterator GetChildBegin() const { return m_Children.begin(); }
+    SceneNodeChildren::iterator GetChildEnd() { return m_Children.end(); }
+    SceneNodeChildren::const_iterator GetChildEnd() const { return m_Children.end(); }
 
-    void DetachAllChildren() { mChildren.clear(); }
+    void DetachAllChildren() { m_Children.clear(); }
 
     virtual void Accept(ISceneVisitor* visitor);
 
-    virtual const nw::math::MTX34& TrackbackWorldMatrix() const{
+    virtual const nw::math::MTX34& TrackbackWorldMatrix() const
+    {
         const SceneNode* parent = GetParent();
-        if (parent == NULL){
+        if (parent == NULL)
+        {
             return nw::math::MTX34::Identity();
         }
 
         return parent->TrackbackWorldMatrix();
     }
 
-    virtual const CalculatedTransform& TrackbackWorldTransform() const{
+    virtual const CalculatedTransform& TrackbackWorldTransform() const
+    {
         const SceneNode* parent = GetParent();
-        if (parent == NULL){
+        if (parent == NULL)
+        {
             return CalculatedTransform::Identity();
         }
 
         return parent->TrackbackWorldTransform();
     }
 
-    virtual const CalculatedTransform& TrackbackLocalTransform() const{
+    virtual const CalculatedTransform& TrackbackLocalTransform() const
+    {
         const SceneNode* parent = GetParent();
-        if (parent == NULL){
+        if (parent == NULL)
+        {
             return CalculatedTransform::Identity();
         }
 
         return parent->TrackbackLocalTransform();
     }
 
-    UpdateSignal& PreUpdateSignal() { return *mPreUpdateSignal; }
-    const UpdateSignal& PreUpdateSignal() const { return *mPreUpdateSignal; }
+    UpdateSignal& PreUpdateSignal() { return *m_PreUpdateSignal; }
+    const UpdateSignal& PreUpdateSignal() const { return *m_PreUpdateSignal; }
 
-    const AnimBinding* GetAnimBinding() const { return mAnimBinding.Get(); }
-    AnimBinding* GetAnimBinding() { return mAnimBinding.Get(); }
-    void SetAnimBinding(AnimBinding* animBinding) { mAnimBinding = GfxPtr<AnimBinding>(animBinding); }
+    const AnimBinding* GetAnimBinding() const { return m_AnimBinding.Get(); }
+    AnimBinding* GetAnimBinding() { return m_AnimBinding.Get(); }
+    void SetAnimBinding(AnimBinding* animBinding) { m_AnimBinding = GfxPtr<AnimBinding>(animBinding); }
 
-    void UpdateFrame(){
+    void UpdateFrame()
+    {
         AnimBinding* animBinding = GetAnimBinding();
-        if (animBinding != NULL){
+        if (animBinding != NULL)
+        {
             animBinding->UpdateFrame();
         }
     }
 
-    bit32 GetTraversalResults() const{
-        return mTraversalResults;
+    bit32 GetTraversalResults() const
+    {
+        return m_TraversalResults;
     }
 
-    void SetParent(SceneNode* p){
-        this->mParent = p;
+    void SetParent(SceneNode* p)
+    {
+        this->m_Parent = p;
     }
 
-    SceneNode* GetParent() const{
-        return this->mParent;
+    SceneNode* GetParent() const
+    {
+        return this->m_Parent;
     }
 
-    void SetTraversalResults(bit32 results){
-        mTraversalResults = results;
+    void SetTraversalResults(bit32 results)
+    {
+        m_TraversalResults = results;
     }
 
-    bool IsEnabledResults(bit32 results) const{
-        return ut::CheckFlag(this->mTraversalResults, results);
+    bool IsEnabledResults(bit32 results) const
+    {
+        return ut::CheckFlag(this->m_TraversalResults, results);
     }
 
-    void EnableTraversalResults(bit32 results){
-        mTraversalResults = ut::EnableFlag(this->mTraversalResults, results);
+    void EnableTraversalResults(bit32 results)
+    {
+        m_TraversalResults = ut::EnableFlag(this->m_TraversalResults, results);
     }
 
-    void DisableTraversalResults(bit32 results){
-        mTraversalResults = ut::DisableFlag(this->mTraversalResults, results);
+    void DisableTraversalResults(bit32 results)
+    {
+        m_TraversalResults = ut::DisableFlag(this->m_TraversalResults, results);
     }
 
-    void ResetTraversalResults(){
-        mTraversalResults = FLAG_DEFAULT;
+    void ResetTraversalResults()
+    {
+        m_TraversalResults = FLAG_DEFAULT;
     }
 
-    void CopyTraversalResults(const SceneNode* node){
-        if (node != NULL){
-            mTraversalResults = node->GetTraversalResults();
+    void CopyTraversalResults(const SceneNode* node)
+    {
+        if (node != NULL)
+        {
+            m_TraversalResults = node->GetTraversalResults();
         }
     }
 
     inline virtual void InheritTraversalResults();
 
-    void SetBranchVisible(bool isBranchVisible){
-        mBranchVisible = isBranchVisible;
+    void SetBranchVisible(bool isBranchVisible)
+    {
+        m_BranchVisible = isBranchVisible;
     }
 
-    bool IsBranchVisible() const{
-        return mBranchVisible;
+    bool IsBranchVisible() const
+    {
+        return m_BranchVisible;
     }
 
-    static void GetMemorySizeForInitialize(nw::os::MemorySizeCalculator* pSize, ResSceneNode resSceneNode, Description description){
+    static void GetMemorySizeForInitialize(nw::os::MemorySizeCalculator* pSize, ResSceneNode resSceneNode, Description description)
+    {
         NW_ASSERT(description.isFixedSizeMemory);
 
         nw::os::MemorySizeCalculator& size = *pSize;
 
         size.Add(sizeof(SceneNode*) * description.maxChildren, CHILDREN_MEMORY_ALIGNMENT);
 
-        if (description.maxCallbacks == 0){
+        if (description.maxCallbacks == 0)
+        {
             UpdateSignal::GetMemorySizeForInvalidateSignalInternal(pSize);
         }
         else{
             UpdateSignal::GetMemorySizeForFixedSizedSignalInternal(pSize, description.maxCallbacks);
         }
 
-        if (description.isAnimationEnabled && resSceneNode.IsValid()){
+        if (description.isAnimationEnabled && resSceneNode.IsValid())
+        {
             const int animGroupCount = resSceneNode.GetAnimGroupsCount();
-            if (animGroupCount){
+            if (animGroupCount)
+            {
 
                 AnimBinding::Builder()
                     .MaxAnimGroups(animGroupCount)
@@ -294,50 +339,59 @@ public:
 protected:
     SceneNode(nw::os::IAllocator* allocator, ResSceneNode resObj, const SceneNode::Description& description):
         SceneObject(allocator, resObj),
-        mBranchVisible(true),
-        mPreUpdateSignal(NULL),
-        mTraversalResults(FLAG_DEFAULT),
-        mDescription(description){
+        m_BranchVisible(true),
+        m_PreUpdateSignal(NULL),
+        m_TraversalResults(FLAG_DEFAULT),
+        m_Description(description)
+        {
         SetParent(NULL);
-        if (resObj.IsValid()){
-            mBranchVisible = resObj.IsBranchVisible();
+        if (resObj.IsValid())
+        {
+            m_BranchVisible = resObj.IsBranchVisible();
         }
     }
 
-    virtual ~SceneNode(){
+    virtual ~SceneNode()
+    {
         SceneNode* parent = GetParent();
-        if (parent){
+        if (parent)
+        {
             parent->DetachChild(this);
         }
 
-        SafeDestroy(this->mPreUpdateSignal);
+        SafeDestroy(this->m_PreUpdateSignal);
     }
 
-    bool IsCircularReference(const SceneNode* child) const{
+    bool IsCircularReference(const SceneNode* child) const
+    {
         const SceneNode* parent = GetParent();
-        if (parent == 0){
+        if (parent == 0)
+        {
             return false;
         }
 
-        if (parent != child){
+        if (parent != child)
+        {
             return parent->IsCircularReference(child);
         }
 
         return true;
     }
 
-    void AcceptChildren(ISceneVisitor* visitor){
-        NW_FOREACH(SceneNode* child, mChildren){
+    void AcceptChildren(ISceneVisitor* visitor)
+    {
+        NW_FOREACH(SceneNode* child, m_Children)
+    {
             child->Accept(visitor);
         }
     }
 
     virtual Result Initialize(nw::os::IAllocator* allocator);
 
-    SceneNode* mParent;
-    SceneNodeChildren mChildren;
-    GfxPtr<AnimBinding> mAnimBinding;
-    bool mBranchVisible;
+    SceneNode* m_Parent;
+    SceneNodeChildren m_Children;
+    GfxPtr<AnimBinding> m_AnimBinding;
+    bool m_BranchVisible;
 
 private:
     Result CreateChildren(nw::os::IAllocator* allocator);
@@ -348,14 +402,16 @@ private:
 
     static const int DEFAULT_MAX_ANIMOBJECTS = 1;
 
-    UpdateSignal* mPreUpdateSignal;
-    bit32 mTraversalResults;
-    Description mDescription;
+    UpdateSignal* m_PreUpdateSignal;
+    bit32 m_TraversalResults;
+    Description m_Description;
 };
 
 template<typename TNode>
-inline void SafeDestroyBranch(TNode*& node){
-    if (node == NULL){
+inline void SafeDestroyBranch(TNode*& node)
+{
+    if (node == NULL)
+    {
         return;
     }
 
@@ -364,29 +420,35 @@ inline void SafeDestroyBranch(TNode*& node){
 }
 
 template<typename TNode>
-struct SafeBranchDestroyer : public std::unary_function<TNode&, void>{
-    void operator()(TNode& node) const{
+struct SafeBranchDestroyer : public std::unary_function<TNode&, void>
+{
+    void operator()(TNode& node) const
+    {
         SafeDestroyBranch(node);
     }
 };
 
 template<typename TArray>
-inline void SafeDestroyBranchAll(TArray& nodes){
+inline void SafeDestroyBranchAll(TArray& nodes)
+{
     std::for_each(nodes.begin(), nodes.end(), SafeBranchDestroyer<typename TArray::value_type>());
     nodes.clear();
 }
 
-inline void SceneNode::InheritTraversalResults(){
+inline void SceneNode::InheritTraversalResults()
+{
     bit32 results = GetTraversalResults();
     SceneNode* parent = GetParent();
 
     bool isVisible = IsBranchVisible();
 
-    if (parent != NULL && !(parent->IsEnabledResults(SceneNode::FLAG_IS_VISIBLE))){
+    if (parent != NULL && !(parent->IsEnabledResults(SceneNode::FLAG_IS_VISIBLE)))
+    {
         isVisible = false;
     }
 
-    if (isVisible){
+    if (isVisible)
+    {
         results = ut::EnableFlag(results, SceneNode::FLAG_IS_VISIBLE);
     }
     else{

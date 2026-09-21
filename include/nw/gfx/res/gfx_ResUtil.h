@@ -2,7 +2,7 @@
 
 #include <utility>
 
-namespace nw { /* nw */
+namespace nw {
 namespace gfx {
 
 class Result;

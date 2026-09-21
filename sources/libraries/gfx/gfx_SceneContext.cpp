@@ -3,7 +3,8 @@
 namespace nw{
 namespace gfx{
 
-SceneContext* SceneContext::Builder::Create(nw::os::IAllocator* allocator){
+SceneContext* SceneContext::Builder::Create(nw::os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
     
     SceneNodeArray sceneNodes(allocator);
@@ -22,22 +23,23 @@ SceneContext* SceneContext::Builder::Create(nw::os::IAllocator* allocator){
     ParticleModelArray particleModels(allocator);
     AnimatableNodeArray animatableNodes(allocator);
 
-    if (mIsFixedSizeMemory){
-        sceneNodes = SceneNodeArray(this->mMaxSceneNodes, allocator);
-        userRenderNodes = UserRenderNodeArray(this->mMaxUserRenderNodes, allocator);
-        models = ModelArray(this->mMaxModels, allocator);
-        skeletalModels = SkeletalModelArray(this->mMaxSkeletalModels, allocator);
-        lights = LightArray(this->mMaxLights, allocator);
-        fragmentLights = FragmentLightArray(this->mMaxFragmentLights, allocator);
-        vertexLights = VertexLightArray(this->mMaxVertexLights, allocator);
-        hemiSphereLights = HemiSphereLightArray(this->mMaxHemiSphereLights, allocator);
-        ambientLights = AmbientLightArray(this->mMaxAmbientLights, allocator);
-        cameras = CameraArray(this->mMaxCameras, allocator);
-        fogs = FogArray(this->mMaxFogs, allocator);
-        particleSets = ParticleSetArray(this->mMaxParticleSets, allocator);
-        particleEmitters = ParticleEmitterArray(this->mMaxParticleEmitters, allocator);
-        particleModels = ParticleModelArray(this->mMaxParticleModels, allocator);
-        animatableNodes = AnimatableNodeArray(this->mMaxAnimatableNodes, allocator);
+    if (m_IsFixedSizeMemory)
+    {
+        sceneNodes = SceneNodeArray(this->m_MaxSceneNodes, allocator);
+        userRenderNodes = UserRenderNodeArray(this->m_MaxUserRenderNodes, allocator);
+        models = ModelArray(this->m_MaxModels, allocator);
+        skeletalModels = SkeletalModelArray(this->m_MaxSkeletalModels, allocator);
+        lights = LightArray(this->m_MaxLights, allocator);
+        fragmentLights = FragmentLightArray(this->m_MaxFragmentLights, allocator);
+        vertexLights = VertexLightArray(this->m_MaxVertexLights, allocator);
+        hemiSphereLights = HemiSphereLightArray(this->m_MaxHemiSphereLights, allocator);
+        ambientLights = AmbientLightArray(this->m_MaxAmbientLights, allocator);
+        cameras = CameraArray(this->m_MaxCameras, allocator);
+        fogs = FogArray(this->m_MaxFogs, allocator);
+        particleSets = ParticleSetArray(this->m_MaxParticleSets, allocator);
+        particleEmitters = ParticleEmitterArray(this->m_MaxParticleEmitters, allocator);
+        particleModels = ParticleModelArray(this->m_MaxParticleModels, allocator);
+        animatableNodes = AnimatableNodeArray(this->m_MaxAnimatableNodes, allocator);
     }
     
     void* memory = allocator->Alloc(sizeof(SceneContext));

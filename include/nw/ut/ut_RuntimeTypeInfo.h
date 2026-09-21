@@ -19,24 +19,29 @@ namespace ut   {
 
 namespace internal {
 
-struct RuntimeTypeInfo{
-    const RuntimeTypeInfo*  mParentTypeInfo;
+struct RuntimeTypeInfo
+{
+    const RuntimeTypeInfo*  m_ParentTypeInfo;
     
-    explicit RuntimeTypeInfo( const RuntimeTypeInfo* parent) : mParentTypeInfo(parent) {}
-    bool IsDerivedFrom( const RuntimeTypeInfo* s_TypeInfo ) const{
+    explicit RuntimeTypeInfo( const RuntimeTypeInfo* parent) : m_ParentTypeInfo(parent) {}
+    bool IsDerivedFrom( const RuntimeTypeInfo* s_TypeInfo ) const
+    {
         const RuntimeTypeInfo *self = this;
-        while (self){
-            if (self == s_TypeInfo){
+        while (self)
+        {
+            if (self == s_TypeInfo)
+            {
                 return true;
             }
-            self = self->mParentTypeInfo;
+            self = self->m_ParentTypeInfo;
         }
         return false;
     }
 };
 
 template<class T>
-inline const RuntimeTypeInfo* GetTypeInfoFromPtr_(T* /* dummy */){
+inline const RuntimeTypeInfo* GetTypeInfoFromPtr_(T* /* dummy */)
+{
     return &T::s_TypeInfo;
 }
 
@@ -44,9 +49,11 @@ inline const RuntimeTypeInfo* GetTypeInfoFromPtr_(T* /* dummy */){
 
 
 template<class UPtr, class T>
-inline UPtr DynamicCast(T* obj){
+inline UPtr DynamicCast(T* obj)
+{
     const internal::RuntimeTypeInfo* s_TypeInfoU = internal::GetTypeInfoFromPtr_(UPtr(0));
-    if ( obj && obj->GetRuntimeTypeInfo()->IsDerivedFrom(s_TypeInfoU) ){
+    if ( obj && obj->GetRuntimeTypeInfo()->IsDerivedFrom(s_TypeInfoU) )
+    {
         return static_cast<UPtr>(obj);
     }
     return NULL;
@@ -54,7 +61,8 @@ inline UPtr DynamicCast(T* obj){
 
 
 template <typename T, typename U>
-inline bool IsTypeOf(const U* instance){
+inline bool IsTypeOf(const U* instance)
+{
     if (instance == NULL) { return false; }
     return instance->GetRuntimeTypeInfo() == &T::s_TypeInfo;
 }

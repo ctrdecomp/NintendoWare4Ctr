@@ -11,36 +11,39 @@ namespace nw {
 namespace gfx {
 namespace res {
 
-struct ResParticleEmitterData : public ResTransformNodeData{
-    nw::ut::ResU32 mId;
+struct ResParticleEmitterData : public ResTransformNodeData
+{
+    nw::ut::ResU32 m_Id;
     nw::ut::BinString toParticleSetPath;
     nw::ut::Offset toParticleForm;
-    nw::ut::ResBool mIsResourceCopyEnabled;
+    nw::ut::ResBool m_IsResourceCopyEnabled;
     u8              padding_0[3];
-    nw::ut::ResF32 mEmissionRatio;
-    nw::ut::ResF32 mEmissionRatioRandom;
-    nw::ut::ResS32 mEmissionInterval;
-    nw::ut::ResF32 mEmissionIntervalRandom;
-    nw::ut::ResBool mEmissionSpanInfinity;
+    nw::ut::ResF32 m_EmissionRatio;
+    nw::ut::ResF32 m_EmissionRatioRandom;
+    nw::ut::ResS32 m_EmissionInterval;
+    nw::ut::ResF32 m_EmissionIntervalRandom;
+    nw::ut::ResBool m_EmissionSpanInfinity;
     u8              padding_1[3];
-    nw::ut::ResS32 mEmissionSpan;
-    nw::ut::ResS32 mEmissionStart;
+    nw::ut::ResS32 m_EmissionSpan;
+    nw::ut::ResS32 m_EmissionStart;
 };
 
-struct ResParticleEmitterParameterData{
-    nw::ut::ResBool mIsResourceCopyEnabled;
+struct ResParticleEmitterParameterData
+{
+    nw::ut::ResBool m_IsResourceCopyEnabled;
     u8              padding_0[3];
-    nw::ut::ResF32 mEmissionRatio;
-    nw::ut::ResF32 mEmissionRatioRandom;
-    nw::ut::ResS32 mEmissionInterval;
-    nw::ut::ResF32 mEmissionIntervalRandom;
-    nw::ut::ResBool mEmissionSpanInfinity;
+    nw::ut::ResF32 m_EmissionRatio;
+    nw::ut::ResF32 m_EmissionRatioRandom;
+    nw::ut::ResS32 m_EmissionInterval;
+    nw::ut::ResF32 m_EmissionIntervalRandom;
+    nw::ut::ResBool m_EmissionSpanInfinity;
     u8              padding_1[3];
-    nw::ut::ResS32 mEmissionSpan;
-    nw::ut::ResS32 mEmissionStart;
+    nw::ut::ResS32 m_EmissionSpan;
+    nw::ut::ResS32 m_EmissionStart;
 };
 
-class ResParticleEmitter : public ResTransformNode{
+class ResParticleEmitter : public ResTransformNode
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleEmitter) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('PEMT') };
@@ -60,7 +63,8 @@ public:
     NW_RES_FIELD_PRIMITIVE_DECL( s32, EmissionStart)
 };
 
-class ResParticleEmitterParameter : public nw::ut::ResCommon<ResParticleEmitterParameterData>{
+class ResParticleEmitterParameter : public nw::ut::ResCommon<ResParticleEmitterParameterData>
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleEmitterParameter) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('PEMT') };

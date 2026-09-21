@@ -24,54 +24,63 @@ namespace nw {
 namespace anim {
 namespace res {
 
-struct ResAnimGroupMemberData{
+struct ResAnimGroupMemberData
+{
     nw::ut::ResTypeInfo typeInfo;
     nw::ut::BinString   toPath;
-    nw::ut::ResS32      mMemberOffset;
-    nw::ut::ResS32      mBlendOperationIndex;
-    nw::ut::ResU32      mObjectType;
-    nw::ut::ResU32      mMemberType;
-    nw::ut::ResU32      mResMaterialPtr;
+    nw::ut::ResS32      m_MemberOffset;
+    nw::ut::ResS32      m_BlendOperationIndex;
+    nw::ut::ResU32      m_ObjectType;
+    nw::ut::ResU32      m_MemberType;
+    nw::ut::ResU32      m_ResMaterialPtr;
 };
 
 struct ResAnimGroupMemberData;
 
-struct ResBoneMemberData : public ResAnimGroupMemberData{
+struct ResBoneMemberData : public ResAnimGroupMemberData
+{
     nw::ut::BinString   toBoneName;
 };
 
-struct ResMaterialColorMemberData : public ResAnimGroupMemberData{
+struct ResMaterialColorMemberData : public ResAnimGroupMemberData
+{
     nw::ut::BinString   toMaterialName;
 };
 
-struct ResTextureSamplerMemberData : public ResAnimGroupMemberData{
+struct ResTextureSamplerMemberData : public ResAnimGroupMemberData
+{
     nw::ut::BinString   toMaterialName;
-    nw::ut::ResU32      mTextureMapperIndex;
+    nw::ut::ResU32      m_TextureMapperIndex;
 };
 
-struct ResTextureMapperMemberData : public ResAnimGroupMemberData{
+struct ResTextureMapperMemberData : public ResAnimGroupMemberData
+{
     nw::ut::BinString   toMaterialName;
-    nw::ut::ResU32      mTextureMapperIndex;
+    nw::ut::ResU32      m_TextureMapperIndex;
 };
 
-struct ResBlendOperationMemberData : public ResAnimGroupMemberData{
+struct ResBlendOperationMemberData : public ResAnimGroupMemberData
+{
     nw::ut::BinString   toMaterialName;
 };
 
-struct ResTextureCoordinatorMemberData : public ResAnimGroupMemberData{
+struct ResTextureCoordinatorMemberData : public ResAnimGroupMemberData
+{
     nw::ut::BinString   toMaterialName;
-    nw::ut::ResU32      mTextureCoordinatorIndex;
+    nw::ut::ResU32      m_TextureCoordinatorIndex;
 };
 
 struct ResModelMemberData : public ResAnimGroupMemberData
 {
 };
 
-struct ResMeshMemberData : public ResAnimGroupMemberData{
-    nw::ut::ResU32      mMeshIndex;
+struct ResMeshMemberData : public ResAnimGroupMemberData
+{
+    nw::ut::ResU32      m_MeshIndex;
 };
 
-struct ResMeshNodeVisibilityMemberData : public ResAnimGroupMemberData{
+struct ResMeshNodeVisibilityMemberData : public ResAnimGroupMemberData
+{
     nw::ut::BinString   toNodeName;
 };
 
@@ -111,27 +120,33 @@ struct ResFogMemberData : public ResAnimGroupMemberData
 {
 };
 
-struct ResAnimGroupData{
+struct ResAnimGroupData
+{
     nw::ut::ResTypeInfo typeInfo;
-    nw::ut::ResU32      mFlags;
+    nw::ut::ResU32      m_Flags;
     nw::ut::BinString   toName;
-    nw::ut::ResS32      mTargetType;
-    nw::ut::ResS32      mMemberInfoSetDicCount;
+    nw::ut::ResS32      m_TargetType;
+    nw::ut::ResS32      m_MemberInfoSetDicCount;
     nw::ut::Offset      toMemberInfoSetDic;
-    nw::ut::ResS32      mBlendOperationsTableCount;
+    nw::ut::ResS32      m_BlendOperationsTableCount;
     nw::ut::Offset      toBlendOperationsTable;
 };
 
-struct ResGraphicsAnimGroupData : public ResAnimGroupData{
-    nw::ut::ResS32      mEvaluationTiming;
+struct ResGraphicsAnimGroupData : public ResAnimGroupData
+{
+    nw::ut::ResS32      m_EvaluationTiming;
 };
 
-class ResAnimGroupMember : public nw::ut::ResCommon<ResAnimGroupMemberData>{
+class ResAnimGroupMember : public nw::ut::ResCommon<ResAnimGroupMemberData>
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResAnimGroupMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGMB') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResAnimGroupMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGMB') };
     
-    enum ObjectType{
+    enum ObjectType
+    {
         OBJECT_TYPE_BONE,
 
         OBJECT_TYPE_MATERIAL_COLOR,
@@ -158,7 +173,8 @@ public:
         OBJECT_TYPE_FOG
     };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_INVALID = 0xFFFFFFFF
     };
 
@@ -178,12 +194,16 @@ public:
 typedef nw::ut::ResArrayPatricia<ResAnimGroupMember>::type        ResAnimGroupMemberArray;
 typedef nw::ut::ResArrayPatricia<const ResAnimGroupMember>::type  ResAnimGroupMemberArrayConst;
 
-class ResBoneMember : public ResAnimGroupMember{
+class ResBoneMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResBoneMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGBM') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResBoneMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGBM') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_TRANSFORM
     };
 
@@ -194,12 +214,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResMaterialColorMember : public ResAnimGroupMember{
+class ResMaterialColorMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResMaterialColorMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGMC') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResMaterialColorMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGMC') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_EMISSION,
         MEMBER_TYPE_AMBIENT,
         MEMBER_TYPE_DIFFUSE,
@@ -220,12 +244,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResTextureSamplerMember : public ResAnimGroupMember{
+class ResTextureSamplerMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResTextureSamplerMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGTS') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResTextureSamplerMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGTS') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_BORDER_COLOR
     };
 
@@ -237,12 +265,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResTextureMapperMember : public ResAnimGroupMember{
+class ResTextureMapperMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResTextureMapperMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGTM') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResTextureMapperMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGTM') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_TEXTURE
     };
 
@@ -254,12 +286,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResBlendOperationMember : public ResAnimGroupMember{
+class ResBlendOperationMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResBlendOperationMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGBO') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResBlendOperationMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGBO') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_BLEND_COLOR
     };
 
@@ -270,12 +306,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResTextureCoordinatorMember : public ResAnimGroupMember{
+class ResTextureCoordinatorMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResTextureCoordinatorMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGTC') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResTextureCoordinatorMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGTC') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_SCALE,
         MEMBER_TYPE_ROTATE,
         MEMBER_TYPE_TRANSLATE
@@ -289,12 +329,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResModelMember : public ResAnimGroupMember{
+class ResModelMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResModelMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGMO') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResModelMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGMO') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_BRANCH_VISIBLE,
         MEMBER_TYPE_VISIBLE
     };
@@ -304,12 +348,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResMeshMember : public ResAnimGroupMember{
+class ResMeshMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResMeshMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGME') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResMeshMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGME') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_VISIBLE
     };
 
@@ -320,12 +368,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResMeshNodeVisibilityMember : public ResAnimGroupMember{
+class ResMeshNodeVisibilityMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResMeshNodeVisibilityMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGND') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResMeshNodeVisibilityMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGND') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_VISIBLE
     };
 
@@ -336,12 +388,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResTransformMember : public ResAnimGroupMember{
+class ResTransformMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResTransformMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGTF') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResTransformMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGTF') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_TRANSFORM
     };
 
@@ -350,12 +406,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResViewUpdaterMember : public ResAnimGroupMember{
+class ResViewUpdaterMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResViewUpdaterMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGVU') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResViewUpdaterMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGVU') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_TARGET_POSITION,
         MEMBER_TYPE_TWIST,
         MEMBER_TYPE_UPWARD_VECTOR,
@@ -368,12 +428,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResProjectionUpdaterMember : public ResAnimGroupMember{
+class ResProjectionUpdaterMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResProjectionUpdaterMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGPU') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResProjectionUpdaterMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGPU') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_NEAR,
         MEMBER_TYPE_FAR,
         MEMBER_TYPE_FOVY,
@@ -387,12 +451,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResLightMember : public ResAnimGroupMember{
+class ResLightMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResLightMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGLM') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResLightMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGLM') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_IS_LIGHT_ENABLED
     };
 
@@ -401,12 +469,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResFragmentLightMember : public ResAnimGroupMember{
+class ResFragmentLightMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResLightMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGLM') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResLightMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGLM') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_AMBIENT,
         MEMBER_TYPE_DIFFUSE,
         MEMBER_TYPE_SPECULAR0,
@@ -421,12 +493,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResAmbientLightMember : public ResAnimGroupMember{
+class ResAmbientLightMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResLightMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGLM') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResLightMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGLM') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_AMBIENT
     };
 
@@ -435,12 +511,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResVertexLightMember : public ResAnimGroupMember{
+class ResVertexLightMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResLightMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGLM') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResLightMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGLM') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_AMBIENT,
         MEMBER_TYPE_DIFFUSE,
         MEMBER_TYPE_DIRECTION,
@@ -456,12 +536,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResHemiSphereLightMember : public ResAnimGroupMember{
+class ResHemiSphereLightMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResLightMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGLM') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResLightMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGLM') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_GROUND_COLOR,
         MEMBER_TYPE_SKY_COLOR,
         MEMBER_TYPE_DIRECTION,
@@ -473,12 +557,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResFogMember : public ResAnimGroupMember{
+class ResFogMember : public ResAnimGroupMember
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResFogMember) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AGFM') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResFogMember) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AGFM') };
 
-    enum MemberType{
+    enum MemberType
+    {
         MEMBER_TYPE_COLOR
     };
 
@@ -487,12 +575,16 @@ public:
     void SetValue(void* object, const void* value) const;
 };
 
-class ResAnimGroup : public nw::ut::ResCommon<ResAnimGroupData>{
+class ResAnimGroup : public nw::ut::ResCommon<ResAnimGroupData>
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResAnimGroup) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('ANMG') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResAnimGroup) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('ANMG') };
 
-    enum BlendOperationType{
+    enum BlendOperationType
+    {
         BLENDOP_BOOL,
         BLENDOP_INT,
         BLENDOP_FLOAT,
@@ -507,12 +599,14 @@ public:
         BLENDOP_CALCULATED_TRANSFORM_ACCURATE_SCALE_QUAT
     };
 
-    enum TargetType{
+    enum TargetType
+    {
         TARGET_TYPE_NONE    = 0,
         TARGET_TYPE_UNKNOWN = -1
     };
 
-    enum Flag{
+    enum Flag
+    {
         FLAG_IS_CALCULATED_TRANSFORM = 0x1 << 0
     };
     
@@ -529,12 +623,16 @@ public:
     NW_RES_FIELD_PRIMITIVE_LIST_DECL( s32, BlendOperations )
 };
 
-class ResGraphicsAnimGroup : public ResAnimGroup{
+class ResGraphicsAnimGroup : public ResAnimGroup
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResGraphicsAnimGroup) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('GXAG') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResGraphicsAnimGroup) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('GXAG') };
     
-    enum TargetType{
+    enum TargetType
+    {
         TARGET_TYPE_BONE       = 1,
         TARGET_TYPE_MATERIAL   = 2,
         TARGET_TYPE_VISIBILITY = 3,
@@ -543,7 +641,8 @@ public:
         TARGET_TYPE_FOG        = 6
     };
 
-    enum EvaluationTiming{
+    enum EvaluationTiming
+    {
         EVALUATION_BEFORE_WORLD_UPDATE,
         EVALUATION_AFTER_SCENE_CULLING
     };

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <nw/gfx/gfx_TransformNode.h>
-#include <nw/gfx/gfx_AnimGroup.h>
 #include <nw/gfx/gfx_AnimObject.h>
 #include <nw/gfx/res/gfx_ResLight.h>
 
@@ -10,41 +9,45 @@
 namespace nw{
 namespace gfx{
 
-class Light : public TransformNode{
+class Light : public TransformNode
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(Light);
 
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    struct Description : public TransformNode::Description{
-        Description(){}
+    struct Description : public TransformNode::Description
+    {
+        Description() {}
     };
 
     virtual void Accept(ISceneVisitor* visitor);
 
-    AnimGroup* GetAnimGroup() { return mAnimGroup; }
+    AnimGroup* GetAnimGroup() { return m_AnimGroup; }
 
-    const AnimGroup* GetAnimGroup() const { return mAnimGroup; }
+    const AnimGroup* GetAnimGroup() const { return m_AnimGroup; }
 
-    AnimObject* GetAnimObject(){
-        NW_NULL_ASSERT(mAnimBinding);
-        return mAnimBinding->GetAnimObject(0);
+    AnimObject* GetAnimObject()
+    {
+        NW_NULL_ASSERT(m_AnimBinding);
+        return m_AnimBinding->GetAnimObject(0);
     }
 
-    const AnimObject* GetAnimObject() const{
-        NW_NULL_ASSERT(mAnimBinding);
-        return mAnimBinding->GetAnimObject(0);
+    const AnimObject* GetAnimObject() const
+    {
+        NW_NULL_ASSERT(m_AnimBinding);
+        return m_AnimBinding->GetAnimObject(0);
     }
 protected:
     Light(nw::os::IAllocator* allocator,ResTransformNode resObj,const Light::Description& description): 
         TransformNode(allocator,resObj,description),
-        mOriginalValue(NULL),
-        mAnimGroup(NULL)
-    {}
+        m_OriginalValue(NULL),
+        m_AnimGroup(NULL) {}
 
-    virtual ~Light(){
-        ut::SafeDestroy(this->mAnimGroup);
+    virtual ~Light()
+    {
+        ut::SafeDestroy(this->m_AnimGroup);
     }
 
     Result CreateAnimGroup(nw::os::IAllocator* allocator);
@@ -56,12 +59,12 @@ protected:
     virtual u32 GetLightType() const = 0;
     virtual u32 GetLightKind() const = 0;
 
-    ResLight mOriginalValue;
-    nw::math::Transform3 mOriginalTransform;
+    ResLight m_OriginalValue;
+    nw::math::Transform3 m_OriginalTransform;
 
 private:
     bool ValidateLightAnimType(AnimObject* animObject);
-    AnimGroup* mAnimGroup;
+    AnimGroup* m_AnimGroup;
 };
 
 }

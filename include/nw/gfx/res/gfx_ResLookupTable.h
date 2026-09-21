@@ -16,19 +16,22 @@ namespace res {
 
 class ResGraphicsFile;
 
-struct ResLookupTableData{
+struct ResLookupTableData
+{
     nw::ut::ResTypeInfo typeInfo;
 };
 
-struct ResImageLookupTableData : public ResLookupTableData{
+struct ResImageLookupTableData : public ResLookupTableData
+{
     nw::ut::BinString toName;
-    nw::ut::ResBool mIsAbs;
+    nw::ut::ResBool m_IsAbs;
     u8              _padding_0[3];
-    nw::ut::ResS32 mCommandCacheTableCount;
+    nw::ut::ResS32 m_CommandCacheTableCount;
     nw::ut::Offset toCommandCacheTable;
 };
 
-struct ResReferenceLookupTableData : public ResLookupTableData{
+struct ResReferenceLookupTableData : public ResLookupTableData
+{
     nw::ut::BinString toPath;
     nw::ut::BinString toTableName;
     nw::ut::Offset toTargetLut;
@@ -36,9 +39,11 @@ struct ResReferenceLookupTableData : public ResLookupTableData{
 
 class ResImageLookupTable;
 
-class ResLookupTable : public nw::ut::ResCommon<ResLookupTableData>{
+class ResLookupTable : public nw::ut::ResCommon<ResLookupTableData>
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResLookupTable) };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResLookupTable) };
     
     NW_RES_CTOR( ResLookupTable )
 
@@ -52,10 +57,13 @@ public:
     void Cleanup();
 };
 
-class ResImageLookupTable : public ResLookupTable{
+class ResImageLookupTable : public ResLookupTable
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResImageLookupTable) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('ILUT') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResImageLookupTable) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('ILUT') };
     
     NW_RES_CTOR_INHERIT( ResImageLookupTable, ResLookupTable )
 
@@ -65,10 +73,13 @@ public:
     NW_RES_FIELD_PRIMITIVE_LIST_DECL( u32, CommandCache )
 };
 
-class ResReferenceLookupTable : public ResLookupTable{
+class ResReferenceLookupTable : public ResLookupTable
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResReferenceLookupTable) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('RLUT') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResReferenceLookupTable) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('RLUT') };
     
     NW_RES_CTOR_INHERIT( ResReferenceLookupTable, ResLookupTable )
 
@@ -81,16 +92,21 @@ public:
     void ForceSetup(const char* targetName, ResLookupTable lut);
 };
 
-struct ResLookupTableSetData : public ResSceneObjectData{
-    nw::ut::ResS32 mSamplersDicCount;
+struct ResLookupTableSetData : public ResSceneObjectData
+{
+    nw::ut::ResS32 m_SamplersDicCount;
     nw::ut::Offset toSamplersDic;
 };
 
-class ResLookupTableSet : public ResSceneObject{
+class ResLookupTableSet : public ResSceneObject
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResLookupTableSet) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('LUTS') };
-    enum { BINARY_REVISION = REVISION_RES_LUT_SET };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResLookupTableSet) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('LUTS') };
+    enum
+{ BINARY_REVISION = REVISION_RES_LUT_SET };
     
     NW_RES_CTOR_INHERIT(ResLookupTableSet, ResSceneObject)
 
@@ -103,10 +119,12 @@ public:
     u32 GetRevision() const { return this->GetHeader().revision; }
 };
 
-inline ResImageLookupTable ResLookupTable::Dereference(){
+inline ResImageLookupTable ResLookupTable::Dereference()
+{
     NW_ASSERT( this->IsValid() );
     
-    switch (this->ref().typeInfo){
+    switch (this->ref().typeInfo)
+    {
 
     case ResImageLookupTable::TYPE_INFO:{
             return ResStaticCast<ResImageLookupTable>(*this);
@@ -124,10 +142,12 @@ inline ResImageLookupTable ResLookupTable::Dereference(){
     }
 }
 
-inline const ResImageLookupTable ResLookupTable::Dereference() const{
+inline const ResImageLookupTable ResLookupTable::Dereference() const
+{
     NW_ASSERT( this->IsValid() );
     
-    switch (this->ref().typeInfo){
+    switch (this->ref().typeInfo)
+    {
     case ResImageLookupTable::TYPE_INFO:{
             return ResStaticCast<ResImageLookupTable>(*this);
         }

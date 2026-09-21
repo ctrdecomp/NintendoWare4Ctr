@@ -3,7 +3,8 @@
 namespace nw {
 namespace font {
 
-enum Vertex{
+enum Vertex
+{
     VERTEX_LT,
     VERTEX_RT,
     VERTEX_LB,

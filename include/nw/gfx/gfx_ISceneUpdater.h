@@ -10,26 +10,31 @@ class SceneContext;
 class SceneNode;
 class Camera;
 
-class ISceneUpdater : public GfxObject{
+class ISceneUpdater : public GfxObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(ISceneUpdater);
 
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    enum RenderSortMode{
+    enum RenderSortMode
+    {
         ALL_MESH_BASE_SORT,
         OPAQUE_MESH_BASE_AND_TRANSLUCENT_MODEL_BASE_SORT
     };
 
-    enum DepthSortMode{
+    enum DepthSortMode
+    {
         SORT_DEPTH_OF_ALL_MESH,
         SORT_DEPTH_OF_TRANSLUCENT_MESH
     };
 
-    class IsVisibleModelFunctor{
+    class IsVisibleModelFunctor
+    {
     public:
-        virtual bool IsVisible(const Model* model){
+        virtual bool IsVisible(const Model* model)
+        {
             NW_UNUSED_VARIABLE(model);
             return true;
         }

@@ -5,7 +5,8 @@
 
 namespace nw{
 namespace font{
-class ResFont : public ResFontBase{
+class ResFont : public ResFontBase
+{
 public:
     ResFont();
     virtual ~ResFont();
@@ -14,7 +15,7 @@ public:
     void* SetDrawBuffer(void* buffer);
     void* SetResource(void* bfnt);
     static u32 GetDrawBufferSize(const void* bfnt);
-    void* GetDrawBuffer(){return GetTextureObjectsBufferPtr();}
+    void* GetDrawBuffer() {return GetTextureObjectsBufferPtr();}
 
     using ResFontBase::IsManaging;
 };

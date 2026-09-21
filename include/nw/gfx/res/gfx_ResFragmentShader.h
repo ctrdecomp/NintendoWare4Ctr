@@ -15,8 +15,10 @@ namespace res {
 
 class ResGraphicsFile;
 
-struct ResFragmentLightingData{
-    enum Flag{
+struct ResFragmentLightingData
+{
+    enum Flag
+    {
         FLAG_CLAMP_HIGH_LIGHT_SHIFT,
         FLAG_DISTRIBUTION0_ENABLED_SHIFT,
         FLAG_DISTRIBUTION1_ENABLED_SHIFT,
@@ -32,22 +34,24 @@ struct ResFragmentLightingData{
         FLAG_REFLECTION_ENABLED        = 0x1 << FLAG_REFLECTION_ENABLED_SHIFT
     };
     
-    nw::ut::ResU32 mFlags;
-    nw::ut::ResU32 mLayerConfig;
-    nw::ut::ResS32 mFresnelConfig;
-    nw::ut::ResU32 mBumpTextureIndex;
-    nw::ut::ResU32 mBumpMode;
-    nw::ut::ResBool mIsBumpRenormalize;
+    nw::ut::ResU32 m_Flags;
+    nw::ut::ResU32 m_LayerConfig;
+    nw::ut::ResS32 m_FresnelConfig;
+    nw::ut::ResU32 m_BumpTextureIndex;
+    nw::ut::ResU32 m_BumpMode;
+    nw::ut::ResBool m_IsBumpRenormalize;
     u8 _padding_0[3];
 };
 
-struct ResLightingLookupTableData{
-    nw::ut::ResU32 mInput;
-    nw::ut::ResU32 mScale;
+struct ResLightingLookupTableData
+{
+    nw::ut::ResU32 m_Input;
+    nw::ut::ResU32 m_Scale;
     nw::ut::Offset toSampler;
 };
 
-struct ResFragmentLightingTableData{
+struct ResFragmentLightingTableData
+{
     nw::ut::Offset toReflectanceRSampler;
     nw::ut::Offset toReflectanceGSampler;
     nw::ut::Offset toReflectanceBSampler;
@@ -56,46 +60,49 @@ struct ResFragmentLightingTableData{
     nw::ut::Offset toFresnelSampler;
 };
 
-struct ResAlphaTestData{
-    nw::ut::ResU32 mCommandBuffer[2];
+struct ResAlphaTestData
+{
+    nw::ut::ResU32 m_CommandBuffer[2];
 };
 
-struct ResTextureCombinerSourceData{
-    nw::ut::ResU32 mSources[3];
+struct ResTextureCombinerSourceData
+{
+    nw::ut::ResU32 m_Sources[3];
 };
 
-struct ResTextureCombinerOperandData{
-    nw::ut::ResU32 mOperands[3];
+struct ResTextureCombinerOperandData
+{
+    nw::ut::ResU32 m_Operands[3];
 };
 
-struct ResTextureCombinerData{
-    nw::ut::ResU32 mConstant;
+struct ResTextureCombinerData
+{
+    nw::ut::ResU32 m_Constant;
     
-    union{
-        struct{
-            nw::ut::ResU32  mCmdSource;
-            nw::ut::ResU32  mCmdHeader;
-            nw::ut::ResU32  mCmdOperand;
-            nw::ut::ResU32  mCmdCombine;
-            nw::ut::ResU32  mCmdConstant;
-            nw::ut::ResU32  mCmdScale;
-        };
-        nw::ut::ResU32 mCommandBuffer[6];
-    };
+    nw::ut::ResU32  m_CmdSource;
+    nw::ut::ResU32  m_CmdHeader;
+    nw::ut::ResU32  m_CmdOperand;
+    nw::ut::ResU32  m_CmdCombine;
+    nw::ut::ResU32  m_CmdConstant;
+    nw::ut::ResU32  m_CmdScale;
+    nw::ut::ResU32 m_CommandBuffer[6];
 };
 
-struct ResFragmentShaderData{
-    nw::ut::ResFloatColor     mBufferColor;
-    ResFragmentLightingData   mFragmentLighting;
+struct ResFragmentShaderData
+{
+    nw::ut::ResFloatColor     m_BufferColor;
+    ResFragmentLightingData   m_FragmentLighting;
     nw::ut::Offset            toFragmentLightingTable;
-    ResTextureCombinerData    mTextureCombiners[COMBINER_COUNT];
-    ResAlphaTestData          mAlphaTest;
-    nw::ut::ResU32            mBufferCommand[6];
+    ResTextureCombinerData    m_TextureCombiners[COMBINER_COUNT];
+    ResAlphaTestData          m_AlphaTest;
+    nw::ut::ResU32            m_BufferCommand[6];
 };
 
-class ResFragmentLighting : public nw::ut::ResCommon< ResFragmentLightingData >{
+class ResFragmentLighting : public nw::ut::ResCommon< ResFragmentLightingData >
+{
 public:
-    enum LutType{
+    enum LutType
+    {
         LUT_RR_SHIFT,
         LUT_RG_SHIFT,
         LUT_RB_SHIFT,
@@ -115,7 +122,8 @@ public:
         LUT_DA      = 0x1 << LUT_DA_SHIFT
     };
 
-    enum ConfigDetail{
+    enum ConfigDetail
+    {
         CONFIG_DETAIL0        = LUT_RR | LUT_D0 | LUT_SP | LUT_DA,
         CONFIG_DETAIL1        = LUT_RR | LUT_FR | LUT_SP | LUT_DA,
         CONFIG_DETAIL2        = LUT_RR | LUT_D0 | LUT_D1 | LUT_DA,
@@ -135,7 +143,8 @@ public:
     #endif
     };
 
-    enum Config{
+    enum Config
+    {
         CONFIG_TYPE0        = 0,
         CONFIG_TYPE1        = 1,
         CONFIG_TYPE2        = 2,
@@ -155,20 +164,23 @@ public:
     #endif
     };
 
-    enum FresnelConfig{
+    enum FresnelConfig
+    {
         CONFIG_NO_FRESNEL            = 0,
         CONFIG_PRI_ALPHA_FRESNEL     = 1,
         CONFIG_SEC_ALPHA_FRESNEL     = 2,
         CONFIG_PRI_SEC_ALPHA_FRESNEL = 3
     };
     
-    enum BumpMode{
+    enum BumpMode
+    {
         BUMPMODE_NOT_USED = 0,
         BUMPMODE_AS_BUMP  = 1,
         BUMPMODE_AS_TANG  = 2
     };
 
-    enum BumpTexture{
+    enum BumpTexture
+    {
         BUMP_TEXTURE0 = 0,
         BUMP_TEXTURE1 = 1,
         BUMP_TEXTURE2 = 2,
@@ -186,7 +198,8 @@ public:
     
     bool IsReflectionEnabled() const { return nw::ut::CheckFlag(GetFlags(), ResFragmentLightingData::FLAG_REFLECTION_ENABLED); }
 
-    static inline ConfigDetail ToConfigDetail( Config config ){
+    static inline ConfigDetail ToConfigDetail( Config config )
+    {
         s32 configNumber = static_cast<s32>(config) - static_cast<s32>(CONFIG_TYPE0);
         static const ConfigDetail configDetailTable[] ={
             CONFIG_DETAIL0,
@@ -206,11 +219,13 @@ public:
     }
 };
 
-class ResLightingLookupTable : public nw::ut::ResCommon<ResLightingLookupTableData>{
+class ResLightingLookupTable : public nw::ut::ResCommon<ResLightingLookupTableData>
+{
 public:
-    enum { SIGNATURE = NW_RES_SIGNATURE32('LLUT') };
+    enum{ SIGNATURE = NW_RES_SIGNATURE32('LLUT') };
 
-    enum Input{
+    enum Input
+    {
         INPUT_NH,
         INPUT_VH,
         INPUT_NV,
@@ -224,7 +239,8 @@ public:
 
     NW_RES_FIELD_PRIMITIVE_DECL( Input, Input )
 
-    enum Scale{
+    enum Scale
+    {
         SCALE_1 = 0,
         SCALE_2 = 1,
         SCALE_4 = 2,
@@ -236,43 +252,49 @@ public:
 
     NW_RES_FIELD_PRIMITIVE_DECL( Scale, Scale )
 
-    f32 GetScaleF32() const{
+    f32 GetScaleF32() const
+    {
         const f32 TABLE[] = {
             1.0f, 2.0f, 4.0f, 8.0f, 0.0f, 0.0f, 0.25f, 0.5f
         };
         
-        return TABLE[ref().mScale];
+        return TABLE[ref().m_Scale];
     }
 
-    void SetScaleF32(f32 scale){
-        if (scale == 1.0f)       { ref().mScale = SCALE_1; }
-        else if (scale == 2.0f)  { ref().mScale = SCALE_2; }
-        else if (scale == 4.0f)  { ref().mScale = SCALE_4; }
-        else if (scale == 8.0f)  { ref().mScale = SCALE_8; }
-        else if (scale == 0.25f) { ref().mScale = SCALE_0_25; }
-        else if (scale == 0.5f)  { ref().mScale = SCALE_0_5; }
+    void SetScaleF32(f32 scale)
+    {
+        if (scale == 1.0f) { ref().m_Scale = SCALE_1; }
+        else if (scale == 2.0f) { ref().m_Scale = SCALE_2; }
+        else if (scale == 4.0f) { ref().m_Scale = SCALE_4; }
+        else if (scale == 8.0f) { ref().m_Scale = SCALE_8; }
+        else if (scale == 0.25f) { ref().m_Scale = SCALE_0_25; }
+        else if (scale == 0.5f) { ref().m_Scale = SCALE_0_5; }
         else { NW_FATAL_ERROR("Illegal scale value"); }
     }
 
     NW_RES_FIELD_CLASS_DECL( ResLookupTable, Sampler )
 
-    bool IsAbs() const {
+    bool IsAbs() const 
+    {
         return this->GetSampler().Dereference().IsAbs();
     }
 
-    void Cleanup() {
+    void Cleanup() 
+    {
         NW_ASSERT( IsValid() );
         nw::ut::SafeCleanup(this->GetSampler());
     }
 
-    /*void SetSampler(ResLookupTable lookupTable){
+    void SetSampler(ResLookupTable lookupTable)
+    {
         NW_ASSERT(lookupTable.IsValid());
         ResImageLookupTable resImageLookupTable = lookupTable.Dereference();
         ResReferenceLookupTable referenceLut = nw::ut::ResStaticCast<res::ResReferenceLookupTable>(GetSampler());
         referenceLut.ref().toTargetLut.set_ptr(resImageLookupTable.ptr());
-    }*/
+    }
 
-    void ForceSetupSampler(const char* targetName, ResLookupTable lookupTable){
+    void ForceSetupSampler(const char* targetName, ResLookupTable lookupTable)
+    {
         NW_ASSERT(lookupTable.IsValid());
         NW_NULL_ASSERT(targetName);
         ResImageLookupTable resImageLookupTable = lookupTable.Dereference();
@@ -281,7 +303,8 @@ public:
     }
 };
 
-class ResFragmentLightingTable : public nw::ut::ResCommon< ResFragmentLightingTableData >{
+class ResFragmentLightingTable : public nw::ut::ResCommon< ResFragmentLightingTableData >
+{
 public:
     NW_RES_CTOR( ResFragmentLightingTable )
 
@@ -296,39 +319,48 @@ public:
 
     void Cleanup();
 
-    void ForceSetupLightingLut(const char* targetName, ResLookupTable lookupTable){
+    void ForceSetupLightingLut(const char* targetName, ResLookupTable lookupTable)
+    {
         NW_ASSERT(lookupTable.IsValid());
         NW_NULL_ASSERT(targetName);
 
-        if (GetReflectanceRSampler().IsValid()){
+        if (GetReflectanceRSampler().IsValid())
+        {
             GetReflectanceRSampler().ForceSetupSampler(targetName, lookupTable);
         }
 
-        if (GetReflectanceGSampler().IsValid()){
+        if (GetReflectanceGSampler().IsValid())
+        {
             GetReflectanceGSampler().ForceSetupSampler(targetName, lookupTable);
         }
 
-        if (GetReflectanceBSampler().IsValid()){
+        if (GetReflectanceBSampler().IsValid())
+        {
             GetReflectanceBSampler().ForceSetupSampler(targetName, lookupTable);
         }
 
-        if (GetDistribution0Sampler().IsValid()){
+        if (GetDistribution0Sampler().IsValid())
+        {
             GetDistribution0Sampler().ForceSetupSampler(targetName, lookupTable);
         }
 
-        if (GetDistribution1Sampler().IsValid()){
+        if (GetDistribution1Sampler().IsValid())
+        {
             GetDistribution1Sampler().ForceSetupSampler(targetName, lookupTable);
         }
 
-        if (GetFresnelSampler().IsValid()){
+        if (GetFresnelSampler().IsValid())
+        {
             GetFresnelSampler().ForceSetupSampler(targetName, lookupTable);
         }
     }
 };
 
-class ResTextureCombinerSource : public nw::ut::ResCommon< ResTextureCombinerSourceData >{
+class ResTextureCombinerSource : public nw::ut::ResCommon< ResTextureCombinerSourceData >
+{
 public:
-    enum Kind{
+    enum Kind
+    {
         KIND_TEXTURE0                     = GL_TEXTURE0,
         KIND_TEXTURE1                     = GL_TEXTURE1,
         KIND_TEXTURE2                     = GL_TEXTURE2,
@@ -345,9 +377,11 @@ public:
     NW_RES_FIELD_PRIMITIVE_FIXED_LIST_DECL( u32, Sources )
 };
 
-class ResTextureCombinerOperand : public nw::ut::ResCommon< ResTextureCombinerOperandData >{
+class ResTextureCombinerOperand : public nw::ut::ResCommon< ResTextureCombinerOperandData >
+{
 public:
-    enum Kind{
+    enum Kind
+    {
         KIND_SRC_COLOR           = GL_SRC_COLOR,
         KIND_ONE_MINUS_SRC_COLOR = GL_ONE_MINUS_SRC_COLOR,
         KIND_SRC_ALPHA           = GL_SRC_ALPHA,
@@ -375,12 +409,14 @@ public:
     NW_RES_FIELD_PRIMITIVE_FIXED_LIST_DECL( u32, Operands )
 };
 
-class ResAlphaTest : public nw::ut::ResCommon< ResAlphaTestData >{
+class ResAlphaTest : public nw::ut::ResCommon< ResAlphaTestData >
+{
 public:
     
     NW_RES_CTOR( ResAlphaTest )
 
-    enum TestFunc{
+    enum TestFunc
+    {
         TESTFUNC_NEVER      = 0,
         TESTFUNC_ALWAYS     = 1,
         TESTFUNC_EQUAL      = 2,
@@ -391,48 +427,56 @@ public:
         TESTFUNC_GEQUAL     = 7
     };
 
-    bool IsTestEnabled() const{
-        enum { CMD_SHIFT = 0, CMD_MASK = 0x1 };
+    bool IsTestEnabled() const
+    {
+        enum{ CMD_SHIFT = 0, CMD_MASK = 0x1 };
         
-        return internal::GetCmdValue( ref().mCommandBuffer[0], CMD_MASK, CMD_SHIFT ) ? true : false;
+        return internal::GetCmdValue( ref().m_CommandBuffer[0], CMD_MASK, CMD_SHIFT ) ? true : false;
     }
 
-    void SetTestEnabled(bool value){
-        enum { CMD_SHIFT = 0, CMD_MASK = 0x1 };
+    void SetTestEnabled(bool value)
+    {
+        enum{ CMD_SHIFT = 0, CMD_MASK = 0x1 };
         
-        internal::SetCmdValue( &ref().mCommandBuffer[0], value, CMD_MASK, CMD_SHIFT );
+        internal::SetCmdValue( &ref().m_CommandBuffer[0], value, CMD_MASK, CMD_SHIFT );
     }
 
-    TestFunc GetTestFunc() const{
-        enum { CMD_SHIFT = 4, CMD_MASK = 0x7 };
+    TestFunc GetTestFunc() const
+    {
+        enum{ CMD_SHIFT = 4, CMD_MASK = 0x7 };
         
-        return (TestFunc)internal::GetCmdValue( ref().mCommandBuffer[0], CMD_MASK, CMD_SHIFT );
+        return (TestFunc)internal::GetCmdValue( ref().m_CommandBuffer[0], CMD_MASK, CMD_SHIFT );
     }
 
-    void SetTestFunc(TestFunc value){
-        enum { CMD_SHIFT = 4, CMD_MASK = 0x7 };
+    void SetTestFunc(TestFunc value)
+    {
+        enum{ CMD_SHIFT = 4, CMD_MASK = 0x7 };
 
-        internal::SetCmdValue( &ref().mCommandBuffer[0], value, CMD_MASK, CMD_SHIFT );
+        internal::SetCmdValue( &ref().m_CommandBuffer[0], value, CMD_MASK, CMD_SHIFT );
     }
 
-    f32 GetTestReference() const{
-        enum { CMD_SHIFT = 8, CMD_MASK = 0xff };
+    f32 GetTestReference() const
+    {
+        enum{ CMD_SHIFT = 8, CMD_MASK = 0xff };
         
-        return static_cast<f32>(internal::GetCmdValue( ref().mCommandBuffer[0], CMD_MASK, CMD_SHIFT )) / 255.0f;
+        return static_cast<f32>(internal::GetCmdValue( ref().m_CommandBuffer[0], CMD_MASK, CMD_SHIFT )) / 255.0f;
     }
 
-    void SetTestReference(f32 value){
-        enum { CMD_SHIFT = 8, CMD_MASK = 0xff };
+    void SetTestReference(f32 value)
+    {
+        enum{ CMD_SHIFT = 8, CMD_MASK = 0xff };
 
-        internal::SetCmdValue( &ref().mCommandBuffer[0], (0.5f + (value * 255.0f)), CMD_MASK, CMD_SHIFT );
+        internal::SetCmdValue( &ref().m_CommandBuffer[0], (0.5f + (value * 255.0f)), CMD_MASK, CMD_SHIFT );
     }
 
     NW_RES_FIELD_COMMAND_BUFFER()
 };
 
-class ResTextureCombiner : public nw::ut::ResCommon< ResTextureCombinerData >{
+class ResTextureCombiner : public nw::ut::ResCommon< ResTextureCombinerData >
+{
 public:
-    enum Constant{
+    enum Constant
+    {
         CONSTANT0,
         CONSTANT1,
         CONSTANT2,
@@ -452,7 +496,7 @@ public:
     
     NW_RES_FIELD_COMMAND_BUFFER();
 
-    void SetConstantCmd(u32 rgba) { ref().mCmdConstant = rgba; }
+    void SetConstantCmd(u32 rgba) { ref().m_CmdConstant = rgba; }
     
     typedef enum {
         SOURCE_PRIMARY_COLOR = 0,
@@ -513,97 +557,117 @@ public:
         SCALE_FOUR
     } Scale;
 
-    Source GetSourceRgb(s32 index) const {
-        enum { CMD_WIDTH = 4, CMD_MASK = 0xF };
+    Source GetSourceRgb(s32 index) const 
+    {
+        enum
+{ CMD_WIDTH = 4, CMD_MASK = 0xF };
         
-        return (Source)internal::GetCmdValue( ref().mCmdSource, CMD_MASK, CMD_WIDTH * index );
+        return (Source)internal::GetCmdValue( ref().m_CmdSource, CMD_MASK, CMD_WIDTH * index );
     }
 
-    void SetSourceRgb(s32 index, Source value){
-        enum { CMD_WIDTH = 4, CMD_MASK = 0xF };
+    void SetSourceRgb(s32 index, Source value)
+    {
+        enum
+{ CMD_WIDTH = 4, CMD_MASK = 0xF };
         
-        internal::SetCmdValue( &ref().mCmdSource, value, CMD_MASK, CMD_WIDTH * index );
+        internal::SetCmdValue( &ref().m_CmdSource, value, CMD_MASK, CMD_WIDTH * index );
     }
 
-    Source GetSourceAlpha(s32 index) const{
-        enum { CMD_SHIFT = 16, CMD_WIDTH = 4, CMD_MASK = 0xF };
+    Source GetSourceAlpha(s32 index) const
+    {
+        enum{ CMD_SHIFT = 16, CMD_WIDTH = 4, CMD_MASK = 0xF };
         
-        return (Source)internal::GetCmdValue( ref().mCmdSource, CMD_MASK, CMD_WIDTH * index + CMD_SHIFT );
+        return (Source)internal::GetCmdValue( ref().m_CmdSource, CMD_MASK, CMD_WIDTH * index + CMD_SHIFT );
     }
     
-    void SetSourceAlpha(s32 index, Source value){
-        enum { CMD_SHIFT = 16, CMD_WIDTH = 4, CMD_MASK = 0xF };
+    void SetSourceAlpha(s32 index, Source value)
+    {
+        enum{ CMD_SHIFT = 16, CMD_WIDTH = 4, CMD_MASK = 0xF };
         
-        internal::SetCmdValue( &ref().mCmdSource, value, CMD_MASK, CMD_WIDTH * index + CMD_SHIFT );
+        internal::SetCmdValue( &ref().m_CmdSource, value, CMD_MASK, CMD_WIDTH * index + CMD_SHIFT );
     }
     
-    OperandRgb GetOperandRgb(s32 index) const{
-        enum { CMD_WIDTH = 4, CMD_MASK = 0xF };
+    OperandRgb GetOperandRgb(s32 index) const
+    {
+        enum{ CMD_WIDTH = 4, CMD_MASK = 0xF };
         
-        return (OperandRgb)internal::GetCmdValue( ref().mCmdOperand, CMD_MASK, CMD_WIDTH * index );
+        return (OperandRgb)internal::GetCmdValue( ref().m_CmdOperand, CMD_MASK, CMD_WIDTH * index );
     }
 
-    void SetOperandRgb(s32 index, OperandRgb value){
-        enum { CMD_WIDTH = 4, CMD_MASK = 0xF };
+    void SetOperandRgb(s32 index, OperandRgb value)
+    {
+        enum{ CMD_WIDTH = 4, CMD_MASK = 0xF };
         
-        internal::SetCmdValue( &ref().mCmdOperand, value, CMD_MASK, CMD_WIDTH * index );
+        internal::SetCmdValue( &ref().m_CmdOperand, value, CMD_MASK, CMD_WIDTH * index );
     }
 
-    OperandAlpha GetOperandAlpha(s32 index) const{
-        enum { CMD_SHIFT = 12, CMD_WIDTH = 4, CMD_MASK = 0xF };
+    OperandAlpha GetOperandAlpha(s32 index) const
+    {
+        enum{ CMD_SHIFT = 12, CMD_WIDTH = 4, CMD_MASK = 0xF };
         
-        return (OperandAlpha)internal::GetCmdValue( ref().mCmdOperand, CMD_MASK, CMD_WIDTH * index + CMD_SHIFT );
+        return (OperandAlpha)internal::GetCmdValue( ref().m_CmdOperand, CMD_MASK, CMD_WIDTH * index + CMD_SHIFT );
     }
 
-    void SetOperandAlpha(s32 index, OperandAlpha value){
-        enum { CMD_SHIFT = 12, CMD_WIDTH = 4, CMD_MASK = 0xF };
-        internal::SetCmdValue( &ref().mCmdOperand, value, CMD_MASK, CMD_WIDTH * index + CMD_SHIFT );
+    void SetOperandAlpha(s32 index, OperandAlpha value)
+    {
+        enum{ CMD_SHIFT = 12, CMD_WIDTH = 4, CMD_MASK = 0xF };
+        internal::SetCmdValue( &ref().m_CmdOperand, value, CMD_MASK, CMD_WIDTH * index + CMD_SHIFT );
     }
 
-    Combine GetCombineRgb() const{
-        enum { CMD_SHIFT = 0, CMD_MASK = 0xF };
-        return (Combine)internal::GetCmdValue( ref().mCmdCombine, CMD_MASK, CMD_SHIFT );
+    Combine GetCombineRgb() const
+    {
+        enum{ CMD_SHIFT = 0, CMD_MASK = 0xF };
+        return (Combine)internal::GetCmdValue( ref().m_CmdCombine, CMD_MASK, CMD_SHIFT );
     }
 
-    void SetCombineRgb(Combine value){
-        enum { CMD_SHIFT = 0, CMD_MASK = 0xF };
-        internal::SetCmdValue( &ref().mCmdCombine, value, CMD_MASK, CMD_SHIFT );
+    void SetCombineRgb(Combine value)
+    {
+        enum{ CMD_SHIFT = 0, CMD_MASK = 0xF };
+        internal::SetCmdValue( &ref().m_CmdCombine, value, CMD_MASK, CMD_SHIFT );
     }
 
-    Combine GetCombineAlpha() const{
-        enum { CMD_SHIFT = 16, CMD_MASK = 0xF };
-        return (Combine)internal::GetCmdValue( ref().mCmdCombine, CMD_MASK, CMD_SHIFT );
+    Combine GetCombineAlpha() const
+    {
+        enum{ CMD_SHIFT = 16, CMD_MASK = 0xF };
+        return (Combine)internal::GetCmdValue( ref().m_CmdCombine, CMD_MASK, CMD_SHIFT );
     }
 
-    void SetCombineAlpha(Combine value){
-        enum { CMD_SHIFT = 16, CMD_MASK = 0xF };
-        internal::SetCmdValue( &ref().mCmdCombine, value, CMD_MASK, CMD_SHIFT );
+    void SetCombineAlpha(Combine value)
+    {
+        enum{ CMD_SHIFT = 16, CMD_MASK = 0xF };
+        internal::SetCmdValue( &ref().m_CmdCombine, value, CMD_MASK, CMD_SHIFT );
     }
 
-    Scale GetScaleRgb() const{
-        enum { CMD_SHIFT = 0, CMD_MASK = 0x3 };
-        return (Scale)internal::GetCmdValue( ref().mCmdScale, CMD_MASK, CMD_SHIFT );
+    Scale GetScaleRgb() const
+    {
+        enum{ CMD_SHIFT = 0, CMD_MASK = 0x3 };
+        return (Scale)internal::GetCmdValue( ref().m_CmdScale, CMD_MASK, CMD_SHIFT );
     }
 
-    void SetScaleRgb(Scale value){
-        enum { CMD_SHIFT = 0, CMD_MASK = 0x3 };
-        internal::SetCmdValue( &ref().mCmdScale, value, CMD_MASK, CMD_SHIFT );
+    void SetScaleRgb(Scale value)
+    {
+        enum{ CMD_SHIFT = 0, CMD_MASK = 0x3 };
+        internal::SetCmdValue( &ref().m_CmdScale, value, CMD_MASK, CMD_SHIFT );
     }
 
-    Scale GetScaleAlpha() const{
-        enum { CMD_SHIFT = 16, CMD_MASK = 0x3 };
-        return (Scale)internal::GetCmdValue( ref().mCmdScale, CMD_MASK, CMD_SHIFT );
+    Scale GetScaleAlpha() const
+    {
+        enum{ CMD_SHIFT = 16, CMD_MASK = 0x3 };
+        return (Scale)internal::GetCmdValue( ref().m_CmdScale, CMD_MASK, CMD_SHIFT );
     }
 
-    void SetScaleAlpha(Scale value){
-        enum { CMD_SHIFT = 16, CMD_MASK = 0x3 };
-        internal::SetCmdValue( &ref().mCmdScale, value, CMD_MASK, CMD_SHIFT );
+    void SetScaleAlpha(Scale value)
+    {
+        enum{ CMD_SHIFT = 16, CMD_MASK = 0x3 };
+        internal::SetCmdValue( &ref().m_CmdScale, value, CMD_MASK, CMD_SHIFT );
     }
 };
 
-class ResFragmentShader : public nw::ut::ResCommon< ResFragmentShaderData >{
+class ResFragmentShader : public nw::ut::ResCommon< ResFragmentShaderData >
+{
 public:
-    enum BufferInput{
+    enum BufferInput
+    {
         BUFFERINPUT_PREVIOUS_BUFFER  = 0,
         BUFFERINPUT_PREVIOUS = 1
     };
@@ -623,53 +687,64 @@ public:
 
     bool CheckFragmentShader();
 
-    u32 GetBufferColorU32() const{
-        return ref().mBufferCommand[0];
+    u32 GetBufferColorU32() const
+    {
+        return ref().m_BufferCommand[0];
     }
 
-    void SetBufferColor( f32 r, f32 g, f32 b ){
-        ref().mBufferColor.Set(r, g, b);
-        ref().mBufferCommand[0] = ref().mBufferColor.ToPicaU32();
+    void SetBufferColor( f32 r, f32 g, f32 b )
+    {
+        ref().m_BufferColor.Set(r, g, b);
+        ref().m_BufferCommand[0] = ref().m_BufferColor.ToPicaU32();
     }
 
-    void SetBufferColor( f32 r, f32 g, f32 b, f32 a ){
-        ref().mBufferColor.Set(r, g, b, a);
-        ref().mBufferCommand[0] = ref().mBufferColor.ToPicaU32();
+    void SetBufferColor( f32 r, f32 g, f32 b, f32 a )
+    {
+        ref().m_BufferColor.Set(r, g, b, a);
+        ref().m_BufferCommand[0] = ref().m_BufferColor.ToPicaU32();
     }
 
-    const nw::ut::FloatColor& GetBufferColor() const{
-        return ref().mBufferColor;
+    const nw::ut::FloatColor& GetBufferColor() const
+    {
+        return ref().m_BufferColor;
     }
 
-    void SetBufferColor(const nw::ut::FloatColor& value){
-        ref().mBufferColor = value;
-        ref().mBufferCommand[0] = ref().mBufferColor.ToPicaU32();
+    void SetBufferColor(const nw::ut::FloatColor& value)
+    {
+        ref().m_BufferColor = value;
+        ref().m_BufferCommand[0] = ref().m_BufferColor.ToPicaU32();
     }
 
-    BufferInput GetBufferInputRgb(s32 index) const{
-        enum { CMD_SHIFT = 7, CMD_MASK = 0x1 };
-        return static_cast<BufferInput>(internal::GetCmdValue( ref().mBufferCommand[2], CMD_MASK, CMD_SHIFT+index ));
+    BufferInput GetBufferInputRgb(s32 index) const
+    {
+        enum{ CMD_SHIFT = 7, CMD_MASK = 0x1 };
+        return static_cast<BufferInput>(internal::GetCmdValue( ref().m_BufferCommand[2], CMD_MASK, CMD_SHIFT+index ));
     }
 
-    void SetBufferInputRgb(s32 index, BufferInput value){
-        enum { CMD_SHIFT = 7, CMD_MASK = 0x1 };
-        internal::SetCmdValue( &ref().mBufferCommand[2], value, CMD_MASK, CMD_SHIFT+index );
+    void SetBufferInputRgb(s32 index, BufferInput value)
+    {
+        enum{ CMD_SHIFT = 7, CMD_MASK = 0x1 };
+        internal::SetCmdValue( &ref().m_BufferCommand[2], value, CMD_MASK, CMD_SHIFT+index );
     }
 
-    BufferInput GetBufferInputAlpha(s32 index) const{
-        enum { CMD_SHIFT = 11, CMD_MASK = 0x1 };
-        return static_cast<BufferInput>(internal::GetCmdValue( ref().mBufferCommand[2], CMD_MASK, CMD_SHIFT+index ));
+    BufferInput GetBufferInputAlpha(s32 index) const
+    {
+        enum{ CMD_SHIFT = 11, CMD_MASK = 0x1 };
+        return static_cast<BufferInput>(internal::GetCmdValue( ref().m_BufferCommand[2], CMD_MASK, CMD_SHIFT+index ));
     }
 
-    void SetBufferInputAlpha(s32 index, BufferInput value){
-        enum { CMD_SHIFT = 11, CMD_MASK = 0x1 };
-        internal::SetCmdValue(&ref().mBufferCommand[2], value, CMD_MASK, CMD_SHIFT+index );
+    void SetBufferInputAlpha(s32 index, BufferInput value)
+    {
+        enum{ CMD_SHIFT = 11, CMD_MASK = 0x1 };
+        internal::SetCmdValue(&ref().m_BufferCommand[2], value, CMD_MASK, CMD_SHIFT+index );
     }
 
-    void ForceSetupLightingLut(const char* targetName, ResLookupTable lookupTable){
+    void ForceSetupLightingLut(const char* targetName, ResLookupTable lookupTable)
+    {
         NW_ASSERT(lookupTable.IsValid());
         NW_NULL_ASSERT(targetName);
-        if (GetFragmentLightingTable().IsValid()){
+        if (GetFragmentLightingTable().IsValid())
+        {
             GetFragmentLightingTable().ForceSetupLightingLut(targetName, lookupTable);
         }
     }

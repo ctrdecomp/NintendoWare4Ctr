@@ -20,45 +20,52 @@
 namespace nw {
 namespace gfx {
 
-SceneObject* SceneBuilder::CreateObject(os::IAllocator* allocator,os::IAllocator* deviceAllocator){
+SceneObject* SceneBuilder::CreateObject(os::IAllocator* allocator,os::IAllocator* deviceAllocator)
+{
     NW_NULL_ASSERT(allocator);
-    NW_ASSERT(this->mResource.IsValid());
+    NW_ASSERT(this->m_Resource.IsValid());
 
-    SceneObject* root = BuildSceneObject(NULL, NULL, 0, this->mResource, allocator, deviceAllocator, false, false);
+    SceneObject* root = BuildSceneObject(NULL, NULL, 0, this->m_Resource, allocator, deviceAllocator, false, false);
     
     return root;
 }
 
-SceneObject* SceneBuilder::CreateTree(os::IAllocator* allocator,os::IAllocator* deviceAllocator){
+SceneObject* SceneBuilder::CreateTree(os::IAllocator* allocator,os::IAllocator* deviceAllocator)
+{
     NW_NULL_ASSERT(allocator);
-    NW_ASSERT(this->mResource.IsValid());
+    NW_ASSERT(this->m_Resource.IsValid());
 
-    SceneObject* root = BuildSceneObject(NULL, NULL, 0, this->mResource, allocator, deviceAllocator, true, false);
+    SceneObject* root = BuildSceneObject(NULL, NULL, 0, this->m_Resource, allocator, deviceAllocator, true, false);
     
     return root;
 }
 
-SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::MemorySizeCalculator* pDeviceSize,SceneNode* parent,ResSceneObject resource,os::IAllocator* allocator,os::IAllocator* deviceAllocator,bool isRecursive,bool isCalculation) const{
+SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::MemorySizeCalculator* pDeviceSize,SceneNode* parent,ResSceneObject resource,os::IAllocator* allocator,os::IAllocator* deviceAllocator,bool isRecursive,bool isCalculation) const
+{
     NW_ASSERT( allocator != NULL || isCalculation );
 
     if (!resource.IsValid()) { return 0; }
     
     SceneObject* object = 0;
         
-    switch (resource.GetTypeInfo()){
+    switch (resource.GetTypeInfo())
+    {
     case ResSceneNode::TYPE_INFO:{
             SceneNode::Description description;
-            description.isFixedSizeMemory = mIsFixedSizeMemory;
-            description.maxCallbacks = mMaxCallbacks;
-            description.maxChildren = mMaxChildren;
-            description.maxAnimObjectsPerGroup = mMaxAnimObjectsPerGroup;
-            description.isAnimationEnabled = mIsAnimationEnabled;
+            description.isFixedSizeMemory = m_IsFixedSizeMemory;
+            description.maxCallbacks = m_MaxCallbacks;
+            description.maxChildren = m_MaxChildren;
+            description.maxAnimObjectsPerGroup = m_MaxAnimObjectsPerGroup;
+            description.isAnimationEnabled = m_IsAnimationEnabled;
 
-            if (isCalculation){
-                if (pSize){
+            if (isCalculation)
+            {
+                if (pSize)
+                {
                     SceneNode::GetMemorySizeInternal(pSize, ResStaticCast<ResSceneNode>(resource), description);
                 }
-                if (pDeviceSize){
+                if (pDeviceSize)
+                {
                     SceneNode::GetDeviceMemorySizeInternal(pDeviceSize, ResStaticCast<ResSceneNode>(resource), description);
                 }
             }
@@ -72,17 +79,20 @@ SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::
         
     case ResTransformNode::TYPE_INFO:{
             TransformNode::Description description;
-            description.isFixedSizeMemory = mIsFixedSizeMemory;
-            description.maxCallbacks = mMaxCallbacks;
-            description.maxChildren = mMaxChildren;
-            description.maxAnimObjectsPerGroup = mMaxAnimObjectsPerGroup;
-            description.isAnimationEnabled = mIsAnimationEnabled;
+            description.isFixedSizeMemory = m_IsFixedSizeMemory;
+            description.maxCallbacks = m_MaxCallbacks;
+            description.maxChildren = m_MaxChildren;
+            description.maxAnimObjectsPerGroup = m_MaxAnimObjectsPerGroup;
+            description.isAnimationEnabled = m_IsAnimationEnabled;
 
-            if (isCalculation){
-                if (pSize){
+            if (isCalculation)
+            {
+                if (pSize)
+                {
                     TransformNode::GetMemorySizeInternal(pSize, ResStaticCast<ResTransformNode>(resource), description);
                 }
-                if (pDeviceSize){
+                if (pDeviceSize)
+                {
                     TransformNode::GetDeviceMemorySizeInternal(pDeviceSize, ResStaticCast<ResTransformNode>(resource), description);
                 }
             }
@@ -95,20 +105,23 @@ SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::
         
     case ResModel::TYPE_INFO:{
             Model::Description description;
-            description.isFixedSizeMemory = mIsFixedSizeMemory;
-            description.maxCallbacks = mMaxCallbacks;
-            description.maxChildren = mMaxChildren;
-            description.bufferOption = mBufferOption;
-            description.sharedMaterialModel = mSharedMaterialModel;
-            description.isAnimationEnabled = mIsAnimationEnabled;
+            description.isFixedSizeMemory = m_IsFixedSizeMemory;
+            description.maxCallbacks = m_MaxCallbacks;
+            description.maxChildren = m_MaxChildren;
+            description.bufferOption = m_BufferOption;
+            description.sharedMaterialModel = m_SharedMaterialModel;
+            description.isAnimationEnabled = m_IsAnimationEnabled;
 
-            description.maxAnimObjectsPerGroup = mMaxAnimObjectsPerGroup;
+            description.maxAnimObjectsPerGroup = m_MaxAnimObjectsPerGroup;
 
-            if (isCalculation){
-                if (pSize){
+            if (isCalculation)
+            {
+                if (pSize)
+                {
                     Model::GetMemorySizeInternal(pSize, ResStaticCast<ResModel>(resource), description);
                 }
-                if (pDeviceSize){
+                if (pDeviceSize)
+                {
                     Model::GetDeviceMemorySizeInternal(pDeviceSize, ResStaticCast<ResModel>(resource), description);
                 }
             }
@@ -122,18 +135,21 @@ SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::
     case ResSkeletalModel::TYPE_INFO:{
             SkeletalModel::Builder builder;
             builder
-                .IsFixedSizeMemory(this->mIsFixedSizeMemory)
-                .MaxCallbacks(this->mMaxCallbacks)
-                .MaxChildren(this->mMaxChildren)
-                .BufferOption(this->mBufferOption)
-                .SharedMaterialModel(this->mSharedMaterialModel)
-                .MaxAnimObjectsPerGroup(this->mMaxAnimObjectsPerGroup)
-                .IsAnimationEnabled(this->mIsAnimationEnabled);
-            if (isCalculation){
-                if (pSize){
+                .IsFixedSizeMemory(this->m_IsFixedSizeMemory)
+                .MaxCallbacks(this->m_MaxCallbacks)
+                .MaxChildren(this->m_MaxChildren)
+                .BufferOption(this->m_BufferOption)
+                .SharedMaterialModel(this->m_SharedMaterialModel)
+                .MaxAnimObjectsPerGroup(this->m_MaxAnimObjectsPerGroup)
+                .IsAnimationEnabled(this->m_IsAnimationEnabled);
+            if (isCalculation)
+            {
+                if (pSize)
+                {
                     builder.GetMemorySizeInternal(pSize, ResStaticCast<ResSkeletalModel>(resource));
                 }
-                if (pDeviceSize){
+                if (pDeviceSize)
+                {
                     builder.GetDeviceMemorySizeInternal(pDeviceSize, ResStaticCast<ResSkeletalModel>(resource));
                 }
             }
@@ -149,19 +165,22 @@ SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::
             NW_ASSERT(resNode.IsValid());
 
             ParticleModel::Description description;
-            description.isFixedSizeMemory = mIsFixedSizeMemory;
-            description.maxCallbacks = mMaxCallbacks;
-            description.bufferOption = mBufferOption;
-            description.sharedMaterialModel = mSharedMaterialModel;
-            description.maxChildren = resNode.GetChildrenCount() + resNode.GetParticleSetsCount() + mParticleSetMarginCount;
-            description.particleSetCount = resNode.GetParticleSetsCount() + mParticleSetMarginCount;
-            description.isAnimationEnabled = mIsAnimationEnabled;
+            description.isFixedSizeMemory = m_IsFixedSizeMemory;
+            description.maxCallbacks = m_MaxCallbacks;
+            description.bufferOption = m_BufferOption;
+            description.sharedMaterialModel = m_SharedMaterialModel;
+            description.maxChildren = resNode.GetChildrenCount() + resNode.GetParticleSetsCount() + m_ParticleSetMarginCount;
+            description.particleSetCount = resNode.GetParticleSetsCount() + m_ParticleSetMarginCount;
+            description.isAnimationEnabled = m_IsAnimationEnabled;
 
-            if (isCalculation){ 
-                if (pSize){
+            if (isCalculation)
+{ 
+                if (pSize)
+                {
                     ParticleModel::GetMemorySizeInternal(pSize, resNode, description);
                 }
-                if (pDeviceSize){
+                if (pDeviceSize)
+                {
                     ParticleModel::GetDeviceMemorySizeInternal(pDeviceSize, resNode, description);
                 }
             }
@@ -174,16 +193,19 @@ SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::
         
     case ResParticleEmitter::TYPE_INFO:{
             ParticleEmitter::Description description;
-            description.isFixedSizeMemory = mIsFixedSizeMemory;
-            description.maxCallbacks = mMaxCallbacks;
-            description.maxChildren = mMaxChildren;
-            description.isAnimationEnabled = mIsAnimationEnabled;
+            description.isFixedSizeMemory = m_IsFixedSizeMemory;
+            description.maxCallbacks = m_MaxCallbacks;
+            description.maxChildren = m_MaxChildren;
+            description.isAnimationEnabled = m_IsAnimationEnabled;
 
-            if (isCalculation){
-                if (pSize){
+            if (isCalculation)
+            {
+                if (pSize)
+                {
                     ParticleEmitter::GetMemorySizeInternal(pSize, ResStaticCast<ResParticleEmitter>(resource), description);
                 }
-                if (pDeviceSize){
+                if (pDeviceSize)
+                {
                     ParticleEmitter::GetDeviceMemorySizeInternal(pDeviceSize, ResStaticCast<ResParticleEmitter>(resource), description);
                 }
             }
@@ -196,17 +218,20 @@ SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::
         
     case ResFragmentLight::TYPE_INFO:{
             FragmentLight::Description description;
-            description.isFixedSizeMemory = mIsFixedSizeMemory;
-            description.maxCallbacks = mMaxCallbacks;
-            description.maxChildren = mMaxChildren;
-            description.maxAnimObjectsPerGroup = mMaxAnimObjectsPerGroup;
-            description.isAnimationEnabled = mIsAnimationEnabled;
+            description.isFixedSizeMemory = m_IsFixedSizeMemory;
+            description.maxCallbacks = m_MaxCallbacks;
+            description.maxChildren = m_MaxChildren;
+            description.maxAnimObjectsPerGroup = m_MaxAnimObjectsPerGroup;
+            description.isAnimationEnabled = m_IsAnimationEnabled;
 
-            if (isCalculation){
-                if (pSize){
+            if (isCalculation)
+            {
+                if (pSize)
+                {
                     FragmentLight::GetMemorySizeInternal(pSize, ResStaticCast<ResFragmentLight>(resource), description);
                 }
-                if (pDeviceSize){
+                if (pDeviceSize)
+                {
                     FragmentLight::GetDeviceMemorySizeInternal(pDeviceSize, ResStaticCast<ResFragmentLight>(resource), description);
                 }
             }
@@ -219,17 +244,20 @@ SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::
 
     case ResVertexLight::TYPE_INFO:{
             VertexLight::Description description;
-            description.isFixedSizeMemory = mIsFixedSizeMemory;
-            description.maxCallbacks = mMaxCallbacks;
-            description.maxChildren = mMaxChildren;
-            description.maxAnimObjectsPerGroup = mMaxAnimObjectsPerGroup;
-            description.isAnimationEnabled = mIsAnimationEnabled;
+            description.isFixedSizeMemory = m_IsFixedSizeMemory;
+            description.maxCallbacks = m_MaxCallbacks;
+            description.maxChildren = m_MaxChildren;
+            description.maxAnimObjectsPerGroup = m_MaxAnimObjectsPerGroup;
+            description.isAnimationEnabled = m_IsAnimationEnabled;
 
-            if (isCalculation){
-                if (pSize){
+            if (isCalculation)
+            {
+                if (pSize)
+                {
                     VertexLight::GetMemorySizeInternal(pSize, ResStaticCast<ResVertexLight>(resource), description);
                 }
-                if (pDeviceSize){
+                if (pDeviceSize)
+                {
                     VertexLight::GetDeviceMemorySizeInternal(pDeviceSize, ResStaticCast<ResVertexLight>(resource), description);
                 }
             }
@@ -241,17 +269,20 @@ SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::
         break;
     case ResAmbientLight::TYPE_INFO:{
             AmbientLight::Description description;
-            description.isFixedSizeMemory = mIsFixedSizeMemory;
-            description.maxCallbacks = mMaxCallbacks;
-            description.maxChildren = mMaxChildren;
-            description.maxAnimObjectsPerGroup = mMaxAnimObjectsPerGroup;
-            description.isAnimationEnabled = mIsAnimationEnabled;
+            description.isFixedSizeMemory = m_IsFixedSizeMemory;
+            description.maxCallbacks = m_MaxCallbacks;
+            description.maxChildren = m_MaxChildren;
+            description.maxAnimObjectsPerGroup = m_MaxAnimObjectsPerGroup;
+            description.isAnimationEnabled = m_IsAnimationEnabled;
 
-            if (isCalculation){
-                if (pSize){
+            if (isCalculation)
+            {
+                if (pSize)
+                {
                     AmbientLight::GetMemorySizeInternal(pSize, ResStaticCast<ResAmbientLight>(resource), description);
                 }
-                if (pDeviceSize){
+                if (pDeviceSize)
+                {
                     AmbientLight::GetDeviceMemorySizeInternal(pDeviceSize, ResStaticCast<ResAmbientLight>(resource), description);
                 }
             }
@@ -264,17 +295,20 @@ SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::
 
     case ResHemiSphereLight::TYPE_INFO:{
             HemiSphereLight::Description description;
-            description.isFixedSizeMemory = mIsFixedSizeMemory;
-            description.maxCallbacks = mMaxCallbacks;
-            description.maxChildren = mMaxChildren;
-            description.maxAnimObjectsPerGroup = mMaxAnimObjectsPerGroup;
-            description.isAnimationEnabled = mIsAnimationEnabled;
+            description.isFixedSizeMemory = m_IsFixedSizeMemory;
+            description.maxCallbacks = m_MaxCallbacks;
+            description.maxChildren = m_MaxChildren;
+            description.maxAnimObjectsPerGroup = m_MaxAnimObjectsPerGroup;
+            description.isAnimationEnabled = m_IsAnimationEnabled;
 
-            if (isCalculation){
-                if (pSize){
+            if (isCalculation)
+            {
+                if (pSize)
+                {
                     HemiSphereLight::GetMemorySizeInternal(pSize, ResStaticCast<ResHemiSphereLight>(resource), description);
                 }
-                if (pDeviceSize){
+                if (pDeviceSize)
+                {
                     HemiSphereLight::GetDeviceMemorySizeInternal(pDeviceSize, ResStaticCast<ResHemiSphereLight>(resource), description);
                 }
             }
@@ -287,16 +321,19 @@ SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::
 
     case ResFog::TYPE_INFO:{
             Fog::Description description;
-            description.isFixedSizeMemory = mIsFixedSizeMemory;
-            description.maxCallbacks = mMaxCallbacks;
-            description.maxChildren = mMaxChildren;
-            description.isAnimationEnabled = mIsAnimationEnabled;
+            description.isFixedSizeMemory = m_IsFixedSizeMemory;
+            description.maxCallbacks = m_MaxCallbacks;
+            description.maxChildren = m_MaxChildren;
+            description.isAnimationEnabled = m_IsAnimationEnabled;
 
-            if (isCalculation){
-                if (pSize){
+            if (isCalculation)
+            {
+                if (pSize)
+                {
                     Fog::GetMemorySizeInternal(pSize, ResStaticCast<ResFog>(resource), description);
                 }
-                if (pDeviceSize){
+                if (pDeviceSize)
+                {
                     Fog::GetDeviceMemorySizeInternal(pDeviceSize, ResStaticCast<ResFog>(resource), description);
                 }
             }
@@ -309,17 +346,20 @@ SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::
 
     case ResCamera::TYPE_INFO:{
             Camera::Description description;
-            description.isFixedSizeMemory = mIsFixedSizeMemory;
-            description.maxCallbacks = mMaxCallbacks;
-            description.maxChildren = mMaxChildren;
-            description.maxAnimObjectsPerGroup = mMaxAnimObjectsPerGroup;
-            description.isAnimationEnabled = mIsAnimationEnabled;
+            description.isFixedSizeMemory = m_IsFixedSizeMemory;
+            description.maxCallbacks = m_MaxCallbacks;
+            description.maxChildren = m_MaxChildren;
+            description.maxAnimObjectsPerGroup = m_MaxAnimObjectsPerGroup;
+            description.isAnimationEnabled = m_IsAnimationEnabled;
 
-            if (isCalculation){
-                if (pSize){
+            if (isCalculation)
+            {
+                if (pSize)
+                {
                     Camera::GetMemorySizeInternal(pSize, ResStaticCast<ResCamera>(resource), description);
                 }
-                if (pDeviceSize){
+                if (pDeviceSize)
+                {
                     Camera::GetDeviceMemorySizeInternal(pDeviceSize, ResStaticCast<ResCamera>(resource), description);
                 }
             }
@@ -333,8 +373,10 @@ SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::
     case ResSceneEnvironmentSetting::TYPE_INFO:{
             SceneEnvironmentSetting::Description description;
 
-            if (isCalculation){
-                if (pSize){
+            if (isCalculation)
+            {
+                if (pSize)
+                {
                     SceneEnvironmentSetting::GetMemorySizeInternal(pSize, ResStaticCast<ResSceneEnvironmentSetting>(resource), description);
                 }
                 if (pDeviceSize) {}
@@ -349,8 +391,10 @@ SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::
     default: NW_FATAL_ERROR("Unknown resource type."); break;
     }
 
-    if (isCalculation){
-        if (isRecursive){
+    if (isCalculation)
+    {
+        if (isRecursive)
+        {
             BuildChildren(pSize, pDeviceSize, NULL, resource, NULL, NULL, true);
         }
     }
@@ -358,7 +402,8 @@ SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::
     {
         SceneNode* sceneNode = nw::ut::DynamicCast<SceneNode*>(object);
 
-        if (sceneNode != NULL && isRecursive){
+        if (sceneNode != NULL && isRecursive)
+        {
             BuildChildren(NULL, NULL, sceneNode, resource, allocator, deviceAllocator, false);
         }
     }
@@ -366,15 +411,18 @@ SceneObject* SceneBuilder::BuildSceneObject(os::MemorySizeCalculator* pSize,os::
     return object;
 }
 
-void SceneBuilder::BuildChildren(os::MemorySizeCalculator* pSize,os::MemorySizeCalculator* pDeviceSize,SceneNode* parent,ResSceneObject resource,os::IAllocator* allocator,os::IAllocator* deviceAllocator,bool isCalculation) const{
+void SceneBuilder::BuildChildren(os::MemorySizeCalculator* pSize,os::MemorySizeCalculator* pDeviceSize,SceneNode* parent,ResSceneObject resource,os::IAllocator* allocator,os::IAllocator* deviceAllocator,bool isCalculation) const
+{
     NW_NULL_ASSERT(allocator);
     
     ResSceneNode resNode = ResSceneNode(resource.ptr());
     if (!resource.IsValid()) { return; }
 
     typedef nw::ut::ResArrayClass<ResSceneObject>::type ResSceneObjectArray;
-    for (ResSceneObjectArray::iterator i = resNode.GetChildren().begin(); i != resNode.GetChildren().end(); ++i){
-        if (isCalculation){
+    for (ResSceneObjectArray::iterator i = resNode.GetChildren().begin(); i != resNode.GetChildren().end(); ++i)
+    {
+        if (isCalculation)
+        {
             BuildSceneObject(pSize, pDeviceSize, NULL, resource, NULL, NULL, true, true);
         }
         else{

@@ -12,7 +12,8 @@ namespace res {
 
 static Result SetupTextureCoordinators(ResMaterial resMaterial);
 
-Result ResMaterial::Setup(os::IAllocator* allocator, ResGraphicsFile graphicsFile){
+Result ResMaterial::Setup(os::IAllocator* allocator, ResGraphicsFile graphicsFile)
+{
     NW_ASSERT(internal::ResCheckRevision(graphicsFile));
     NW_ASSERT(internal::ResCheckRevision(*this));
     
@@ -20,34 +21,40 @@ Result ResMaterial::Setup(os::IAllocator* allocator, ResGraphicsFile graphicsFil
 
     Result result = RESOURCE_RESULT_OK;
 
-    if(!ut::CheckFlag(this->GetFlags(), ResMaterialData::FLAG_HAS_BEEN_SETUP_TEXTURE)){
+    if (!ut::CheckFlag(this->GetFlags(), ResMaterialData::FLAG_HAS_BEEN_SETUP_TEXTURE))
+    {
         result |= this->SetupTextures(allocator, *this, graphicsFile);
     }
 
-    if (!ut::CheckFlag(this->GetFlags(), ResMaterialData::FLAG_HAS_BEEN_SETUP_SHADER)){
+    if (!ut::CheckFlag(this->GetFlags(), ResMaterialData::FLAG_HAS_BEEN_SETUP_SHADER))
+    {
         result |= this->SetupShader(allocator, this->GetShader(), graphicsFile);
     }
 
-    if (!ut::CheckFlag(this->GetFlags(), ResMaterialData::FLAG_HAS_BEEN_SETUP_FRAGMENTSHADER)){
+    if (!ut::CheckFlag(this->GetFlags(), ResMaterialData::FLAG_HAS_BEEN_SETUP_FRAGMENTSHADER))
+    {
         ResFragmentShader resFragmentShader = this->GetFragmentShader();
         NW_ASSERT(resFragmentShader.GetFragmentLightingTable().IsValid());
         Result resultFragmentShader = resFragmentShader.Setup(allocator, graphicsFile);
         result |= resultFragmentShader;
 
-        if (resultFragmentShader.IsSuccess()){
+        if (resultFragmentShader.IsSuccess())
+        {
             this->EnableFlags(ResMaterialData::FLAG_HAS_BEEN_SETUP_FRAGMENTSHADER);
             this->CalcFragmentLightingTableHash();
         }
     }
 
-    if (result.IsSuccess()){
+    if (result.IsSuccess())
+    {
         this->EnableFlags(ResMaterialData::FLAG_HAS_BEEN_SETUP);
     }
 
     return result;
 }
 
-void ResMaterial::Cleanup(){
+void ResMaterial::Cleanup()
+{
     this->DisableFlags(ResMaterialData::FLAG_HAS_BEEN_SETUP);
 
     this->DisableFlags(ResMaterialData::FLAG_HAS_BEEN_SETUP_FRAGMENTSHADER);
@@ -56,25 +63,30 @@ void ResMaterial::Cleanup(){
     this->DisableFlags(ResMaterialData::FLAG_HAS_BEEN_SETUP_SHADER);
 
     ResReferenceShader resShader = ResDynamicCast<ResReferenceShader>(this->GetShader());
-    if (resShader.IsValid()){
+    if (resShader.IsValid())
+    {
         resShader.ref().toTargetShader.set_ptr(NULL);
     }
     
     this->DisableFlags((ResMaterialData::FLAG_HAS_BEEN_SETUP_TEXTURE));
     int textureMapperNum = this->GetTextureMappersCount();
-    for (int i = 0; i < textureMapperNum; ++i){
+    for (int i = 0; i < textureMapperNum; ++i)
+    {
         ResPixelBasedTextureMapper textureMapper = this->GetTextureMappers( i );
-        if (textureMapper.IsValid()){
+        if (textureMapper.IsValid())
+        {
             textureMapper.Cleanup();
         }
     }
 
-    if (this->GetProceduralTextureMapper().IsValid()){
+    if (this->GetProceduralTextureMapper().IsValid())
+    {
         this->GetProceduralTextureMapper().Cleanup();
     }
 }
 
-Result ResMaterial::SetupTextures(os::IAllocator* allocator, ResMaterial resMaterial, ResGraphicsFile graphicsFile){
+Result ResMaterial::SetupTextures(os::IAllocator* allocator, ResMaterial resMaterial, ResGraphicsFile graphicsFile)
+{
     Result result = RESOURCE_RESULT_OK;
 
     result |= SetupTextureCoordinators(resMaterial);
@@ -82,19 +94,23 @@ Result ResMaterial::SetupTextures(os::IAllocator* allocator, ResMaterial resMate
     s32 textureMapperNum = resMaterial.GetTextureMappersCount();
     u32 textureSamplersHash = resMaterial.GetTextureSamplersHash();
 
-    for (int i = 0; i < textureMapperNum; ++i){
+    for (int i = 0; i < textureMapperNum; ++i)
+    {
         ResPixelBasedTextureMapper resTextureMapper = resMaterial.GetTextureMappers( i );
-        if (!resTextureMapper.IsValid()){
+        if (!resTextureMapper.IsValid())
+        {
             continue;
         }
 
-        if (!resTextureMapper.GetTexture().IsValid()){
+        if (!resTextureMapper.GetTexture().IsValid())
+        {
             continue;
         }
 
         result |= resTextureMapper.Setup(allocator, graphicsFile);
 
-        enum {
+        enum
+        {
             SAMPLER_TYPE_SHIFT = 28,
             SAMPLER_TYPE_MASK = 0x7 << SAMPLER_TYPE_SHIFT,
             SAMPLER_TYPE_2D = 0,
@@ -108,8 +124,10 @@ Result ResMaterial::SetupTextures(os::IAllocator* allocator, ResMaterial resMate
 
         command[5] &= ~(SAMPLER_TYPE_MASK);
 
-        if (i == 0){
-            switch (resMaterial.GetTextureCoordinators(0).GetMappingMethod()){
+        if (i == 0)
+        {
+            switch (resMaterial.GetTextureCoordinators(0).GetMappingMethod())
+            {
             case ResTextureCoordinator::MAPPINGMETHOD_UV_COORDINATE:{
                     command[5] |= SAMPLER_TYPE_2D << SAMPLER_TYPE_SHIFT;
                 }
@@ -140,14 +158,17 @@ Result ResMaterial::SetupTextures(os::IAllocator* allocator, ResMaterial resMate
             }
         }
 
-        if (result.IsSuccess()){
-            if (resMaterial.GetTextureCoordinators(0).GetMappingMethod() == ResTextureCoordinator::MAPPINGMETHOD_CAMERA_CUBE_ENV && resTextureMapper.GetTexture().Dereference().GetTypeInfo() != ResCubeTexture::TYPE_INFO){
+        if (result.IsSuccess())
+        {
+            if (resMaterial.GetTextureCoordinators(0).GetMappingMethod() == ResTextureCoordinator::MAPPINGMETHOD_CAMERA_CUBE_ENV && resTextureMapper.GetTexture().Dereference().GetTypeInfo() != ResCubeTexture::TYPE_INFO)
+            {
                 result |= RESOURCE_RESULT_IRRELEVANT_TEXTURE_MAPPING_METHOD;
             }
 
             ResTexture resImageTexture = resTextureMapper.GetTexture().Dereference();
             u32 hash = 0;
-            if (i == 0){
+            if (i == 0)
+            {
                 hash = (u32)resImageTexture.ptr();
             }
             else{
@@ -160,57 +181,72 @@ Result ResMaterial::SetupTextures(os::IAllocator* allocator, ResMaterial resMate
 
     resMaterial.SetTextureMappersHash(textureSamplersHash);
 
-    if (resMaterial.GetProceduralTextureMapper().IsValid()){
+    if (resMaterial.GetProceduralTextureMapper().IsValid())
+    {
         result |= resMaterial.GetProceduralTextureMapper().Setup(allocator, graphicsFile);
     }
 
-    if (result.IsSuccess()){
+    if (result.IsSuccess())
+    {
         this->EnableFlags(ResMaterialData::FLAG_HAS_BEEN_SETUP_TEXTURE);
     }
 
     return result;
 }
 
-static Result SetupTextureCoordinators(ResMaterial resMaterial){
+static Result SetupTextureCoordinators(ResMaterial resMaterial)
+{
     Result result = RESOURCE_RESULT_OK;
 
     s32 textureCoordinatorNum = resMaterial.GetTextureCoordinatorsCount();
     ResMaterial::TextureCoordinateConfig config = resMaterial.GetTextureCoordinateConfig();
     bool isProceduralTextureEnabled = resMaterial.GetProceduralTextureMapper().IsValid();
-    for (int i = 0; i < textureCoordinatorNum; ++i){
+    for (int i = 0; i < textureCoordinatorNum; ++i)
+    {
         ResTextureCoordinator resTextureCoordinator = resMaterial.GetTextureCoordinators(i);
         bool isTextureMapperEnabled = resMaterial.GetTextureMappers(i).IsValid();
         bool isTextureCoordinatorEnabled = false;
 
-        switch(i){
+        switch (i)
+        {
         case 0:{
-                if (isTextureMapperEnabled){
+                if (isTextureMapperEnabled)
+                {
                     isTextureCoordinatorEnabled = true;
                 }
-                else if (config == ResMaterial::CONFIG_0120 || config == ResMaterial::CONFIG_0110){
-                    if (isProceduralTextureEnabled){
+                else if (config == ResMaterial::CONFIG_0120 || config == ResMaterial::CONFIG_0110)
+                {
+                    if (isProceduralTextureEnabled)
+                    {
                         isTextureCoordinatorEnabled = true;
                     }
                 }
             }
             break;
         case 1:{
-                if (isTextureMapperEnabled){
+                if (isTextureMapperEnabled)
+                {
                     isTextureCoordinatorEnabled = true;
                 }
                 else{
-                    if (config == ResMaterial::CONFIG_0111){
-                        if (resMaterial.GetTextureMappers(2).IsValid() || isProceduralTextureEnabled){
+                    if (config == ResMaterial::CONFIG_0111)
+                    {
+                        if (resMaterial.GetTextureMappers(2).IsValid() || isProceduralTextureEnabled)
+                        {
                             isTextureCoordinatorEnabled = true;
                         }
                     }
-                    else if (config == ResMaterial::CONFIG_0110 || config == ResMaterial::CONFIG_0112){
-                        if (resMaterial.GetTextureMappers(2).IsValid()){
+                    else if (config == ResMaterial::CONFIG_0110 || config == ResMaterial::CONFIG_0112)
+                    {
+                        if (resMaterial.GetTextureMappers(2).IsValid())
+                        {
                             isTextureCoordinatorEnabled = true;
                         }
                     }
-                    else if (config == ResMaterial::CONFIG_0121){
-                        if (isProceduralTextureEnabled){
+                    else if (config == ResMaterial::CONFIG_0121)
+                    {
+                        if (isProceduralTextureEnabled)
+                        {
                             isTextureCoordinatorEnabled = true;
                         }
                     }
@@ -218,18 +254,24 @@ static Result SetupTextureCoordinators(ResMaterial resMaterial){
             }
             break;
         case 2:{
-                if (config == ResMaterial::CONFIG_0122){
-                    if (isTextureMapperEnabled || isProceduralTextureEnabled){
+                if (config == ResMaterial::CONFIG_0122)
+                {
+                    if (isTextureMapperEnabled || isProceduralTextureEnabled)
+                    {
                         isTextureCoordinatorEnabled = true;
                     }
                 }
-                else if (config == ResMaterial::CONFIG_0120 || config == ResMaterial::CONFIG_0121){
-                    if (isTextureMapperEnabled){
+                else if (config == ResMaterial::CONFIG_0120 || config == ResMaterial::CONFIG_0121)
+                {
+                    if (isTextureMapperEnabled)
+                    {
                         isTextureCoordinatorEnabled = true;
                     }
                 }
-                else if (config == ResMaterial::CONFIG_0112){
-                    if (isProceduralTextureEnabled){
+                else if (config == ResMaterial::CONFIG_0112)
+                {
+                    if (isProceduralTextureEnabled)
+                    {
                         isTextureCoordinatorEnabled = true;
                     }
                 }
@@ -245,22 +287,27 @@ static Result SetupTextureCoordinators(ResMaterial resMaterial){
     return result;
 }
 
-Result ResMaterial::SetupShader(os::IAllocator* allocator,ResShader resShader,ResGraphicsFile graphicsFile){
+Result ResMaterial::SetupShader(os::IAllocator* allocator,ResShader resShader,ResGraphicsFile graphicsFile)
+{
     Result result = RESOURCE_RESULT_OK;
     ResShader setupShader;
 
-    if (resShader.IsValid()){
+    if (resShader.IsValid())
+    {
         bool existShader = false;
         ResReferenceShader refer = ResDynamicCast<ResReferenceShader>(resShader);
-        if (refer.IsValid()){
-            if (refer.GetTargetShader().IsValid()){
+        if (refer.IsValid())
+        {
+            if (refer.GetTargetShader().IsValid())
+            {
                 setupShader = refer.GetTargetShader();
                 existShader = true;
             }
             else{
                 ::std::pair<ResShader, bool> referenceResult;
                 referenceResult = GetReferenceShaderTarget(refer, graphicsFile);
-                if (referenceResult.second){
+                if (referenceResult.second)
+                {
                     setupShader = referenceResult.first;
                     existShader = true;
                 }
@@ -275,13 +322,15 @@ Result ResMaterial::SetupShader(os::IAllocator* allocator,ResShader resShader,Re
             existShader = true;
         }
 
-        if (existShader){
+        if (existShader)
+        {
             result |= setupShader.Setup(allocator, graphicsFile);
         }
     }
 
     bool isSetup = resShader.IsValid() && result.IsSuccess();
-    if (isSetup){
+    if (isSetup)
+    {
         this->EnableFlags(ResMaterialData::FLAG_HAS_BEEN_SETUP_SHADER);
 
         ResBinaryShader resBinaryShader = resShader.Dereference();
@@ -294,17 +343,22 @@ Result ResMaterial::SetupShader(os::IAllocator* allocator,ResShader resShader,Re
     return result;
 }
 
-void ResMaterial::CacheUserUniformIndex(ResShaderSymbolArray symbols){
-    for (int parameterIndex = 0; parameterIndex < this->GetShaderParametersCount(); ++parameterIndex){
+void ResMaterial::CacheUserUniformIndex(ResShaderSymbolArray symbols)
+{
+    for (int parameterIndex = 0; parameterIndex < this->GetShaderParametersCount(); ++parameterIndex)
+    {
         ResShaderParameter parameter = this->GetShaderParameters(parameterIndex);
-        if (parameter.IsValid()){
+        if (parameter.IsValid())
+        {
             const char* name = parameter.GetName();
 
             if (name == NULL) { continue; }
 
-            for (int symbolIndex = 0; symbolIndex < symbols.size(); ++symbolIndex){
+            for (int symbolIndex = 0; symbolIndex < symbols.size(); ++symbolIndex)
+            {
                 ResShaderSymbol shaderSymbol = symbols[symbolIndex];
-                if (::std::strcmp(name, shaderSymbol.GetName()) == 0){
+                if (::std::strcmp(name, shaderSymbol.GetName()) == 0)
+                {
                     parameter.SetSymbolIndex(symbolIndex);
                     break;
                 }
@@ -313,8 +367,10 @@ void ResMaterial::CacheUserUniformIndex(ResShaderSymbolArray symbols){
     }
 }
 
-void ResMaterial::CalcFragmentLightingTableHash(){
-    enum {
+void ResMaterial::CalcFragmentLightingTableHash()
+{
+    enum
+    {
         D0_SHIFT = 0,
         D1_SHIFT = 4,
         RR_SHIFT = 8,
@@ -330,49 +386,61 @@ void ResMaterial::CalcFragmentLightingTableHash(){
 
     u32 fragmentLightingTableParametersHash = this->GetFragmentLightingTableParametersHash();
 
-    if(resFragmentLightingTable.GetDistribution0Sampler().IsValid()){
+    if (resFragmentLightingTable.GetDistribution0Sampler().IsValid())
+    {
         ResReferenceLookupTable refLut = ResDynamicCast<ResReferenceLookupTable>(resFragmentLightingTable.GetDistribution0Sampler().GetSampler());
-        if (refLut.IsValid()){
+        if (refLut.IsValid())
+        {
             ResImageLookupTable imageLut = refLut.Dereference();
             fragmentLightingTableParametersHash ^= ((u32)imageLut.ptr()) << D0_SHIFT;
         }
     }
 
-    if (resFragmentLightingTable.GetDistribution1Sampler().IsValid()){
+    if (resFragmentLightingTable.GetDistribution1Sampler().IsValid())
+    {
         ResReferenceLookupTable refLut = ResDynamicCast<ResReferenceLookupTable>(resFragmentLightingTable.GetDistribution1Sampler().GetSampler());
-        if (refLut.IsValid()){
+        if (refLut.IsValid())
+        {
             ResImageLookupTable imageLut = refLut.Dereference();
             fragmentLightingTableParametersHash ^= ((u32)imageLut.ptr() << D1_SHIFT) | ((u32)imageLut.ptr() >> (MAX_BITS - D1_SHIFT));
         }
     }
 
-    if (resFragmentLightingTable.GetReflectanceRSampler().IsValid()){
+    if (resFragmentLightingTable.GetReflectanceRSampler().IsValid())
+    {
         ResReferenceLookupTable refLut = ResDynamicCast<ResReferenceLookupTable>(resFragmentLightingTable.GetReflectanceRSampler().GetSampler());
-        if (refLut.IsValid()){
+        if (refLut.IsValid())
+        {
             ResImageLookupTable imageLut = refLut.Dereference();
             fragmentLightingTableParametersHash ^= ((u32)imageLut.ptr() << RR_SHIFT) | ((u32)imageLut.ptr() >> (MAX_BITS - RR_SHIFT));
         }
     }
 
-    if (resFragmentLightingTable.GetReflectanceGSampler().IsValid()){
+    if (resFragmentLightingTable.GetReflectanceGSampler().IsValid())
+    {
         ResReferenceLookupTable refLut = ResDynamicCast<ResReferenceLookupTable>(resFragmentLightingTable.GetReflectanceGSampler().GetSampler());
-        if (refLut.IsValid()){
+        if (refLut.IsValid())
+        {
             ResImageLookupTable imageLut = refLut.Dereference();
             fragmentLightingTableParametersHash ^= ((u32)imageLut.ptr() << RG_SHIFT) | ((u32)imageLut.ptr() >> (MAX_BITS - RG_SHIFT));
         }
     }
 
-    if (resFragmentLightingTable.GetReflectanceBSampler().IsValid()){
+    if (resFragmentLightingTable.GetReflectanceBSampler().IsValid())
+    {
         ResReferenceLookupTable refLut = ResDynamicCast<ResReferenceLookupTable>(resFragmentLightingTable.GetReflectanceBSampler().GetSampler());
-        if (refLut.IsValid()){
+        if (refLut.IsValid())
+        {
             ResImageLookupTable imageLut = refLut.Dereference();
             fragmentLightingTableParametersHash ^= ((u32)imageLut.ptr() << RB_SHIFT) | ((u32)imageLut.ptr() >> (MAX_BITS - RB_SHIFT));
         }
     }
 
-    if (resFragmentLightingTable.GetFresnelSampler().IsValid()){
+    if (resFragmentLightingTable.GetFresnelSampler().IsValid())
+    {
         ResReferenceLookupTable refLut = ResDynamicCast<ResReferenceLookupTable>(resFragmentLightingTable.GetFresnelSampler().GetSampler());
-        if (refLut.IsValid()){
+        if (refLut.IsValid())
+        {
             ResImageLookupTable imageLut = refLut.Dereference();
             fragmentLightingTableParametersHash ^= ((u32)imageLut.ptr() << FR_SHIFT) | ((u32)imageLut.ptr() >> (MAX_BITS - FR_SHIFT));
         }

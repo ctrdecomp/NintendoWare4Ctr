@@ -9,7 +9,8 @@ namespace nw {
 namespace gfx {
 
 
-static inline u32 ColorToRGBA8(const nw::ut::FloatColor& color){
+static inline u32 ColorToRGBA8(const nw::ut::FloatColor& color)
+{
     
     u8 red = static_cast<u8>( 0.5f + nw::ut::Clamp(color.r, 0.0f, 1.0f) * 255.f );
     u8 green = static_cast<u8>( 0.5f + nw::ut::Clamp(color.g, 0.0f, 1.0f) * 255.f );
@@ -20,7 +21,8 @@ static inline u32 ColorToRGBA8(const nw::ut::FloatColor& color){
 }
 
 
-static inline u16 ColorToRGB5A1(const nw::ut::FloatColor& color){
+static inline u16 ColorToRGB5A1(const nw::ut::FloatColor& color)
+{
     u8 red = static_cast<u8>( 0.5f + nw::ut::Clamp(color.r, 0.0f, 1.0f) * 31.f );
     u8 green = static_cast<u8>( 0.5f + nw::ut::Clamp(color.g, 0.0f, 1.0f) * 31.f );
     u8 blue = static_cast<u8>( 0.5f + nw::ut::Clamp(color.b, 0.0f, 1.0f) * 31.f );
@@ -29,7 +31,8 @@ static inline u16 ColorToRGB5A1(const nw::ut::FloatColor& color){
     return static_cast<u16>( (alpha) | (blue << 1) | (green << 6) | (red << 11) );
 }
 
-static inline u16 ColorToRGB565(const nw::ut::FloatColor& color){
+static inline u16 ColorToRGB565(const nw::ut::FloatColor& color)
+{
     u8 red = static_cast<u8>( 0.5f + nw::ut::Clamp(color.r, 0.0f, 1.0f) * 31.f );
     u8 green = static_cast<u8>( 0.5f + nw::ut::Clamp(color.g, 0.0f, 1.0f) * 63.f );
     u8 blue = static_cast<u8>( 0.5f + nw::ut::Clamp(color.b, 0.0f, 1.0f) * 31.f );
@@ -37,7 +40,8 @@ static inline u16 ColorToRGB565(const nw::ut::FloatColor& color){
     return static_cast<u16>( (blue) | (green << 5) | (red << 11) );
 }
 
-static inline u16 ColorToRGBA4(const nw::ut::FloatColor& color){
+static inline u16 ColorToRGBA4(const nw::ut::FloatColor& color)
+{
     u8 red = static_cast<u8>( 0.5f + nw::ut::Clamp(color.r, 0.0f, 1.0f) * 15.f );
     u8 green = static_cast<u8>( 0.5f + nw::ut::Clamp(color.g, 0.0f, 1.0f) * 15.f );
     u8 blue = static_cast<u8>( 0.5f + nw::ut::Clamp(color.b, 0.0f, 1.0f) * 15.f );
@@ -46,26 +50,31 @@ static inline u16 ColorToRGBA4(const nw::ut::FloatColor& color){
     return static_cast<u16>( (alpha) | (blue << 4) | (green << 8) | (red << 12) ); 
 }
 
-void FrameBufferObject::SetDescription(const Description& description) {
-    mDescription = description;
+void FrameBufferObject::SetDescription(const Description& description) 
+{
+    m_Description = description;
     
-    if (description.fboID == 0){
+    if (description.fboID == 0)
+    {
         this->SetFboID(description.fboID);
     }
     else{
-        mDescription = description;
+        m_Description = description;
     }
 }
 
-void FrameBufferObject::SetFboID(GLuint fboID){
-    mDescription.fboID = fboID;
+void FrameBufferObject::SetFboID(GLuint fboID)
+{
+    m_Description.fboID = fboID;
     
-    if (fboID != 0){
-        internal::GetFrameBufferState(this->mDescription.fboID, &this->mDescription.colorAddress, &this->mDescription.depthAddress);
+    if (fboID != 0)
+    {
+        internal::GetFrameBufferState(this->m_Description.fboID, &this->m_Description.colorAddress, &this->m_Description.depthAddress);
     }
 }
 
-void FrameBufferObject::ActivateBuffer() const{
+void FrameBufferObject::ActivateBuffer() const
+{
     const FrameBufferObject::Description& description = this->GetDescription();
     
         NW_ASSERT(description.height <= 1024);
@@ -74,7 +83,8 @@ void FrameBufferObject::ActivateBuffer() const{
         u32 depthFormat = 0;
         u32 colorFormat = 0;
         
-        switch (description.depthFormat){
+        switch (description.depthFormat)
+        {
         case GL_DEPTH_COMPONENT16:     depthFormat = 0; break;
         case GL_DEPTH_COMPONENT24_OES: depthFormat = 2; break;
         case GL_DEPTH24_STENCIL8_EXT:  depthFormat = 3; break;
@@ -82,7 +92,8 @@ void FrameBufferObject::ActivateBuffer() const{
             NW_ASSERTMSG( description.depthAddress == NULL, "Unknown depth format" );
         }
         
-        switch (description.colorFormat){
+        switch (description.colorFormat)
+        {
         case GL_RGBA8_OES: colorFormat = (0 << 16) | 0x2; break;
         case GL_GAS_DMP:   colorFormat = (0 << 16) | 0x2; break;
         case GL_RGB5_A1:   colorFormat = (2 << 16); break;
@@ -92,7 +103,8 @@ void FrameBufferObject::ActivateBuffer() const{
             NW_ASSERTMSG( description.colorAddress == NULL, "Unknown color format" );
         }
         
-        if (description.depthAddress == NULL){
+        if (description.depthAddress == NULL)
+        {
             u32 COMMAND[] = {
                 0x1,
                 internal::MakeCommandHeader(PICA_REG_COLOR_DEPTH_BUFFER_CLEAR1, 1, false, 0xf),
@@ -145,7 +157,8 @@ void FrameBufferObject::ActivateBuffer() const{
     }
 }
 
-void FrameBufferObject::ClearBuffer(u32 mask,const nw::ut::FloatColor& clearColor, f32 clearDepth, u8 clearStencil) const{
+void FrameBufferObject::ClearBuffer(u32 mask,const nw::ut::FloatColor& clearColor, f32 clearDepth, u8 clearStencil) const
+{
     const FrameBufferObject::Description& description = this->GetDescription();
     
     u32 colorAddress = 0;
@@ -157,10 +170,12 @@ void FrameBufferObject::ClearBuffer(u32 mask,const nw::ut::FloatColor& clearColo
     u32 colorSize = 0;
     u32 depthSize = 0;
     
-    if (mask & CLEAR_MASK_COLOR){
+    if (mask & CLEAR_MASK_COLOR)
+    {
         colorAddress = description.colorAddress;
         
-        switch (description.colorFormat){
+        switch (description.colorFormat)
+        {
         case GL_RGBA8_OES:{
                 colorWidth = 32;
                 clearColorHW = ColorToRGBA8( clearColor );
@@ -196,15 +211,18 @@ void FrameBufferObject::ClearBuffer(u32 mask,const nw::ut::FloatColor& clearColo
         colorSize = description.height * description.width * colorWidth / 8;
     }
     
-    if (mask & CLEAR_MASK_DEPTH){
+    if (mask & CLEAR_MASK_DEPTH)
+    {
         depthAddress = description.depthAddress;
         
-        if (depthAddress == 0){
+        if (depthAddress == 0)
+        {
             depthWidth = 0;
             clearDepthHW = 0;
         }
         else{
-            switch (description.depthFormat){
+            switch (description.depthFormat)
+            {
             case GL_DEPTH_COMPONENT16:{
                     depthWidth = 16; 
                     clearDepthHW = static_cast<u16>( nw::ut::Clamp(clearDepth, 0.0f, 1.0f) * static_cast<f32>(0xFFFF) );

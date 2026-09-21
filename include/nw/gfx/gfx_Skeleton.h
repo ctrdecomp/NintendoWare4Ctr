@@ -10,7 +10,8 @@ namespace nw{
 namespace gfx{
 class SkeletalModel;
 
-class Skeleton : public SceneObject{
+class Skeleton : public SceneObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(Skeleton);
 
@@ -21,7 +22,8 @@ public:
 
     typedef CalculateMatrixSignal::SlotType CalculateMatrixSlot;
 
-    class TransformPose{
+    class TransformPose
+    {
     private:
         NW_DISALLOW_COPY_AND_ASSIGN(TransformPose);
 
@@ -33,47 +35,53 @@ public:
 
         TransformPose() {}
         explicit TransformPose(TransformArray& transforms): 
-            mTransforms(transforms) 
-        {}
-        int GetBonesCount() const { return this->mTransforms.Size(); }
+            m_Transforms(transforms) {}
+        int GetBonesCount() const { return this->m_Transforms.Size(); }
 
-        bool GetTransform(int index, Transform** transform){
+        bool GetTransform(int index, Transform** transform)
+        {
             if (index < 0 || this->GetBonesCount() <= index) { return false; }
-            *transform = &this->mTransforms[index];
+            *transform = &this->m_Transforms[index];
             return true;
         }
 
-        bool GetTransform(int index, const Transform** transform) const{
+        bool GetTransform(int index, const Transform** transform) const
+        {
             if (index < 0 || this->GetBonesCount() <= index) { return false; }
-            *transform = &this->mTransforms[index];
+            *transform = &this->m_Transforms[index];
             return true;
         }
 
-        Transform* GetTransform(int index){
-            return &this->mTransforms[index];
+        Transform* GetTransform(int index)
+        {
+            return &this->m_Transforms[index];
         }
 
-        const Transform* GetTransform(int index) const{
-            return &this->mTransforms[index];
+        const Transform* GetTransform(int index) const
+        {
+            return &this->m_Transforms[index];
         }
 
-        TransformArray::iterator GetBeginTransform() { return this->mTransforms.Begin(); }
+        TransformArray::iterator GetBeginTransform() { return this->m_Transforms.Begin(); }
 
-        TransformArray::iterator GetEndTransform() { return this->mTransforms.End(); }
+        TransformArray::iterator GetEndTransform() { return this->m_Transforms.End(); }
 
-        TransformRange GetAllTransforms(){
-            return TransformRange(this->mTransforms.Begin(), this->mTransforms.End());
+        TransformRange GetAllTransforms()
+        {
+            return TransformRange(this->m_Transforms.Begin(), this->m_Transforms.End());
         }
 
-        ConstTransformRange GetAllTransforms() const{
-            return ConstTransformRange(this->mTransforms.Begin(), this->mTransforms.End());
+        ConstTransformRange GetAllTransforms() const
+        {
+            return ConstTransformRange(this->m_Transforms.Begin(), this->m_Transforms.End());
         }
         
     private:
-        TransformArray mTransforms;
+        TransformArray m_Transforms;
     };
 
-    class MatrixPose{
+    class MatrixPose
+    {
     private:
         NW_DISALLOW_COPY_AND_ASSIGN(MatrixPose);
         
@@ -84,110 +92,124 @@ public:
 
         MatrixPose() {}
         explicit MatrixPose(MatrixArray& matrices): 
-            mMatrices(matrices) 
-        {}
+            m_Matrices(matrices) {}
 
-        int GetBonesCount() const { return this->mMatrices.Size(); }
+        int GetBonesCount() const { return this->m_Matrices.Size(); }
 
-        bool GetMatrix(int index, nw::math::MTX34** matrix){
+        bool GetMatrix(int index, nw::math::MTX34** matrix)
+        {
             if (index < 0 || this->GetBonesCount() <= index) { return false; }
-            *matrix = &this->mMatrices[index];
+            *matrix = &this->m_Matrices[index];
             return true;
         }
 
-        bool GetMatrix(int index, const nw::math::MTX34** matrix) const{
+        bool GetMatrix(int index, const nw::math::MTX34** matrix) const
+        {
             if (index < 0 || this->GetBonesCount() <= index) { return false; }
-            *matrix = &this->mMatrices[index];
+            *matrix = &this->m_Matrices[index];
             return true;
         }
 
-        nw::math::MTX34* GetMatrix(int index){
-            return &this->mMatrices[index];
+        nw::math::MTX34* GetMatrix(int index)
+        {
+            return &this->m_Matrices[index];
         }
 
-        const nw::math::MTX34* GetMatrix(int index) const{
-            return &this->mMatrices[index];
+        const nw::math::MTX34* GetMatrix(int index) const
+        {
+            return &this->m_Matrices[index];
         }
 
-        MatrixArray::iterator GetBeginMatrix() { return this->mMatrices.Begin(); }
+        MatrixArray::iterator GetBeginMatrix() { return this->m_Matrices.Begin(); }
 
-        MatrixArray::iterator GetEndMatrix() { return this->mMatrices.End(); }
+        MatrixArray::iterator GetEndMatrix() { return this->m_Matrices.End(); }
 
-        MatrixRange GetAllMatrices(){
-            return MatrixRange(this->mMatrices.Begin(), this->mMatrices.End());
+        MatrixRange GetAllMatrices()
+        {
+            return MatrixRange(this->m_Matrices.Begin(), this->m_Matrices.End());
         }
 
-        ConstMatrixRange GetAllMatrices() const{
-            return ConstMatrixRange(this->mMatrices.Begin(), this->mMatrices.End());
+        ConstMatrixRange GetAllMatrices() const
+        {
+            return ConstMatrixRange(this->m_Matrices.Begin(), this->m_Matrices.End());
         }
         
     private:
-        MatrixArray mMatrices;
+        MatrixArray m_Matrices;
     };
 
-    class OriginalPose{
+    class OriginalPose
+    {
     private:
         NW_DISALLOW_COPY_AND_ASSIGN(OriginalPose);
     public:
         typedef nw::math::Transform3 Transform;
 
         explicit OriginalPose(ResSkeleton resource): 
-            mResource(resource)
-        {}
+            m_Resource(resource) {}
 
-        int GetBonesCount() const { return this->mResource.GetBonesCount(); }
+        int GetBonesCount() const { return this->m_Resource.GetBonesCount(); }
 
-        bool GetTransform(int index, Transform** transform){
+        bool GetTransform(int index, Transform** transform)
+        {
             if (index < 0 || this->GetBonesCount() <= index) { return false; }
-            ResBone bone = this->mResource.GetBones(index);
+            ResBone bone = this->m_Resource.GetBones(index);
             if (!bone.IsValid()) { return false; }
             *transform = &bone.GetTransform();
             return true;
         }
 
-        bool GetTransform(int index, const Transform** transform) const{
+        bool GetTransform(int index, const Transform** transform) const
+        {
             if (index < 0 || this->GetBonesCount() <= index) { return false; }
-            ResBone bone = this->mResource.GetBones(index);
+            ResBone bone = this->m_Resource.GetBones(index);
             if (!bone.IsValid()) { return false; }
             *transform = &bone.GetTransform();
             return true;
         }
 
-        Transform* GetTransform(int index){
-            return &this->mResource.GetBones(index).GetTransform();
+        Transform* GetTransform(int index)
+        {
+            return &this->m_Resource.GetBones(index).GetTransform();
         }
 
-        const Transform* GetTransform(int index) const{
-            return &this->mResource.GetBones(index).GetTransform();
+        const Transform* GetTransform(int index) const
+        {
+            return &this->m_Resource.GetBones(index).GetTransform();
         }
         
     private:
-        ResSkeleton mResource;
+        ResSkeleton m_Resource;
     };
 
-    ResSkeleton GetResSkeleton(){
+    ResSkeleton GetResSkeleton()
+    {
         return ResStaticCast<ResSkeleton>(this->GetResSceneObject());
     }
 
-    const ResSkeleton GetResSkeleton() const{
+    const ResSkeleton GetResSkeleton() const
+    {
         return ResStaticCast<ResSkeleton>(this->GetResSceneObject());
     }
 
 
-    bool IsUpdated(){
-        return this->mIsUpdated;
+    bool IsUpdated()
+    {
+        return this->m_IsUpdated;
     }
 
-    void SetUpdated(bool isUpdated){
-        this->mIsUpdated = isUpdated;
+    void SetUpdated(bool isUpdated)
+    {
+        this->m_IsUpdated = isUpdated;
     }
 
-    const SkeletalModel* GetOwnerSkeletalModel() const { return mOwnerSkeletalModel; }
+    const SkeletalModel* GetOwnerSkeletalModel() const { return m_OwnerSkeletalModel; }
 
-    SkeletalModel* GetOwnerSkeletalModel() { return mOwnerSkeletalModel; }
+    SkeletalModel* GetOwnerSkeletalModel() { return m_OwnerSkeletalModel; }
 
-    void SetOwnerSkeletalModel(SkeletalModel* ownerSkeletalModel){
-        mOwnerSkeletalModel = ownerSkeletalModel;
+    void SetOwnerSkeletalModel(SkeletalModel* ownerSkeletalModel)
+    {
+        m_OwnerSkeletalModel = ownerSkeletalModel;
     }
 
     virtual TransformPose& LocalTransformPose() = 0;
@@ -202,31 +224,35 @@ public:
     virtual const OriginalPose& LocalOriginalPose() const = 0;
 
 
-    CalculateMatrixSignal& PreCalculateMatrixSignal() { return *this->mPreCalculateMatrixSignal; }
+    CalculateMatrixSignal& PreCalculateMatrixSignal() { return *this->m_PreCalculateMatrixSignal; }
 
-    const CalculateMatrixSignal& PreCalculateMatrixSignal() const { return *this->mPreCalculateMatrixSignal; }
+    const CalculateMatrixSignal& PreCalculateMatrixSignal() const { return *this->m_PreCalculateMatrixSignal; }
 
-    CalculateMatrixSignal& PostCalculateMatrixSignal() { return *this->mPostCalculateMatrixSignal; }
+    CalculateMatrixSignal& PostCalculateMatrixSignal() { return *this->m_PostCalculateMatrixSignal; }
 
-    const CalculateMatrixSignal& PostCalculateMatrixSignal() const { return *this->mPostCalculateMatrixSignal; }
+    const CalculateMatrixSignal& PostCalculateMatrixSignal() const { return *this->m_PostCalculateMatrixSignal; }
 
 protected:
     Skeleton(nw::os::IAllocator* allocator,ResSkeleton resource,int maxCallbacks,bool isFixedSizeMemory): 
         SceneObject(allocator, resource),
-        mPreCalculateMatrixSignal(NULL),
-        mPostCalculateMatrixSignal(NULL),
-        mIsUpdated(false){
+        m_PreCalculateMatrixSignal(NULL),
+        m_PostCalculateMatrixSignal(NULL),
+        m_IsUpdated(false)
+        {
         this->SetOwnerSkeletalModel(NULL);
         CreateCallbacks(allocator, maxCallbacks, isFixedSizeMemory);
     }
 
-    virtual ~Skeleton(){
-        SafeDestroy(this->mPreCalculateMatrixSignal);
-        SafeDestroy(this->mPostCalculateMatrixSignal);
+    virtual ~Skeleton()
+    {
+        SafeDestroy(this->m_PreCalculateMatrixSignal);
+        SafeDestroy(this->m_PostCalculateMatrixSignal);
     }
     
-    static void GetMemorySizeForConstruct(nw::os::MemorySizeCalculator* pSize,int maxCallbacks){
-        if (maxCallbacks == 0){
+    static void GetMemorySizeForConstruct(nw::os::MemorySizeCalculator* pSize,int maxCallbacks)
+    {
+        if (maxCallbacks == 0)
+        {
             CalculateMatrixSignal::GetMemorySizeForInvalidateSignalInternal(pSize);
             CalculateMatrixSignal::GetMemorySizeForInvalidateSignalInternal(pSize);
         }
@@ -240,11 +266,11 @@ private:
 
     void CreateCallbacks(nw::os::IAllocator* allocator, int maxCallbacks, bool isFixedSizeMemory);
     
-    SkeletalModel* mOwnerSkeletalModel;
+    SkeletalModel* m_OwnerSkeletalModel;
     
-    CalculateMatrixSignal* mPreCalculateMatrixSignal;
-    CalculateMatrixSignal* mPostCalculateMatrixSignal;
-    bool mIsUpdated;
+    CalculateMatrixSignal* m_PreCalculateMatrixSignal;
+    CalculateMatrixSignal* m_PostCalculateMatrixSignal;
+    bool m_IsUpdated;
 };
 }
 }

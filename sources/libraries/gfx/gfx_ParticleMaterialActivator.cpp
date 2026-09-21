@@ -11,10 +11,12 @@ namespace gfx{
 
 NW_UT_RUNTIME_TYPEINFO_DEFINITION(ParticleMaterialActivator, IMaterialActivator);
 
-ParticleMaterialActivator* ParticleMaterialActivator::Create(os::IAllocator* allocator){
+ParticleMaterialActivator* ParticleMaterialActivator::Create(os::IAllocator* allocator)
+{
     void* memory = allocator->Alloc(sizeof(ParticleMaterialActivator));
     
-    if (memory == NULL){
+    if (memory == NULL)
+    {
         return NULL;
     }
     else{
@@ -22,7 +24,8 @@ ParticleMaterialActivator* ParticleMaterialActivator::Create(os::IAllocator* all
     }
 }
 
-void ParticleMaterialActivator::Activate(RenderContext* renderContext, const Material* material){
+void ParticleMaterialActivator::Activate(RenderContext* renderContext, const Material* material)
+{
     #define _NO_USE_MATERIAL_BUFFER (1)
 
     NW_NULL_ASSERT(renderContext);
@@ -30,7 +33,8 @@ void ParticleMaterialActivator::Activate(RenderContext* renderContext, const Mat
     const SceneEnvironment& sceneEnvironment = renderContext->GetSceneEnvironment();
 
     const Material* cacheMaterial = renderContext->GetMaterialCache();
-    if ((cacheMaterial != NULL) &&  (cacheMaterial->GetOriginal() == material->GetOriginal())){
+    if ((cacheMaterial != NULL) &&  (cacheMaterial->GetOriginal() == material->GetOriginal()))
+    {
         return;
     }
 
@@ -50,14 +54,16 @@ void ParticleMaterialActivator::Activate(RenderContext* renderContext, const Mat
     ResRasterization resRasterization = original.GetRasterization();
     u32 rasterizationHash = original.GetRasterizationHash();
     bool isRasterizationEnabled = (rasterizationHash == 0x0) || (rasterizationHash != materialHash.rasterization);
-    if (isRasterizationEnabled){
+    if (isRasterizationEnabled)
+    {
         internal::MaterialState::ActivateRasterization(resRasterization);
         materialHash.rasterization = rasterizationHash;
     }
 
     ResMaterial resTextureCoordinatorsMaterial = original;
     u32 textureCoordinatorHash = resTextureCoordinatorsMaterial.GetTextureCoordinatorsHash();
-    if (textureCoordinatorHash != materialHash.textureCoordinator){
+    if (textureCoordinatorHash != materialHash.textureCoordinator)
+    {
         internal::MaterialState::ActivateParticleTextureCoordinators(renderContext, shaderProgram, resTextureCoordinatorsMaterial);
         materialHash.textureCoordinator = textureCoordinatorHash;
     }
@@ -65,7 +71,8 @@ void ParticleMaterialActivator::Activate(RenderContext* renderContext, const Mat
     ResMaterial resTextureMappersMaterial = original;
     u32 textureMappersHash = resTextureMappersMaterial.GetTextureMappersHash();
     bool isTextureMappersEnabled = (textureMappersHash == 0x0) || (textureMappersHash != materialHash.textureMapper);
-    if (isTextureMappersEnabled){
+    if (isTextureMappersEnabled)
+    {
         internal::MaterialState::ActivateParticleTextureMappers(resTextureMappersMaterial);
         materialHash.textureMapper = textureMappersHash;
     }
@@ -78,7 +85,8 @@ void ParticleMaterialActivator::Activate(RenderContext* renderContext, const Mat
     ResFragmentShader resTextureCombinerFragmentShader = original.GetFragmentShader();
     u32 textureCombinersHash = original.GetTextureCombinersHash();
     bool isTextureCombinersEnabled = (textureCombinersHash == 0x0) || (textureCombinersHash != materialHash.textureCombiner);
-    if (isTextureCombinersEnabled || isMaterialColorEnabled){
+    if (isTextureCombinersEnabled || isMaterialColorEnabled)
+    {
         internal::MaterialState::ActivateTextureCombiners(resTextureCombinerFragmentShader, resMaterialColor);
         materialHash.textureCombiner = textureCombinersHash;
     }
@@ -89,7 +97,8 @@ void ParticleMaterialActivator::Activate(RenderContext* renderContext, const Mat
     ResFragmentOperation resFragmentOperation = original.GetFragmentOperation();
     u32 fragmentOperationHash = original.GetFragmentOperationHash();
     bool isFragmentOperationEnabled = (fragmentOperationHash == 0x0) || (fragmentOperationHash != materialHash.fragmentOperation);
-    if (isFragmentOperationEnabled){
+    if (isFragmentOperationEnabled)
+    {
         internal::MaterialState::ActivateFragmentOperation(resFragmentOperation);
         materialHash.fragmentOperation = fragmentOperationHash;
     }
@@ -97,10 +106,9 @@ void ParticleMaterialActivator::Activate(RenderContext* renderContext, const Mat
 }
 
 ParticleMaterialActivator::ParticleMaterialActivator(os::IAllocator* allocator): 
-    IMaterialActivator(allocator)
-{}
+    IMaterialActivator(allocator) {}
 
-ParticleMaterialActivator::~ParticleMaterialActivator(){}
+ParticleMaterialActivator::~ParticleMaterialActivator() {}
 
 }
 }

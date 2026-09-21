@@ -17,7 +17,8 @@ namespace nw {
 namespace gfx {
 namespace res {
 
-Result ResModel::Setup(os::IAllocator* allocator, ResGraphicsFile graphicsFile){
+Result ResModel::Setup(os::IAllocator* allocator, ResGraphicsFile graphicsFile)
+{
     Result result = RESOURCE_RESULT_OK;
     NW_ASSERT(this->IsValid());
     NW_ASSERT(internal::ResCheckRevision(*this));
@@ -25,26 +26,33 @@ Result ResModel::Setup(os::IAllocator* allocator, ResGraphicsFile graphicsFile){
     
     // Setup Shape
     s32 shapeNum = this->GetShapesCount();
-    for (int i = 0; i < shapeNum; ++i){
-        if (!ut::CheckFlag(this->GetShapes(i).GetFlags(), ResShape::FLAG_HAS_BEEN_SETUP)){
+    for (int i = 0; i < shapeNum; ++i)
+    {
+        if (!ut::CheckFlag(this->GetShapes(i).GetFlags(), ResShape::FLAG_HAS_BEEN_SETUP))
+    {
             result |= this->GetShapes(i).Setup(allocator);
         }
     }
 
     // Setup Material
     s32 materialNum = this->GetMaterialsCount();
-    for (int i = 0; i < materialNum; ++i){
-        if (!ut::CheckFlag(this->GetMaterials(i).GetFlags(), ResMaterialData::FLAG_HAS_BEEN_SETUP)){
+    for (int i = 0; i < materialNum; ++i)
+    {
+        if (!ut::CheckFlag(this->GetMaterials(i).GetFlags(), ResMaterialData::FLAG_HAS_BEEN_SETUP))
+    {
             result |= this->GetMaterials(i).Setup(allocator, graphicsFile);
         }
     }
     
     // Setup Mesh
-    if ((result.GetDescription() & RESOURCE_RESULT_NOT_FOUND_SHADER) == 0){
+    if ((result.GetDescription() & RESOURCE_RESULT_NOT_FOUND_SHADER) == 0)
+    {
         s32 meshNum = this->GetMeshesCount();
-        for (int i = 0; i < meshNum; ++ i){
+        for (int i = 0; i < meshNum; ++ i)
+        {
             ResMesh mesh = this->GetMeshes( i );
-            if (!ut::CheckFlag(mesh.GetFlags(), ResMesh::FLAG_HAS_BEEN_SETUP)){
+            if (!ut::CheckFlag(mesh.GetFlags(), ResMesh::FLAG_HAS_BEEN_SETUP))
+            {
                 mesh.Setup( *this, allocator, graphicsFile );
             }
         }
@@ -53,24 +61,29 @@ Result ResModel::Setup(os::IAllocator* allocator, ResGraphicsFile graphicsFile){
     return result;
 }
 
-void ResModel::Cleanup(){
+void ResModel::Cleanup()
+{
     // Cleanup Shape
     s32 shapeNum = this->GetShapesCount();
-    for(int i = 0; i < shapeNum; ++i){
-        if (ut::CheckFlag(this->GetShapes(i).GetFlags(), ResShape::FLAG_HAS_BEEN_SETUP)){
+    for (int i = 0; i < shapeNum; ++i)
+    {
+        if (ut::CheckFlag(this->GetShapes(i).GetFlags(), ResShape::FLAG_HAS_BEEN_SETUP))
+    {
             this->GetShapes(i).Cleanup();
         }
     }
 
     // Cleanup Material
     s32 materialNum = this->GetMaterialsCount();
-    for(int i = 0; i < materialNum; ++i){
+    for (int i = 0; i < materialNum; ++i)
+    {
         this->GetMaterials(i).Cleanup();
     }
 
     // Cleanup Mesh
     s32 meshNum = this->GetMeshesCount();
-    for(int i = 0; i < meshNum; ++ i){
+    for (int i = 0; i < meshNum; ++ i)
+    {
         this->GetMeshes(i).Cleanup();
     }
 }

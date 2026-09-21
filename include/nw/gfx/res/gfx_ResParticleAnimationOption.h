@@ -9,15 +9,19 @@ namespace nw {
 namespace gfx {
 namespace res {
 
-struct ResParticleAnimationOptionData{
+struct ResParticleAnimationOptionData
+{
     nw::ut::ResTypeInfo typeInfo;
-    nw::ut::ResF32 mAnimationDuration;
+    nw::ut::ResF32 m_AnimationDuration;
 };
 
-class ResParticleAnimationOption : public nw::ut::ResCommon< ResParticleAnimationOptionData >{
+class ResParticleAnimationOption : public nw::ut::ResCommon< ResParticleAnimationOptionData >
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleAnimationOption) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('AOPT') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleAnimationOption) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('AOPT') };
 
     NW_RES_CTOR( ResParticleAnimationOption )
 
@@ -29,26 +33,34 @@ public:
 //    ParticleTime EvaluateAnimationFrame(u32 id, ParticleTime birth, ParticleTime life, ParticleTime time, int updaterIndex) const;
 };
 
-struct ResParticleFittingAnimationOptionData : public ResParticleAnimationOptionData{};
+struct ResParticleFittingAnimationOptionData : public ResParticleAnimationOptionData
+{};
 
-class ResParticleFittingAnimationOption : public ResParticleAnimationOption{
+class ResParticleFittingAnimationOption : public ResParticleAnimationOption
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleFittingAnimationOption) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('FITT') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleFittingAnimationOption) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('FITT') };
 
     NW_RES_CTOR_INHERIT( ResParticleFittingAnimationOption, ResParticleAnimationOption )
 };
 
-struct ResParticleFrameLoopAnimationOptionData : public ResParticleAnimationOptionData{
-    nw::ut::ResU32 mLoopDuration;
-    nw::ut::ResBool mRandomOffset;
+struct ResParticleFrameLoopAnimationOptionData : public ResParticleAnimationOptionData
+{
+    nw::ut::ResU32 m_LoopDuration;
+    nw::ut::ResBool m_RandomOffset;
     u8              padding_0[3];
 };
 
-class ResParticleFrameLoopAnimationOption : public ResParticleAnimationOption{
+class ResParticleFrameLoopAnimationOption : public ResParticleAnimationOption
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleFrameLoopAnimationOption) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('FLOO') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleFrameLoopAnimationOption) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('FLOO') };
 
     NW_RES_CTOR_INHERIT( ResParticleFrameLoopAnimationOption, ResParticleAnimationOption )
 
@@ -56,12 +68,16 @@ public:
     NW_RES_FIELD_PRIMITIVE_DECL( bool, RandomOffset )
 };
 
-struct ResParticleRandomAnimationOptionData : public ResParticleAnimationOptionData{};
+struct ResParticleRandomAnimationOptionData : public ResParticleAnimationOptionData
+{};
 
-class ResParticleRandomAnimationOption : public ResParticleAnimationOption{
+class ResParticleRandomAnimationOption : public ResParticleAnimationOption
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleRandomAnimationOption) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('RAND') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleRandomAnimationOption) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('RAND') };
 
     NW_RES_CTOR_INHERIT( ResParticleRandomAnimationOption, ResParticleAnimationOption )
 };

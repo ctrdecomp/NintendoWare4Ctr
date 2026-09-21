@@ -14,21 +14,25 @@ namespace gfx{
 
 NW_UT_RUNTIME_TYPEINFO_ROOT_DEFINITION(ParticleSceneUpdater);
 
-ParticleSceneUpdater* ParticleSceneUpdater::Builder::Create(os::IAllocator* allocator){
+ParticleSceneUpdater* ParticleSceneUpdater::Builder::Create(os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
 
     void* memory = allocator->Alloc(sizeof(ParticleSceneUpdater));
-    if (memory == NULL){
+    if (memory == NULL)
+    {
         return NULL;
     }
 
     return new(memory) ParticleSceneUpdater(allocator);
 }
 
-void ParticleSceneUpdater::SetStepFrame(SceneContext* sceneContext,f32 stepFrame){
-    {
+void ParticleSceneUpdater::SetStepFrame(SceneContext* sceneContext,f32 stepFrame)
+{
+{
         ParticleModelArray::iterator end = sceneContext->GetParticleModelEnd();
-        for (ParticleModelArray::iterator i = sceneContext->GetParticleModelBegin(); i != end;){
+        for (ParticleModelArray::iterator i = sceneContext->GetParticleModelBegin(); i != end;)
+        {
             ParticleModel* model = *i++;
             NW_NULL_ASSERT(model);
 
@@ -38,7 +42,8 @@ void ParticleSceneUpdater::SetStepFrame(SceneContext* sceneContext,f32 stepFrame
 
     {
         ParticleEmitterArray::iterator end = sceneContext->GetParticleEmitterEnd();
-        for (ParticleEmitterArray::iterator i = sceneContext->GetParticleEmitterBegin(); i != end;){
+        for (ParticleEmitterArray::iterator i = sceneContext->GetParticleEmitterBegin(); i != end;)
+        {
             ParticleEmitter* emitter = *i++;
             NW_NULL_ASSERT(emitter);
 
@@ -47,10 +52,12 @@ void ParticleSceneUpdater::SetStepFrame(SceneContext* sceneContext,f32 stepFrame
     }
 }
 
-void ParticleSceneUpdater::UpdateNode(SceneContext* sceneContext,ParticleContext* particleContext,bool enableSwapBuffer){
-    {
+void ParticleSceneUpdater::UpdateNode(SceneContext* sceneContext,ParticleContext* particleContext,bool enableSwapBuffer)
+{
+{
         ParticleModelArray::iterator end = sceneContext->GetParticleModelEnd();
-        for (ParticleModelArray::iterator i = sceneContext->GetParticleModelBegin(); i != end;){
+        for (ParticleModelArray::iterator i = sceneContext->GetParticleModelBegin(); i != end;)
+        {
             ParticleModel* model = *i++;
             NW_NULL_ASSERT(model);
 
@@ -60,7 +67,8 @@ void ParticleSceneUpdater::UpdateNode(SceneContext* sceneContext,ParticleContext
 
     {
         ParticleEmitterArray::iterator end = sceneContext->GetParticleEmitterEnd();
-        for (ParticleEmitterArray::iterator i = sceneContext->GetParticleEmitterBegin(); i != end;){
+        for (ParticleEmitterArray::iterator i = sceneContext->GetParticleEmitterBegin(); i != end;)
+        {
             ParticleEmitter* emitter = *i++;
             NW_NULL_ASSERT(emitter);
 
@@ -71,7 +79,8 @@ void ParticleSceneUpdater::UpdateNode(SceneContext* sceneContext,ParticleContext
 
     {
         ParticleSetArray::iterator end = sceneContext->GetParticleSetEnd();
-        for (ParticleSetArray::iterator i = sceneContext->GetParticleSetBegin(); i != end;){
+        for (ParticleSetArray::iterator i = sceneContext->GetParticleSetBegin(); i != end;)
+        {
             ParticleSet* particleSet = *i++;
             particleSet->UpdateParticles(particleContext, enableSwapBuffer);
         }

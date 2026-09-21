@@ -2,13 +2,15 @@
 
 #include <nw/gfx/gfx_CameraProjectionUpdater.h>
 #include <nw/ut/ut_Preprocessor.h>
+
 namespace nw{
 namespace os{
     class IAllocator;
 }
 namespace gfx{
 
-class OrthoProjectionUpdater : public CameraProjectionUpdater{
+class OrthoProjectionUpdater : public CameraProjectionUpdater
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(OrthoProjectionUpdater);
 
@@ -19,26 +21,31 @@ public:
 
     static OrthoProjectionUpdater* Create(nw::os::IAllocator* allocator,ResOrthoProjectionUpdater resUpdater);
 
-    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize,bool isDynamicBuild){
+    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize,bool isDynamicBuild)
+    {
         nw::os::MemorySizeCalculator& size = *pSize;
 
         size += sizeof(OrthoProjectionUpdater);
-        if (isDynamicBuild){
+        if (isDynamicBuild)
+        {
             size += sizeof(ResOrthoProjectionUpdaterData);
         }
     }
 
     void virtual Update(nw::math::MTX44* projectionMatrix, nw::math::MTX34* textureProjectionMatrix);
 
-    virtual ResCameraProjectionUpdater GetResource() {
-        return this->mResource;
+    virtual ResCameraProjectionUpdater GetResource() 
+    {
+        return this->m_Resource;
     }
 
-    virtual const ResCameraProjectionUpdater GetResource() const {
-        return this->mResource;
+    virtual const ResCameraProjectionUpdater GetResource() const 
+    {
+        return this->m_Resource;
     }
 
-    virtual anim::ResCameraAnimData::ProjectionUpdaterKind Kind() const{
+    virtual anim::ResCameraAnimData::ProjectionUpdaterKind Kind() const
+    {
         return anim::ResCameraAnimData::PROJECTION_UPDATER_ORTHO;
     }
 
@@ -48,7 +55,7 @@ private:
 
     virtual ~OrthoProjectionUpdater();
 
-    ResOrthoProjectionUpdater mResource;
+    ResOrthoProjectionUpdater m_Resource;
 };
 
 }

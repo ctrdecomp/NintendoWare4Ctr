@@ -13,7 +13,7 @@ class PoolImpl
 public:
     PoolImpl(): 
         m_pNext(NULL)
-    {
+        {
     }
 
 protected:
@@ -32,7 +32,7 @@ class InstancePool : private PoolImpl
 {
 public:
     u32 Create(void* buffer, unsigned long size)
-    {
+{
         u32 objSize =
             (sizeof(T) > sizeof(InstancePool<T>*))
                 ? sizeof(T)

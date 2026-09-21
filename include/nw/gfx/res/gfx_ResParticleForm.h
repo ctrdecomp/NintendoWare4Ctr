@@ -10,16 +10,20 @@ namespace nw {
 namespace gfx {
 namespace res {
 
-struct ResParticleFormData{
+struct ResParticleFormData
+{
     nw::ut::ResTypeInfo typeInfo;
-    nw::ut::ResBool mIsResourceCopyEnabled;
+    nw::ut::ResBool m_IsResourceCopyEnabled;
     u8              padding_0[3];
 };
 
-class ResParticleForm : public nw::ut::ResCommon< ResParticleFormData >{
+class ResParticleForm : public nw::ut::ResCommon< ResParticleFormData >
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleForm) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('INIT') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleForm) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('INIT') };
 
     NW_RES_CTOR( ResParticleForm )
 
@@ -29,17 +33,21 @@ public:
     void    Setup();
 };
 
-struct ResParticleCubeFormData : public ResParticleFormData{
-    nw::ut::ResF32 mInner;
-    nw::ut::ResVec3 mScale;
-    nw::ut::ResBool mEvenInterval;
+struct ResParticleCubeFormData : public ResParticleFormData
+{
+    nw::ut::ResF32 m_Inner;
+    nw::ut::ResVec3 m_Scale;
+    nw::ut::ResBool m_EvenInterval;
     u8              padding_0[3];
 };
 
-class ResParticleCubeForm : public ResParticleForm{
+class ResParticleCubeForm : public ResParticleForm
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleCubeForm) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('CUBE') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleCubeForm) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('CUBE') };
 
     NW_RES_CTOR_INHERIT( ResParticleCubeForm, ResParticleForm )
 
@@ -50,21 +58,25 @@ public:
     void    Setup();
 };
 
-struct ResParticleCylinderFormData : public ResParticleFormData{
-    nw::ut::ResF32 mInner;
-    nw::ut::ResF32 mAngleWidth;
-    nw::ut::ResF32 mAngleOffset;
-    nw::ut::ResF32 mAngleSwing;
-    nw::ut::ResVec3 mScale;
-    nw::ut::ResBool mFixedOffset;
-    nw::ut::ResBool mEvenInterval;
+struct ResParticleCylinderFormData : public ResParticleFormData
+{
+    nw::ut::ResF32 m_Inner;
+    nw::ut::ResF32 m_AngleWidth;
+    nw::ut::ResF32 m_AngleOffset;
+    nw::ut::ResF32 m_AngleSwing;
+    nw::ut::ResVec3 m_Scale;
+    nw::ut::ResBool m_FixedOffset;
+    nw::ut::ResBool m_EvenInterval;
     u8              padding_0[2];
 };
 
-class ResParticleCylinderForm : public ResParticleForm{
+class ResParticleCylinderForm : public ResParticleForm
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleCylinderForm) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('CYLI') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleCylinderForm) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('CYLI') };
 
     NW_RES_CTOR_INHERIT( ResParticleCylinderForm, ResParticleForm )
 
@@ -79,21 +91,25 @@ public:
     void    Setup();
 };
 
-struct ResParticleDiscFormData : public ResParticleFormData{
-    nw::ut::ResF32 mInner;
-    nw::ut::ResF32 mAngleWidth;
-    nw::ut::ResF32 mAngleOffset;
-    nw::ut::ResF32 mAngleSwing;
-    nw::math::VEC2 mScale;
-    nw::ut::ResBool mFixedOffset;
-    nw::ut::ResBool mEvenInterval;
+struct ResParticleDiscFormData : public ResParticleFormData
+{
+    nw::ut::ResF32 m_Inner;
+    nw::ut::ResF32 m_AngleWidth;
+    nw::ut::ResF32 m_AngleOffset;
+    nw::ut::ResF32 m_AngleSwing;
+    nw::math::VEC2 m_Scale;
+    nw::ut::ResBool m_FixedOffset;
+    nw::ut::ResBool m_EvenInterval;
     u8              padding_0[2];
 };
 
-class ResParticleDiscForm : public ResParticleForm{
+class ResParticleDiscForm : public ResParticleForm
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleDiscForm) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('DISC') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleDiscForm) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('DISC') };
 
     NW_RES_CTOR_INHERIT( ResParticleDiscForm, ResParticleForm )
 
@@ -112,27 +128,34 @@ struct ResParticlePointFormData : public ResParticleFormData
 {
 };
 
-class ResParticlePointForm : public ResParticleForm{
+class ResParticlePointForm : public ResParticleForm
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticlePointForm) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('POIN') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticlePointForm) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('POIN') };
 
     NW_RES_CTOR_INHERIT( ResParticlePointForm, ResParticleForm )
 
     void    Setup();
 };
 
-struct ResParticleRectangleFormData : public ResParticleFormData{
-    nw::ut::ResF32 mInner;
-    nw::math::VEC2 mScale;
-    nw::ut::ResBool mEvenInterval;
+struct ResParticleRectangleFormData : public ResParticleFormData
+{
+    nw::ut::ResF32 m_Inner;
+    nw::math::VEC2 m_Scale;
+    nw::ut::ResBool m_EvenInterval;
     u8              padding_0[3];
 };
 
-class ResParticleRectangleForm : public ResParticleForm{
+class ResParticleRectangleForm : public ResParticleForm
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleRectangleForm) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('RECT') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleRectangleForm) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('RECT') };
 
     NW_RES_CTOR_INHERIT( ResParticleRectangleForm, ResParticleForm )
 
@@ -143,21 +166,25 @@ public:
     void    Setup();
 };
 
-struct ResParticleSphereFormData : public ResParticleFormData{
-    nw::ut::ResF32 mInner;
-    nw::ut::ResF32 mAngleWidth;
-    nw::ut::ResF32 mAngleOffset;
-    nw::ut::ResF32 mAngleSwing;
-    nw::ut::ResVec3 mScale;
-    nw::ut::ResBool mFixedOffset;
-    nw::ut::ResBool mEvenInterval;
+struct ResParticleSphereFormData : public ResParticleFormData
+{
+    nw::ut::ResF32 m_Inner;
+    nw::ut::ResF32 m_AngleWidth;
+    nw::ut::ResF32 m_AngleOffset;
+    nw::ut::ResF32 m_AngleSwing;
+    nw::ut::ResVec3 m_Scale;
+    nw::ut::ResBool m_FixedOffset;
+    nw::ut::ResBool m_EvenInterval;
     u8              padding_0[2];
 };
 
-class ResParticleSphereForm : public ResParticleForm{
+class ResParticleSphereForm : public ResParticleForm
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleSphereForm) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('SPHE') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleSphereForm) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('SPHE') };
 
     NW_RES_CTOR_INHERIT( ResParticleSphereForm, ResParticleForm )
 

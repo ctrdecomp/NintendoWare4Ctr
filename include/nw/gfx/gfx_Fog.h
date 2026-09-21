@@ -11,7 +11,8 @@ namespace gfx{
 
 class Camera;
 
-class Fog : public TransformNode{
+class Fog : public TransformNode
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(Fog);
 
@@ -21,17 +22,20 @@ private:
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    struct Description : public TransformNode::Description{
-        Description(){}
+    struct Description : public TransformNode::Description
+    {
+        Description() {}
     };
 
-    struct UpdateFunctor {
+    struct UpdateFunctor
+    {
         UpdateFunctor(Camera* camera): 
-            camera(camera) 
-        {}
+            camera(camera) {}
         
-        void operator() (Fog* fog){
-            if (fog != NULL){
+        void operator() (Fog* fog)
+        {
+            if (fog != NULL)
+            {
                 fog->Update(camera);
             }
         }
@@ -39,23 +43,27 @@ public:
         Camera* camera;
     };
 
-    class DynamicBuilder{
+    class DynamicBuilder
+    {
     public:
         DynamicBuilder() {}
         ~DynamicBuilder() {}
 
-        DynamicBuilder& IsFixedSizeMemory(bool isFixedSizeMemory){
-            mDescription.isFixedSizeMemory = isFixedSizeMemory;
+        DynamicBuilder& IsFixedSizeMemory(bool isFixedSizeMemory)
+        {
+            m_Description.isFixedSizeMemory = isFixedSizeMemory;
             return *this;
         }
 
-        DynamicBuilder& MaxChildren(int maxChildren){
-            mDescription.maxChildren = maxChildren;
+        DynamicBuilder& MaxChildren(int maxChildren)
+        {
+            m_Description.maxChildren = maxChildren;
             return *this;
         }
 
-        DynamicBuilder& MaxCallbacks(int maxCallbacks){
-            mDescription.maxCallbacks = maxCallbacks;
+        DynamicBuilder& MaxCallbacks(int maxCallbacks)
+        {
+            m_Description.maxCallbacks = maxCallbacks;
             return *this;
         }
 
@@ -63,13 +71,14 @@ public:
         size_t GetMemorySize(size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT) const;
 
     private:
-        Fog::Description mDescription;
+        Fog::Description m_Description;
     };
 
 
     static Fog* Create(SceneNode* parent,ResSceneObject resource,const Fog::Description& description,nw::os::IAllocator* allocator);
 
-    static size_t GetMemorySize(ResFog resource,Description description,size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT){
+    static size_t GetMemorySize(ResFog resource,Description description,size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT)
+    {
         nw::os::MemorySizeCalculator size(alignment);
 
         GetMemorySizeInternal(&size, resource, description);
@@ -83,46 +92,49 @@ public:
 
     virtual void Accept(ISceneVisitor* visitor);
 
-    ResFog GetResFog() {
+    ResFog GetResFog()
+    {
         return ResStaticCast<ResFog>(this->GetResSceneObject());
     }
 
-    const ResFog GetResFog() const{
+    const ResFog GetResFog() const
+    {
         return ResStaticCast<ResFog>(this->GetResSceneObject());
     }
 
-    AnimGroup* GetAnimGroup() { return mAnimGroup; }
+    AnimGroup* GetAnimGroup() { return m_AnimGroup; }
 
-    const AnimGroup* GetAnimGroup() const { return mAnimGroup; }
+    const AnimGroup* GetAnimGroup() const { return m_AnimGroup; }
 
-    AnimObject* GetAnimObject() { return this->mAnimBinding->GetAnimObject(0); }
+    AnimObject* GetAnimObject() { return this->m_AnimBinding->GetAnimObject(0); }
 
-    const AnimObject* GetAnimObject() const { return this->mAnimBinding->GetAnimObject(0); }
+    const AnimObject* GetAnimObject() const { return this->m_AnimBinding->GetAnimObject(0); }
 
-    void SetAnimObject(AnimObject* animObject) { this->mAnimBinding->SetAnimObject(0, animObject); }
+    void SetAnimObject(AnimObject* animObject) { this->m_AnimBinding->SetAnimObject(0, animObject); }
 
 protected:
-    struct ResFogDataDestroyer : public std::unary_function<ResFogData*, void>{
+    struct ResFogDataDestroyer : public std::unary_function<ResFogData*, void>
+{
         ResFogDataDestroyer(nw::os::IAllocator* allocator = 0): 
-            mAllocator(allocator)
-        {}
-        result_type operator()(argument_type data){
-            DestroyResFog(this->mAllocator, data);
+            m_Allocator(allocator) {}
+        result_type operator()(argument_type data)
+        {
+            DestroyResFog(this->m_Allocator, data);
         }
 
-        nw::os::IAllocator* mAllocator;
+        nw::os::IAllocator* m_Allocator;
     };
 
     struct ResFogUpdaterDataDestroyer : public std::unary_function<ResFogUpdaterData*, void>
     {
         ResFogUpdaterDataDestroyer(os::IAllocator* allocator = 0): 
-            mAllocator(allocator)
-        {}
-        result_type operator()(argument_type data){
-            DestroyResFogUpdater(this->mAllocator, data);
+            m_Allocator(allocator) {}
+        result_type operator()(argument_type data)
+        {
+            DestroyResFogUpdater(this->m_Allocator, data);
         }
 
-        nw::os::IAllocator* mAllocator;
+        nw::os::IAllocator* m_Allocator;
     };
 
     typedef nw::ut::MovePtr<ResFogData, ResFogDataDestroyer> ResPtr;
@@ -130,29 +142,29 @@ protected:
 
     Fog(nw::os::IAllocator* allocator,ResFog resObj,const Fog::Description& description): 
         TransformNode(allocator,resObj,description),
-        mNear(0.0f),
-        mFar(0.0f),
-        mWScale(0.0f),
-        mAnimGroup(NULL),
-        mOriginalValue(NULL)
-    {}
+        m_Near(0.0f),
+        m_Far(0.0f),
+        m_WScale(0.0f),
+        m_AnimGroup(NULL),
+        m_OriginalValue(NULL) {}
 
     Fog(nw::os::IAllocator* allocator,ResPtr resource,const Fog::Description& description): 
         TransformNode(allocator,ResFog(resource.Get()),description),
-        mResource(resource),
-        mNear(0.0f),
-        mFar(0.0f),
-        mWScale(0.0f),
-        mAnimGroup(NULL),
-        mOriginalValue(NULL)
-    {}
+        m_Resource(resource),
+        m_Near(0.0f),
+        m_Far(0.0f),
+        m_WScale(0.0f),
+        m_AnimGroup(NULL),
+        m_OriginalValue(NULL) {}
 
-    virtual ~Fog(){
-        nw::ut::SafeDestroy(this->mAnimGroup);
+    virtual ~Fog()
+    {
+        nw::ut::SafeDestroy(this->m_AnimGroup);
 
-        if (this->mOriginalValue.IsValid()){
-            GetAllocator().Free(this->mOriginalValue.ptr());
-            mOriginalValue = ResFog(NULL);
+        if (this->m_OriginalValue.IsValid())
+        {
+            GetAllocator().Free(this->m_OriginalValue.ptr());
+            m_OriginalValue = ResFog(NULL);
         }
     }
 
@@ -175,13 +187,13 @@ private:
 
     void SetupFogSampler(ResImageLookupTable fogSampler,ResFogUpdater fogUpdater,const nw::math::MTX44& inverseProjectionMatrix);
 
-    ResPtr mResource;
-    ResUpdaterPtr mUpdaterCache;
-    f32 mNear;
-    f32 mFar;
-    f32 mWScale;
-    AnimGroup* mAnimGroup;
-    ResFog mOriginalValue;
+    ResPtr m_Resource;
+    ResUpdaterPtr m_UpdaterCache;
+    f32 m_Near;
+    f32 m_Far;
+    f32 m_WScale;
+    AnimGroup* m_AnimGroup;
+    ResFog m_OriginalValue;
     static const float FOG_DENSITY;
     static const ResFogUpdater::FogUpdaterType FOG_UPDATER_TYPE;
     static const float FOG_MAX_DEPTH;

@@ -16,16 +16,16 @@ Voice::Voice():
     m_IsStarted(false),
     m_IsPause(false),
     m_SyncFlag(0)
-{
-    for(int i = 0; i < CHANNEL_MAX; i++)
+    {
+    for (int i = 0; i < CHANNEL_MAX; i++)
         m_pHardwareChannel[i] = NULL;
 }
 
 Voice::~Voice()
 {
-    for(int i = 0; i < CHANNEL_MAX; i++)
+    for (int i = 0; i < CHANNEL_MAX; i++)
     {
-        if(m_pHardwareChannel[i] != NULL)
+        if (m_pHardwareChannel[i] != NULL)
         {
             nn::snd::CTR::FreeVoice(m_pHardwareChannel[i]);
         }

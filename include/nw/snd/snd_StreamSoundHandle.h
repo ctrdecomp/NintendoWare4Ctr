@@ -3,6 +3,7 @@
 
 #include <nw/ut/ut_PreProcessor.h>
 #include <nw/snd/snd_StreamSound.h>
+#include <nw/snd/snd_SoundHandle.h>
 
 namespace nw {
 namespace snd {
@@ -11,6 +12,11 @@ class StreamSoundHandle
 {
 public:
     StreamSoundHandle(SoundHandle* pHandle);
+    StreamSoundHandle(): 
+        m_pSound(NULL) 
+    { 
+    }
+
     ~StreamSoundHandle() 
     { 
         DetachSound(); 
@@ -107,6 +113,8 @@ public:
             m_pSound->SetFxSend(bus, send);
         }
     }
+
+    void detail_AttachSoundAsTempHandle(internal::StreamSound* pSound);
 
     bool IsAttachedSound() const { return m_pSound != NULL; }
     void DetachSound();

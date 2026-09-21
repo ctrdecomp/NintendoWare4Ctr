@@ -10,14 +10,16 @@ namespace lyt{
 
 typedef struct FSTEntry FSTEntry;
 
-struct FSTArcEntry{
+struct FSTArcEntry
+{
     u32    isDirAndStringOff;
     u32    parentOrPosition;
     u32    nextEntryOrLength;
 };
 
-static bool isSame(const wchar_t* path, const wchar_t* string){
-    while(*string != '\0')
+static bool isSame(const wchar_t* path, const wchar_t* string)
+{
+    while (*string != '\0')
     {
         if (tolower(*path++) != tolower(*string++))
         {
@@ -48,7 +50,7 @@ static bool isSame(const wchar_t* path, const wchar_t* string){
         (fstStart[i].nextEntryOrLength )
 
 inline wchar_t* GetStringPtr(wchar_t* str,size_t offset)
-{
+        {
     return reinterpret_cast<wchar_t*>(reinterpret_cast<u8*>(str) + offset);
 }
 
@@ -98,7 +100,8 @@ bool ARCOpenDir(ARCHandle* handle, s32 entrynum, ARCDir* dir)
     return true;
 }
 
-bool ARCFastOpen(ARCHandle* handle, s32 entrynum, ARCFileInfo* af){
+bool ARCFastOpen(ARCHandle* handle, s32 entrynum, ARCFileInfo* af)
+{
     FSTArcEntry*           FSTEntries;
 
     FSTEntries = (FSTArcEntry*)handle->FSTStart;
@@ -190,7 +193,7 @@ s32 ARCConvertPathToEntrynum(ARCHandle* handle, const wchar_t* pathPtr)
     dirLookAt = handle->currDir;
     FSTEntries = (FSTArcEntry*)handle->FSTStart;
 
-    for(;;)
+    for (;;)
     {
 
         if (*pathPtr == '\0')
@@ -229,18 +232,19 @@ s32 ARCConvertPathToEntrynum(ARCHandle* handle, const wchar_t* pathPtr)
             }
         }
 
-        for(ptr = pathPtr; (*ptr != '\0') && (*ptr != '/'); ptr++);
+        for (ptr = pathPtr; (*ptr != '\0') && (*ptr != '/'); ptr++);
 
         isDir = (*ptr == '\0')? false : true;
         length = (s32)(ptr - pathPtr);
 
         ptr = pathPtr;
 
-        for(i = dirLookAt + 1; i < nextDir(FSTEntries, dirLookAt); i = entryIsDir(FSTEntries, i)? nextDir(FSTEntries, i): (i+1) )
+        for (i = dirLookAt + 1; i < nextDir(FSTEntries, dirLookAt); i = entryIsDir(FSTEntries, i)? nextDir(FSTEntries, i): (i+1) )
         {
 dot:
             if ((entryIsDir(FSTEntries, i) == false) &&
-                 (isDir == true)){
+                 (isDir == true))
+                 {
                 continue;
             }
 

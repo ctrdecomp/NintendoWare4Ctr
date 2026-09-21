@@ -93,7 +93,7 @@ struct SoundAmbientParam
         priority(0), 
         userData(0), 
         outputLineFlag(-1)
-    {
+        {
         tvParam.Initialize();
         for (int i = 0; i < DRC_OUT_COUNT; i++)
             drcParam[i].Initialize();

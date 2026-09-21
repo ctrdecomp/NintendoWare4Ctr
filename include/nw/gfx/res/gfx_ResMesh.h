@@ -9,30 +9,34 @@ namespace nw {
 namespace gfx {
 namespace res {
 
-struct ResMeshData : public ResSceneObjectData{
-    enum { IR_SCALE_COMMAND_SIZE = 2 + 1 + 2 * 4 + 1 };
+struct ResMeshData : public ResSceneObjectData
+{
+    enum
+{ IR_SCALE_COMMAND_SIZE = 2 + 1 + 2 * 4 + 1 };
     
-    nw::ut::ResS32 mShapeIndex;
-    nw::ut::ResS32 mMaterialIndex;
+    nw::ut::ResS32 m_ShapeIndex;
+    nw::ut::ResS32 m_MaterialIndex;
     nw::ut::Offset toOwnerModel;
-    nw::ut::ResBool mIsVisible;
-    nw::ut::ResU8 mRenderPriority;
-    nw::ut::ResS16 mMeshNodeVisibilityIndex;
-    nw::ut::ResS32 mCurrentPrimitiveIndex;
-    nw::ut::ResU32 mFlags;
-    nw::ut::ResU32 mIrScaleCommand[ IR_SCALE_COMMAND_SIZE ];
-    void*          mActivateCommandCache;
-    s32            mActivateCommandCacheSize;
-    void*          mDeactivateCommandCache;
-    s32            mDeactivateCommandCacheSize;
+    nw::ut::ResBool m_IsVisible;
+    nw::ut::ResU8 m_RenderPriority;
+    nw::ut::ResS16 m_MeshNodeVisibilityIndex;
+    nw::ut::ResS32 m_CurrentPrimitiveIndex;
+    nw::ut::ResU32 m_Flags;
+    nw::ut::ResU32 m_IrScaleCommand[ IR_SCALE_COMMAND_SIZE ];
+    void*          m_ActivateCommandCache;
+    s32            m_ActivateCommandCacheSize;
+    void*          m_DeactivateCommandCache;
+    s32            m_DeactivateCommandCacheSize;
     nw::ut::BinString toMeshNodeName;
-    u64            mRenderKeyCache;
-    nw::os::IAllocator* mCommandAllocator;
+    u64            m_RenderKeyCache;
+    nw::os::IAllocator* m_CommandAllocator;
 };
 
-class ResMesh : public ResSceneObject{
+class ResMesh : public ResSceneObject
+{
 public:
-    enum Flag{
+    enum Flag
+    {
         FLAG_HAS_VERTEX_ALPHA  = 0x1,
         FLAG_HAS_BONE_WEIGHT_W = 0x1 << 1,
         FLAG_VALID_RENDER_KEY_CACHE = 0x1 << 2,
@@ -51,9 +55,9 @@ public:
 
     NW_RES_FIELD_PRIMITIVE_DECL( s32, MeshNodeVisibilityIndex )
     
-    u64 GetRenderKeyCache() const { return ref().mRenderKeyCache; }
+    u64 GetRenderKeyCache() const { return ref().m_RenderKeyCache; }
 
-    void SetRenderKeyCache(u64 renderKey) { ref().mRenderKeyCache = renderKey; }
+    void SetRenderKeyCache(u64 renderKey) { ref().m_RenderKeyCache = renderKey; }
 
     Result Setup(ResModel owner, nw::os::IAllocator* allocator, ResGraphicsFile graphicsFile);
 

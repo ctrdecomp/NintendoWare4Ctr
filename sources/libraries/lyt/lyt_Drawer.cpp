@@ -13,13 +13,13 @@ namespace nw{
 namespace lyt{
 
 Drawer::Drawer():   
-    mPrevTexObj(0),
-    mActiveTexureNum(0),
-    mTexCoordNum(0),
-    mIsBlendDefault(true),
-    mAlphaTestEnable(false),
-    mCurrentTexEnvType(TEX_ENV_TYPE_NUM)
-{
+    m_PrevTexObj(0),
+    m_ActiveTexureNum(0),
+    m_TexCoordNum(0),
+    m_IsBlendDefault(true),
+    m_AlphaTestEnable(false),
+    m_CurrentTexEnvType(TEX_ENV_TYPE_NUM)
+    {
 }
 
 Drawer::Drawer(GraphicsResource& graphicsResource)
@@ -63,11 +63,11 @@ void Drawer::DrawBegin(const DrawInfo& drawInfo)
 
 void Drawer::DrawBegin(u32 flag)
 {
-    mActiveTexureNum = 0;
-    mTexCoordNum = 0;
-    mPrevTexObj = 0;
-    mCurrentTexEnvType = TEX_ENV_TYPE_NUM;
-    mIsBlendDefault = true;
+    m_ActiveTexureNum = 0;
+    m_TexCoordNum = 0;
+    m_PrevTexObj = 0;
+    m_CurrentTexEnvType = TEX_ENV_TYPE_NUM;
+    m_IsBlendDefault = true;
     
     SetUpTextures(NULL, false);
 
@@ -102,7 +102,7 @@ void Drawer::Initialize(GraphicsResource& graphicsResource, void* vertexBuffer)
 
 void Drawer::Finalize()
 {
-    void *const comamndBuffer = this->mCommandBuffer;
+    void *const comamndBuffer = this->m_CommandBuffer;
 
     Base::Finalize();
     Layout::FreeDeviceMemory(comamndBuffer);

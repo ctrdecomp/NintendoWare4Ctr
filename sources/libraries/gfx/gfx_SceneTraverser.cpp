@@ -18,7 +18,8 @@ namespace gfx{
 
 NW_UT_RUNTIME_TYPEINFO_DEFINITION(SceneTraverser, ISceneVisitor);
 
-SceneTraverser* SceneTraverser::Builder::Create(os::IAllocator* allocator){
+SceneTraverser* SceneTraverser::Builder::Create(os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
     
     void* memory = allocator->Alloc(sizeof(SceneTraverser));
@@ -29,122 +30,139 @@ SceneTraverser* SceneTraverser::Builder::Create(os::IAllocator* allocator){
     return traverser;
 }
 
-void SceneTraverser::Begin(SceneContext* sceneContext){
+void SceneTraverser::Begin(SceneContext* sceneContext)
+{
     NW_NULL_ASSERT(sceneContext);
     
-    this->mSceneContext = sceneContext;
-    this->mSceneContext->Clear();
+    this->m_SceneContext = sceneContext;
+    this->m_SceneContext->Clear();
 }
 
-void SceneTraverser::End(){
-    NW_NULL_ASSERT(this->mSceneContext);
-    this->mSceneContext = NULL;
+void SceneTraverser::End()
+{
+    NW_NULL_ASSERT(this->m_SceneContext);
+    this->m_SceneContext = NULL;
 }
 
-void SceneTraverser::VisitSceneNode(SceneNode* node){
-    NW_NULL_ASSERT(this->mSceneContext);
-    this->mSceneContext->PushSceneNode(node);
+void SceneTraverser::VisitSceneNode(SceneNode* node)
+{
+    NW_NULL_ASSERT(this->m_SceneContext);
+    this->m_SceneContext->PushSceneNode(node);
 }
 
-void SceneTraverser::VisitTransformNode(TransformNode* node){
-    NW_NULL_ASSERT(this->mSceneContext);
-    this->mSceneContext->PushSceneNode(node);
+void SceneTraverser::VisitTransformNode(TransformNode* node)
+{
+    NW_NULL_ASSERT(this->m_SceneContext);
+    this->m_SceneContext->PushSceneNode(node);
 }
 
-void SceneTraverser::VisitUserRenderNode(UserRenderNode* node){
-    NW_NULL_ASSERT(this->mSceneContext);
-    this->mSceneContext->PushSceneNode(node);
-    this->mSceneContext->PushUserRenderNode(node);
+void SceneTraverser::VisitUserRenderNode(UserRenderNode* node)
+{
+    NW_NULL_ASSERT(this->m_SceneContext);
+    this->m_SceneContext->PushSceneNode(node);
+    this->m_SceneContext->PushUserRenderNode(node);
 }
 
-void SceneTraverser::VisitModel(Model* model){
-    NW_NULL_ASSERT(this->mSceneContext);
-    this->mSceneContext->PushSceneNode(model);
-    this->mSceneContext->PushModel(model);
-    this->mSceneContext->PushAnimatableNode(model);
+void SceneTraverser::VisitModel(Model* model)
+{
+    NW_NULL_ASSERT(this->m_SceneContext);
+    this->m_SceneContext->PushSceneNode(model);
+    this->m_SceneContext->PushModel(model);
+    this->m_SceneContext->PushAnimatableNode(model);
 }
 
-void SceneTraverser::VisitSkeletalModel(SkeletalModel* model){
-    NW_NULL_ASSERT(this->mSceneContext);
-    this->mSceneContext->PushSceneNode(model);
-    this->mSceneContext->PushModel(model);
-    this->mSceneContext->PushSkeletalModel(model);
-    this->mSceneContext->PushAnimatableNode(model);
+void SceneTraverser::VisitSkeletalModel(SkeletalModel* model)
+{
+    NW_NULL_ASSERT(this->m_SceneContext);
+    this->m_SceneContext->PushSceneNode(model);
+    this->m_SceneContext->PushModel(model);
+    this->m_SceneContext->PushSkeletalModel(model);
+    this->m_SceneContext->PushAnimatableNode(model);
 }
 
-void SceneTraverser::VisitCamera(Camera* camera){
-    NW_NULL_ASSERT(this->mSceneContext);
-    this->mSceneContext->PushSceneNode(camera);
-    this->mSceneContext->PushCamera(camera);
-    this->mSceneContext->PushAnimatableNode(camera);
+void SceneTraverser::VisitCamera(Camera* camera)
+{
+    NW_NULL_ASSERT(this->m_SceneContext);
+    this->m_SceneContext->PushSceneNode(camera);
+    this->m_SceneContext->PushCamera(camera);
+    this->m_SceneContext->PushAnimatableNode(camera);
 }
 
-void SceneTraverser::VisitFog(Fog* fog){
-    NW_NULL_ASSERT(this->mSceneContext);
-    this->mSceneContext->PushSceneNode(fog);
-    this->mSceneContext->PushFog(fog);
-    this->mSceneContext->PushAnimatableNode(fog);
+void SceneTraverser::VisitFog(Fog* fog)
+{
+    NW_NULL_ASSERT(this->m_SceneContext);
+    this->m_SceneContext->PushSceneNode(fog);
+    this->m_SceneContext->PushFog(fog);
+    this->m_SceneContext->PushAnimatableNode(fog);
 }
 
-void SceneTraverser::VisitLight(Light* light){
+void SceneTraverser::VisitLight(Light* light)
+{
     NW_UNUSED_VARIABLE(light);
-    this->mSceneContext->PushSceneNode(light);
-    this->mSceneContext->PushLight(light);
-    this->mSceneContext->PushAnimatableNode(light);
+    this->m_SceneContext->PushSceneNode(light);
+    this->m_SceneContext->PushLight(light);
+    this->m_SceneContext->PushAnimatableNode(light);
 }
 
-void SceneTraverser::VisitFragmentLight(FragmentLight* light){
-    NW_NULL_ASSERT(this->mSceneContext);
-    this->mSceneContext->PushSceneNode(light);
-    this->mSceneContext->PushLight(light);
-    this->mSceneContext->PushFragmentLight(light);
-    this->mSceneContext->PushAnimatableNode(light);
+void SceneTraverser::VisitFragmentLight(FragmentLight* light)
+{
+    NW_NULL_ASSERT(this->m_SceneContext);
+    this->m_SceneContext->PushSceneNode(light);
+    this->m_SceneContext->PushLight(light);
+    this->m_SceneContext->PushFragmentLight(light);
+    this->m_SceneContext->PushAnimatableNode(light);
 }
 
-void SceneTraverser::VisitVertexLight(VertexLight* light){
-    NW_NULL_ASSERT(this->mSceneContext);
-    this->mSceneContext->PushSceneNode(light);
-    this->mSceneContext->PushLight(light);
-    this->mSceneContext->PushVertexLight(light);
-    this->mSceneContext->PushAnimatableNode(light);
+void SceneTraverser::VisitVertexLight(VertexLight* light)
+{
+    NW_NULL_ASSERT(this->m_SceneContext);
+    this->m_SceneContext->PushSceneNode(light);
+    this->m_SceneContext->PushLight(light);
+    this->m_SceneContext->PushVertexLight(light);
+    this->m_SceneContext->PushAnimatableNode(light);
 }
 
-void SceneTraverser::VisitAmbientLight(AmbientLight* light){
-    NW_NULL_ASSERT(this->mSceneContext);
-    this->mSceneContext->PushSceneNode(light);
-    this->mSceneContext->PushLight(light);
-    this->mSceneContext->PushAmbientLight(light);
-    this->mSceneContext->PushAnimatableNode(light);
+void SceneTraverser::VisitAmbientLight(AmbientLight* light)
+{
+    NW_NULL_ASSERT(this->m_SceneContext);
+    this->m_SceneContext->PushSceneNode(light);
+    this->m_SceneContext->PushLight(light);
+    this->m_SceneContext->PushAmbientLight(light);
+    this->m_SceneContext->PushAnimatableNode(light);
 }
 
-void SceneTraverser::VisitHemiSphereLight(HemiSphereLight* light){
-    NW_NULL_ASSERT(this->mSceneContext);
-    this->mSceneContext->PushSceneNode(light);
-    this->mSceneContext->PushLight(light);
-    this->mSceneContext->PushHemiSphereLight(light);
-    this->mSceneContext->PushAnimatableNode(light);
+void SceneTraverser::VisitHemiSphereLight(HemiSphereLight* light)
+{
+    NW_NULL_ASSERT(this->m_SceneContext);
+    this->m_SceneContext->PushSceneNode(light);
+    this->m_SceneContext->PushLight(light);
+    this->m_SceneContext->PushHemiSphereLight(light);
+    this->m_SceneContext->PushAnimatableNode(light);
 }
 
-void SceneTraverser::VisitParticleSet(ParticleSet* particleSet){
+void SceneTraverser::VisitParticleSet(ParticleSet* particleSet)
+{
     particleSet->CopyTraversalResults(particleSet->GetParent());
 
-    NW_NULL_ASSERT(this->mSceneContext);
-    this->mSceneContext->PushSceneNode(particleSet);
-    this->mSceneContext->PushParticleSet(particleSet);
+    NW_NULL_ASSERT(this->m_SceneContext);
+    this->m_SceneContext->PushSceneNode(particleSet);
+    this->m_SceneContext->PushParticleSet(particleSet);
 }
 
-void SceneTraverser::VisitParticleEmitter(ParticleEmitter* particleEmitter){
-    NW_NULL_ASSERT(this->mSceneContext);
-    this->mSceneContext->PushSceneNode(reinterpret_cast<SceneNode*>(particleEmitter));
-    this->mSceneContext->PushParticleEmitter(particleEmitter);
+void SceneTraverser::VisitParticleEmitter(ParticleEmitter* particleEmitter)
+{
+    NW_NULL_ASSERT(this->m_SceneContext);
+    this->m_SceneContext->PushSceneNode(reinterpret_cast<SceneNode*>(particleEmitter));
+    this->m_SceneContext->PushParticleEmitter(particleEmitter);
 }
 
-void SceneTraverser::VisitParticleModel(ParticleModel* model){
-    NW_NULL_ASSERT(this->mSceneContext);
-    this->mSceneContext->PushSceneNode(model);
-    this->mSceneContext->PushModel(model);
-    this->mSceneContext->PushParticleModel(model);
-    this->mSceneContext->PushAnimatableNode(model);
+void SceneTraverser::VisitParticleModel(ParticleModel* model)
+{
+    NW_NULL_ASSERT(this->m_SceneContext);
+    this->m_SceneContext->PushSceneNode(model);
+    this->m_SceneContext->PushModel(model);
+    this->m_SceneContext->PushParticleModel(model);
+    this->m_SceneContext->PushAnimatableNode(model);
 }
 
 }

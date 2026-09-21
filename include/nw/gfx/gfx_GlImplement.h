@@ -32,7 +32,7 @@ namespace gfx {
 namespace internal {
 
 void nwgfxAddVramDmaCommand(void* srcaddr, void* dstaddr, GLsizei size);
-void nwgfxClear( u32 colorAddr, u32 colorSize, u32 clearColor, u32 colorWidth,u32 depthAddr, u32 depthSize, u32 clearDepth, u32 depthWidth );
+void nwgfxClear(u32 colorAddr, u32 colorSize, u32 clearColor, u32 colorWidth,u32 depthAddr, u32 depthSize, u32 clearDepth, u32 depthWidth);
 
 void GetFrameBufferState(GLuint fboID, u32* pColorAddr, u32* pDepthAddr);
 

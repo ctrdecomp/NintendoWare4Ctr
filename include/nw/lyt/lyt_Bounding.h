@@ -10,12 +10,13 @@ namespace lyt{
 struct ResBlockSet;
 class DrawInfo;
 
-class Bounding : public Pane{
+class Bounding : public Pane
+{
     typedef Pane Base;
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    Bounding(){}
+    Bounding() {}
     Bounding(const res::Bounding* pBlock,const ResBlockSet& resBlockSet);
     virtual ~Bounding();
 protected:

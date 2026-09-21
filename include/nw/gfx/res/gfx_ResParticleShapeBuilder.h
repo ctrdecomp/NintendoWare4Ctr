@@ -9,17 +9,21 @@ namespace nw {
 namespace gfx {
 namespace res {
 
-struct ResParticleShapeBuilderData{
+struct ResParticleShapeBuilderData
+{
     nw::ut::ResTypeInfo typeInfo;
-    nw::ut::ResBool mIsAscendingOrder;
+    nw::ut::ResBool m_IsAscendingOrder;
     u8              padding_0[3];
-    nw::ut::ResVec3 mDrawOffset;
+    nw::ut::ResVec3 m_DrawOffset;
 };
 
-class ResParticleShapeBuilder : public nw::ut::ResCommon< ResParticleShapeBuilderData >{
+class ResParticleShapeBuilder : public nw::ut::ResCommon< ResParticleShapeBuilderData >
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleShapeBuilder) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('BUIL') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleShapeBuilder) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('BUIL') };
 
     NW_RES_CTOR( ResParticleShapeBuilder )
 
@@ -35,10 +39,13 @@ struct ResParticleBillboardShapeBuilderData : public ResParticleShapeBuilderData
 {
 };
 
-class ResParticleBillboardShapeBuilder : public ResParticleShapeBuilder{
+class ResParticleBillboardShapeBuilder : public ResParticleShapeBuilder
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleBillboardShapeBuilder) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('BILL') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleBillboardShapeBuilder) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('BILL') };
 
     NW_RES_CTOR_INHERIT( ResParticleBillboardShapeBuilder, ResParticleShapeBuilder )
 
@@ -49,10 +56,13 @@ struct ResParticleWorldBillboardShapeBuilderData : public ResParticleShapeBuilde
 {
 };
 
-class ResParticleWorldBillboardShapeBuilder : public ResParticleShapeBuilder{
+class ResParticleWorldBillboardShapeBuilder : public ResParticleShapeBuilder
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleWorldBillboardShapeBuilder) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('WBLL') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleWorldBillboardShapeBuilder) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('WBLL') };
 
     NW_RES_CTOR_INHERIT(ResParticleWorldBillboardShapeBuilder, ResParticleShapeBuilder)
 
@@ -63,10 +73,13 @@ struct ResParticleYBillboardShapeBuilderData : public ResParticleShapeBuilderDat
 {
 };
 
-class ResParticleYBillboardShapeBuilder : public ResParticleShapeBuilder{
+class ResParticleYBillboardShapeBuilder : public ResParticleShapeBuilder
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleYBillboardShapeBuilder) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('YBIL') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleYBillboardShapeBuilder) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('YBIL') };
 
     NW_RES_CTOR_INHERIT(ResParticleYBillboardShapeBuilder, ResParticleShapeBuilder)
 
@@ -77,10 +90,13 @@ struct ResParticleXyPlaneShapeBuilderData : public ResParticleShapeBuilderData
 {
 };
 
-class ResParticleXyPlaneShapeBuilder : public ResParticleShapeBuilder{
+class ResParticleXyPlaneShapeBuilder : public ResParticleShapeBuilder
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleXyPlaneShapeBuilder) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('XYPL') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleXyPlaneShapeBuilder) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('XYPL') };
 
     NW_RES_CTOR_INHERIT(ResParticleXyPlaneShapeBuilder, ResParticleShapeBuilder)
 

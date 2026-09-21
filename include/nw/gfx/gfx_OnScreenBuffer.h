@@ -7,16 +7,17 @@ namespace os{
 }
 namespace gfx{
 
-class OnScreenBuffer : public IRenderTarget{
+class OnScreenBuffer : public IRenderTarget
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(OnScreenBuffer);
 
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    virtual const Description& GetDescription() const { return mDescription; }
+    virtual const Description& GetDescription() const { return m_Description; }
 
-    virtual const FrameBufferObject& GetBufferObject() const { return mBackBufferObject; }
+    virtual const FrameBufferObject& GetBufferObject() const { return m_BackBufferObject; }
 
 private:
     OnScreenBuffer(nw::os::IAllocator* pAllocator, const Description& description);
@@ -26,10 +27,10 @@ private:
 
     virtual ~OnScreenBuffer();
 
-    u32 mColorBuffer;
-    u32 mDepthBuffer;
-    FrameBufferObject mBackBufferObject;
-    Description mDescription;
+    u32 m_ColorBuffer;
+    u32 m_DepthBuffer;
+    FrameBufferObject m_BackBufferObject;
+    Description m_Description;
 
     friend class IRenderTarget;
 };

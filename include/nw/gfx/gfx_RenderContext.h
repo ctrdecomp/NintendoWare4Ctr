@@ -35,12 +35,14 @@ class HemiSphereLight;
 class Fog;
 class ShaderProgram;
 
-class RenderContext : public GfxObject{
+class RenderContext : public GfxObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(RenderContext);
 
 public:
-    enum{
+    enum
+    {
         DEFAULT_MAX_CAMERAS = 32,
         DEFAULT_MAX_LIGHT_SETS = 128,
         DEFAULT_MAX_FOGS = 32,
@@ -54,14 +56,16 @@ public:
         VERTEX_LIGHT_SPOT_FACTOR = 5
     };
 
-    enum RenderMode{
+    enum RenderMode
+    {
         RENDERMODE_DEFAULT = 0,
         RENDERMODE_IGNORE_MATERIAL = 0x1 << 0,
         RENDERMODE_IGNORE_SHADER = 0x1 << 1,
         RENDERMODE_IGNORE_SCENEENVIRONMENT = 0x1 << 2
     };
 
-    enum ResetStateMode{
+    enum ResetStateMode
+    {
         RESETSTATEMODE_MODEL_CACHE = 0x1 << 0,
         RESETSTATEMODE_MATERIAL = 0x1 << 1,
         RESETSTATEMODE_MATERIAL_CACHE = 0x1 << 2,
@@ -86,8 +90,10 @@ public:
             RESETSTATEMODE_VERTEX_ATTRIBUTE
     };
 
-    struct MaterialHash{
-        MaterialHash(){
+    struct MaterialHash
+    {
+        MaterialHash()
+        {
             ResetMaterialHash(Model::MULTI_FLAG_BUFFER_MATERIAL);
         }
 
@@ -113,33 +119,33 @@ public:
     {
     public:
         Builder():
-            mMaxCameras(DEFAULT_MAX_CAMERAS),
-            mMaxLightSets(DEFAULT_MAX_LIGHT_SETS),
-            mMaxFogs(DEFAULT_MAX_FOGS),
-            mMaxVertexLights(LightSet::DEFAULT_MAX_VERTEX_LIGHTS),
-            mParticleMaterialActivator(NULL)
-        {}
+            m_MaxCameras(DEFAULT_MAX_CAMERAS),
+            m_MaxLightSets(DEFAULT_MAX_LIGHT_SETS),
+            m_MaxFogs(DEFAULT_MAX_FOGS),
+            m_MaxVertexLights(LightSet::DEFAULT_MAX_VERTEX_LIGHTS),
+            m_ParticleMaterialActivator(NULL) {}
 
         ~Builder() {}
 
-        Builder& MaxCameras(int maxCamera) { mMaxCameras = maxCamera; return *this; }
-        Builder& MaxLights(s32 max) { mMaxLightSets = max; return *this; }
-        Builder& MaxFogs(s32 max) { mMaxFogs = max; return *this; }
-        Builder& MaxVertexLights(int maxVertexLights) { mMaxVertexLights = maxVertexLights; return *this; }
+        Builder& MaxCameras(int maxCamera) { m_MaxCameras = maxCamera; return *this; }
+        Builder& MaxLights(s32 max) { m_MaxLightSets = max; return *this; }
+        Builder& MaxFogs(s32 max) { m_MaxFogs = max; return *this; }
+        Builder& MaxVertexLights(int maxVertexLights) { m_MaxVertexLights = maxVertexLights; return *this; }
 
-        Builder& ParticleMaterialActivator(IMaterialActivator* particleMaterialActivator){
-            mParticleMaterialActivator = particleMaterialActivator;
+        Builder& ParticleMaterialActivator(IMaterialActivator* particleMaterialActivator)
+        {
+            m_ParticleMaterialActivator = particleMaterialActivator;
             return *this;
         }
 
         RenderContext* Create(nw::os::IAllocator* allocator);
 
     private:
-        int mMaxCameras;
-        int mMaxLightSets;
-        int mMaxFogs;
-        int mMaxVertexLights;
-        IMaterialActivator* mParticleMaterialActivator;
+        int m_MaxCameras;
+        int m_MaxLightSets;
+        int m_MaxFogs;
+        int m_MaxVertexLights;
+        IMaterialActivator* m_ParticleMaterialActivator;
     };
 
     void SetRenderTarget(IRenderTarget* renderTarget, const Viewport& viewport);
@@ -152,8 +158,8 @@ public:
 
     void ClearBuffer(GLbitfield mask, const nw::ut::FloatColor& color, f32 depth);
 
-    IRenderTarget* GetRenderTarget() { return mRenderTarget; }
-    const IRenderTarget* GetRenderTarget() const { return mRenderTarget; }
+    IRenderTarget* GetRenderTarget() { return m_RenderTarget; }
+    const IRenderTarget* GetRenderTarget() const { return m_RenderTarget; }
 
     void ActivateContext(IMaterialActivator* userMaterialActivator = NULL);
 
@@ -161,100 +167,95 @@ public:
 
     void RenderPrimitive(ResPrimitive primitive);
 
-    void SetActiveCamera(int index){
-        Camera* camera = mSceneEnvironment.mCameras[index];
-        mSceneEnvironment.mCameraIndex = index;
+    void SetActiveCamera(int index)
+    {
+        Camera* camera = m_SceneEnvironment.m_Cameras[index];
+        m_SceneEnvironment.m_CameraIndex = index;
 
-        if (mSceneEnvironment.mCamera != camera)
+        if (m_SceneEnvironment.m_Camera != camera)
         {
-            mSceneEnvironment.mCamera = camera;
+            m_SceneEnvironment.m_Camera = camera;
             GraphicsDevice::SetWScale(camera->GetWScale());
         }
     }
 
-    Camera* GetActiveCamera(){
-        return mSceneEnvironment.mCamera;
+    Camera* GetActiveCamera()
+    {
+        return m_SceneEnvironment.m_Camera;
     }
 
-    const Camera* GetActiveCamera() const{
-        return mSceneEnvironment.mCamera;
+    const Camera* GetActiveCamera() const
+    {
+        return m_SceneEnvironment.m_Camera;
     }
 
-    s32 GetActiveCameraIndex() const{
-        return mSceneEnvironment.mCameraIndex;
+    s32 GetActiveCameraIndex() const
+    {
+        return m_SceneEnvironment.m_CameraIndex;
     }
 
     void SetCameraMatrix(Camera* camera, bool isForce = false);
-
-    NW_DEPRECATED_FUNCTION(void SetModelMatrix(Model* model)){
-        if (model == NULL){
-            mModelCache = NULL;
-            return;
-        }
-
-        SkeletalModel* skeletalModel = ut::DynamicCast<SkeletalModel*>(model);
-        if (skeletalModel){
-            this->SetModelMatrixForSkeletalModel(skeletalModel);
-        }
-        else{
-            this->SetModelMatrixForModel(model);
-        }
-    }
 
     void SetModelMatrixForModel(Model* model);
 
     void SetModelMatrixForSkeletalModel(SkeletalModel* skeletalModel);
 
-    Model* GetModelCache() { return mModelCache; }
-    const Model* GetModelCache() const { return mModelCache; }
+    Model* GetModelCache() { return m_ModelCache; }
+    const Model* GetModelCache() const { return m_ModelCache; }
 
-    Material* GetMaterial() { return mMaterial; }
-    const Material* GetMaterial() const { return mMaterial; }
+    Material* GetMaterial() { return m_Material; }
+    const Material* GetMaterial() const { return m_Material; }
 
-    void SetMaterial(Material* material){
+    void SetMaterial(Material* material)
+    {
         NW_NULL_ASSERT(material);
-        mMaterial = material;
+        m_Material = material;
     }
 
-    Material* GetMaterialCache() { return mMaterialCache; }
-    const Material* GetMaterialCache() const { return mMaterialCache; }
+    Material* GetMaterialCache() { return m_MaterialCache; }
+    const Material* GetMaterialCache() const { return m_MaterialCache; }
 
-    ShaderProgram* GetShaderProgram() { return this->mShaderProgram.Get(); }
-    const ShaderProgram* GetShaderProgram() const { return this->mShaderProgram.Get(); }
+    ShaderProgram* GetShaderProgram() { return this->m_ShaderProgram.Get(); }
+    const ShaderProgram* GetShaderProgram() const { return this->m_ShaderProgram.Get(); }
 
-    SceneEnvironment& GetSceneEnvironment(){
-        return mSceneEnvironment;
+    SceneEnvironment& GetSceneEnvironment()
+    {
+        return m_SceneEnvironment;
     }
 
-    const SceneEnvironment& GetSceneEnvironment() const{
-        return mSceneEnvironment;
+    const SceneEnvironment& GetSceneEnvironment() const
+    {
+        return m_SceneEnvironment;
     }
 
-    NW_DEPRECATED_FUNCTION(void SetMatrixPaletteCount(int count)) { NW_UNUSED_VARIABLE(count); }
+    void SetMaterialHash(const MaterialHash& materialHash) { m_MaterialHash = materialHash; }
 
-    void SetMaterialHash(const MaterialHash& materialHash) { mMaterialHash = materialHash; }
+    MaterialHash GetMaterialHash() { return m_MaterialHash; }
+    const MaterialHash* GetMaterialHash() const { return &m_MaterialHash; }
 
-    MaterialHash GetMaterialHash() { return mMaterialHash; }
-    const MaterialHash* GetMaterialHash() const { return &mMaterialHash; }
-
-    u32 GetRenderMode() const{
-        return mRenderMode;
+    u32 GetRenderMode() const
+    {
+        return m_RenderMode;
     }
 
-    void SetRenderMode(u32 renderMode){
-        mRenderMode = renderMode;
+    void SetRenderMode(u32 renderMode)
+    {
+        m_RenderMode = renderMode;
     }
 
-    bool IsShaderProgramDirty() const{
-        return mIsShaderProgramDirty;
+    bool IsShaderProgramDirty() const
+    {
+        return m_IsShaderProgramDirty;
     }
 
-    math::VEC3& ModelTranslateOffset(){
-        return mModelTranslateOffset;
+    math::VEC3& ModelTranslateOffset()
+    {
+        return m_ModelTranslateOffset;
     }
 
-    const math::VEC3& ModelTranslateOffset() const{
-        return mModelTranslateOffset;
+    const math::VEC3& ModelTranslateOffset() const
+    {
+        return m_ModelTranslateOffset;
     }
 
     void ActivateVertexAttribute(ResMesh mesh);
@@ -274,25 +275,30 @@ private:
 
     void ActivateSceneEnvironment();
 
-    void ActivateMaterial(IMaterialActivator* userMaterialActivator){
-        if (!ut::CheckFlag(mRenderMode, RenderContext::RENDERMODE_IGNORE_MATERIAL)){
+    void ActivateMaterial(IMaterialActivator* userMaterialActivator)
+    {
+        if (!ut::CheckFlag(m_RenderMode, RenderContext::RENDERMODE_IGNORE_MATERIAL))
+    {
             IMaterialActivator* materialActivator = NULL;
 
-            if (userMaterialActivator == NULL){
-                materialActivator = mMaterial->GetOwnerModel()->GetMaterialActivator();
+            if (userMaterialActivator == NULL)
+            {
+                materialActivator = m_Material->GetOwnerModel()->GetMaterialActivator();
             }
             else{
                 materialActivator = userMaterialActivator;
             }
 
             NW_NULL_ASSERT(materialActivator);
-            materialActivator->Activate(this, mMaterial);
+            materialActivator->Activate(this, m_Material);
         }
     }
 
-    void ActivateParticleMaterial(){
-        if (!ut::CheckFlag(mRenderMode, RenderContext::RENDERMODE_IGNORE_MATERIAL)){
-            mParticleMaterialActivator.Get()->Activate(this, mMaterial);
+    void ActivateParticleMaterial()
+    {
+        if (!ut::CheckFlag(m_RenderMode, RenderContext::RENDERMODE_IGNORE_MATERIAL))
+    {
+            m_ParticleMaterialActivator.Get()->Activate(this, m_Material);
         }
     }
 
@@ -312,88 +318,102 @@ private:
 
     void TransformToViewCoordinate(math::VEC4* out, const math::MTX34* view, const math::VEC4* v);
 
-    u32 ToLutTexture(s32 index){
+    u32 ToLutTexture(s32 index)
+    {
         NW_ASSERT(0 <= index && index < LOOKUP_TABLE_COUNT);
         return index + GL_LUT_TEXTURE0_DMP;
     }
 
     inline GLuint ToPrimitiveModeGL(u8 mode, bool isGeometryShaderEnabled);
 
-    GfxPtr<ShaderProgram> mShaderProgram;
+    GfxPtr<ShaderProgram> m_ShaderProgram;
 
-    bool mIsVertexAlphaEnabled;
-    bool mIsBoneWeightWEnabled;
-    bool mIsVertexAttributeDirty;
-    bool mIsShaderProgramDirty;
+    bool m_IsVertexAlphaEnabled;
+    bool m_IsBoneWeightWEnabled;
+    bool m_IsVertexAttributeDirty;
+    bool m_IsShaderProgramDirty;
 
-    u32 mRenderMode;
+    u32 m_RenderMode;
 
-    IRenderTarget* mRenderTarget;
-    Model* mModelCache;
-    Material* mMaterial;
-    Material* mMaterialCache;
-    Camera* mCameraCache;
+    IRenderTarget* m_RenderTarget;
+    Model* m_ModelCache;
+    Material* m_Material;
+    Material* m_MaterialCache;
+    Camera* m_CameraCache;
 
-    SceneEnvironment mSceneEnvironment;
+    SceneEnvironment m_SceneEnvironment;
 
-    MaterialHash mMaterialHash;
-    GfxPtr<IMaterialActivator> mParticleMaterialActivator;
+    MaterialHash m_MaterialHash;
+    GfxPtr<IMaterialActivator> m_ParticleMaterialActivator;
 
-    nw::math::VEC3 mModelTranslateOffset;
+    nw::math::VEC3 m_ModelTranslateOffset;
 };
 
-inline void RenderContext::MaterialHash::ResetMaterialHash(s32 hashMask){
+inline void RenderContext::MaterialHash::ResetMaterialHash(s32 hashMask)
+{
     NW_UNUSED_VARIABLE(hashMask);
     const u32 resetValue = ~(0x0);
 
-    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_SHADER_PARAMETER)){
+    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_SHADER_PARAMETER))
+    {
         shaderParameter = resetValue;
     }
 
-    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_SHADING_PARAMETER)){
+    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_SHADING_PARAMETER))
+    {
         shadingParameter = resetValue;
     }
 
-    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_MATERIAL_COLOR)){
+    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_MATERIAL_COLOR))
+    {
         materialColor = resetValue;
     }
 
-    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_RASTERIZATION)){
+    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_RASTERIZATION))
+    {
         rasterization = resetValue;
     }
 
-    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_TEXTURE_COORDINATOR)){
+    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_TEXTURE_COORDINATOR))
+    {
         textureCoordinator = resetValue;
     }
 
-    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_TEXTURE_MAPPER)){
+    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_TEXTURE_MAPPER))
+    {
         textureMapper = resetValue;
     }
 
-    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_FRAGMENT_LIGHTING)){
+    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_FRAGMENT_LIGHTING))
+    {
         fragmentLighting = resetValue;
     }
 
-    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_FRAGMENT_LIGHTING_TABLE)){
+    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_FRAGMENT_LIGHTING_TABLE))
+    {
         fragmentLightingTable = resetValue;
     }
 
-    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_TEXTURE_COMBINER)){
+    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_TEXTURE_COMBINER))
+    {
         textureCombiner = resetValue;
     }
 
-    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_FRAGMENT_OPERATION)){
+    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_FRAGMENT_OPERATION))
+    {
         fragmentOperation = resetValue;
     }
 
-    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_ALPHA_TEST)){
+    if (ut::CheckFlag(hashMask, Model::FLAG_BUFFER_ALPHA_TEST))
+    {
         alphaTest = resetValue;
     }
 }
 
-inline void RenderContext::DeactivateVertexAttribute(ResMesh mesh){
-    NW_NULL_ASSERT(mesh.ref().mDeactivateCommandCache);
-    internal::NWUseCmdlist(mesh.ref().mDeactivateCommandCache, mesh.ref().mDeactivateCommandCacheSize);
+inline void RenderContext::DeactivateVertexAttribute(ResMesh mesh)
+{
+    NW_NULL_ASSERT(mesh.ref().m_DeactivateCommandCache);
+    internal::NWUseCmdlist(mesh.ref().m_DeactivateCommandCache, mesh.ref().m_DeactivateCommandCacheSize);
 }
 
 }

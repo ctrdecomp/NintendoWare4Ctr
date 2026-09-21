@@ -10,7 +10,8 @@ namespace os{
 }
 namespace gfx{
 
-class LookAtTargetViewUpdater : public CameraViewUpdater{
+class LookAtTargetViewUpdater : public CameraViewUpdater
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(LookAtTargetViewUpdater);
 
@@ -21,26 +22,31 @@ public:
 
     static LookAtTargetViewUpdater* Create(nw::os::IAllocator* allocator,ResLookAtTargetViewUpdater resUpdater);
 
-    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize,bool isDynamicBuild){
+    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize,bool isDynamicBuild)
+    {
         nw::os::MemorySizeCalculator& size = *pSize;
 
         size += sizeof(LookAtTargetViewUpdater);
-        if (isDynamicBuild){
+        if (isDynamicBuild)
+        {
             size += sizeof(ResLookAtTargetViewUpdaterData);
         }
     }
 
     void virtual Update(nw::math::MTX34* viewMatrix,const nw::math::MTX34& worldMatrix,const nw::math::VEC3& cameraPosition);
 
-    virtual ResCameraViewUpdater GetResource() {
-        return this->mResource;
+    virtual ResCameraViewUpdater GetResource()
+    {
+        return this->m_Resource;
     }
 
-    virtual const ResCameraViewUpdater GetResource() const {
-        return this->mResource;
+    virtual const ResCameraViewUpdater GetResource() const
+    {
+        return this->m_Resource;
     }
 
-    virtual anim::ResCameraAnimData::ViewUpdaterKind Kind() const{
+    virtual anim::ResCameraAnimData::ViewUpdaterKind Kind() const
+    {
         return anim::ResCameraAnimData::VIEW_UPDATER_LOOKAT;
     }
     
@@ -48,7 +54,7 @@ private:
     LookAtTargetViewUpdater(nw::os::IAllocator* pAllocator,bool isDynamic,ResLookAtTargetViewUpdater resUpdater);
     virtual ~LookAtTargetViewUpdater();
 
-    ResLookAtTargetViewUpdater mResource;
+    ResLookAtTargetViewUpdater m_Resource;
 };
 
 }

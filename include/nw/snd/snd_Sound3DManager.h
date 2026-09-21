@@ -32,7 +32,7 @@ struct Sound3DParam
 class Sound3DManager : 
     public internal::BasicSound::AmbientParamUpdateCallback, 
     public internal::BasicSound::AmbientArgAllocatorCallback
-{
+    {
 public:
     typedef internal::InstancePool<Sound3DParam> Sound3DParamPool;
     typedef ut::LinkList<Sound3DListener, offsetof(Sound3DListener,m_LinkNode)> ListenerList;
@@ -51,8 +51,8 @@ public:
 
     void SetEngine(Sound3DEngine* pEngine);
 
-    void SetMaxPriorityReduction(int maxPriorityReduction){ m_MaxPriorityReduction = maxPriorityReduction; }
-    int GetMaxPriorityReduction() const{ return m_MaxPriorityReduction; }
+    void SetMaxPriorityReduction(int maxPriorityReduction) { m_MaxPriorityReduction = maxPriorityReduction; }
+    int GetMaxPriorityReduction() const { return m_MaxPriorityReduction; }
 
     void SetPanRange(f32 panRange) { m_PanRange = panRange; }
     f32 GetPanRange() const { return m_PanRange; }

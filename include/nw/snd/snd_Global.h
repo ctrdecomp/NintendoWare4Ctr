@@ -89,7 +89,7 @@ struct AdshrCurve
         sustain(s), 
         hold(h), 
         release(r)
-    {
+        {
     }
 };
 
@@ -206,8 +206,7 @@ struct AdshrCurve
         decay(d),
         sustain(s),
         hold(h),
-        release(r)
-    {}
+        release(r) {}
 };
 
 namespace internal{

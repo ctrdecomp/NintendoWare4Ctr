@@ -9,7 +9,8 @@ namespace gfx{
 
 NW_UT_RUNTIME_TYPEINFO_DEFINITION(FrustumProjectionUpdater,CameraProjectionUpdater);
 
-FrustumProjectionUpdater* FrustumProjectionUpdater::Create(os::IAllocator* allocator){
+FrustumProjectionUpdater* FrustumProjectionUpdater::Create(os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
     
     void* updaterMemory = allocator->Alloc(sizeof(FrustumProjectionUpdater));
@@ -21,18 +22,19 @@ FrustumProjectionUpdater* FrustumProjectionUpdater::Create(os::IAllocator* alloc
             new(dataMemory) ResFrustumProjectionUpdaterData();
 
     buffer->typeInfo = ResFrustumProjectionUpdater::TYPE_INFO;
-    buffer->mNear = PROJECTION_NEAR_CLIP;
-    buffer->mFar = PROJECTION_FAR_CLIP;
-    buffer->mRect.mAspectRatio = PROJECTION_ASPECT_RATIO;
-    buffer->mRect.mCenter = PROJECTION_CENTER;
-    buffer->mRect.mHeight = PROJECTION_HEIGHT;
+    buffer->m_Near = PROJECTION_NEAR_CLIP;
+    buffer->m_Far = PROJECTION_FAR_CLIP;
+    buffer->m_Rect.m_AspectRatio = PROJECTION_ASPECT_RATIO;
+    buffer->m_Rect.m_Center = PROJECTION_CENTER;
+    buffer->m_Rect.m_Height = PROJECTION_HEIGHT;
 
     ResFrustumProjectionUpdater resUpdater = ResFrustumProjectionUpdater(buffer);
 
     return new(updaterMemory) FrustumProjectionUpdater(allocator, true, resUpdater);
 }
 
-FrustumProjectionUpdater* FrustumProjectionUpdater::Create(os::IAllocator* allocator, ResFrustumProjectionUpdater resUpdater){
+FrustumProjectionUpdater* FrustumProjectionUpdater::Create(os::IAllocator* allocator, ResFrustumProjectionUpdater resUpdater)
+{
     NW_NULL_ASSERT(allocator);
     
     void* updaterMemory = allocator->Alloc(sizeof(FrustumProjectionUpdater));
@@ -43,27 +45,29 @@ FrustumProjectionUpdater* FrustumProjectionUpdater::Create(os::IAllocator* alloc
 
 FrustumProjectionUpdater::FrustumProjectionUpdater(os::IAllocator* allocator,bool isDynamic,ResFrustumProjectionUpdater resUpdater): 
     CameraProjectionUpdater(allocator, isDynamic),
-    mResource(resUpdater)
-{}
+    m_Resource(resUpdater) {}
 
-FrustumProjectionUpdater::~FrustumProjectionUpdater(){
-    if (this->IsDynamic() && this->mResource.IsValid()){
-        this->GetAllocator().Free(mResource.ptr());
+FrustumProjectionUpdater::~FrustumProjectionUpdater()
+{
+    if (this->IsDynamic() && this->m_Resource.IsValid())
+    {
+        this->GetAllocator().Free(m_Resource.ptr());
     }
 }
 
-void FrustumProjectionUpdater::Update(math::MTX44* projectionMatrix, math::MTX34* textureProjectionMatrix){
-    NW_ASSERT(this->mResource.IsValid());
+void FrustumProjectionUpdater::Update(math::MTX44* projectionMatrix, math::MTX34* textureProjectionMatrix)
+{
+    NW_ASSERT(this->m_Resource.IsValid());
 
-    float halfWidth = this->mResource.GetRect().GetWidth() / 2.0f;
-    float halfHeight = this->mResource.GetRect().GetHeight() / 2.0f;
+    float halfWidth = this->m_Resource.GetRect().GetWidth() / 2.0f;
+    float halfHeight = this->m_Resource.GetRect().GetHeight() / 2.0f;
 
-    float left = this->mResource.GetRect().GetCenter().x - halfWidth;
-    float right = this->mResource.GetRect().GetCenter().x + halfWidth;
-    float bottom = this->mResource.GetRect().GetCenter().y - halfHeight;
-    float top = this->mResource.GetRect().GetCenter().y + halfHeight;
-    float near = this->mResource.GetNear();
-    float far = this->mResource.GetFar();
+    float left = this->m_Resource.GetRect().GetCenter().x - halfWidth;
+    float right = this->m_Resource.GetRect().GetCenter().x + halfWidth;
+    float bottom = this->m_Resource.GetRect().GetCenter().y - halfHeight;
+    float top = this->m_Resource.GetRect().GetCenter().y + halfHeight;
+    float near = this->m_Resource.GetNear();
+    float far = this->m_Resource.GetFar();
 
     math::MTX44FrustumPivot(projectionMatrix,left,right,bottom,top,near,far,this->GetPivotDirection());
 

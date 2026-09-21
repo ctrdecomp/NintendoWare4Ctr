@@ -30,27 +30,31 @@ const u32 FONT_FILE_VERSION  = NW_UT_MAKE_VERSION(3, 0, 0, 0);
 const u16 INVALID_CHAR_CODE   = 0xFFFF;
 const u16 INVALID_GLYPH_INDEX = 0xFFFF;
 
-enum FontType{
+enum FontType
+{
     FONT_TYPE_GLYPH,
     FONT_TYPE_TEXTURE,
     NUM_OF_FONT_TYPE
 };
 
-enum CharacterCode{
+enum CharacterCode
+{
     CHARACTER_CODE_UNICODE = 1,
     CHARACTER_CODE_SJIS,
     CHARACTER_CODE_CP1252,
     CHARACTER_CODE_MAX
 };
 
-enum FontMapMethod{
+enum FontMapMethod
+{
     FONT_MAPMETHOD_DIRECT,
     FONT_MAPMETHOD_TABLE,
     FONT_MAPMETHOD_SCAN,
     NUM_OF_FONT_MAPMETHOD
 };
 
-enum FontSheetFormat{
+enum FontSheetFormat
+{
     FONT_SHEET_FORMAT_RGBA8,
     FONT_SHEET_FORMAT_RGB8,
     FONT_SHEET_FORMAT_RGB5A1,
@@ -67,25 +71,30 @@ enum FontSheetFormat{
     FONT_SHEET_FORMAT_COMPRESSED_FLAG = 0x8000
 };
 
-struct CharWidths{
+struct CharWidths
+{
     s8 left;
     u8 glyphWidth;
     s8 charWidth;
 };
 
-struct CMapScanEntry{
+struct CMapScanEntry
+{
     u16 ccode;
     u16 index;
 };
 
-struct CMapInfoScan{
+struct CMapInfoScan
+{
     u16 num; // entry
-    CMapScanEntry* GetEntries() const{
+    CMapScanEntry* GetEntries() const
+    {
         return reinterpret_cast<CMapScanEntry*>( reinterpret_cast<uptr>(this) + sizeof(*this) );
     }
 };
 
-struct FontGlyphGroups{
+struct FontGlyphGroups
+{
     u32 sheetSize;
     u16 glyphsPerSheet;
     u16 numSet;
@@ -96,14 +105,16 @@ struct FontGlyphGroups{
     u16 nameOffsets[1];
 };
 
-struct FontWidth{
+struct FontWidth
+{
     ushort indexBegin;
     ushort indexEnd;
     FontWidth* pNext;
     CharWidths* GetWidthTable() const;
 };
 
-struct FontCodeMap{
+struct FontCodeMap
+{
     ushort ccodeBegin;
     ushort ccodeEnd;
     ushort mappingMethod;
@@ -112,7 +123,8 @@ struct FontCodeMap{
     ushort* GetMapInfo() const;
 };
 
-struct FontTextureGlyph{
+struct FontTextureGlyph
+{
     u8 cellWidth;
     u8 cellHeight;
     s8 baselinePos;
@@ -127,7 +139,8 @@ struct FontTextureGlyph{
     u8* sheetImage;
 };
 
-struct FontInformation{
+struct FontInformation
+{
     u8 fontType;
     s8 linefeed;
     ushort alterCharIndex;

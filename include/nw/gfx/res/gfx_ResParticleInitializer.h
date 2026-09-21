@@ -10,18 +10,22 @@ namespace nw{
 namespace gfx {
 namespace res {
 
-struct ResParticleInitializerData{
+struct ResParticleInitializerData
+{
     nw::ut::ResTypeInfo typeInfo;
-    nw::ut::ResBool mIsResourceCopyEnabled;
-    nw::ut::ResBool mInitializerEnabled;
+    nw::ut::ResBool m_IsResourceCopyEnabled;
+    nw::ut::ResBool m_InitializerEnabled;
     u8              padding_0[2];
-    nw::ut::ResS32 mTargetStream;
+    nw::ut::ResS32 m_TargetStream;
 };
 
-class ResParticleInitializer : public nw::ut::ResCommon< ResParticleInitializerData >{
+class ResParticleInitializer : public nw::ut::ResCommon< ResParticleInitializerData >
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleInitializer) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('INIT') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleInitializer) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('INIT') };
 
     NW_RES_CTOR( ResParticleInitializer )
 
@@ -32,15 +36,19 @@ public:
     nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
 };
 
-struct ResParticleDirectionalVelocityInitializerData : public ResParticleInitializerData{
-    nw::ut::ResF32 mPower;
-    nw::ut::ResVec3 mDirection;
+struct ResParticleDirectionalVelocityInitializerData : public ResParticleInitializerData
+{
+    nw::ut::ResF32 m_Power;
+    nw::ut::ResVec3 m_Direction;
 };
 
-class ResParticleDirectionalVelocityInitializer : public ResParticleInitializer{
+class ResParticleDirectionalVelocityInitializer : public ResParticleInitializer
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleDirectionalVelocityInitializer) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('DIRV') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleDirectionalVelocityInitializer) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('DIRV') };
 
     NW_RES_CTOR_INHERIT( ResParticleDirectionalVelocityInitializer, ResParticleInitializer )
 
@@ -48,16 +56,20 @@ public:
     NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, Direction )
 };
 
-struct ResParticleRandomDirectionalVelocityInitializerData : public ResParticleInitializerData{
-    nw::ut::ResF32 mPower;
-    nw::ut::ResVec3 mDirection;
-    nw::ut::ResF32 mAngle;
+struct ResParticleRandomDirectionalVelocityInitializerData : public ResParticleInitializerData
+{
+    nw::ut::ResF32 m_Power;
+    nw::ut::ResVec3 m_Direction;
+    nw::ut::ResF32 m_Angle;
 };
 
-class ResParticleRandomDirectionalVelocityInitializer : public ResParticleInitializer{
+class ResParticleRandomDirectionalVelocityInitializer : public ResParticleInitializer
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleRandomDirectionalVelocityInitializer) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('RDRV') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleRandomDirectionalVelocityInitializer) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('RDRV') };
 
     NW_RES_CTOR_INHERIT( ResParticleRandomDirectionalVelocityInitializer, ResParticleInitializer )
 
@@ -66,57 +78,73 @@ public:
     NW_RES_FIELD_PRIMITIVE_DECL( f32, Angle )
 };
 
-struct ResParticleOriginVelocityInitializerData : public ResParticleInitializerData{
-    nw::ut::ResF32 mPower;
+struct ResParticleOriginVelocityInitializerData : public ResParticleInitializerData
+{
+    nw::ut::ResF32 m_Power;
 };
 
-class ResParticleOriginVelocityInitializer : public ResParticleInitializer{
+class ResParticleOriginVelocityInitializer : public ResParticleInitializer
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleOriginVelocityInitializer) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('ORIV') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleOriginVelocityInitializer) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('ORIV') };
 
     NW_RES_CTOR_INHERIT( ResParticleOriginVelocityInitializer, ResParticleInitializer )
 
     NW_RES_FIELD_PRIMITIVE_DECL( f32, Power )
 };
 
-struct ResParticleRandomVelocityInitializerData : public ResParticleInitializerData{
-    nw::ut::ResF32 mPower;
+struct ResParticleRandomVelocityInitializerData : public ResParticleInitializerData
+{
+    nw::ut::ResF32 m_Power;
 };
 
-class ResParticleRandomVelocityInitializer : public ResParticleInitializer{
+class ResParticleRandomVelocityInitializer : public ResParticleInitializer
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleRandomVelocityInitializer) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('RNDV') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleRandomVelocityInitializer) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('RNDV') };
 
     NW_RES_CTOR_INHERIT( ResParticleRandomVelocityInitializer, ResParticleInitializer )
 
     NW_RES_FIELD_PRIMITIVE_DECL( f32, Power )
 };
 
-struct ResParticleYAxisVelocityInitializerData : public ResParticleInitializerData{
-    nw::ut::ResF32 mPower;
+struct ResParticleYAxisVelocityInitializerData : public ResParticleInitializerData
+{
+    nw::ut::ResF32 m_Power;
 };
 
-class ResParticleYAxisVelocityInitializer : public ResParticleInitializer{
+class ResParticleYAxisVelocityInitializer : public ResParticleInitializer
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleYAxisVelocityInitializer) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('YAXV') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleYAxisVelocityInitializer) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('YAXV') };
 
     NW_RES_CTOR_INHERIT( ResParticleYAxisVelocityInitializer, ResParticleInitializer )
 
         NW_RES_FIELD_PRIMITIVE_DECL( f32, Power )
 };
 
-struct ResParticleFloatRandomInitializerData : public ResParticleInitializerData{
-    nw::ut::ResF32 mBaseValue;
-    nw::ut::ResF32 mRandom;
+struct ResParticleFloatRandomInitializerData : public ResParticleInitializerData
+{
+    nw::ut::ResF32 m_BaseValue;
+    nw::ut::ResF32 m_Random;
 };
 
-class ResParticleFloatRandomInitializer : public ResParticleInitializer{
+class ResParticleFloatRandomInitializer : public ResParticleInitializer
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleFloatRandomInitializer) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('FRND') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleFloatRandomInitializer) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('FRND') };
 
     NW_RES_CTOR_INHERIT( ResParticleFloatRandomInitializer, ResParticleInitializer )
 
@@ -124,15 +152,19 @@ public:
     NW_RES_FIELD_PRIMITIVE_DECL( f32, Random )
 };
 
-struct ResParticleFloatRangeRandomInitializerData : public ResParticleInitializerData{
-    nw::ut::ResF32 mMaxValue;
-    nw::ut::ResF32 mMinValue;
+struct ResParticleFloatRangeRandomInitializerData : public ResParticleInitializerData
+{
+    nw::ut::ResF32 m_MaxValue;
+    nw::ut::ResF32 m_MinValue;
 };
 
-class ResParticleFloatRangeRandomInitializer : public ResParticleInitializer{
+class ResParticleFloatRangeRandomInitializer : public ResParticleInitializer
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleFloatRangeRandomInitializer) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('URRA') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleFloatRangeRandomInitializer) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('URRA') };
 
     NW_RES_CTOR_INHERIT( ResParticleFloatRangeRandomInitializer, ResParticleInitializer )
 
@@ -140,57 +172,73 @@ public:
     NW_RES_FIELD_PRIMITIVE_DECL( f32, MinValue )
 };
 
-struct ResParticleFloatImmediateInitializerData : public ResParticleInitializerData{
-    nw::ut::ResF32 mImmediateValue;
+struct ResParticleFloatImmediateInitializerData : public ResParticleInitializerData
+{
+    nw::ut::ResF32 m_ImmediateValue;
 };
 
-class ResParticleFloatImmediateInitializer : public ResParticleInitializer{
+class ResParticleFloatImmediateInitializer : public ResParticleInitializer
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleFloatImmediateInitializer) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('SFIM') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleFloatImmediateInitializer) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('SFIM') };
 
     NW_RES_CTOR_INHERIT( ResParticleFloatImmediateInitializer, ResParticleInitializer )
 
     NW_RES_FIELD_PRIMITIVE_DECL( f32, ImmediateValue )
 };
 
-struct ResParticleVector2ImmediateInitializerData : public ResParticleInitializerData{
-    nw::ut::VEC2 mImmediateValue;
+struct ResParticleVector2ImmediateInitializerData : public ResParticleInitializerData
+{
+    nw::math::VEC2 m_ImmediateValue;
 };
 
-class ResParticleVector2ImmediateInitializer : public ResParticleInitializer{
+class ResParticleVector2ImmediateInitializer : public ResParticleInitializer
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleVector2ImmediateInitializer) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('V2IM') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleVector2ImmediateInitializer) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('V2IM') };
 
     NW_RES_CTOR_INHERIT( ResParticleVector2ImmediateInitializer, ResParticleInitializer )
 
     NW_RES_FIELD_VECTOR2_DECL( nw::math::VEC2, ImmediateValue )
 };
 
-struct ResParticleVector3ImmediateInitializerData : public ResParticleInitializerData{
-    nw::ut::ResVec3 mImmediateValue;
+struct ResParticleVector3ImmediateInitializerData : public ResParticleInitializerData
+{
+    nw::ut::ResVec3 m_ImmediateValue;
 };
 
-class ResParticleVector3ImmediateInitializer : public ResParticleInitializer{
+class ResParticleVector3ImmediateInitializer : public ResParticleInitializer
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleVector3ImmediateInitializer) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('V3IM') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleVector3ImmediateInitializer) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('V3IM') };
 
     NW_RES_CTOR_INHERIT( ResParticleVector3ImmediateInitializer, ResParticleInitializer )
 
     NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, ImmediateValue )
 };
 
-struct ResParticleVector3Random1InitializerData : public ResParticleInitializerData{
-    nw::ut::ResVec3 mBaseValue;
-    nw::ut::ResF32 mRandom;
+struct ResParticleVector3Random1InitializerData : public ResParticleInitializerData
+{
+    nw::ut::ResVec3 m_BaseValue;
+    nw::ut::ResF32 m_Random;
 };
 
-class ResParticleVector3Random1Initializer : public ResParticleInitializer{
+class ResParticleVector3Random1Initializer : public ResParticleInitializer
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleVector3Random1Initializer) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('V3R1') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleVector3Random1Initializer) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('V3R1') };
 
     NW_RES_CTOR_INHERIT( ResParticleVector3Random1Initializer, ResParticleInitializer )
 
@@ -198,15 +246,19 @@ public:
     NW_RES_FIELD_PRIMITIVE_DECL( f32, Random )
 };
 
-struct ResParticleVector3Random3InitializerData : public ResParticleInitializerData{
-    nw::ut::ResVec3 mBaseValue;
-    nw::ut::ResVec3 mRandom;
+struct ResParticleVector3Random3InitializerData : public ResParticleInitializerData
+{
+    nw::ut::ResVec3 m_BaseValue;
+    nw::ut::ResVec3 m_Random;
 };
 
-class ResParticleVector3Random3Initializer : public ResParticleInitializer{
+class ResParticleVector3Random3Initializer : public ResParticleInitializer
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleVector3Random3Initializer) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('V3R3') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleVector3Random3Initializer) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('V3R3') };
 
     NW_RES_CTOR_INHERIT( ResParticleVector3Random3Initializer, ResParticleInitializer )
 
@@ -214,14 +266,18 @@ public:
     NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, Random )
 };
 
-struct ResParticleVector3MultRandomInitializerData : public ResParticleInitializerData{
-    nw::ut::ResF32 mRandom;
+struct ResParticleVector3MultRandomInitializerData : public ResParticleInitializerData
+{
+    nw::ut::ResF32 m_Random;
 };
 
-class ResParticleVector3MultRandomInitializer : public ResParticleInitializer{
+class ResParticleVector3MultRandomInitializer : public ResParticleInitializer
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleVector3MultRandomInitializer) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('V3MR') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleVector3MultRandomInitializer) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('V3MR') };
 
     NW_RES_CTOR_INHERIT(ResParticleVector3MultRandomInitializer, ResParticleInitializer)
 

@@ -12,7 +12,8 @@ namespace gfx{
 class RenderContext;
 class Material;
 
-class MaterialActivator : public IMaterialActivator{
+class MaterialActivator : public IMaterialActivator
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(MaterialActivator);
 
@@ -21,7 +22,8 @@ public:
 
     static MaterialActivator* Create(nw::os::IAllocator* allocator);
 
-    static size_t GetMemorySize(size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT){
+    static size_t GetMemorySize(size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT)
+    {
         nw::os::MemorySizeCalculator size(alignment);
 
         GetMemorySizeInternal(&size);
@@ -29,7 +31,8 @@ public:
         return size.GetSizeWithPadding(alignment);
     }
 
-    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize){
+    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize)
+    {
         nw::os::MemorySizeCalculator& size = *pSize;
         
         size += sizeof(MaterialActivator);

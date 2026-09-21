@@ -34,7 +34,8 @@ class BasicSoundPlayer
 {
 public:
     BasicSoundPlayer();
-    virtual ~BasicSoundPlayer() {};
+    virtual ~BasicSoundPlayer() 
+{};
 
     virtual void Initialize();
     virtual void Finalize();
@@ -57,7 +58,7 @@ public:
     void SetLpfFreq(f32 lpfFreq) { m_PlayerParamSet.lpfFreq = lpfFreq; }
     void SetBiquadFilter(int type, f32 value);
     void SetPanMode(PanMode mode) { m_PlayerParamSet.panMode = mode; }
-    void SetPanCurve(PanCurve curve)  { m_PlayerParamSet.panCurve = curve; }
+    void SetPanCurve(PanCurve curve) { m_PlayerParamSet.panCurve = curve; }
     void SetFrontBypass(bool frontBypass) { m_PlayerParamSet.isFrontBypass = frontBypass; }
 
     float GetVolume() const { return m_PlayerParamSet.volume; }

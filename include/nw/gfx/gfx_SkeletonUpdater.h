@@ -14,12 +14,14 @@ class WorldMatrixUpdater;
 class BillboardUpdater;
 class Camera;
 
-class SkeletonUpdater : public GfxObject{
+class SkeletonUpdater : public GfxObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(SkeletonUpdater);
 
 public:
-    class Builder{
+    class Builder
+    {
     public:
         Builder() {}
 

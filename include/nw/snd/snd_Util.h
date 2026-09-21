@@ -38,11 +38,40 @@ public:
         nw::ut::ResU16  typeId;
         u16             padding;
         nw::ut::ResS32  offset;
+
+        NW_INLINE bool IsValidTypeId(u16 validId) const
+        {
+            if (validId == typeId)
+            {
+                return true;
+            }
+            return false;
+        }
     };
     
     struct ReferenceTable : public Table<Reference>
     {
+        const void* GetReferedItem(u32 index) const
+        {
+            if (index >= count)
+            {
+                return NULL;
+            }
+            return ut::AddOffsetToPtr(this, item[index].offset);
+        }
 
+        const void* GetReferedItem(u32 index, u16 typeId) const
+        {
+            if (index >= count)
+            {
+                return NULL;
+            }
+            if (item[index].typeId != typeId)
+            {
+                return NULL;
+            }
+            return ut::AddOffsetToPtr(this, item[index].offset);
+        }
     };
 
     struct ReferenceWithSize : public Reference
@@ -58,24 +87,85 @@ public:
     struct BlockReferenceTable
     {
         ReferenceWithSize item[1];
+
+        NW_INLINE const ReferenceWithSize* GetReference(u16 typeId, u16 count ) const
+        {
+            for (int i = 0; i < count; i++)
+            {
+                if (item[i].IsValidTypeId(typeId))
+                {
+                    return &item[i];
+                }
+            }
+            return NULL;
+        }
+
+        NW_INLINE const void* GetReferedItem(const void* origin, u16 typeId, u16 count) const
+        {
+            const ReferenceWithSize* ref = GetReference(typeId, count);
+            if (ref == NULL)
+            {
+                return NULL;
+            }
+
+            if (ref->offset == 0)
+            {
+                return NULL;
+            }
+            return ut::AddOffsetToPtr(origin, ref->offset);
+        }
     };
 
 
-    static NW_INLINE ItemType GetItemType(u32 id){ return static_cast<ItemType>(id >> 24); }
-    static NW_INLINE u32 GetItemIndex(u32 id){ return id & 0x00ffffff; }
-    static inline u32 GetMaskedItemId(u32 id, internal::ItemType type){ return id | (static_cast<u32>(type) << 24); }
+    static NW_INLINE ItemType GetItemType(u32 id) { return static_cast<ItemType>(id >> 24); }
+    static NW_INLINE u32 GetItemIndex(u32 id) { return id & 0x00ffffff; }
+    static NW_INLINE u32 GetMaskedItemId(u32 id, internal::ItemType type) { return id | (static_cast<u32>(type) << 24); }
     
     class SoundFileHeader
     {
     public:
         nw::ut::BinaryFileHeader header;
         BlockReferenceTable blockReferenceTable;
+
+        NW_INLINE const void* GetBlock(u16 typeId) const
+        {
+            return blockReferenceTable.GetReferedItem(this,typeId, header.dataBlocks);
+        }
     };
 
     struct BitFlag
     {
-        nw::ut::ResU32  bitFlag;
+        nw::ut::ResU32 bitFlag;
+
+        bool GetValue(u32* value, u32 bitNumber) const
+        {
+            u32 count = GetTrueCount(bitNumber);
+
+            if (count == 0)
+            {
+                return false;
+            }
+
+            *value = *reinterpret_cast<const nw::ut::ResU32*>(ut::AddOffsetToPtr(this, (count * sizeof(nw::ut::ResU32))));
+            return true;
+        }
+
+        bool GetValueF32(f32* value, u32 bitNumber) const
+        {
+            u32 count = GetTrueCount(bitNumber);
+            if (count == 0)
+            {
+                return false;
+            }
+            *value = *reinterpret_cast<const nw::ut::ResF32*>(ut::AddOffsetToPtr(this, (count * sizeof(nw::ut::ResF32))));
+            return true;
+        }
     };
+
+    static NW_INLINE u8 DevideBy8bit(u32 value, int index)
+    {
+        return static_cast<u8>((value >> (8*index)) & 0xff);
+    }
 
     struct WaveId
     {
@@ -102,7 +192,7 @@ public:
     class PerfHistogram
     {
     public:
-        PerfHistogram(){ Initialize(); }
+        PerfHistogram() { Initialize(); }
 
         // Created so ct works
         void Initialize()

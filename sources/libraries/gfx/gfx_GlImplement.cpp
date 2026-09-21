@@ -4,20 +4,24 @@ namespace nw{
 namespace gfx {
 namespace internal {
 
-void nwgfxAddVramDmaCommand(void* srcaddr, void* dstaddr, GLsizei size){
+void nwgfxAddVramDmaCommand(void* srcaddr, void* dstaddr, GLsizei size)
+{
     nngxAddVramDmaCommand( srcaddr, dstaddr, size);
 }
 
 void nwgfxClear( 
     u32 colorAddr, u32 colorSize, u32 clearColor, u32 colorWidth,
-    u32 depthAddr, u32 depthSize, u32 clearDepth, u32 depthWidth ){
+    u32 depthAddr, u32 depthSize, u32 clearDepth, u32 depthWidth )
+{
     nngxAddMemoryFillCommand(reinterpret_cast<GLvoid*>(colorAddr), colorSize, clearColor, colorWidth,reinterpret_cast<GLvoid*>(depthAddr), depthSize, clearDepth, depthWidth);
 }
 
-void GetFrameBufferState( GLuint fboID, u32* pColorAddr, u32* pDepthAddr){
+void GetFrameBufferState( GLuint fboID, u32* pColorAddr, u32* pDepthAddr)
+{
     glBindFramebuffer( GL_FRAMEBUFFER, fboID );
 
-    if (pColorAddr){
+    if (pColorAddr)
+    {
         s32 renderID;
         s32 addr;
         
@@ -34,7 +38,8 @@ void GetFrameBufferState( GLuint fboID, u32* pColorAddr, u32* pDepthAddr){
         *pColorAddr = static_cast<u32>(addr);
     }
 
-    if (pDepthAddr){
+    if (pDepthAddr)
+    {
         s32 renderID;
         s32 addr;
         

@@ -19,11 +19,13 @@ namespace lyt{
 namespace internal{
 namespace{
 
-inline u8 ClampColor(s16 colVal){
+inline u8 ClampColor(s16 colVal)
+{
     return u8(colVal < 0 ? 0: (colVal > 255 ? 255: colVal));
 }
 
-inline f32 AdjustCenterValue(f32 value,bool isCeil){
+inline f32 AdjustCenterValue(f32 value,bool isCeil)
+{
     f32 ret = value / 2;
     return isCeil ? math::FCeil(ret): ret;
 }
@@ -35,27 +37,32 @@ using namespace math;
 
 NW_UT_RUNTIME_TYPEINFO_DEFINITION(TextBox, TextBox::Base);
 
-TextBox::TextBox(u16 allocStrLen){
+TextBox::TextBox(u16 allocStrLen)
+{
     this->Init(allocStrLen);
     this->InitMaterial();
 }
 
-TextBox::TextBox(u16 allocStrLen,const wchar_t* str,const font::Font* pFont){
+TextBox::TextBox(u16 allocStrLen,const wchar_t* str,const font::Font* pFont)
+{
     this->Init(allocStrLen);
     this->SetFont(pFont);
     this->SetString(str);
     this->InitMaterial();
 }
 
-TextBox::TextBox(u16 allocStrLen,const wchar_t* str,u16 strLen,const font::Font* pFont){
+TextBox::TextBox(u16 allocStrLen,const wchar_t* str,u16 strLen,const font::Font* pFont)
+{
     this->Init(allocStrLen);
     this->SetFont(pFont);
     this->SetString(str, 0, strLen);
     this->InitMaterial();
 }
 
-TextBox::~TextBox(){
-    if (mpMaterial && !this->mpMaterial->IsUserAllocated()){
+TextBox::~TextBox()
+{
+    if (mpMaterial && !this->mpMaterial->IsUserAllocated())
+    {
         Layout::DeleteObj(this->mpMaterial);
         mpMaterial = 0;
     }
@@ -63,67 +70,81 @@ TextBox::~TextBox(){
     FreeStringBuffer();
 }
 
-void TextBox::Init(u16 allocStrLen){
+void TextBox::Init(u16 allocStrLen)
+{
     mpTextBuf = 0;
-    mTextBufBytes = 0;
-    mTextLen = 0;
+    m_TextBufBytes = 0;
+    m_TextLen = 0;
     mpFont = 0;
-    mFontSize = Size(0, 0);
+    m_FontSize = Size(0, 0);
     SetTextPositionH(HORIZONTALPOSITION_CENTER);
     SetTextPositionV(VERTICALPOSITION_CENTER);
-    mLineSpace = 0;
-    mCharSpace = 0;
+    m_LineSpace = 0;
+    m_CharSpace = 0;
     mpTagProcessor = 0;
     mpDispStringBuf = 0;
-    std::memset(&this->mBits, 0, sizeof(this->mBits));
+    std::memset(&this->m_Bits, 0, sizeof(this->m_Bits));
 
-    if (allocStrLen > 0){
+    if (allocStrLen > 0)
+    {
         AllocStringBuffer(allocStrLen);
     }
 }
 
-void TextBox::InitMaterial(){
+void TextBox::InitMaterial()
+{
     mpMaterial = Layout::NewObj<Material>();
-    if (mpMaterial){
+    if (mpMaterial)
+    {
         this->mpMaterial->ReserveMem(0, 0, 0);
     }
 }
 
-u8 TextBox::GetMaterialNum() const{
+u8 TextBox::GetMaterialNum() const
+{
     return mpMaterial? 1 : 0;
 }
 
-Material* TextBox::GetMaterial(u32 idx) const{
+Material* TextBox::GetMaterial(u32 idx) const
+{
     return idx == 0 ? mpMaterial : 0;
 }
 
-void TextBox::SetMaterial(Material* pMaterial){
-    if (mpMaterial && !this->mpMaterial->IsUserAllocated()){
+void TextBox::SetMaterial(Material* pMaterial)
+{
+    if (mpMaterial && !this->mpMaterial->IsUserAllocated())
+    {
         Layout::DeleteObj(this->mpMaterial);
     }
     mpMaterial = pMaterial;
 }
 
-const ut::Color8 TextBox::GetVtxColor(u32 idx) const{
+const ut::Color8 TextBox::GetVtxColor(u32 idx) const
+{
     return this->GetTextColor(idx / 2);
 }
 
-void TextBox::SetVtxColor(u32 idx,ut::Color8 value){
+void TextBox::SetVtxColor(u32 idx,ut::Color8 value)
+{
     this->SetTextColor(idx / 2, value);
 }
 
-u8 TextBox::GetVtxColorElement(u32 idx) const{
-    return reinterpret_cast<const u8*>(&this->mTextColors[idx / (2 * sizeof(ut::Color8))])[idx % sizeof(ut::Color8)];
+u8 TextBox::GetVtxColorElement(u32 idx) const
+{
+    return reinterpret_cast<const u8*>(&this->m_TextColors[idx / (2 * sizeof(ut::Color8))])[idx % sizeof(ut::Color8)];
 }
 
-void TextBox::SetVtxColorElement(u32 idx, u8 value){
+void TextBox::SetVtxColorElement(u32 idx, u8 value)
+{
     u8& elm =
-        reinterpret_cast<u8*>(&this->mTextColors[idx / (2 * sizeof(ut::Color8))])[idx % sizeof(ut::Color8)];
+        reinterpret_cast<u8*>(&this->m_TextColors[idx / (2 * sizeof(ut::Color8))])[idx % sizeof(ut::Color8)];
     elm = value;
 }
 
-const ut::Rect TextBox::GetTextDrawRect() const{
-    if (mpFont == NULL){
+const ut::Rect TextBox::GetTextDrawRect() const
+{
+    if (mpFont == NULL)
+    {
         return ut::Rect();
     }
 
@@ -132,7 +153,7 @@ const ut::Rect TextBox::GetTextDrawRect() const{
     SetFontInfo(&writer);
 
     ut::Rect textRect;
-    writer.CalcStringRect(&textRect, this->mpTextBuf, this->mTextLen);
+    writer.CalcStringRect(&textRect, this->mpTextBuf, this->m_TextLen);
 
     const Size textSize(textRect.GetWidth(), textRect.GetHeight());
 
@@ -152,8 +173,10 @@ const ut::Rect TextBox::GetTextDrawRect() const{
     return textRect;
 }
 
-void TextBox::DrawSelf(const DrawInfo& drawInfo){
-    if (mTextLen <= 0 || !mpFont || !mpMaterial){
+void TextBox::DrawSelf(const DrawInfo& drawInfo)
+{
+    if (m_TextLen <= 0 || !mpFont || !mpMaterial)
+    {
         return;
     }
 
@@ -180,13 +203,15 @@ void TextBox::DrawSelf(const DrawInfo& drawInfo){
 
     writer.SetupGX();
 
-    (void)writer.Print(this->mpTextBuf, this->mTextLen);
+    (void)writer.Print(this->mpTextBuf, this->m_TextLen);
 
     writer.FinalizeGX();
 }
 
-void TextBox::AllocStringBuffer(u16 minLen){
-    if (minLen == 0){
+void TextBox::AllocStringBuffer(u16 minLen)
+{
+    if (minLen == 0)
+    {
         return;
     }
 
@@ -194,11 +219,13 @@ void TextBox::AllocStringBuffer(u16 minLen){
     ++allocLen;
 
     const u32 textBufBytes = allocLen * sizeof(wchar_t);
-    if (textBufBytes >= 0x10000){
+    if (textBufBytes >= 0x10000)
+    {
 
     }
 
-    if (textBufBytes <= mTextBufBytes){
+    if (textBufBytes <= m_TextBufBytes)
+    {
         return;
     }
 
@@ -208,53 +235,64 @@ void TextBox::AllocStringBuffer(u16 minLen){
 
     wchar_t* textBuf     = Layout::NewArray<wchar_t>(allocLen);
     void* pDispStringBuf = Layout::AllocMemory(drawBufSize);
-    if (NULL == textBuf || NULL == pDispStringBuf){
-        if (NULL != textBuf){
+    if (NULL == textBuf || NULL == pDispStringBuf)
+    {
+        if (NULL != textBuf)
+        {
             Layout::DeletePrimArray(textBuf);
         }
-        if (NULL != pDispStringBuf){
+        if (NULL != pDispStringBuf)
+        {
             Layout::FreeMemory(pDispStringBuf);
         }
         return;
     }
 
     mpTextBuf = textBuf;
-    mTextBufBytes = static_cast<u16>(textBufBytes);
+    m_TextBufBytes = static_cast<u16>(textBufBytes);
 
     this->mpDispStringBuf = font::CharWriter::InitDispStringBuffer(pDispStringBuf, minLen);
 }
 
-void TextBox::FreeStringBuffer(){
-    if (mpTextBuf){
+void TextBox::FreeStringBuffer()
+{
+    if (mpTextBuf)
+    {
         Layout::FreeMemory(this->mpDispStringBuf);
         Layout::DeletePrimArray(this->mpTextBuf);
         mpDispStringBuf = 0;
         mpTextBuf = 0;
-        mTextBufBytes = 0;
-        mTextLen = 0;
+        m_TextBufBytes = 0;
+        m_TextLen = 0;
     }
 }
 
-u16 TextBox::SetString(const wchar_t* str,u16 dstIdx){
+u16 TextBox::SetString(const wchar_t* str,u16 dstIdx)
+{
     return SetStringImpl(str, dstIdx, std::wcslen(str));
 }
 
-u16 TextBox::SetString(const wchar_t* str,u16 dstIdx,u16 strLen){
+u16 TextBox::SetString(const wchar_t* str,u16 dstIdx,u16 strLen)
+{
     return SetStringImpl(str, dstIdx, strLen);
 }
 
-u16 TextBox::SetStringImpl(const wchar_t* str,u16 dstIdx,u32 strLen){
-    if (mpFont == 0){
+u16 TextBox::SetStringImpl(const wchar_t* str,u16 dstIdx,u32 strLen)
+{
+    if (mpFont == 0)
+    {
         return 0;
     }
 
-    if (mpTextBuf == 0){
+    if (mpTextBuf == 0)
+    {
         return 0;
     }
 
     const u16 bufLen = this->GetStringBufferLength();
 
-    if (dstIdx >= bufLen){
+    if (dstIdx >= bufLen)
+    {
         return 0;
     }
 
@@ -265,15 +303,16 @@ u16 TextBox::SetStringImpl(const wchar_t* str,u16 dstIdx,u32 strLen){
 
     std::memcpy(this->mpTextBuf + dstIdx, str, cpLen * sizeof(wchar_t));
 
-    mTextLen = static_cast<u16>(dstIdx + cpLen);
-    mpTextBuf[this->mTextLen] = 0;
+    m_TextLen = static_cast<u16>(dstIdx + cpLen);
+    mpTextBuf[this->m_TextLen] = 0;
 
     this->UpdatePTDirty(true);
     
     return static_cast<u16>(cpLen);
 }
 
-void TextBox::LoadMtx(const DrawInfo& drawInfo){
+void TextBox::LoadMtx(const DrawInfo& drawInfo)
+{
     MTX34 mtx;
 
     GetTextGlobalMtx(&mtx);
@@ -281,17 +320,19 @@ void TextBox::LoadMtx(const DrawInfo& drawInfo){
     drawInfo.GetGraphicsResource()->GetTextWriterResource().SetViewMtx(mtx);
 }
 
-void TextBox::SetFontInfo(font::WideTextWriter* pWriter) const{
+void TextBox::SetFontInfo(font::WideTextWriter* pWriter) const
+{
     pWriter->SetFont(this->mpFont);
     if (mpFont != NULL)
     {
-        pWriter->SetFontSize(this->mFontSize.width, mFontSize.height);
-        pWriter->SetLineSpace(this->mLineSpace);
-        pWriter->SetCharSpace(this->mCharSpace);
+        pWriter->SetFontSize(this->m_FontSize.width, m_FontSize.height);
+        pWriter->SetLineSpace(this->m_LineSpace);
+        pWriter->SetCharSpace(this->m_CharSpace);
         pWriter->SetWidthLimit(GetSize().width);
     }
 
-    if (mpTagProcessor){
+    if (mpTagProcessor)
+    {
         pWriter->SetTagProcessor(this->mpTagProcessor);
     }
 }
@@ -301,10 +342,12 @@ TextBox::SetTextPos(font::WideTextWriter* pWriter) const
 {
     u32 value = 0;
 
-    switch (this->GetTextAlignment()){
+    switch (this->GetTextAlignment())
+    {
     case TEXTALIGNMENT_SYNCHRONOUS:
     default:
-        switch (this->GetTextPositionH()){
+        switch (this->GetTextPositionH())
+        {
             case HORIZONTALPOSITION_LEFT:
             default:                        value = font::WideTextWriter::HORIZONTAL_ALIGN_LEFT;   break;
             case HORIZONTALPOSITION_CENTER: value = font::WideTextWriter::HORIZONTAL_ALIGN_CENTER; break;
@@ -316,7 +359,8 @@ TextBox::SetTextPos(font::WideTextWriter* pWriter) const
     case TEXTALIGNMENT_RIGHT:       value = font::WideTextWriter::HORIZONTAL_ALIGN_RIGHT;   break;
     }
 
-    switch (GetTextPositionH()){
+    switch (GetTextPositionH())
+    {
     case HORIZONTALPOSITION_LEFT:
     default:
         value |= font::WideTextWriter::HORIZONTAL_ORIGIN_LEFT;
@@ -329,7 +373,8 @@ TextBox::SetTextPos(font::WideTextWriter* pWriter) const
         break;
     }
 
-    switch (GetTextPositionV()){
+    switch (GetTextPositionV())
+    {
     case VERTICALPOSITION_TOP:
     default:
         value |= font::WideTextWriter::VERTICAL_ORIGIN_TOP;
@@ -345,10 +390,12 @@ TextBox::SetTextPos(font::WideTextWriter* pWriter) const
     pWriter->SetDrawFlag(value);
 }
 
-VEC2 TextBox::AdjustTextPos(const Size& size,bool isCeil) const{
+VEC2 TextBox::AdjustTextPos(const Size& size,bool isCeil) const
+{
     VEC2 pos;
 
-    switch (this->GetTextPositionH()){
+    switch (this->GetTextPositionH())
+    {
     case HORIZONTALPOSITION_LEFT:
     default:
         pos.x = 0.f;
@@ -361,7 +408,8 @@ VEC2 TextBox::AdjustTextPos(const Size& size,bool isCeil) const{
         break;
     }
 
-    switch (GetTextPositionV()){
+    switch (GetTextPositionV())
+    {
     case VERTICALPOSITION_TOP:
     default:
         pos.y = 0.f;
@@ -377,7 +425,8 @@ VEC2 TextBox::AdjustTextPos(const Size& size,bool isCeil) const{
     return pos;
 }
 
-void TextBox::GetTextGlobalMtx(nw::math::MTX34* pMtx) const{
+void TextBox::GetTextGlobalMtx(nw::math::MTX34* pMtx) const
+{
     MTX34Copy(pMtx, &GetGlobalMtx());
 
     VEC2 pos = GetVtxPos();
@@ -395,31 +444,35 @@ void TextBox::GetTextGlobalMtx(nw::math::MTX34* pMtx) const{
     pMtx->matrix[2][1] = - pMtx->matrix[2][1];
 }
 
-void TextBox::SetupDrawCharData(Drawer* pDrawer){
+void TextBox::SetupDrawCharData(Drawer* pDrawer)
+{
     font::WideTextWriter writer;
 
     writer.SetDispStringBuffer(this->mpDispStringBuf);
     SetupTextWriter(&writer);
 
-    if (mBits.isPTDirty){
+    if (m_Bits.isPTDirty)
+    {
         writer.StartPrint();
-        (void)writer.Print(this->mpTextBuf, this->mTextLen);
+        (void)writer.Print(this->mpTextBuf, this->m_TextLen);
         writer.EndPrint();
 
-        mBits.isPTDirty = false;
+        m_Bits.isPTDirty = false;
     }
 
-    if (!this->mpDispStringBuf->IsGeneratedCommand() && pDrawer){
+    if (!this->mpDispStringBuf->IsGeneratedCommand() && pDrawer)
+    {
         pDrawer->BuildTextCommand(&writer);
     }
 }
 
-void TextBox::SetupTextWriter(font::WideTextWriter* pWriter){
+void TextBox::SetupTextWriter(font::WideTextWriter* pWriter)
+{
     this->SetFontInfo(pWriter);
     this->SetTextPos(pWriter);
 
-    ut::Color8 topCol = mTextColors[TEXTCOLOR_TOP];
-    ut::Color8 btmCol = mTextColors[TEXTCOLOR_BOTTOM];
+    ut::Color8 topCol = m_TextColors[TEXTCOLOR_TOP];
+    ut::Color8 btmCol = m_TextColors[TEXTCOLOR_BOTTOM];
     pWriter->SetGradationMode(topCol != btmCol ? font::CharWriter::GRADMODE_V: font::CharWriter::GRADMODE_NONE);
     pWriter->SetTextColor(topCol, btmCol);
 }

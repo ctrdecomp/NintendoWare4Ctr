@@ -48,7 +48,8 @@ namespace{
     const u16 BYTE_ORDER_MARK = 0xFEFF;
 }
 
-struct BinaryFileHeader{
+struct BinaryFileHeader
+{
     SigWord signature;
     u16 byteOrder;
     ResU16 headerSize;
@@ -58,12 +59,14 @@ struct BinaryFileHeader{
     u16 reserved;
 };
 
-struct BinaryBlockHeader{
+struct BinaryBlockHeader
+{
     SigWord kind;
     u32 size;
 };
 
-struct BinaryRevisionHeader{
+struct BinaryRevisionHeader
+{
     SigWord signature;
     ResU32  revision;
 };
@@ -72,22 +75,27 @@ bool IsValidBinaryFile(const BinaryFileHeader* pHeader,u32 signature,u32 version
 bool IsReverseEndianBinaryFile(const BinaryFileHeader* pFileHeader);
 BinaryBlockHeader* GetNextBinaryBlockHeader(BinaryFileHeader* pFileHeader,BinaryBlockHeader* pBlockHeader);
 
-inline const BinaryBlockHeader* GetNextBinaryBlockHeader(const BinaryFileHeader* pFileHeader,const BinaryBlockHeader* pBlockHeader){
+inline const BinaryBlockHeader* GetNextBinaryBlockHeader(const BinaryFileHeader* pFileHeader,const BinaryBlockHeader* pBlockHeader)
+{
     return static_cast<const BinaryBlockHeader*>(GetNextBinaryBlockHeader(const_cast<BinaryFileHeader*>(pFileHeader),const_cast<BinaryBlockHeader*>(pBlockHeader)));
 }
 
 namespace internal {
 
-inline bool CheckRevision(u32 resRevision, u32 libRevision){
-    if (NW_UT_VERSION_MAJOR(libRevision) != NW_UT_VERSION_MAJOR(resRevision)){
+inline bool CheckRevision(u32 resRevision, u32 libRevision)
+{
+    if (NW_UT_VERSION_MAJOR(libRevision) != NW_UT_VERSION_MAJOR(resRevision))
+    {
         return false;
     }
 
-    if (NW_UT_VERSION_MINOR(libRevision) < NW_UT_VERSION_MINOR(resRevision)){
+    if (NW_UT_VERSION_MINOR(libRevision) < NW_UT_VERSION_MINOR(resRevision))
+    {
         return false;
     }
 
-    if (NW_UT_VERSION_BINARYBUGFIX(libRevision) > NW_UT_VERSION_BINARYBUGFIX(resRevision)){
+    if (NW_UT_VERSION_BINARYBUGFIX(libRevision) > NW_UT_VERSION_BINARYBUGFIX(resRevision))
+    {
         return false;
     }
     

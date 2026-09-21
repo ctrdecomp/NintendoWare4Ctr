@@ -23,7 +23,8 @@
 namespace nw {
 namespace font {
 namespace internal{
-inline u32* SetVertexNumCmd(u32** pCmdPtr,u32 addrOffset,u32 vtxNum){
+inline u32* SetVertexNumCmd(u32** pCmdPtr,u32 addrOffset,u32 vtxNum)
+{
     NW_FONT_ADD_SINGLE_COMMAND_PTR(*pCmdPtr,PICA_CMD_HEADER_SINGLE( PICA_REG_INDEX_ARRAY_ADDR_OFFSET ),PICA_CMD_DATA_INDEX_ARRAY_ADDR_OFFSET(addrOffset, 1 ));
 
     NW_FONT_ADD_SINGLE_COMMAND_PTR(*pCmdPtr,PICA_CMD_HEADER_SINGLE(PICA_REG_DRAW_VERTEX_NUM),PICA_CMD_DATA_DRAW_VERTEX_NUM(vtxNum));
@@ -32,9 +33,11 @@ inline u32* SetVertexNumCmd(u32** pCmdPtr,u32 addrOffset,u32 vtxNum){
 }
 }
 
-class RectDrawer{
+class RectDrawer
+{
 public:
-    enum{
+    enum
+    {
         DONT_USE_SETUP_COMMAND = 0x1
     };
     static u32 GetVertexBufferCommandBufferSize(const void* shaderBinary,u32 size);
@@ -70,7 +73,8 @@ private:
     static void InitializeStatic();
     void InitializeCMD(void* vertexBuffer,void* commandBuffer,const void* shaderBinary,u32 size,bool initVertexBuffer);
 protected:
-    static u32 SetUniformCommand(u32* buffer,u32 num){
+    static u32 SetUniformCommand(u32* buffer,u32 num)
+{
         #if defined(NW_PLATFORM_CTR)
                 buffer[2] = buffer[3];
         #else
@@ -78,7 +82,8 @@ protected:
         #endif
                 return sizeof(u32) * (4 + 4 * num);
     }
-    enum{
+    enum
+    {
         UNIFORM_MTX_USE_MAX     =  3,
         UNIFORM_DATA_USE_MAX    =  1,
 
@@ -98,7 +103,8 @@ protected:
         UNIFORM_MAX             = 96
     };
 
-    enum{
+    enum
+    {
         UNIFORM_ADDR_NUM = UNIFORM_MTX_START - UNIFORM_ADDR_START,
         UNIFORM_MTX_NUM = UNIFORM_DATA_START - UNIFORM_MTX_START,
         UNIFORM_DATA_NUM = UNIFORM_MAX - UNIFORM_DATA_START,
@@ -109,51 +115,54 @@ protected:
         BIND_ATTRIB_LOCATION = 0
     };
 
-    struct VertexBuffer{
+    struct VertexBuffer
+    {
         f32 position[UNIFORM_ADDR_NUM][DRAW_VTX_NUM][4];
     };
     
-    ut::internal::CmdCache mCmdCacheDrawBegin;
-    ut::internal::CmdCache mCmdCacheDrawEnd;
-    u8 mUniformAddrIndex;
-    u8 mUniformMtxIndex;
-    u8 mUniformDataIndex;
-    u8 mUniformTextColorIndex;
-    u32 mUniformProjBuffer[4 + 4 * (UNIFORM_PROJ_NUM + 1)];
-    u32 mUniformAddrBuffer[4 + 4 * UNIFORM_ADDR_NUM];
+    ut::internal::CmdCache m_CmdCacheDrawBegin;
+    ut::internal::CmdCache m_CmdCacheDrawEnd;
+    u8 m_UniformAddrIndex;
+    u8 m_UniformMtxIndex;
+    u8 m_UniformDataIndex;
+    u8 m_UniformTextColorIndex;
+    u32 m_UniformProjBuffer[4 + 4 * (UNIFORM_PROJ_NUM + 1)];
+    u32 m_UniformAddrBuffer[4 + 4 * UNIFORM_ADDR_NUM];
 
-    union{
-        u32 mUniformMtxBuffer[ 4 + 4 * UNIFORM_MTX_NUM  ];
-        struct{
-            u32 mUniformTextMtxBuffer  [ 4 + 4 * UNIFORM_TEXT_MTX_MAX ];
-            u32 mUniformTextColorBuffer[ 4 + 4 * UNIFORM_TEXTCOLOR_NUM ];
+    union
+    {
+        u32 m_UniformMtxBuffer[ 4 + 4 * UNIFORM_MTX_NUM  ];
+        struct
+        {
+            u32 m_UniformTextMtxBuffer  [ 4 + 4 * UNIFORM_TEXT_MTX_MAX ];
+            u32 m_UniformTextColorBuffer[ 4 + 4 * UNIFORM_TEXTCOLOR_NUM ];
         };
     };
-    u32 mUniformDataBuffer[ 4 + 4 * UNIFORM_DATA_NUM ];
-    struct UniformAddress{
+    u32 m_UniformDataBuffer[ 4 + 4 * UNIFORM_DATA_NUM ];
+    struct UniformAddress
+    {
         UniformAddress():   
             addrMtx(0.f),
             addrSizeAndVtx(0.f),
             addrTexCoord(0.f),
-            addrColor(0.f)
-        {}
+            addrColor(0.f) {}
         f32 addrMtx;
         f32 addrSizeAndVtx; 
         f32 addrTexCoord;
         f32 addrColor;
     };
-    UniformAddress mUniformAddress;
-    UniformAddress *const mUniformAddr;
-    math::VEC4 *const  mUniformMtx;
-    math::VEC4 *const  mUniformData;
-    math::VEC4 *const  mUniformTextColor;
-    void* mCommandBuffer;
-    void* mVertexBufferArray;
-    u32 mVertexBufferBaseAddr;
-    bool mIsColorDirty;
+    UniformAddress m_UniformAddress;
+    UniformAddress *const m_UniformAddr;
+    math::VEC4 *const  m_UniformMtx;
+    math::VEC4 *const  m_UniformData;
+    math::VEC4 *const  m_UniformTextColor;
+    void* m_CommandBuffer;
+    void* m_VertexBufferArray;
+    u32 m_VertexBufferBaseAddr;
+    bool m_IsColorDirty;
 
-    static bool sStaticInitialized;
-    static VertexBuffer sVertexBuffer;
+    static bool s_StaticInitialized;
+    static VertexBuffer s_VertexBuffer;
 };
 
 }

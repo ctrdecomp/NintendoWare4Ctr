@@ -9,10 +9,12 @@
 namespace nw{
 namespace ut{
 
-bool IsValidBinaryFile(const BinaryFileHeader* pHeader,u32 signature,u32 version, ushort minBlocks){
+bool IsValidBinaryFile(const BinaryFileHeader* pHeader,u32 signature,u32 version, ushort minBlocks)
+{
     NW_POINTER_ASSERT(pHeader);
     
-    if (pHeader->signature != signature){
+    if (pHeader->signature != signature)
+    {
         NW_WARNING(false, "Signature check failed ('%c%c%c%c' must be '%c%c%c%c').",
             static_cast<char>(BitExtract(pHeader->signature, 24, 8)),
             static_cast<char>(BitExtract(pHeader->signature, 16, 8)),
@@ -26,12 +28,14 @@ bool IsValidBinaryFile(const BinaryFileHeader* pHeader,u32 signature,u32 version
         return false;
     }
     
-    if (pHeader->byteOrder != BYTE_ORDER_MARK){
+    if (pHeader->byteOrder != BYTE_ORDER_MARK)
+    {
         NW_WARNING(false, "Unsupported byte order.");
         return false;
     }
     
-    if (NW_UT_VERSION_MAJOR(version) != NW_UT_VERSION_MAJOR(pHeader->version) || NW_UT_VERSION_MINOR(version) < NW_UT_VERSION_MINOR(pHeader->version)  || NW_UT_VERSION_BINARYBUGFIX(version) > NW_UT_VERSION_BINARYBUGFIX(pHeader->version) ){
+    if (NW_UT_VERSION_MAJOR(version) != NW_UT_VERSION_MAJOR(pHeader->version) || NW_UT_VERSION_MINOR(version) < NW_UT_VERSION_MINOR(pHeader->version)  || NW_UT_VERSION_BINARYBUGFIX(version) > NW_UT_VERSION_BINARYBUGFIX(pHeader->version) )
+    {
         NW_WARNING(false, "Version check faild (bin:'%d.%d.%d.%d', lib:'%d.%d.%d.%d').",
             NW_UT_VERSION_MAJOR(pHeader->version),
             NW_UT_VERSION_MINOR(pHeader->version),
@@ -45,12 +49,14 @@ bool IsValidBinaryFile(const BinaryFileHeader* pHeader,u32 signature,u32 version
         return false;
     }
     
-    if(pHeader->fileSize < sizeof(BinaryFileHeader) + sizeof(BinaryBlockHeader) * minBlocks){
+    if (pHeader->fileSize < sizeof(BinaryFileHeader) + sizeof(BinaryBlockHeader) * minBlocks)
+    {
         NW_WARNING(false, "Too small file size(=%d).", pHeader->fileSize);
         return false;
     }
     
-    if(pHeader->dataBlocks < minBlocks){
+    if (pHeader->dataBlocks < minBlocks)
+    {
         NW_WARNING(false, "Too small number of data blocks(=%d).", pHeader->dataBlocks);
         return false;
     }
@@ -58,17 +64,21 @@ bool IsValidBinaryFile(const BinaryFileHeader* pHeader,u32 signature,u32 version
     return true;
 }
 
-bool IsReverseEndianBinaryFile(const BinaryFileHeader* pFileHeader){
+bool IsReverseEndianBinaryFile(const BinaryFileHeader* pFileHeader)
+{
     NW_POINTER_ASSERT(pFileHeader);
     return (pFileHeader->byteOrder != BYTE_ORDER_MARK);
 }
 
-BinaryBlockHeader*  GetNextBinaryBlockHeader(BinaryFileHeader* pFileHeader,BinaryBlockHeader* pBlockHeader){
+BinaryBlockHeader*  GetNextBinaryBlockHeader(BinaryFileHeader* pFileHeader,BinaryBlockHeader* pBlockHeader)
+{
     NW_POINTER_ASSERT( pFileHeader );
     
     void* ptr;
-    if (!IsReverseEndianBinaryFile(pFileHeader)){
-        if (pBlockHeader == NULL){
+    if (!IsReverseEndianBinaryFile(pFileHeader))
+    {
+        if (pBlockHeader == NULL)
+        {
             if (pFileHeader->dataBlocks == 0) return NULL;
             ptr = AddOffsetToPtr(pFileHeader, pFileHeader->headerSize);
         }
@@ -76,12 +86,14 @@ BinaryBlockHeader*  GetNextBinaryBlockHeader(BinaryFileHeader* pFileHeader,Binar
             ptr = AddOffsetToPtr(pBlockHeader, pBlockHeader->size);
         }
     
-        if (ptr >= AddOffsetToPtr(pFileHeader, pFileHeader->fileSize)){
+        if (ptr >= AddOffsetToPtr(pFileHeader, pFileHeader->fileSize))
+        {
             return NULL;
         }
     }
     else{
-        if (pBlockHeader == NULL){
+        if (pBlockHeader == NULL)
+        {
             if (pFileHeader->dataBlocks == 0 ) return NULL;
             ptr = AddOffsetToPtr( pFileHeader, ReverseEndian(pFileHeader->headerSize));
         }
@@ -89,7 +101,8 @@ BinaryBlockHeader*  GetNextBinaryBlockHeader(BinaryFileHeader* pFileHeader,Binar
             ptr = AddOffsetToPtr(pBlockHeader, ReverseEndian(pBlockHeader->size));
         }
         
-        if (ptr >= AddOffsetToPtr(pFileHeader, ReverseEndian(pFileHeader->fileSize))){
+        if (ptr >= AddOffsetToPtr(pFileHeader, ReverseEndian(pFileHeader->fileSize)))
+        {
             return NULL;
         }
     }

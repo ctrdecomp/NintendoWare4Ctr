@@ -11,7 +11,7 @@ namespace internal {
 
 class PlayerHeapDataManager : public internal::driver::DisposeCallback,
                               public internal::SoundArchiveLoader
-{
+                              {
 public:
     PlayerHeapDataManager();
     virtual ~PlayerHeapDataManager();

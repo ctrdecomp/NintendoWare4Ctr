@@ -16,28 +16,34 @@ namespace lyt{
 namespace local{
 namespace{
 
-struct Rect{
+struct Rect
+{
     f32 x, y, w, h;
 
-    const math::VEC2& Position() const{
+    const math::VEC2& Position() const
+    {
         return *(const math::VEC2 *)&this->x;
     }
 
-    const nw::lyt::Size& Size() const{
+    const nw::lyt::Size& Size() const
+    {
         return *(const nw::lyt::Size *)&this->w;
     }
 };
 
-struct TextureFlipInfo{
+struct TextureFlipInfo
+{
     u8      coords[VERTEX_MAX][2];
     u8      idx[2];
 };
 
 /* Window Inlines */
 
-const TextureFlipInfo& GetTexutreFlipInfo(u8 textureFlip){
+const TextureFlipInfo& GetTexutreFlipInfo(u8 textureFlip)
+{
 
-    static TextureFlipInfo flipInfos[] ={
+    static TextureFlipInfo flipInfos[] =
+    {
         { { { 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 } }, { 0, 1 } },   // TEXTUREFLIP_NONE
         { { { 1, 0 }, { 0, 0 }, { 1, 1 }, { 0, 1 } }, { 0, 1 } },   // TEXTUREFLIP_FLIPH
         { { { 0, 1 }, { 1, 1 }, { 0, 0 }, { 1, 0 } }, { 0, 1 } },   // TEXTUREFLIP_FLIPV
@@ -49,14 +55,16 @@ const TextureFlipInfo& GetTexutreFlipInfo(u8 textureFlip){
     return flipInfos[textureFlip];
 }
 
-void GetLTFrameSize(math::VEC2* pPt,Size* pSize,const math::VEC2& basePt,const Size& winSize,const WindowFrameSize& frameSize){
+void GetLTFrameSize(math::VEC2* pPt,Size* pSize,const math::VEC2& basePt,const Size& winSize,const WindowFrameSize& frameSize)
+{
     *pPt = basePt;
 
     pSize->width = winSize.width - frameSize.r;
     pSize->height = frameSize.t;
 }
 
-void GetLTTexCoord(math::VEC2 texCds[],const Size& polSize,const TexSize& texSize,u8 textureFlip){
+void GetLTTexCoord(math::VEC2 texCds[],const Size& polSize,const TexSize& texSize,u8 textureFlip)
+{
     const TextureFlipInfo& flipInfo = GetTexutreFlipInfo(textureFlip);
     const int ix = flipInfo.idx[0];
     const int iy = flipInfo.idx[1];
@@ -69,7 +77,8 @@ void GetLTTexCoord(math::VEC2 texCds[],const Size& polSize,const TexSize& texSiz
     texCds[VERTEX_RB][iy] = texCds[VERTEX_LB][iy] = polSize.height / ((flipInfo.coords[VERTEX_LB][iy] - flipInfo.coords[VERTEX_LT][iy]) * tSz[iy]) + flipInfo.coords[VERTEX_LT][iy];
 }
 
-void GetRTFrameSize(math::VEC2* pPt,Size* pSize,const math::VEC2& basePt,const Size& winSize,const WindowFrameSize& frameSize){
+void GetRTFrameSize(math::VEC2* pPt,Size* pSize,const math::VEC2& basePt,const Size& winSize,const WindowFrameSize& frameSize)
+{
     using namespace nw::math;
 
     *pPt = VEC2(basePt.x + winSize.width - frameSize.r, basePt.y);
@@ -78,7 +87,8 @@ void GetRTFrameSize(math::VEC2* pPt,Size* pSize,const math::VEC2& basePt,const S
     pSize->height = winSize.height - frameSize.b;
 }
 
-void GetRTTexCoord(math::VEC2 texCds[],const Size& polSize,const TexSize& texSize,u8 textureFlip){
+void GetRTTexCoord(math::VEC2 texCds[],const Size& polSize,const TexSize& texSize,u8 textureFlip)
+{
     const TextureFlipInfo& flipInfo = GetTexutreFlipInfo(textureFlip);
     const int ix = flipInfo.idx[0];
     const int iy = flipInfo.idx[1];
@@ -91,14 +101,16 @@ void GetRTTexCoord(math::VEC2 texCds[],const Size& polSize,const TexSize& texSiz
     texCds[VERTEX_LB][iy] = texCds[VERTEX_RB][iy] = polSize.height / ((flipInfo.coords[VERTEX_RB][iy] - flipInfo.coords[VERTEX_RT][iy]) * tSz[iy]) + flipInfo.coords[VERTEX_RT][iy];
 }
 
-void GetLBFrameSize(math::VEC2* pPt,Size* pSize,const math::VEC2& basePt,const Size& winSize,const WindowFrameSize& frameSize){
+void GetLBFrameSize(math::VEC2* pPt,Size* pSize,const math::VEC2& basePt,const Size& winSize,const WindowFrameSize& frameSize)
+{
     *pPt = math::VEC2(basePt.x, basePt.y - frameSize.t);
 
     pSize->width  = frameSize.l;
     pSize->height = winSize.height - frameSize.t;
 }
 
-void GetLBTexCoord(math::VEC2 texCds[],const Size& polSize,const TexSize& texSize,u8 textureFlip){
+void GetLBTexCoord(math::VEC2 texCds[],const Size& polSize,const TexSize& texSize,u8 textureFlip)
+{
     const TextureFlipInfo& flipInfo = GetTexutreFlipInfo(textureFlip);
     const int ix = flipInfo.idx[0];
     const int iy = flipInfo.idx[1];
@@ -111,14 +123,16 @@ void GetLBTexCoord(math::VEC2 texCds[],const Size& polSize,const TexSize& texSiz
     texCds[VERTEX_RT][iy] = texCds[VERTEX_LT][iy] = polSize.height / ((flipInfo.coords[VERTEX_LT][iy] - flipInfo.coords[VERTEX_LB][iy]) * tSz[iy]) + flipInfo.coords[VERTEX_LB][iy];
 }
 
-void GetRBFrameSize(math::VEC2* pPt,Size* pSize,const math::VEC2& basePt,const Size& winSize,const WindowFrameSize& frameSize){
+void GetRBFrameSize(math::VEC2* pPt,Size* pSize,const math::VEC2& basePt,const Size& winSize,const WindowFrameSize& frameSize)
+{
     *pPt = math::VEC2(basePt.x + frameSize.l, basePt.y - winSize.height + frameSize.b);
 
     pSize->width  = winSize.width - frameSize.l;
     pSize->height = frameSize.b;
 }
 
-void GetRBTexCoord(math::VEC2 texCds[],const Size& polSize,const TexSize& texSize,u8 textureFlip){
+void GetRBTexCoord(math::VEC2 texCds[],const Size& polSize,const TexSize& texSize,u8 textureFlip)
+{
     const TextureFlipInfo& flipInfo = GetTexutreFlipInfo(textureFlip);
     const int ix = flipInfo.idx[0];
     const int iy = flipInfo.idx[1];
@@ -131,8 +145,10 @@ void GetRBTexCoord(math::VEC2 texCds[],const Size& polSize,const TexSize& texSiz
     texCds[VERTEX_LT][iy] = texCds[VERTEX_RT][iy] = polSize.height / ((flipInfo.coords[VERTEX_RT][iy] - flipInfo.coords[VERTEX_RB][iy]) * tSz[iy]) + flipInfo.coords[VERTEX_RB][iy];
 }
 
-void SetupFrameTransform(const GraphicsResource& gres,WindowFrame frame,TextureFlip flip){
-    static const u32 frameFlag[WINDOWFRAME_MAX] ={
+void SetupFrameTransform(const GraphicsResource& gres,WindowFrame frame,TextureFlip flip)
+{
+    static const u32 frameFlag[WINDOWFRAME_MAX] =
+    {
         internal::FRAMESPECFLAG_FRAME_LT,
         internal::FRAMESPECFLAG_FRAME_RT,
         internal::FRAMESPECFLAG_FRAME_LB,
@@ -143,7 +159,8 @@ void SetupFrameTransform(const GraphicsResource& gres,WindowFrame frame,TextureF
         internal::FRAMESPECFLAG_FRAME_RB
     };
 
-    static const u32 flipFlag[TEXTUREFLIP_MAX] ={
+    static const u32 flipFlag[TEXTUREFLIP_MAX] =
+    {
         internal::FRAMESPECFLAG_NORMAL,
         internal::FRAMESPECFLAG_FLIP_HFLIP,
         internal::FRAMESPECFLAG_FLIP_VFLIP,
@@ -163,8 +180,10 @@ void SetupFrameTransform(const GraphicsResource& gres,WindowFrame frame,TextureF
 
 /* Window::Frame */
 
-Window::Frame::~Frame(){
-    if (pMaterial && !pMaterial->IsUserAllocated()){
+Window::Frame::~Frame()
+{
+    if (pMaterial && !pMaterial->IsUserAllocated())
+    {
         Layout::DeleteObj(pMaterial);
     }
     pMaterial = 0;
@@ -172,7 +191,8 @@ Window::Frame::~Frame(){
 
 /* Window */
 
-Window::Window(u8 contentTexNum,u8 frameTexNum){
+Window::Window(u8 contentTexNum,u8 frameTexNum)
+{
     const u8 frameNum = 1;
     u8 frameTexNums[frameNum];
     frameTexNums[WINDOWFRAME_LT] = frameTexNum;
@@ -180,7 +200,8 @@ Window::Window(u8 contentTexNum,u8 frameTexNum){
     InitTexNum(contentTexNum, frameTexNums, frameNum);
 }
 
-Window::Window(u8 contentTexNum,u8 frameLTTexNum,u8 frameRTTexNum,u8 frameRBTexNum,u8 frameLBTexNum){
+Window::Window(u8 contentTexNum,u8 frameLTTexNum,u8 frameRTTexNum,u8 frameRBTexNum,u8 frameLBTexNum)
+{
     const u8 frameNum = 4;
     u8 frameTexNums[frameNum];
     frameTexNums[WINDOWFRAME_LT] = frameLTTexNum;
@@ -191,7 +212,8 @@ Window::Window(u8 contentTexNum,u8 frameLTTexNum,u8 frameRTTexNum,u8 frameRBTexN
     this->InitTexNum(contentTexNum, frameTexNums, frameNum);
 }
 
-Window::Window(u8 contentTexNum,u8 cornerLTTexNum,u8 cornerRTTexNum,u8 cornerRBTexNum,u8 cornerLBTexNum,u8 frameLTexNum,u8 frameTTexNum,u8 frameRTexNum,u8 frameBTexNum){
+Window::Window(u8 contentTexNum,u8 cornerLTTexNum,u8 cornerRTTexNum,u8 cornerRBTexNum,u8 cornerLBTexNum,u8 frameLTexNum,u8 frameTTexNum,u8 frameRTexNum,u8 frameBTexNum)
+{
     const u8 frameNum = 8;
     u8 frameTexNums[frameNum];
     frameTexNums[WINDOWFRAME_LT] = cornerLTTexNum;
@@ -207,23 +229,27 @@ Window::Window(u8 contentTexNum,u8 cornerLTTexNum,u8 cornerRTTexNum,u8 cornerRBT
 }
 
 Window::Window(const res::Window* pBlock,const ResBlockSet& resBlockSet):   
-Base(pBlock){
+    Base(pBlock)
+    {
     const res::WindowContent *const pResContent = internal::ConvertOffsToPtr<res::WindowContent>(pBlock, pBlock->contentOffset);
     const u8 texCoordNum = ut::Min(pResContent->texCoordNum, u8(TexMapMax));
 
     this->InitContent(texCoordNum);
 
-    this->mContentInflation = pBlock->inflation;
+    this->m_ContentInflation = pBlock->inflation;
 
     const u32 *const matOffsTbl = internal::ConvertOffsToPtr<u32>(resBlockSet.pMaterialList, sizeof(*resBlockSet.pMaterialList));
 
-    for (int i = 0; i < VERTEXCOLOR_MAX; ++i){
-        this->mContent.vtxColors[i] = pResContent->vtxCols[i];
+    for (int i = 0; i < VERTEXCOLOR_MAX; ++i)
+    {
+        this->m_Content.vtxColors[i] = pResContent->vtxCols[i];
     }
 
-    if (texCoordNum > 0){
-        if (!mContent.texCoordAry.IsEmpty()){
-            this->mContent.texCoordAry.Copy(
+    if (texCoordNum > 0)
+    {
+        if (!m_Content.texCoordAry.IsEmpty())
+        {
+            this->m_Content.texCoordAry.Copy(
                 reinterpret_cast<const char*>(pResContent) + sizeof(*pResContent),
                 texCoordNum);
         }
@@ -234,88 +260,105 @@ Base(pBlock){
         mpMaterial = Layout::NewObj<Material>(pResMaterial, resBlockSet);
     }
 
-    mFrameNum = 0;
-    mFrames = 0;
-    if (pBlock->frameNum > 0){
+    m_FrameNum = 0;
+    m_Frames = 0;
+    if (pBlock->frameNum > 0)
+    {
         this->InitFrame(pBlock->frameNum);
 
         const u32 *const frameOffsetTable = internal::ConvertOffsToPtr<u32>(pBlock, pBlock->frameOffsetTableOffset);
-        for (int i = 0; i < mFrameNum; ++i){
+        for (int i = 0; i < m_FrameNum; ++i)
+        {
             const res::WindowFrame *const pResWindowFrame = internal::ConvertOffsToPtr<res::WindowFrame>(pBlock, frameOffsetTable[i]);
-            mFrames[i].textureFlip = pResWindowFrame->textureFlip;
+            m_Frames[i].textureFlip = pResWindowFrame->textureFlip;
 
             const res::Material *const pResMaterial = internal::ConvertOffsToPtr<res::Material>(resBlockSet.pMaterialList, matOffsTbl[pResWindowFrame->materialIdx]);
-            mFrames[i].pMaterial = Layout::NewObj<Material>(pResMaterial, resBlockSet);
+            m_Frames[i].pMaterial = Layout::NewObj<Material>(pResMaterial, resBlockSet);
         }
     }
 }
 
-void Window::InitTexNum(u8 contentTexNum,u8 frameTexNums[],u8 frameNum){
+void Window::InitTexNum(u8 contentTexNum,u8 frameTexNums[],u8 frameNum)
+{
     this->InitContent(contentTexNum);
 
-    mContentInflation.l = 0;
-    mContentInflation.r = 0;
-    mContentInflation.t = 0;
-    mContentInflation.b = 0;
+    m_ContentInflation.l = 0;
+    m_ContentInflation.r = 0;
+    m_ContentInflation.t = 0;
+    m_ContentInflation.b = 0;
 
     this->mpMaterial = Layout::NewObj<Material>();
-    if (mpMaterial){
+    if (mpMaterial)
+    {
         mpMaterial->ReserveMem(contentTexNum, contentTexNum, contentTexNum);
     }
     this->InitFrame(frameNum);
 
-    for (int i = 0; i < mFrameNum; ++i){
-        mFrames[i].pMaterial = Layout::NewObj<Material>();
-        if (mFrames[i].pMaterial){
-            mFrames[i].pMaterial->ReserveMem(frameTexNums[i], frameTexNums[i], frameTexNums[i]);
+    for (int i = 0; i < m_FrameNum; ++i)
+    {
+        m_Frames[i].pMaterial = Layout::NewObj<Material>();
+        if (m_Frames[i].pMaterial)
+        {
+            m_Frames[i].pMaterial->ReserveMem(frameTexNums[i], frameTexNums[i], frameTexNums[i]);
         }
     }
 }
 
-void Window::InitContent(u8 texNum){
-    if (texNum > 0){
+void Window::InitContent(u8 texNum)
+{
+    if (texNum > 0)
+    {
         ReserveTexCoord(texNum);
     }
-    this->mIsTexCoordInited = false;
+    this->m_IsTexCoordInited = false;
 }
 
-void Window::InitFrame(u8 frameNum){
-    mFrameNum = 0;
-    this->mFrames = Layout::NewArray<Frame>(frameNum);
-    if (mFrames){
-        mFrameNum = frameNum;
+void Window::InitFrame(u8 frameNum)
+{
+    m_FrameNum = 0;
+    this->m_Frames = Layout::NewArray<Frame>(frameNum);
+    if (m_Frames)
+    {
+        m_FrameNum = frameNum;
     }
 }
 
-Window::~Window(){
-    Layout::DeleteArray(this->mFrames, this->mFrameNum);
+Window::~Window()
+{
+    Layout::DeleteArray(this->m_Frames, this->m_FrameNum);
 
-    if (mpMaterial && ! mpMaterial->IsUserAllocated()){
+    if (mpMaterial && ! mpMaterial->IsUserAllocated())
+    {
         Layout::DeleteObj(this->mpMaterial);
         mpMaterial = 0;
     }
 
-    mContent.texCoordAry.Free();
+    m_Content.texCoordAry.Free();
 }
 
-void Window::ReserveTexCoord(u8 num){
-    mContent.texCoordAry.Reserve(num);
+void Window::ReserveTexCoord(u8 num)
+{
+    m_Content.texCoordAry.Reserve(num);
 }
 
-u8 Window::GetTexCoordNum() const{
-    return mContent.texCoordAry.GetSize();
+u8 Window::GetTexCoordNum() const
+{
+    return m_Content.texCoordAry.GetSize();
 }
 
-void Window::SetTexCoordNum(u8 num){
-    mContent.texCoordAry.SetSize(num);
+void Window::SetTexCoordNum(u8 num)
+{
+    m_Content.texCoordAry.SetSize(num);
 }
 
-void Window::GetTexCoord(u32 idx,TexCoordQuad coords) const{
-    mContent.texCoordAry.GetCoord(idx, coords);
+void Window::GetTexCoord(u32 idx,TexCoordQuad coords) const
+{
+    m_Content.texCoordAry.GetCoord(idx, coords);
 }
 
-void Window::SetTexCoord(u32 idx,const TexCoordQuad coords){
-    this->mContent.texCoordAry.SetCoord(idx, coords);
+void Window::SetTexCoord(u32 idx,const TexCoordQuad coords)
+{
+    this->m_Content.texCoordAry.SetCoord(idx, coords);
 
     Material* pMaterial = this->GetContentMaterial();
     if (pMaterial != NULL)
@@ -324,21 +367,29 @@ void Window::SetTexCoord(u32 idx,const TexCoordQuad coords){
     }
 }
 
-Material* Window::FindMaterialByName(const char* findName,bool bRecursive){
-    if (mpMaterial){
-        if (internal::EqualsMaterialName(this->mpMaterial->GetName(), findName)){
+Material* Window::FindMaterialByName(const char* findName,bool bRecursive)
+{
+    if (mpMaterial)
+    {
+        if (internal::EqualsMaterialName(this->mpMaterial->GetName(), findName))
+    {
             return mpMaterial;
         }
     }
-    for (int i = 0; i < mFrameNum; ++i){
-        if (internal::EqualsMaterialName(this->mFrames[i].pMaterial->GetName(), findName)){
-            return mFrames[i].pMaterial;
+    for (int i = 0; i < m_FrameNum; ++i)
+    {
+        if (internal::EqualsMaterialName(this->m_Frames[i].pMaterial->GetName(), findName))
+    {
+            return m_Frames[i].pMaterial;
         }
     }
 
-    if (bRecursive){
-        for (PaneList::Iterator it = GetChildList().GetBeginIter(); it != GetChildList().GetEndIter(); ++it){
-            if (Material* pMat = it->FindMaterialByName(findName, bRecursive)){
+    if (bRecursive)
+    {
+        for (PaneList::Iterator it = GetChildList().GetBeginIter(); it != GetChildList().GetEndIter(); ++it)
+        {
+            if (Material* pMat = it->FindMaterialByName(findName, bRecursive))
+        {
                 return pMat;
             }
         }
@@ -347,55 +398,64 @@ Material* Window::FindMaterialByName(const char* findName,bool bRecursive){
     return 0;
 }
 
-const ut::Color8 Window::GetVtxColor(u32 idx) const{
-    return mContent.vtxColors[idx];
+const ut::Color8 Window::GetVtxColor(u32 idx) const
+{
+    return m_Content.vtxColors[idx];
 }
 
-void Window::SetVtxColor(u32 idx,ut::Color8 value){
-    mContent.vtxColors[idx] = value;
+void Window::SetVtxColor(u32 idx,ut::Color8 value)
+{
+    m_Content.vtxColors[idx] = value;
 }
 
-u8 Window::GetVtxColorElement(u32 idx) const{
-    return internal::GetVtxColorElement(mContent.vtxColors, idx);
+u8 Window::GetVtxColorElement(u32 idx) const
+{
+    return internal::GetVtxColorElement(m_Content.vtxColors, idx);
 }
 
-void Window::SetVtxColorElement(u32 idx, u8 value){
-    internal::SetVtxColorElement(mContent.vtxColors, idx, value);
+void Window::SetVtxColorElement(u32 idx, u8 value)
+{
+    internal::SetVtxColorElement(m_Content.vtxColors, idx, value);
 }
 
-void Window::DrawSelf(const DrawInfo& drawInfo){
+void Window::DrawSelf(const DrawInfo& drawInfo)
+{
     LoadMtx(drawInfo);
 
-    const WindowFrameSize frameSize = GetFrameSize(this->mFrameNum, this->mFrames);
+    const WindowFrameSize frameSize = GetFrameSize(this->m_FrameNum, this->m_Frames);
     const math::VEC2 basePt = GetVtxPos();
 
     DrawContent(drawInfo, basePt, frameSize, GetGlobalAlpha());
 
-    switch (this->mFrameNum){
+    switch (this->m_FrameNum)
+    {
     case 1:
-        DrawFrame(drawInfo, basePt, this->mFrames[WINDOWFRAME_LT], frameSize, GetGlobalAlpha());
+        DrawFrame(drawInfo, basePt, this->m_Frames[WINDOWFRAME_LT], frameSize, GetGlobalAlpha());
         break;
     case 4:
-        DrawFrame4(drawInfo, basePt, this->mFrames, frameSize, GetGlobalAlpha());
+        DrawFrame4(drawInfo, basePt, this->m_Frames, frameSize, GetGlobalAlpha());
         break;
     case 8:
-        DrawFrame8(drawInfo, basePt, this->mFrames, frameSize, GetGlobalAlpha());
+        DrawFrame8(drawInfo, basePt, this->m_Frames, frameSize, GetGlobalAlpha());
         break;
     }
 }
 
-void Window::DrawContent(const DrawInfo& drawInfo,const math::VEC2& basePt,const WindowFrameSize& frameSize,u8 alpha){
+void Window::DrawContent(const DrawInfo& drawInfo,const math::VEC2& basePt,const WindowFrameSize& frameSize,u8 alpha)
+{
     mpMaterial->SetupGraphics(drawInfo, alpha);
 
-    internal::DrawQuad(drawInfo,math::VEC2(basePt.x + frameSize.l - this->mContentInflation.l, basePt.y - frameSize.t + this->mContentInflation.t),
-        Size(GetSize().width - frameSize.l + this->mContentInflation.l - frameSize.r + this->mContentInflation.r, GetSize().height - frameSize.t + this->mContentInflation.t - frameSize.b + this->mContentInflation.b),
-        mContent.texCoordAry.GetSize(),
-        mContent.texCoordAry.GetArray(),
-        mContent.vtxColors);
+    internal::DrawQuad(drawInfo,math::VEC2(basePt.x + frameSize.l - this->m_ContentInflation.l, basePt.y - frameSize.t + this->m_ContentInflation.t),
+        Size(GetSize().width - frameSize.l + this->m_ContentInflation.l - frameSize.r + this->m_ContentInflation.r, GetSize().height - frameSize.t + this->m_ContentInflation.t - frameSize.b + this->m_ContentInflation.b),
+        m_Content.texCoordAry.GetSize(),
+        m_Content.texCoordAry.GetArray(),
+        m_Content.vtxColors);
 }
 
-void Window::DrawFrame(const DrawInfo& drawInfo,const math::VEC2& basePt,const Frame& frame,const WindowFrameSize& frameSize,u8 alpha){
-    if (frame.pMaterial->GetTexMapNum() == 0){
+void Window::DrawFrame(const DrawInfo& drawInfo,const math::VEC2& basePt,const Frame& frame,const WindowFrameSize& frameSize,u8 alpha)
+{
+    if (frame.pMaterial->GetTexMapNum() == 0)
+    {
         return;
     }
 
@@ -423,7 +483,8 @@ void Window::DrawFrame(const DrawInfo& drawInfo,const math::VEC2& basePt,const F
     internal::DrawQuad(drawInfo, polPt, polSize);
 }
 
-void Window::DrawFrame4(const DrawInfo& drawInfo,const math::VEC2& basePt,const Frame* frames,const WindowFrameSize& frameSize,u8 alpha){
+void Window::DrawFrame4(const DrawInfo& drawInfo,const math::VEC2& basePt,const Frame* frames,const WindowFrameSize& frameSize,u8 alpha)
+{
     math::VEC2 polPt[WINDOWFRAME_RB + 1];
     Size polSize[WINDOWFRAME_RB + 1];
     bool bRepeat = false;
@@ -434,24 +495,29 @@ void Window::DrawFrame4(const DrawInfo& drawInfo,const math::VEC2& basePt,const 
     local::GetLBFrameSize(&polPt[WINDOWFRAME_LB], &polSize[WINDOWFRAME_LB], basePt, GetSize(), frameSize);
     local::GetRBFrameSize(&polPt[WINDOWFRAME_RB], &polSize[WINDOWFRAME_RB], basePt, GetSize(), frameSize);
 
-    for (int i = WINDOWFRAME_LT; i <= WINDOWFRAME_RB; ++i){
+    for (int i = WINDOWFRAME_LT; i <= WINDOWFRAME_RB; ++i)
+    {
         const Frame& frame = frames[i];
 
-        if (frame.pMaterial && frame.pMaterial->GetTexMapNum() > 0){
+        if (frame.pMaterial && frame.pMaterial->GetTexMapNum() > 0)
+        {
             frame.pMaterial->SetupGraphics(drawInfo, alpha, false);
             local::SetupFrameTransform(gres, WindowFrame(i), frame.GetTextureFlip());
-            if (!bRepeat){
+            if (!bRepeat)
+            {
                 internal::DrawQuad(drawInfo, polPt[i], polSize[i]);
                 bRepeat = true;
             }
-            else{
+            else
+            {
                 internal::DrawQuad_Repeat(drawInfo, polPt[i], polSize[i]);
             }
         }
     }
 }
 
-void Window::DrawFrame8(const DrawInfo& drawInfo,const math::VEC2& basePt,const Frame* frames,const WindowFrameSize& frameSize,u8 alpha){
+void Window::DrawFrame8(const DrawInfo& drawInfo,const math::VEC2& basePt,const Frame* frames,const WindowFrameSize& frameSize,u8 alpha)
+{
     const f32 x0 = basePt.x;
     const f32 x1 = basePt.x + frameSize.l;
     const f32 x2 = basePt.x + this->GetSize().width - frameSize.r;
@@ -468,7 +534,8 @@ void Window::DrawFrame8(const DrawInfo& drawInfo,const math::VEC2& basePt,const 
     const f32 h1 = this->GetSize().height - frameSize.t - frameSize.b;
     const f32 h2 = frameSize.b;
 
-    const local::Rect frameRect[WINDOWFRAME_MAX] ={
+    const local::Rect frameRect[WINDOWFRAME_MAX] =
+    {
         { x0, y0, w0, h0 },
         { x2, y0, w2, h0 },
         { x0, y2, w0, h2 },
@@ -482,31 +549,38 @@ void Window::DrawFrame8(const DrawInfo& drawInfo,const math::VEC2& basePt,const 
     GraphicsResource& gres = *drawInfo.GetGraphicsResource();
     bool bRepeat = false;
 
-    for (int i = 0; i < WINDOWFRAME_MAX; ++i){
+    for (int i = 0; i < WINDOWFRAME_MAX; ++i)
+    {
         const Frame& frame = frames[i];
 
-        if (frame.pMaterial->GetTexMapNum() > 0){
+        if (frame.pMaterial->GetTexMapNum() > 0)
+        {
             frame.pMaterial->SetupGraphics(drawInfo, alpha, false);
             local::SetupFrameTransform(gres, WindowFrame(i), frame.GetTextureFlip());
-            if (!bRepeat){
+            if (!bRepeat)
+            {
                 internal::DrawQuad(drawInfo, frameRect[i].Position(), frameRect[i].Size());
                 bRepeat = true;
             }
-            else{
+            else
+            {
                 internal::DrawQuad_Repeat(drawInfo, frameRect[i].Position(), frameRect[i].Size());
             }
         }
     }
 }
 
-const WindowFrameSize Window::GetFrameSize(u8 frameNum,const Window::Frame* frames) const{
+const WindowFrameSize Window::GetFrameSize(u8 frameNum,const Window::Frame* frames) const
+{
     WindowFrameSize ret = { 0, 0, 0, 0 };
 
-    switch (frameNum){
+    switch (frameNum)
+    {
     case 1:{
             Material* pMaterial = frames[WINDOWFRAME_LT].pMaterial;
 
-            if (pMaterial != NULL && pMaterial->GetTexMapNum() > 0){
+            if (pMaterial != NULL && pMaterial->GetTexMapNum() > 0)
+            {
                 TexSize texSize = pMaterial->GetTexMap(0).GetSize();
                 ret.l = texSize.width;
                 ret.t = texSize.height;
@@ -518,22 +592,26 @@ const WindowFrameSize Window::GetFrameSize(u8 frameNum,const Window::Frame* fram
     case 4:
     case 8:{
             Material* pMaterialLT = frames[WINDOWFRAME_LT].pMaterial;
-            if (pMaterialLT != NULL && pMaterialLT->GetTexMapNum() > 0){
+            if (pMaterialLT != NULL && pMaterialLT->GetTexMapNum() > 0)
+            {
                 ret.t = pMaterialLT->GetTexMap(0).GetHeight();
             }
 
             Material *pMaterialRT = frames[WINDOWFRAME_RT].pMaterial;
-            if (pMaterialRT != NULL && pMaterialRT->GetTexMapNum() > 0){
+            if (pMaterialRT != NULL && pMaterialRT->GetTexMapNum() > 0)
+            {
                 ret.r = pMaterialRT->GetTexMap(0).GetWidth();
             }
 
             Material *pMaterialRB = frames[WINDOWFRAME_RB].pMaterial;
-            if (pMaterialRB != NULL && pMaterialRB->GetTexMapNum() > 0){
+            if (pMaterialRB != NULL && pMaterialRB->GetTexMapNum() > 0)
+            {
                 ret.b = pMaterialRB->GetTexMap(0).GetHeight();
             }
 
             Material *pMaterialLB = frames[WINDOWFRAME_LB].pMaterial;
-            if (pMaterialLB != NULL && pMaterialLB->GetTexMapNum() > 0){
+            if (pMaterialLB != NULL && pMaterialLB->GetTexMapNum() > 0)
+            {
                 ret.l = pMaterialLB->GetTexMap(0).GetWidth();
             }
         }
@@ -543,65 +621,78 @@ const WindowFrameSize Window::GetFrameSize(u8 frameNum,const Window::Frame* fram
     return ret;
 }
 
-u8 Window::GetMaterialNum() const{
-    return u8(1 + this->mFrameNum);
+u8 Window::GetMaterialNum() const
+{
+    return u8(1 + this->m_FrameNum);
 }
 
-Material* Window::GetMaterial(u32 idx) const{
+Material* Window::GetMaterial(u32 idx) const
+{
     return idx == 0 ? GetContentMaterial(): GetFrameMaterial(WindowFrame(idx - 1));
 }
 
-Material* Window::GetFrameMaterial(WindowFrame frameIdx) const{
-    if (frameIdx >= this->mFrameNum){
+Material* Window::GetFrameMaterial(WindowFrame frameIdx) const
+{
+    if (frameIdx >= this->m_FrameNum)
+    {
         return NULL;
     }
 
-    return mFrames[frameIdx].pMaterial;
+    return m_Frames[frameIdx].pMaterial;
 }
 
-void Window::SetFrameMaterial(WindowFrame frameIdx, Material* pMaterial){
-    if (mFrames[frameIdx].pMaterial == pMaterial){
+void Window::SetFrameMaterial(WindowFrame frameIdx, Material* pMaterial)
+{
+    if (m_Frames[frameIdx].pMaterial == pMaterial)
+    {
         return;
     }
 
-    if (mFrames[frameIdx].pMaterial != NULL &&
-        !mFrames[frameIdx].pMaterial->IsUserAllocated())
-    {
-        Layout::DeleteObj(this->mFrames[frameIdx].pMaterial);
+    if (m_Frames[frameIdx].pMaterial != NULL &&
+        !m_Frames[frameIdx].pMaterial->IsUserAllocated())
+        {
+        Layout::DeleteObj(this->m_Frames[frameIdx].pMaterial);
     }
 
-    mFrames[frameIdx].pMaterial = pMaterial;
-    if (pMaterial != NULL){
+    m_Frames[frameIdx].pMaterial = pMaterial;
+    if (pMaterial != NULL)
+    {
         pMaterial->SetTextureDirty();
     }
 }
 
-Material* Window::GetContentMaterial() const{
+Material* Window::GetContentMaterial() const
+{
     return mpMaterial;
 }
 
-void Window::SetContentMaterial(Material* pMaterial){
-    if (mpMaterial == pMaterial){
+void Window::SetContentMaterial(Material* pMaterial)
+{
+    if (mpMaterial == pMaterial)
+    {
         return;
     }
 
-    if (mpMaterial != NULL && !mpMaterial->IsUserAllocated()){
+    if (mpMaterial != NULL && !mpMaterial->IsUserAllocated())
+    {
         Layout::DeleteObj(this->mpMaterial);
     }
 
     mpMaterial = pMaterial;
-    if (mpMaterial != NULL){
+    if (mpMaterial != NULL)
+    {
         mpMaterial->SetTextureDirty();
     }
 }
 
-void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) const{
-    const WindowFrameSize frameSize(GetFrameSize(this->mFrameNum, this->mFrames));
+void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) const
+{
+    const WindowFrameSize frameSize(GetFrameSize(this->m_FrameNum, this->m_Frames));
     const math::VEC2 basePt(GetVtxPos());
 
     {
 
-        {
+    {
             pDrawer->SetUpTexEnv(this->mpMaterial);
         }
 
@@ -610,27 +701,28 @@ void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) con
         }
 
         {
-            if (!mIsTexCoordInited || mpMaterial->IsTextureDirty()){
-                mUniformTexCoordNum = pDrawer->CalcTextureCoords(this->mpMaterial,this->mContent.texCoordAry.GetArray(),this->mUniformTexCoords);
-                mIsTexCoordInited = true;
+            if (!m_IsTexCoordInited || mpMaterial->IsTextureDirty())
+            {
+                m_UniformTexCoordNum = pDrawer->CalcTextureCoords(this->mpMaterial,this->m_Content.texCoordAry.GetArray(),this->m_UniformTexCoords);
+                m_IsTexCoordInited = true;
                 mpMaterial->SetTextureDirty( false );
             }
-            pDrawer->SetUpTextureCoords(this->mUniformTexCoords, this->mUniformTexCoordNum);
+            pDrawer->SetUpTextureCoords(this->m_UniformTexCoords, this->m_UniformTexCoordNum);
         }
 
         {
             pDrawer->SetUpMtx(GetGlobalMtx());
 
-            Size size(GetSize().width  - frameSize.l + this->mContentInflation.l - frameSize.r + this->mContentInflation.r,
-                       GetSize().height - frameSize.t + this->mContentInflation.t - frameSize.b + this->mContentInflation.b );
+            Size size(GetSize().width  - frameSize.l + this->m_ContentInflation.l - frameSize.r + this->m_ContentInflation.r,
+                       GetSize().height - frameSize.t + this->m_ContentInflation.t - frameSize.b + this->m_ContentInflation.b);
 
-            nw::math::VEC2 pos(basePt.x + frameSize.l - this->mContentInflation.l, basePt.y - frameSize.t + this->mContentInflation.t );
+            nw::math::VEC2 pos(basePt.x + frameSize.l - this->m_ContentInflation.l, basePt.y - frameSize.t + this->m_ContentInflation.t);
             
             pDrawer->SetUpQuad(size, pos);
         }
 
         {
-            pDrawer->SetUpVtxColors(this->mContent.vtxColors, GetGlobalAlpha());
+            pDrawer->SetUpVtxColors(this->m_Content.vtxColors, GetGlobalAlpha());
         }
 
         {
@@ -651,9 +743,10 @@ void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) con
     math::VEC2 polPt;
     math::VEC2 texCds[ texCoordNum ][ VERTEX_MAX ];
 
-    switch (this->mFrameNum){
+    switch (this->m_FrameNum)
+    {
       case 1 :{
-            const Frame& frame = mFrames[WINDOWFRAME_LT];
+            const Frame& frame = m_Frames[WINDOWFRAME_LT];
 
             if (frame.pMaterial->GetTexMapNum() == 0) 
                 return;
@@ -696,8 +789,9 @@ void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) con
         }
         break;
       case 4 :{
-            const Frame* pFrame = &this->mFrames[WINDOWFRAME_LT];
-            if (pFrame->pMaterial->GetTexMapNum() != 0){
+            const Frame* pFrame = &this->m_Frames[WINDOWFRAME_LT];
+            if (pFrame->pMaterial->GetTexMapNum() != 0)
+            {
                 pDrawer->SetUpTexEnv(pFrame->pMaterial);
                 pDrawer->SetUpTextures(pFrame->pMaterial);
                 
@@ -710,8 +804,9 @@ void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) con
                 pDrawer->SetUniformDataEnd();              
             }
 
-            pFrame = &this->mFrames[WINDOWFRAME_RT];
-            if (pFrame->pMaterial->GetTexMapNum() != 0){
+            pFrame = &this->m_Frames[WINDOWFRAME_RT];
+            if (pFrame->pMaterial->GetTexMapNum() != 0)
+            {
                 pDrawer->SetUpTexEnv(pFrame->pMaterial);
                 pDrawer->SetUpTextures(pFrame->pMaterial);
                 
@@ -724,8 +819,9 @@ void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) con
                 pDrawer->SetUniformDataEnd();
             }
 
-            pFrame = &this->mFrames[WINDOWFRAME_RB];
-            if (pFrame->pMaterial->GetTexMapNum() != 0){
+            pFrame = &this->m_Frames[WINDOWFRAME_RB];
+            if (pFrame->pMaterial->GetTexMapNum() != 0)
+            {
                 pDrawer->SetUpTexEnv(pFrame->pMaterial);
                 pDrawer->SetUpTextures(pFrame->pMaterial);
                 
@@ -738,10 +834,11 @@ void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) con
                 pDrawer->SetUniformDataEnd();
             }
             
-            pFrame = &this->mFrames[WINDOWFRAME_LB];
-            if (pFrame->pMaterial->GetTexMapNum() != 0){
-                pDrawer->SetUpTexEnv( pFrame->pMaterial );
-                pDrawer->SetUpTextures( pFrame->pMaterial );
+            pFrame = &this->m_Frames[WINDOWFRAME_LB];
+            if (pFrame->pMaterial->GetTexMapNum() != 0)
+            {
+                pDrawer->SetUpTexEnv( pFrame->pMaterial);
+                pDrawer->SetUpTextures( pFrame->pMaterial);
                 
                 local::GetLBFrameSize(&polPt, &polSize, basePt, GetSize(), frameSize);
                 local::GetLBTexCoord(texCds[0], polSize, pFrame->pMaterial->GetTexMap(0).GetSize(), pFrame->textureFlip);
@@ -754,10 +851,11 @@ void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) con
         }
         break;
       case 8 :{           
-            const Frame* pFrame = &this->mFrames[WINDOWFRAME_LT];
-            if (pFrame->pMaterial->GetTexMapNum() != 0){
-                pDrawer->SetUpTexEnv( pFrame->pMaterial );
-                pDrawer->SetUpTextures( pFrame->pMaterial );
+            const Frame* pFrame = &this->m_Frames[WINDOWFRAME_LT];
+            if (pFrame->pMaterial->GetTexMapNum() != 0)
+            {
+                pDrawer->SetUpTexEnv( pFrame->pMaterial);
+                pDrawer->SetUpTextures( pFrame->pMaterial);
 
                 polSize = Size(frameSize.l, frameSize.t);
                 polPt    = basePt;
@@ -770,8 +868,9 @@ void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) con
                 pDrawer->SetUniformDataEnd();              
             }
 
-            pFrame = &this->mFrames[WINDOWFRAME_T];
-            if (pFrame->pMaterial->GetTexMapNum() != 0){
+            pFrame = &this->m_Frames[WINDOWFRAME_T];
+            if (pFrame->pMaterial->GetTexMapNum() != 0)
+            {
                 pDrawer->SetUpTexEnv(pFrame->pMaterial);
                 pDrawer->SetUpTextures(pFrame->pMaterial);
 
@@ -786,8 +885,9 @@ void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) con
                 pDrawer->SetUniformDataEnd();              
             }
 
-            pFrame = &this->mFrames[WINDOWFRAME_RT];
-            if (pFrame->pMaterial->GetTexMapNum() != 0){
+            pFrame = &this->m_Frames[WINDOWFRAME_RT];
+            if (pFrame->pMaterial->GetTexMapNum() != 0)
+            {
                 pDrawer->SetUpTexEnv(pFrame->pMaterial);
                 pDrawer->SetUpTextures(pFrame->pMaterial);
 
@@ -803,11 +903,11 @@ void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) con
                 
             }
             
-            pFrame = &this->mFrames[WINDOWFRAME_R];
-            if (pFrame->pMaterial->GetTexMapNum() != 0){
-                pDrawer->SetUpTexEnv( pFrame->pMaterial );
-
-                pDrawer->SetUpTextures( pFrame->pMaterial );
+            pFrame = &this->m_Frames[WINDOWFRAME_R];
+            if (pFrame->pMaterial->GetTexMapNum() != 0)
+            {
+                pDrawer->SetUpTexEnv( pFrame->pMaterial);
+                pDrawer->SetUpTextures( pFrame->pMaterial);
                 
                 polSize = Size(frameSize.r, GetSize().height - frameSize.t - frameSize.b);
                 polPt   = math::VEC2(basePt.x + GetSize().width - frameSize.r, basePt.y - frameSize.t);
@@ -820,8 +920,9 @@ void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) con
                 pDrawer->SetUniformDataEnd();              
             }
 
-            pFrame = &this->mFrames[WINDOWFRAME_RB];
-            if (pFrame->pMaterial->GetTexMapNum() != 0){
+            pFrame = &this->m_Frames[WINDOWFRAME_RB];
+            if (pFrame->pMaterial->GetTexMapNum() != 0)
+            {
                 pDrawer->SetUpTexEnv(pFrame->pMaterial);
                 pDrawer->SetUpTextures(pFrame->pMaterial);
                 
@@ -836,8 +937,9 @@ void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) con
                 pDrawer->SetUniformDataEnd();              
             }
 
-            pFrame = &this->mFrames[WINDOWFRAME_B];
-            if (pFrame->pMaterial->GetTexMapNum() != 0){
+            pFrame = &this->m_Frames[WINDOWFRAME_B];
+            if (pFrame->pMaterial->GetTexMapNum() != 0)
+            {
                 pDrawer->SetUpTexEnv(pFrame->pMaterial);
                 pDrawer->SetUpTextures(pFrame->pMaterial);
                 
@@ -852,8 +954,9 @@ void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) con
                 pDrawer->SetUniformDataEnd();              
             }
 
-            pFrame = &this->mFrames[WINDOWFRAME_LB];
-            if (pFrame->pMaterial->GetTexMapNum() != 0){
+            pFrame = &this->m_Frames[WINDOWFRAME_LB];
+            if (pFrame->pMaterial->GetTexMapNum() != 0)
+            {
                 pDrawer->SetUpTexEnv(pFrame->pMaterial);
                 pDrawer->SetUpTextures(pFrame->pMaterial);
                 
@@ -862,14 +965,15 @@ void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) con
                 
                 local::GetLBTexCoord(texCds[0], polSize, pFrame->pMaterial->GetTexMap(0).GetSize(), pFrame->textureFlip);
 
-                uniformTexCoordNum = pDrawer->CalcTextureCoords( pFrame->pMaterial, texCds,  uniformTexCoords );
+                uniformTexCoordNum = pDrawer->CalcTextureCoords(pFrame->pMaterial, texCds,  uniformTexCoords);
                 pDrawer->SetUpTextureCoords(uniformTexCoords, uniformTexCoordNum);
                 pDrawer->SetUpQuad(polSize, polPt);
                 pDrawer->SetUniformDataEnd();              
             }
 
-            pFrame = &this->mFrames[WINDOWFRAME_L];
-            if (pFrame->pMaterial->GetTexMapNum() != 0){
+            pFrame = &this->m_Frames[WINDOWFRAME_L];
+            if (pFrame->pMaterial->GetTexMapNum() != 0)
+            {
                 pDrawer->SetUpTexEnv(pFrame->pMaterial);
                 pDrawer->SetUpTextures(pFrame->pMaterial);
                 

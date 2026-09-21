@@ -8,7 +8,8 @@ namespace res {
 
 #define NW_ANIM_RES_TYPE_INFO(name)  res::name##_TYPE_INFO
 
-enum ResTypeInfoDefinition{
+enum ResTypeInfoDefinition
+{
     ResAnimGroup_TYPE_INFO              = 0x00000000,
     ResGraphicsAnimGroup_TYPE_INFO      = 0x80000000,
     ResAnimGroupMember_TYPE_INFO        = 0x00000000,

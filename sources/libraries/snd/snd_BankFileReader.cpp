@@ -54,32 +54,32 @@ BankFileReader::BankFileReader(const void* bankFile):
 
 bool BankFileReader::ReadVelocityRegionInfo(VelocityRegionInfo* info, int programNo, int key, int velocity) const
 {
-    if(programNo < 0 || programNo >= m_pInfoBlockBody->GetInstrumentCount())
+    if (programNo < 0 || programNo >= m_pInfoBlockBody->GetInstrumentCount())
     {
         return false;
     }
 
     const BankFile::Instrument* pInstrument = m_pInfoBlockBody->GetInstrument(programNo);
-    if(pInstrument == NULL)
+    if (pInstrument == NULL)
     {
         return false;
     }
 
     const BankFile::KeyRegion* pKeyRegion = pInstrument->GetKeyRegion(key);
-    if(pKeyRegion == NULL)
+    if (pKeyRegion == NULL)
     {
         return false;
     }
 
     const BankFile::VelocityRegion* pVelRegion = pKeyRegion->GetVelocityRegion(velocity);
-    if(pVelRegion == NULL)
+    if (pVelRegion == NULL)
     {
         return false;
     }
 
     const Util::WaveId& waveId = m_pInfoBlockBody->GetWaveId(pVelRegion->waveIdTableIndex);
 
-    if(waveId.waveIndex == 0xffffffff)
+    if (waveId.waveIndex == 0xffffffff)
     {
         return false;
     }
@@ -88,7 +88,7 @@ bool BankFileReader::ReadVelocityRegionInfo(VelocityRegionInfo* info, int progra
     info->waveIndex  = waveId.waveIndex;
 
     const BankFile::RegionParameter* pRegParameter = pVelRegion->GetRegionParameter();
-    if(pRegParameter == NULL)
+    if (pRegParameter == NULL)
     {
         info->originalKey = pVelRegion->GetOriginalKey();
         info->volume = pVelRegion->GetVolume();

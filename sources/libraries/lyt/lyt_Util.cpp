@@ -8,6 +8,7 @@
 #include <nw/lyt/lyt_Group.h>
 #include <nw/lyt/lyt_Animation.h>
 #include <nw/lyt/lyt_TexResource.h>
+#include <nn/gx.h>
 
 #define ARRAY_LENGTH(a)   (sizeof(a) / sizeof((a)[0]))
 
@@ -15,7 +16,8 @@ namespace nw{
 namespace lyt{
 namespace{
 
-struct TexSpec{
+struct TexSpec
+{
     int lytFormat;
     GLenum format;
     GLenum type;
@@ -24,34 +26,42 @@ struct TexSpec{
     bool final;
 };
 
-bool Contains(const nw::ut::Rect& rect,const nw::math::VEC2& point){
+bool Contains(const nw::ut::Rect& rect,const nw::math::VEC2& point)
+{
     return rect.left <= point.x && point.x <= rect.right && rect.bottom <= point.y && point.y <= rect.top;
 }
 
 }
 
-void BindAnimation(Group* pGroup,AnimTransform* pAnimTrans,bool bRecursive,bool bDisable){
+void BindAnimation(Group* pGroup,AnimTransform* pAnimTrans,bool bRecursive,bool bDisable)
+{
     PaneLinkList& paneList = pGroup->GetPaneList();
-    for (PaneLinkList::Iterator it = paneList.GetBeginIter(); it != paneList.GetEndIter(); ++it){
+    for (PaneLinkList::Iterator it = paneList.GetBeginIter(); it != paneList.GetEndIter(); ++it)
+    {
         it->target->BindAnimation(pAnimTrans, bRecursive, bDisable);
     }
 }
 
-void UnbindAnimation(Group* pGroup,AnimTransform* pAnimTrans,bool bRecursive){
+void UnbindAnimation(Group* pGroup,AnimTransform* pAnimTrans,bool bRecursive)
+{
     PaneLinkList& paneList = pGroup->GetPaneList();
-    for (PaneLinkList::Iterator it = paneList.GetBeginIter(); it != paneList.GetEndIter(); ++it){
+    for (PaneLinkList::Iterator it = paneList.GetBeginIter(); it != paneList.GetEndIter(); ++it)
+    {
         it->target->UnbindAnimation(pAnimTrans, bRecursive);
     }
 }
 
-void SetAnimationEnable(Group* pGroup,AnimTransform* pAnimTrans,bool bEnable,bool bRecursive){
+void SetAnimationEnable(Group* pGroup,AnimTransform* pAnimTrans,bool bEnable,bool bRecursive)
+{
     PaneLinkList& paneList = pGroup->GetPaneList();
-    for (PaneLinkList::Iterator it = paneList.GetBeginIter(); it != paneList.GetEndIter(); ++it){
+    for (PaneLinkList::Iterator it = paneList.GetBeginIter(); it != paneList.GetEndIter(); ++it)
+    {
         it->target->SetAnimationEnable(pAnimTrans, bEnable, bRecursive);
     }
 }
 
-bool IsContain(Pane* pPane,const math::VEC2& pos){
+bool IsContain(Pane* pPane,const math::VEC2& pos)
+{
     math::MTX34 invGlbMtx;
     math::MTX34Inverse(&invGlbMtx, &pPane->GetGlobalMtx());
 
@@ -62,20 +72,26 @@ bool IsContain(Pane* pPane,const math::VEC2& pos){
     return Contains(pPane->GetPaneRect(), math::VEC2(lclPos.x, lclPos.y));
 }
 
-Pane* FindHitPane(Pane* pPane,const math::VEC2& pos){
-    if (!pPane->IsVisible()){
+Pane* FindHitPane(Pane* pPane,const math::VEC2& pos)
+{
+    if (!pPane->IsVisible())
+    {
         return 0;
     }
 
-    for (PaneList::ReverseIterator it = pPane->GetChildList().GetBeginReverseIter(); it != pPane->GetChildList().GetEndReverseIter(); ++it){
-        if (Pane *const ret = FindHitPane(&(*it), pos)){
+    for (PaneList::ReverseIterator it = pPane->GetChildList().GetBeginReverseIter(); it != pPane->GetChildList().GetEndReverseIter(); ++it)
+    {
+        if (Pane *const ret = FindHitPane(&(*it), pos))
+    {
             return ret;
         }
     }
 
-    if (nw::lyt::Bounding *const pBounding = nw::ut::DynamicCast<nw::lyt::Bounding*>(pPane)){
+    if (nw::lyt::Bounding *const pBounding = nw::ut::DynamicCast<nw::lyt::Bounding*>(pPane))
+    {
 
-        if (IsContain(pBounding, pos)){
+        if (IsContain(pBounding, pos))
+    {
             return pBounding;
         }
     }
@@ -83,34 +99,41 @@ Pane* FindHitPane(Pane* pPane,const math::VEC2& pos){
     return 0;
 }
 
-Pane* FindHitPane(Layout* pLayout,const math::VEC2& pos){
+Pane* FindHitPane(Layout* pLayout,const math::VEC2& pos)
+{
     return FindHitPane(pLayout->GetRootPane(), pos);
 }
 
-Pane* GetNextPane(Pane* pPane){
-    if (!pPane->GetChildList().IsEmpty()){
+Pane* GetNextPane(Pane* pPane)
+{
+    if (!pPane->GetChildList().IsEmpty())
+    {
         PaneList::Iterator paneIt = pPane->GetChildList().GetBeginIter();
         return &(*paneIt);
     }
 
-    while (true){
-        if (pPane->GetParent() == 0){
+    while (true)
+    {
+        if (pPane->GetParent() == 0)
+        {
             return 0;
         }
 
-        PaneList::Iterator nextIt = PaneList::GetIteratorFromPointer(pPane->mLink.GetNext());
+        PaneList::Iterator nextIt = PaneList::GetIteratorFromPointer(pPane->m_Link.GetNext());
         PaneList::Iterator endIt = pPane->GetParent()->GetChildList().GetEndIter();
-        if (nextIt != endIt){
+        if (nextIt != endIt)
+        {
             break;
         }
 
         pPane = pPane->GetParent();
     }
 
-    return PaneList::GetPointerFromNode(pPane->mLink.GetNext());
+    return PaneList::GetPointerFromNode(pPane->m_Link.GetNext());
 }
 
-const TextureInfo LoadTexture(const void* pImgRes, u32 size, int texLoadFlag){
+const TextureInfo LoadTexture(const void* pImgRes, u32 size, int texLoadFlag)
+{
     const TexResource texResource(const_cast<void*>(pImgRes), size);
     if (!texResource.IsValid())
     {
@@ -150,18 +173,22 @@ const TextureInfo LoadTexture(const void* pImgRes, u32 size, int texLoadFlag){
 
     u16 width = texResource.GetWidth();
     u16 realWidth = texSpec[format].minSize;
-    while (realWidth != 0 && realWidth < width){
+    while (realWidth != 0 && realWidth < width)
+    {
         realWidth <<= 1;
     }
 
     u16 height = texResource.GetHeight();
     u16 realHeight = texSpec[format].minSize;
-    while (realHeight != 0 && realHeight < height){
+    while (realHeight != 0 && realHeight < height)
+    {
         realHeight <<= 1;
     }
 
-    if (texLoadFlag == 0){
-        switch (texResource.GetImageArea()){
+    if (texLoadFlag == 0)
+    {
+        switch (texResource.GetImageArea())
+        {
         case MEMAREA_FCRAM:
             texLoadFlag = NN_GX_MEM_FCRAM | GL_NO_COPY_FCRAM_DMP;
             break;
@@ -183,13 +210,15 @@ const TextureInfo LoadTexture(const void* pImgRes, u32 size, int texLoadFlag){
     GLuint texName = TextureInfo::INVALID;
     uptr physicalAddress = 0;
 
-    if (Layout::GetLayoutDrawEnable()){
+    if (Layout::GetLayoutDrawEnable())
+    {
         glGenTextures(1, &texName);
 
         glBindTexture(GL_TEXTURE_2D, texName);
         NW_GL_ASSERT();
 
-        if (texSpec[format].compressed){
+        if (texSpec[format].compressed)
+        {
             glCompressedTexImage2D(GL_TEXTURE_2D | texLoadFlag,0,texSpec[format].format,realWidth,realHeight,0,imageSize,pixels);
             NW_GL_ASSERT();
         }
@@ -211,7 +240,8 @@ const TextureInfo LoadTexture(const void* pImgRes, u32 size, int texLoadFlag){
 
         const u32 MEM_MASK = 0x00030000;
         GLenum transtype = texLoadFlag & 0xFFFF0000;
-        switch (transtype){
+        switch (transtype)
+        {
         case NN_GX_MEM_FCRAM | GL_NO_COPY_FCRAM_DMP:
             nngxUpdateBuffer(pixels, imageSize);
             physicalAddress = nngxGetPhysicalAddr((uptr)(pixels));
@@ -221,7 +251,8 @@ const TextureInfo LoadTexture(const void* pImgRes, u32 size, int texLoadFlag){
         case NN_GX_MEM_VRAMB | GL_NO_COPY_FCRAM_DMP:{
             GLvoid* (*pGlAllocator)(GLenum, GLenum, GLuint, GLsizei) = NULL;
             nngxGetAllocator(&pGlAllocator, NULL);
-            if (pGlAllocator == NULL){
+            if (pGlAllocator == NULL)
+            {
                 NW_FATAL_ERROR("can not get DMPGL allocator.");
                 return TextureInfo();
             }
@@ -230,7 +261,8 @@ const TextureInfo LoadTexture(const void* pImgRes, u32 size, int texLoadFlag){
 
             void* address = pGlAllocator(area, NN_GX_MEM_TEXTURE, texName, imageSize);
 
-            if (address != NULL){
+            if (address != NULL)
+            {
                 nngxAddVramDmaCommand(pixels, address, imageSize);
 
                 physicalAddress = nngxGetPhysicalAddr((uptr)(address));

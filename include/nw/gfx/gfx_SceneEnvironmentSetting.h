@@ -13,37 +13,38 @@
 namespace nw{
 namespace gfx{
 
-class SceneEnvironmentSetting : public SceneObject{
+class SceneEnvironmentSetting : public SceneObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(SceneEnvironmentSetting);
 
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    struct LightSetBinder{
+    struct LightSetBinder
+    {
         LightSetBinder(): 
-            index(-1)
-        {}
+            index(-1) {}
 
         s32 index;
         GfxPtr<LightSet> lightSet;
     };
 
-    struct CameraBinder{
+    struct CameraBinder
+    {
         CameraBinder(): 
             index(-1),
-            camera(NULL)
-        {}
+            camera(NULL) {}
 
         s32 index;
         Camera* camera;
     };
 
-    struct FogBinder{
+    struct FogBinder
+    {
         FogBinder(): 
             index(-1),
-            fog(NULL)
-        {}
+            fog(NULL) {}
 
         s32 index;
         Fog* fog;
@@ -53,13 +54,15 @@ public:
     typedef nw::ut::MoveArray<CameraBinder> CameraBinderArray;
     typedef nw::ut::MoveArray<FogBinder> FogBinderArray;
 
-    struct Description{
-        Description(){}
+    struct Description
+    {
+        Description() {}
     };
 
     static SceneEnvironmentSetting* Create(ResSceneObject resource,const SceneEnvironmentSetting::Description& description,nw::os::IAllocator* allocator);
 
-    static size_t GetMemorySize(ResSceneEnvironmentSetting resource,Description description,size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT){
+    static size_t GetMemorySize(ResSceneEnvironmentSetting resource,Description description,size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT)
+    {
         nw::os::MemorySizeCalculator size(alignment);
 
         GetMemorySizeInternal(&size, resource, description);
@@ -73,64 +76,79 @@ public:
 
     void Clear();
 
-    ResSceneEnvironmentSetting GetResSceneEnvironmentSetting() {
+    ResSceneEnvironmentSetting GetResSceneEnvironmentSetting() 
+    {
         return nw::ut::ResDynamicCast<ResSceneEnvironmentSetting>(this->GetResSceneObject());
     }
 
-    const ResSceneEnvironmentSetting GetResSceneEnvironmentSetting() const {
+    const ResSceneEnvironmentSetting GetResSceneEnvironmentSetting() const 
+    {
         return nw::ut::ResDynamicCast<ResSceneEnvironmentSetting>(this->GetResSceneObject());
     }
 
-    CameraBinderArray::iterator GetCameraBegin(){
-        return this->mCameras.begin();
+    CameraBinderArray::iterator GetCameraBegin()
+    {
+        return this->m_Cameras.begin();
     }
 
-    CameraBinderArray::const_iterator GetCameraBegin() const{
-        return this->mCameras.begin();
+    CameraBinderArray::const_iterator GetCameraBegin() const
+    {
+        return this->m_Cameras.begin();
     }
 
-    CameraBinderArray::iterator GetCameraEnd(){
-        return this->mCameras.end();
+    CameraBinderArray::iterator GetCameraEnd()
+    {
+        return this->m_Cameras.end();
     }
 
-    CameraBinderArray::const_iterator GetCameraEnd() const{
-        return this->mCameras.end();
+    CameraBinderArray::const_iterator GetCameraEnd() const
+    {
+        return this->m_Cameras.end();
     }
 
-    FogBinderArray::iterator GetFogBegin(){
-        return this->mFogs.begin();
+    FogBinderArray::iterator GetFogBegin()
+    {
+        return this->m_Fogs.begin();
     }
 
-    FogBinderArray::const_iterator GetFogBegin() const{
-        return this->mFogs.begin();
+    FogBinderArray::const_iterator GetFogBegin() const
+    {
+        return this->m_Fogs.begin();
     }
 
-    FogBinderArray::iterator GetFogEnd(){
-        return this->mFogs.end();
+    FogBinderArray::iterator GetFogEnd()
+    {
+        return this->m_Fogs.end();
     }
 
-    FogBinderArray::const_iterator GetFogEnd() const{
-        return this->mFogs.end();
+    FogBinderArray::const_iterator GetFogEnd() const
+    {
+        return this->m_Fogs.end();
     }
 
-    LightSetBinderArray::iterator GetLightSetBegin(){
-        return this->mLightSets.begin();
+    LightSetBinderArray::iterator GetLightSetBegin()
+    {
+        return this->m_LightSets.begin();
     }
 
-    LightSetBinderArray::const_iterator GetLightSetBegin() const{
-        return this->mLightSets.begin();
+    LightSetBinderArray::const_iterator GetLightSetBegin() const
+    {
+        return this->m_LightSets.begin();
     }
 
-    LightSetBinderArray::iterator GetLightSetEnd(){
-        return this->mLightSets.end();
+    LightSetBinderArray::iterator GetLightSetEnd()
+    {
+        return this->m_LightSets.end();
     }
 
-    LightSetBinderArray::const_iterator GetLightSetEnd() const{
-        return this->mLightSets.end();
+    LightSetBinderArray::const_iterator GetLightSetEnd() const
+    {
+        return this->m_LightSets.end();
     }
 protected:
     SceneEnvironmentSetting(nw::os::IAllocator* allocator,ResSceneEnvironmentSetting resSetting,const SceneEnvironmentSetting::Description& description): 
-    SceneObject(allocator, resSetting){
+    SceneObject(allocator, resSetting)
+{
         NW_UNUSED_VARIABLE(description);
     }
 
@@ -139,23 +157,26 @@ private:
     void CreateEnvironmentArray(nw::os::IAllocator* allocator, ResSceneEnvironmentSetting );
 
     template<typename TObject>
-    struct SceneObjectCompare: public std::unary_function<TObject, bool>{
-        SceneObjectCompare(ResReferenceSceneObject referenceSceneObject): mObject(referenceSceneObject){}
+    struct SceneObjectCompare: public std::unary_function<TObject, bool>
+    {
+        SceneObjectCompare(ResReferenceSceneObject referenceSceneObject): m_Object(referenceSceneObject) {}
 
-        ResReferenceSceneObject mObject;
-        bool operator()(TObject* lhs) const{
+        ResReferenceSceneObject m_Object;
+        bool operator()(TObject* lhs) const
+        {
             if (lhs->GetName() != NULL &&
-                mObject.GetPath() != NULL &&
-                std::strcmp(lhs->GetName(), mObject.GetPath()) == 0){
+                m_Object.GetPath() != NULL &&
+                std::strcmp(lhs->GetName(), m_Object.GetPath()) == 0)
+                {
                 return true;
             }
             return false;
         }
     };
 
-    LightSetBinderArray mLightSets;
-    CameraBinderArray mCameras;
-    FogBinderArray mFogs;
+    LightSetBinderArray m_LightSets;
+    CameraBinderArray m_Cameras;
+    FogBinderArray m_Fogs;
 };
 
 }

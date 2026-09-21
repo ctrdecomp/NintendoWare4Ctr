@@ -30,7 +30,8 @@ namespace gfx{
 
 namespace internal{
 
-bool TestRegisterOverride(int matrixpaletteCount, RenderContext* renderContext){
+bool TestRegisterOverride(int matrixpaletteCount, RenderContext* renderContext)
+{
     NW_ASSERT(renderContext->GetShaderProgram()->GetActiveDescription().IsValid());
 
     int vertexLightEndUniform = renderContext->GetShaderProgram()->GetActiveDescription().GetVertexLightEndUniform();
@@ -47,7 +48,8 @@ bool TestRegisterOverride(int matrixpaletteCount, RenderContext* renderContext){
 
 /* MeshRenderer */
 
-MeshRenderer* MeshRenderer::Create(nw::os::IAllocator* pAllocator){
+MeshRenderer* MeshRenderer::Create(nw::os::IAllocator* pAllocator)
+{
     NW_NULL_ASSERT(pAllocator);
 
     size_t size = sizeof(MeshRenderer);
@@ -57,18 +59,20 @@ MeshRenderer* MeshRenderer::Create(nw::os::IAllocator* pAllocator){
     return new(buf) MeshRenderer(pAllocator);
 }
 
-void MeshRenderer::RenderMesh(ResMesh mesh, Model* model){
+void MeshRenderer::RenderMesh(ResMesh mesh, Model* model)
+{
     NW_ASSERT(mesh.IsValid());
 
     ResShape shape = model->GetResModel().GetShapes(mesh.GetShapeIndex());
 
-    switch (shape.ref().typeInfo){
+    switch (shape.ref().typeInfo)
+    {
     case ResSeparateDataShape::TYPE_INFO:{
-            this->mRenderContext->SetMaterial(model->GetMaterial(mesh.GetMaterialIndex()));
-            this->mRenderContext->ActivateContext();
-            this->mRenderContext->ActivateVertexAttribute(mesh);
+            this->m_RenderContext->SetMaterial(model->GetMaterial(mesh.GetMaterialIndex()));
+            this->m_RenderContext->ActivateContext();
+            this->m_RenderContext->ActivateVertexAttribute(mesh);
             this->RenderSeparateDataShape(model, ResStaticCast<ResSeparateDataShape>(shape), mesh.GetCurrentPrimitiveIndex());
-            this->mRenderContext->DeactivateVertexAttribute(mesh);
+            this->m_RenderContext->DeactivateVertexAttribute(mesh);
         }
         break;
 
@@ -78,12 +82,13 @@ void MeshRenderer::RenderMesh(ResMesh mesh, Model* model){
 
             ParticleSet* particleSet = particleModel->GetParticleSets(mesh.GetShapeIndex());
 
-            if (particleSet->GetParticleCollection()->GetCount() == 0){
+            if (particleSet->GetParticleCollection()->GetCount() == 0)
+            {
                 return;
             }
 
-            this->mRenderContext->SetMaterial(model->GetMaterial(mesh.GetMaterialIndex()));
-            this->mRenderContext->ActivateParticleContext();
+            this->m_RenderContext->SetMaterial(model->GetMaterial(mesh.GetMaterialIndex()));
+            this->m_RenderContext->ActivateParticleContext();
             this->RenderParticleShape(model, ResStaticCast<ResParticleShape>(shape), mesh.GetShapeIndex());
         }
         break;
@@ -93,9 +98,11 @@ void MeshRenderer::RenderMesh(ResMesh mesh, Model* model){
     }
 }
 
-void MeshRenderer::RenderSeparateDataShape(Model* model, ResSeparateDataShape shape, s32 currentPrimitiveIndex){
-    NW_NULL_ASSERT(this->mRenderContext);
-    if (!shape.IsValid()){
+void MeshRenderer::RenderSeparateDataShape(Model* model, ResSeparateDataShape shape, s32 currentPrimitiveIndex)
+{
+    NW_NULL_ASSERT(this->m_RenderContext);
+    if (!shape.IsValid())
+    {
         return;
     }
 
@@ -103,28 +110,32 @@ void MeshRenderer::RenderSeparateDataShape(Model* model, ResSeparateDataShape sh
 
     SkeletalModel* skeletalModel = ut::DynamicCast<SkeletalModel*>(model);
 
-    if (this->mRenderContext->GetModelCache() != model){
-        if (skeletalModel){
-            this->mRenderContext->SetModelMatrixForSkeletalModel(skeletalModel);
+    if (this->m_RenderContext->GetModelCache() != model)
+    {
+        if (skeletalModel)
+        {
+            this->m_RenderContext->SetModelMatrixForSkeletalModel(skeletalModel);
         }
         else{
-            this->mRenderContext->SetModelMatrixForModel(model);
+            this->m_RenderContext->SetModelMatrixForModel(model);
         }
     }
 
     ResPrimitiveSetArray primitiveSets = shape.GetPrimitiveSets();
     ResPrimitiveSetArray::iterator primitiveSetEnd = primitiveSets.end();
 
-    for (ResPrimitiveSetArray::iterator primitiveSet = primitiveSets.begin(); primitiveSet != primitiveSetEnd; ++primitiveSet){
+    for (ResPrimitiveSetArray::iterator primitiveSet = primitiveSets.begin(); primitiveSet != primitiveSetEnd; ++primitiveSet)
+    {
         NW_ASSERT((*primitiveSet).IsValid());
         NW_ASSERT(0 <= currentPrimitiveIndex && currentPrimitiveIndex < (*primitiveSet).GetPrimitivesCount());
 
         s32 boneIndexCount = (*primitiveSet).GetBoneIndexTableCount();
 
-        NW_ASSERTMSG(internal::TestRegisterOverride(boneIndexCount, this->mRenderContext), "Vertex-lights or user-registers might be overridden by bone matrices.%s", model->GetResModel().GetName());
+        NW_ASSERTMSG(internal::TestRegisterOverride(boneIndexCount, this->m_RenderContext), "Vertex-lights or user-registers might be overridden by bone matrices.%s", model->GetResModel().GetName());
 
-        if (skeletalModel == NULL || boneIndexCount == 0){
-            const ShaderProgram* shaderProgram = mRenderContext->GetShaderProgram();
+        if (skeletalModel == NULL || boneIndexCount == 0)
+        {
+            const ShaderProgram* shaderProgram = m_RenderContext->GetShaderProgram();
 
             shaderProgram->SetVertexUniformBool(NW_GFX_VERTEX_UNIFORM(ISSMOSK), false);
             shaderProgram->SetVertexUniformBool(NW_GFX_VERTEX_UNIFORM(ISRGDSK), false);
@@ -135,20 +146,23 @@ void MeshRenderer::RenderSeparateDataShape(Model* model, ResSeparateDataShape sh
             SetMatrixPalette(skeletalModel, *primitiveSet, boneIndexCount);
         }
 
-        this->mRenderContext->RenderPrimitive((*primitiveSet).GetPrimitives(currentPrimitiveIndex));
+        this->m_RenderContext->RenderPrimitive((*primitiveSet).GetPrimitives(currentPrimitiveIndex));
     }
 }
 
 namespace internal{
-static bool isIllegal(f32 val){
+static bool isIllegal(f32 val)
+{
     return !isfinite(val);
 }
 
-static bool isIllegal(const math::VEC3& vec){
+static bool isIllegal(const math::VEC3& vec)
+{
     return isIllegal(vec.x) || isIllegal(vec.y) || isIllegal(vec.z);
 }
 
-static bool isIllegal(const math::MTX34& mtx){
+static bool isIllegal(const math::MTX34& mtx)
+{
     return
         isIllegal(mtx.matrix[0][0]) || isIllegal(mtx.matrix[0][1]) || isIllegal(mtx.matrix[0][2]) || isIllegal(mtx.matrix[0][3]) ||
         isIllegal(mtx.matrix[1][0]) || isIllegal(mtx.matrix[1][1]) || isIllegal(mtx.matrix[1][2]) || isIllegal(mtx.matrix[1][3]) ||
@@ -156,9 +170,11 @@ static bool isIllegal(const math::MTX34& mtx){
 }
 }
 
-void MeshRenderer::RenderParticleShape(Model* model, ResParticleShape resource, int shapeIndex){
-    NW_NULL_ASSERT(this->mRenderContext);
-    if (!resource.IsValid()){
+void MeshRenderer::RenderParticleShape(Model* model, ResParticleShape resource, int shapeIndex)
+{
+    NW_NULL_ASSERT(this->m_RenderContext);
+    if (!resource.IsValid())
+    {
         return;
     }
 
@@ -174,14 +190,16 @@ void MeshRenderer::RenderParticleShape(Model* model, ResParticleShape resource, 
 
     NW_ASSERT(particleShape->GetResParticleShape().ptr() == resource.ptr());
 
-    if (resParticleSet.GetIsBufferFlushEnabled()){
+    if (resParticleSet.GetIsBufferFlushEnabled())
+    {
         particleShape->FlushBuffer();
     }
 
     int bufferSide = particleShape->GetBufferSide();
-    internal::NWUseCmdlist(particleShape->mCommandCache[bufferSide], particleShape->mCommandCacheSize[bufferSide]);
+    internal::NWUseCmdlist(particleShape->m_CommandCache[bufferSide], particleShape->m_CommandCacheSize[bufferSide]);
 
-    enum{
+    enum
+    {
         REG_UNIFORM_FLOAT_INDEX = 0x2c0,
         REG_VS_FLOAT_DATA1 = 0x2c1,
         REG_INDEX_STREAM_OFFSET = 0x227,
@@ -199,7 +217,7 @@ void MeshRenderer::RenderParticleShape(Model* model, ResParticleShape resource, 
     command[commandIndex++] = *(u32*)&resource.GetPositionOffset().x;
     NW_ASSERT(!internal::isIllegal(resource.GetPositionOffset()));
 
-    Camera* camera = this->mRenderContext->GetActiveCamera();
+    Camera* camera = this->m_RenderContext->GetActiveCamera();
     NW_NULL_ASSERT(camera);
 
     const u32 HEADER_UNIFORM_FLOAT_INDEX = internal::MakeCommandHeader(REG_UNIFORM_FLOAT_INDEX, 1, false, 0xF);
@@ -209,7 +227,8 @@ void MeshRenderer::RenderParticleShape(Model* model, ResParticleShape resource, 
 
     const int universalNum = 15;
 
-    if (particleSet->GetResParticleSet().GetIsForceWorld()){
+    if (particleSet->GetResParticleSet().GetIsForceWorld())
+    {
         NW_ASSERT(!internal::isIllegal(camera->ViewMatrix()));
         internal::NWCopyMtx34WithHeader(
             (f32*)&command[commandIndex],
@@ -284,7 +303,8 @@ void MeshRenderer::RenderParticleShape(Model* model, ResParticleShape resource, 
 
     math::VEC3 offset(0.0f, 0.0f, 0.0f);
     const ResParticleShapeBuilder& resShapeBuilder = resParticleSet.GetParticleShapeBuilder();
-    if (resShapeBuilder.IsValid()){
+    if (resShapeBuilder.IsValid())
+    {
         offset = resShapeBuilder.GetDrawOffset();
     }
 
@@ -300,7 +320,8 @@ void MeshRenderer::RenderParticleShape(Model* model, ResParticleShape resource, 
     internal::NWCopyVec3Reverse((f32*)&command[commandIndex], (f32*)&particleSet->GetRotateOffset());
     commandIndex += 4;
 
-    if ((commandIndex & 1) == 1){
+    if ((commandIndex & 1) == 1)
+    {
         command[commandIndex++] = 0;
     }
 
@@ -312,7 +333,8 @@ void MeshRenderer::RenderParticleShape(Model* model, ResParticleShape resource, 
     u32 streamOffset = particleShape->GetPrimitiveStreamOffset(PARTICLE_BUFFER_FRONT);
 
     const bool isAscendingOrder = (resShapeBuilder.IsValid()) ? resShapeBuilder.IsAscendingOrder() : true;
-    if (!isAscendingOrder){
+    if (!isAscendingOrder)
+    {
         ParticleCollection* collection = particleSet->GetParticleCollection();
         streamOffset += sizeof(u16) * (collection->GetCapacity() - collection->GetCount());
     }
@@ -324,18 +346,19 @@ void MeshRenderer::RenderParticleShape(Model* model, ResParticleShape resource, 
 
     internal::NWForwardCurrentCmdBuffer(sizeof(u32) * commandIndex);
 
-    internal::NWUseCmdlist(particleShape->mPrimitiveCommandCache, particleShape->mPrimitiveCommandCacheSize);
+    internal::NWUseCmdlist(particleShape->m_PrimitiveCommandCache, particleShape->m_PrimitiveCommandCacheSize);
 
-    internal::NWUseCmdlist(particleShape->mDeactivateVertexCommandCache, particleShape->mDeactivateVertexCommandCacheSize);
+    internal::NWUseCmdlist(particleShape->m_DeactivateVertexCommandCache, particleShape->m_DeactivateVertexCommandCacheSize);
 }
 
-void MeshRenderer::SetMatrixPalette(SkeletalModel* skeletalModel, ResPrimitiveSet primitiveSet, s32 boneIndexCount){
-    NW_NULL_ASSERT(mRenderContext);
+void MeshRenderer::SetMatrixPalette(SkeletalModel* skeletalModel, ResPrimitiveSet primitiveSet, s32 boneIndexCount)
+{
+    NW_NULL_ASSERT(m_RenderContext);
     NW_ASSERT(primitiveSet.IsValid());
 
     const int UNIT_COUNT = 3;
 
-    const ShaderProgram* shaderProgram = mRenderContext->GetShaderProgram();
+    const ShaderProgram* shaderProgram = m_RenderContext->GetShaderProgram();
 
     bool isRigid = primitiveSet.GetSkinningMode() != ResPrimitiveSet::SKINNING_MODE_SMOOTH;
     shaderProgram->SetVertexUniformBool(NW_GFX_VERTEX_UNIFORM(ISSMOSK), !isRigid);
@@ -346,7 +369,8 @@ void MeshRenderer::SetMatrixPalette(SkeletalModel* skeletalModel, ResPrimitiveSe
     Skeleton::MatrixPose& matrixPose = skeleton->WorldMatrixPose();
     Skeleton::MatrixPose& skiningPose = skeleton->SkiningMatrixPose();
 
-    for (int count = 0; count < boneIndexCount; ++count){
+    for (int count = 0; count < boneIndexCount; ++count)
+    {
         s32 boneIndex = primitiveSet.GetBoneIndexTable(count);
 
         ResBone bone = resSkeleton.GetBones(boneIndex);
@@ -359,7 +383,8 @@ void MeshRenderer::SetMatrixPalette(SkeletalModel* skeletalModel, ResPrimitiveSe
 
         int index = count * UNIT_COUNT;
 
-        if (count == 0){
+        if (count == 0)
+        {
             internal::NWSetVertexUniform4fvBegin(VERTEX_SHADER_UNIFORM_UNIVREG_INDEX + index, boneIndexCount * UNIT_COUNT, UNIT_COUNT, *matrix);
         }
         else{

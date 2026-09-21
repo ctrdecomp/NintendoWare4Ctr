@@ -24,7 +24,7 @@ public:
             m_Comb0(19 * NN_SND_SAMPLES_PER_FRAME), 
             m_Comb1(23 * NN_SND_SAMPLES_PER_FRAME), 
             m_AllPass(13 * NN_SND_SAMPLES_PER_FRAME)
-        {
+            {
         }
     };
 
@@ -51,12 +51,21 @@ public:
             m_EarlyGain(0.6f),
             m_FusedGain(0.4f),
             m_UseHpfDamping(false)
-        {
+            {
         }
     };
 
     FxReverb();
     virtual ~FxReverb();
+    virtual bool Initialize();
+    virtual void Finalize();
+    virtual void UpdateBuffer(int numChannels, nn::snd::CTR::AuxBusData* data, s32 sampleLength, nw::snd::SampleFormat format, f32 sampleRate, nw::snd::OutputMode mode);
+
+    bool SetParam(const FxReverb::Param& param);
+    size_t GetRequiredMemSize();
+    bool AssignWorkBuffer(uptr buffer, size_t size);
+    void ReleaseWorkBuffer();
+    
 private:
     struct WorkBuffer
     {
@@ -66,6 +75,10 @@ private:
         s32* m_AllPassFilter[4];
         s32  m_Lpf[4];
     };
+
+    void AllocBuffer();
+    void FreeBuffer();
+    void InitializeParam();
 
     Param           m_Param;
     uptr            m_pBuffer;

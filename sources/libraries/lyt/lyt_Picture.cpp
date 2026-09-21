@@ -41,21 +41,21 @@ Picture::Picture(const TexMap& texMap)
 
 Picture::Picture(const res::Picture* pBlock,const ResBlockSet& resBlockSet):   
     Base(pBlock)
-{
+    {
     const u8 texCoordNum = ut::Min((int)pBlock->texCoordNum, TexMapMax);
 
     this->Init(texCoordNum);
 
     for (int i = 0; i < VERTEXCOLOR_MAX; ++i)
     {
-        this->mVtxColors[i] = pBlock->vtxCols[i];
+        this->m_VtxColors[i] = pBlock->vtxCols[i];
     }
 
     if (texCoordNum > 0)
     {
-        if (!mTexCoordAry.IsEmpty())
+        if (!m_TexCoordAry.IsEmpty())
         {
-            mTexCoordAry.Copy(reinterpret_cast<const char*>(pBlock) + sizeof(*pBlock), texCoordNum);
+            m_TexCoordAry.Copy(reinterpret_cast<const char*>(pBlock) + sizeof(*pBlock), texCoordNum);
         }
     }
 
@@ -72,7 +72,7 @@ void Picture::Init(u8 texNum)
     {
         this->ReserveTexCoord(texNum);
     }
-    this->mIsTexCoordInited = false;
+    this->m_IsTexCoordInited = false;
 }
 
 Picture::~Picture()
@@ -83,7 +83,7 @@ Picture::~Picture()
         mpMaterial = 0;
     }
 
-    this->mTexCoordAry.Free();
+    this->m_TexCoordAry.Free();
 }
 
 u8 Picture::GetMaterialNum() const
@@ -140,27 +140,27 @@ void Picture::Append(const TexMap& texMap)
 
 void Picture::ReserveTexCoord(u8 num)
 {
-    this->mTexCoordAry.Reserve(num);
+    this->m_TexCoordAry.Reserve(num);
 }
 
 u8 Picture::GetTexCoordNum() const
 {
-    return mTexCoordAry.GetSize();
+    return m_TexCoordAry.GetSize();
 }
 
 void Picture::SetTexCoordNum(u8 num)
 {
-    this->mTexCoordAry.SetSize(num);
+    this->m_TexCoordAry.SetSize(num);
 }
 
 void Picture::GetTexCoord(u32 idx,TexCoordQuad coords) const
 {
-    return this->mTexCoordAry.GetCoord(idx, coords);
+    return this->m_TexCoordAry.GetCoord(idx, coords);
 }
 
 void Picture::SetTexCoord(u32 idx,const TexCoordQuad coords)
 {
-    this->mTexCoordAry.SetCoord(idx, coords);
+    this->m_TexCoordAry.SetCoord(idx, coords);
 
     if (mpMaterial != NULL)
     {
@@ -170,22 +170,22 @@ void Picture::SetTexCoord(u32 idx,const TexCoordQuad coords)
 
 const ut::Color8 Picture::GetVtxColor(u32 idx) const
 {
-    return mVtxColors[idx];
+    return m_VtxColors[idx];
 }
 
 void Picture::SetVtxColor(u32 idx,ut::Color8 value)
 {
-    mVtxColors[idx] = value;
+    m_VtxColors[idx] = value;
 }
 
 u8 Picture::GetVtxColorElement(u32 idx) const
 {
-    return internal::GetVtxColorElement(this->mVtxColors, idx);
+    return internal::GetVtxColorElement(this->m_VtxColors, idx);
 }
 
 void Picture::SetVtxColorElement(u32 idx, u8 value)
 {
-    internal::SetVtxColorElement(this->mVtxColors, idx, value);
+    internal::SetVtxColorElement(this->m_VtxColors, idx, value);
 }
 
 void Picture::DrawSelf(const DrawInfo& drawInfo)
@@ -199,7 +199,7 @@ void Picture::DrawSelf(const DrawInfo& drawInfo)
 
     this->mpMaterial->SetupGraphics(drawInfo, GetGlobalAlpha());
 
-    internal::DrawQuad(drawInfo,GetVtxPos(),GetSize(),this->mTexCoordAry.GetSize(),this->mTexCoordAry.GetArray(),this->mVtxColors);
+    internal::DrawQuad(drawInfo,GetVtxPos(),GetSize(),this->m_TexCoordAry.GetSize(),this->m_TexCoordAry.GetArray(),this->m_VtxColors);
 }
 
 }

@@ -1,20 +1,31 @@
 # NintendoWare4CTR
 
-> A Nintendo library suite used in most 3DS games.
+* This project is dedicated to the NintendoWare4Ctr engine which is a commonly used engine in 3DS games. Please note not EVERY function is here. Only known ones.
 
 ## --Libraries--
 
-| Module | Name | Description |
-|--------|------|--------------|
-| `anim` | **ANIM**ation Library | Handles skeletal & material animations |
-| `font` | **FONT** Library | Font rendering (`BCFNT`, `BFFNT` (ver 2 of BCFNT)) |
-| `gfx`  | **G**raphics **FX** Library | Model & effects rendering (`BCMDL` + more) |
-| `io`   | **I/O** Library | Input/Output handling |
-| `lyt`  | **L**a**Y**ou**T** Library | Window & UI layout system |
-| `math` | **MATH** Utility Library | Math Library (uses [nn::math](https://github.com/LoigiFan72/CTRSDK/tree/main/include/nn/math)) |
-| `os`   | **O**perating**S**ystem Utility Library | Low-level OS utilities |
-| `snd`  | **S**ou**ND** System Library | Sound engine for developers (`BSCAR`) |
-| `ut`   | **U**tility Library | General-purpose utilities |
+| `anim` | **anim**ation Library | Handles skeletal & material animations |
+
+| `eft`  | **ef**ec**t** Emitter | Post 2014 effect rendering |
+
+| `font` | **font** | Font handling |
+
+| `gfx`  | **g**raphics **fx** | Model & effects rendering |
+
+| `h3d`  | **h**itrus **3d** | Post-2014 advanced graphics library |
+
+| `io`   | **i**/**o** | Input/Output handling |
+
+| `lyt`  | **l**a**y**ou**t** | Window & 2D UI system |
+
+| `math` | **math** | Math Utility Library |
+
+| `os`   | **o**perating **s**ystem | Low-level OS utilities |
+
+| `snd`  | **s**ou**nd** | Sound engine for developers |
+
+| `ut`   | **ut**ility | General-purpose utilities |
+
 
 ---
 

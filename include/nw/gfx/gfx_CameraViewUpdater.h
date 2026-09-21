@@ -10,7 +10,8 @@ namespace math{
 }
 namespace gfx{
 
-class CameraViewUpdater : public GfxObject{
+class CameraViewUpdater : public GfxObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(CameraViewUpdater);
 
@@ -19,7 +20,7 @@ public:
 
     void virtual Update(nw::math::MTX34* viewMatrix,const nw::math::MTX34& worldMatrix,const nw::math::VEC3& cameraPosition) = 0;
 
-    bool IsDynamic() {return this->mIsDynamic;}
+    bool IsDynamic() {return this->m_IsDynamic;}
 
     virtual ResCameraViewUpdater GetResource() = 0;
     virtual const ResCameraViewUpdater GetResource() const = 0;
@@ -29,8 +30,7 @@ public:
 protected:
     CameraViewUpdater(os::IAllocator* allocator, bool isDynamic): 
         GfxObject(allocator),
-        mIsDynamic(isDynamic)
-    {}
+        m_IsDynamic(isDynamic) {}
 
 protected:
     static const nw::math::VEC3 VIEW_TARGET_POSITION;
@@ -39,7 +39,7 @@ protected:
     static const float VIEW_TWIST;
 
 private:
-    bool mIsDynamic;
+    bool m_IsDynamic;
 };
 
 }

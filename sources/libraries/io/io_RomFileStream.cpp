@@ -7,24 +7,28 @@
 namespace nw {
 namespace io {
 
-RomFileStream::RomFileStream(const char* path){
+RomFileStream::RomFileStream(const char* path)
+{
     this->Initialize();
     this->Open(path);
 }
 
-RomFileStream::RomFileStream(FileReader* openedFileReader,  bool closeEnable){
+RomFileStream::RomFileStream(FileReader* openedFileReader,  bool closeEnable)
+{
     this->Initialize();
     this->Open(openedFileReader, closeEnable);
 }
 
-RomFileStream::~RomFileStream(){
+RomFileStream::~RomFileStream()
+{
     if (m_CloseOnDestroyFlag)
     {
         this->Close();
     }
 }
 
-bool RomFileStream::Open(FileReader* openedFileReader, bool closeEnable){
+bool RomFileStream::Open(FileReader* openedFileReader, bool closeEnable)
+{
     if (m_CloseOnDestroyFlag)
     {
         this->Close();
@@ -65,7 +69,7 @@ void RomFileStream::Close()
     if (m_CloseEnableFlag && m_IsAvailable)
     {
         m_pOpenedFileReader->Finalize();
-        mIsAvailable = false;
+        m_IsAvailable = false;
     }
 }
 

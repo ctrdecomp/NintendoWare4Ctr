@@ -12,28 +12,32 @@ namespace nw {
 namespace gfx {
 namespace res {
 
-struct ResTargetShapeData{
+struct ResTargetShapeData
+{
     nw::ut::ResTypeInfo typeInfo;
-    nw::ut::ResS32 mVertexAttributesTableCount;
+    nw::ut::ResS32 m_VertexAttributesTableCount;
     nw::ut::Offset toVertexAttributesTable;
 };
 
-struct ResBlendShapeData{
+struct ResBlendShapeData
+{
     nw::ut::ResTypeInfo typeInfo;
-    nw::ut::ResS32 mTargetShapesTableCount;
+    nw::ut::ResS32 m_TargetShapesTableCount;
     nw::ut::Offset toTargetShapesTable;
-    nw::ut::ResS32 mUsageTableTableCount;
+    nw::ut::ResS32 m_UsageTableTableCount;
     nw::ut::Offset toUsageTableTable;
 };
 
-class ResTargetShape : public nw::ut::ResCommon<ResTargetShapeData>{
+class ResTargetShape : public nw::ut::ResCommon<ResTargetShapeData>
+{
 public:
     NW_RES_CTOR(ResTargetShape)
 
     NW_RES_FIELD_CLASS_LIST_DECL(ResVertexAttribute, VertexAttributes)
 };
 
-class ResBlendShape : public nw::ut::ResCommon<ResBlendShapeData>{
+class ResBlendShape : public nw::ut::ResCommon<ResBlendShapeData>
+{
 public:
     NW_RES_CTOR(ResBlendShape)
 
@@ -41,18 +45,21 @@ public:
     NW_RES_FIELD_PRIMITIVE_LIST_DECL(u32, UsageTable)
 };
 
-struct ResPrimitiveData{
-    nw::ut::ResS32 mIndexStreamsTableCount;
+struct ResPrimitiveData
+{
+    nw::ut::ResS32 m_IndexStreamsTableCount;
     nw::ut::Offset toIndexStreamsTable;
-    nw::ut::ResS32 mBufferObjectsTableCount;
+    nw::ut::ResS32 m_BufferObjectsTableCount;
     nw::ut::Offset toBufferObjectsTable;
-    nw::ut::ResU32 mFlags;
-    nw::os::IAllocator* mCommandAllocator;
+    nw::ut::ResU32 m_Flags;
+    nw::os::IAllocator* m_CommandAllocator;
 };
 
-class ResPrimitive : public nw::ut::ResCommon< ResPrimitiveData >{
+class ResPrimitive : public nw::ut::ResCommon< ResPrimitiveData >
+{
 public:
-    enum Flag{
+    enum Flag
+    {
         FLAG_COMMAND_HAS_BEEN_SETUP    = 0x1 << 0
     };
 
@@ -71,17 +78,20 @@ public:
 };
 typedef nw::ut::ResArrayClass<ResPrimitive>::type ResPrimitiveArray;
 
-struct ResPrimitiveSetData{
-    nw::ut::ResS32 mBoneIndexTableTableCount;
+struct ResPrimitiveSetData
+{
+    nw::ut::ResS32 m_BoneIndexTableTableCount;
     nw::ut::Offset toBoneIndexTableTable;
-    nw::ut::ResS32 mSkinningMode;
-    nw::ut::ResS32 mPrimitivesTableCount;
+    nw::ut::ResS32 m_SkinningMode;
+    nw::ut::ResS32 m_PrimitivesTableCount;
     nw::ut::Offset toPrimitivesTable;
 };
 
-class ResPrimitiveSet : public nw::ut::ResCommon< ResPrimitiveSetData >{
+class ResPrimitiveSet : public nw::ut::ResCommon< ResPrimitiveSetData >
+{
 public:
-    enum SkinningModeType{
+    enum SkinningModeType
+    {
         SKINNING_MODE_NONE,
         SKINNING_MODE_RIGID,
         SKINNING_MODE_SMOOTH
@@ -99,21 +109,26 @@ public:
 };
 typedef nw::ut::ResArrayClass<ResPrimitiveSet>::type  ResPrimitiveSetArray;
 
-struct ResShapeData : public ResSceneObjectData{
-    nw::ut::ResU32 mFlags;
+struct ResShapeData : public ResSceneObjectData
+{
+    nw::ut::ResU32 m_Flags;
     nw::ut::Offset toBoundingVolume;
-    nw::ut::ResVec3 mPositionOffset;
-    nw::ut::ResS32 mPrimitiveSetsTableCount;
+    nw::ut::ResVec3 m_PositionOffset;
+    nw::ut::ResS32 m_PrimitiveSetsTableCount;
     nw::ut::Offset toPrimitiveSetsTable;
-    u32            mBaseAddress;
+    u32            m_BaseAddress;
 };
 
-class ResShape : public ResSceneObject{
+class ResShape : public ResSceneObject
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResShape) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('SHOB') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResShape) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('SHOB') };
     
-    enum Flag{
+    enum Flag
+    {
         FLAG_HAS_BEEN_SETUP      = 0x1 << 0
     };
     
@@ -122,14 +137,16 @@ public:
     NW_RES_FIELD_FLAGS_DECL(u32, Flags)
     NW_RES_FIELD_CLASS_DECL(nw::ut::ResBoundingVolume, BoundingVolume)
 
-    nw::ut::ResOrientedBoundingBox GetOrientedBoundingBox() {
+    nw::ut::ResOrientedBoundingBox GetOrientedBoundingBox() 
+    {
         nw::ut::ResOrientedBoundingBox resOBB( ref().toBoundingVolume.to_ptr() );
         
         NW_ASSERT(resOBB.IsValid() || (resOBB.GetTypeInfo() == nw::ut::ResOrientedBoundingBox::TYPE_INFO));
         return resOBB;
     }
 
-    const nw::ut::ResOrientedBoundingBox GetOrientedBoundingBox() const{ 
+    const nw::ut::ResOrientedBoundingBox GetOrientedBoundingBox() const
+    { 
         const nw::ut::ResOrientedBoundingBox resOBB( ref().toBoundingVolume.to_ptr() );
 
         NW_ASSERT(resOBB.IsValid() || (resOBB.GetTypeInfo() == nw::ut::ResOrientedBoundingBox::TYPE_INFO));
@@ -137,7 +154,7 @@ public:
     }
 
     nw::ut::ResOrientedBoundingBoxData& GetOrientedBoundingBoxData() {return this->GetOrientedBoundingBox().ref();}
-    const nw::ut::ResOrientedBoundingBoxData& GetOrientedBoundingBoxData() const{ return this->GetOrientedBoundingBox().ref();}
+    const nw::ut::ResOrientedBoundingBoxData& GetOrientedBoundingBoxData() const { return this->GetOrientedBoundingBox().ref();}
 
     NW_RES_FIELD_VECTOR3_DECL(nw::math::VEC3, PositionOffset)
     NW_RES_FIELD_CLASS_LIST_DECL(ResPrimitiveSet, PrimitiveSets)
@@ -153,13 +170,15 @@ public:
 };
 typedef nw::ut::ResArrayClass<ResShape>::type  ResShapeArray;
 
-struct ResSeparateDataShapeData : public ResShapeData{
-    nw::ut::ResS32 mVertexAttributesTableCount;
+struct ResSeparateDataShapeData : public ResShapeData
+{
+    nw::ut::ResS32 m_VertexAttributesTableCount;
     nw::ut::Offset toVertexAttributesTable;
     nw::ut::Offset toBlendShape;
 };
 
-class ResSeparateDataShape : public ResShape{
+class ResSeparateDataShape : public ResShape
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResSeparateDataShape) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('SPSH') };
@@ -176,67 +195,79 @@ public:
 
 namespace internal {
 
-class ResVertexAttributeIterator{
+class ResVertexAttributeIterator
+{
 public:
-    static ResVertexAttributeIterator Begin(res::ResSeparateDataShape shape){return ResVertexAttributeIterator(shape);}
+    static ResVertexAttributeIterator Begin(res::ResSeparateDataShape shape) {return ResVertexAttributeIterator(shape);}
 
     ResVertexAttributeIterator(const ResVertexAttributeIterator& value): 
-        mShape(value.mShape),
-        mInterleave(value.mInterleave),
-        mIndexOnShape(value.mIndexOnShape),
-        mIndexOnInterleave(value.mIndexOnInterleave)
-    {}
+        m_Shape(value.m_Shape),
+        m_Interleave(value.m_Interleave),
+        m_IndexOnShape(value.m_IndexOnShape),
+        m_IndexOnInterleave(value.m_IndexOnInterleave) {}
 
-    bool IsValid() const{
-        return (mIndexOnShape >= 0);
+    bool IsValid() const
+    {
+        return (m_IndexOnShape >= 0);
     }
 
-    res::ResVertexAttribute operator*(){
-        if (mInterleave.IsValid()){
-            return this->mInterleave.GetVertexStreams(this->mIndexOnInterleave);
+    res::ResVertexAttribute operator*()
+    {
+        if (m_Interleave.IsValid())
+        {
+            return this->m_Interleave.GetVertexStreams(this->m_IndexOnInterleave);
         }
         else{
-            return this->mShape.GetVertexAttributes(this->mIndexOnShape);
+            return this->m_Shape.GetVertexAttributes(this->m_IndexOnShape);
         }
     }
 
-    const res::ResVertexAttribute operator*() const{
-        if (mInterleave.IsValid()){
-            return mInterleave.GetVertexStreams(this->mIndexOnInterleave);
+    const res::ResVertexAttribute operator*() const
+    {
+        if (m_Interleave.IsValid())
+        {
+            return m_Interleave.GetVertexStreams(this->m_IndexOnInterleave);
         }
         else{
-            return mShape.GetVertexAttributes(this->mIndexOnShape);
+            return m_Shape.GetVertexAttributes(this->m_IndexOnShape);
         }
     }
     
-    ResVertexAttributeIterator& operator++() {
-        if (mInterleave.IsValid()){
-            ++mIndexOnInterleave;
-            if (mInterleave.GetVertexStreamsCount() > mIndexOnInterleave){
+    ResVertexAttributeIterator& operator++() 
+    {
+        if (m_Interleave.IsValid())
+        {
+            ++m_IndexOnInterleave;
+            if (m_Interleave.GetVertexStreamsCount() > m_IndexOnInterleave)
+            {
                 return *this;
             }
             
-            mInterleave = res::ResInterleavedVertexStream(NULL);
-            mIndexOnInterleave = -1;
+            m_Interleave = res::ResInterleavedVertexStream(NULL);
+            m_IndexOnInterleave = -1;
         }
         
-        ++mIndexOnShape;
-        if (mShape.GetVertexAttributesCount() > mIndexOnShape){
-            res::ResVertexAttribute attribute = mShape.GetVertexAttributes(mIndexOnShape);
+        ++m_IndexOnShape;
+        if (m_Shape.GetVertexAttributesCount() > m_IndexOnShape)
+        {
+            res::ResVertexAttribute attribute = m_Shape.GetVertexAttributes(m_IndexOnShape);
             
-            if (attribute.GetFlags() & res::ResVertexAttribute::FLAG_INTERLEAVE){
-                mInterleave = nw::ut::ResStaticCast<res::ResInterleavedVertexStream>(attribute);
-                mIndexOnInterleave = 0;
+            if (attribute.GetFlags() & res::ResVertexAttribute::FLAG_INTERLEAVE)
+            {
+                m_Interleave = nw::ut::ResStaticCast<res::ResInterleavedVertexStream>(attribute);
+                m_IndexOnInterleave = 0;
             }
         }
-        else{
-            mIndexOnShape = -1;
+        else
+        {
+            m_IndexOnShape = -1;
         }
         
         return *this;
     }
 
-    ResVertexAttributeIterator operator++(int){
+    ResVertexAttributeIterator operator++(int)
+    {
         ResVertexAttributeIterator copy = *this;
         
         this->operator++();
@@ -245,21 +276,23 @@ public:
     }
     
 private:
-    res::ResSeparateDataShape       mShape;
-    res::ResInterleavedVertexStream mInterleave;
-    s32                        mIndexOnShape;
-    s32                        mIndexOnInterleave;
+    res::ResSeparateDataShape       m_Shape;
+    res::ResInterleavedVertexStream m_Interleave;
+    s32                        m_IndexOnShape;
+    s32                        m_IndexOnInterleave;
 
     explicit ResVertexAttributeIterator(res::ResSeparateDataShape shape): 
-        mShape(shape),
-        mInterleave(res::ResInterleavedVertexStream(NULL)),
-        mIndexOnShape(0),
-        mIndexOnInterleave( -1){
+        m_Shape(shape),
+        m_Interleave(res::ResInterleavedVertexStream(NULL)),
+        m_IndexOnShape(0),
+        m_IndexOnInterleave( -1)
+    {
         res::ResVertexAttribute attribute = shape.GetVertexAttributes(0);
         
-        if(attribute.GetFlags() & res::ResVertexAttribute::FLAG_INTERLEAVE){
-            mInterleave = nw::ut::ResStaticCast<res::ResInterleavedVertexStream>(attribute);
-            mIndexOnInterleave = 0;
+        if (attribute.GetFlags() & res::ResVertexAttribute::FLAG_INTERLEAVE)
+        {
+            m_Interleave = nw::ut::ResStaticCast<res::ResInterleavedVertexStream>(attribute);
+            m_IndexOnInterleave = 0;
         }
     }
 };

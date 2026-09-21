@@ -9,36 +9,46 @@ namespace nw {
 namespace ut {
 
 template<typename TChild>
-class ChildDeleter{
+class ChildDeleter
+{
 public:
-    ChildDeleter(): mAllocator(0) {}
-    ChildDeleter(os::IAllocator* allocator): mAllocator(allocator) {}
+    ChildDeleter(): m_Allocator(0) {}
+    ChildDeleter(os::IAllocator* allocator):
+        m_Allocator(allocator)
+    {
+    }
 
-    void operator()(TChild* child){
+    void operator()(TChild* child)
+    {
         child->~TChild();
-        if (mAllocator){
-            mAllocator->Free(child);
+        if (m_Allocator)
+        {
+            m_Allocator->Free(child);
         }
     }
 
-    os::IAllocator* mAllocator;
+    os::IAllocator* m_Allocator;
 };
 
 template<typename TChild>
-class ChildDetacher{
+class ChildDetacher
+{
 public:
     ChildDetacher() {}
     ChildDetacher(os::IAllocator* allocator) { NW_UNUSED_VARIABLE(allocator); }
 
-    void operator()(TChild* child){
-        if (child){
+    void operator()(TChild* child)
+    {
+        if (child)
+        {
             child->SetParent(NULL);
         }
     }
 };
 
 template<typename TChild,typename TParent,typename TDeleter = ChildDeleter<TChild>,typename TChildList = MoveArray<TChild*> >
-class Children{
+class Children
+{
 public:
     typedef TChild*&                            reference;
     typedef TChild*                             difference_type;
@@ -46,56 +56,54 @@ public:
     typedef typename TChildList::iterator       iterator;
     typedef typename TChildList::const_iterator const_iterator;
 
-#if defined(_MSC_VER) && _MSC_VER <= 1201
-    typedef std::reverse_iterator<iterator, TChild*>       reverse_iterator;
-    typedef std::reverse_iterator<const_iterator, TChild*> const_reverse_iterator;
-#else
     typedef std::reverse_iterator<iterator>       reverse_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-#endif
 
     typedef TDeleter        deleter_type;
     typedef TDeleter&       deleter_reference;
     typedef const TDeleter& deleter_const_reference;
 
 public:
-    Children(): mChildren(), mDeleter() {}
+    Children(): m_Children(), m_Deleter() {}
 
     Children(TParent* parent, void* elements, size_t size, os::IAllocator* allocator = 0, ArrayKind kind = ARRAY_WRAPPER):
-        mParent(parent),
-        mChildren(elements, size, allocator, kind),
-        mDeleter(allocator)
-    {}
+        m_Parent(parent),
+        m_Children(elements, size, allocator, kind),
+        m_Deleter(allocator) {}
 
     Children(TParent* parent, size_t size, os::IAllocator* allocator, ArrayKind kind = ARRAY_WRAPPER):
-        mParent(parent),
-        mChildren(size, allocator, kind),
-        mDeleter(allocator)
-    {}
+        m_Parent(parent),
+        m_Children(size, allocator, kind),
+        m_Deleter(allocator) {}
 
     Children(TParent* parent, os::IAllocator* allocator):
-        mParent(parent),
-        mChildren(allocator),
-        mDeleter(allocator)
-    {}
+        m_Parent(parent),
+        m_Children(allocator),
+        m_Deleter(allocator) {}
 
-    ~Children(){
-        std::for_each(this->mChildren.begin(), this->mChildren.end(), mDeleter);
+    ~Children()
+    {
+        std::for_each(this->m_Children.begin(), this->m_Children.end(), m_Deleter);
     }
 
 public:
-    struct SafeBoolHelper { int x; };
+    struct SafeBoolHelper
+    { 
+        int x; 
+    };
+    
     typedef int SafeBoolHelper::* SafeBool;
-    operator SafeBool() const { return mChildren; }
+    operator SafeBool() const { return m_Children; }
 
-    iterator begin() { return mChildren.begin(); }
-    const_iterator begin() const { return mChildren.begin(); }
-    iterator end() { return mChildren.end(); }
-    const_iterator end() const { return mChildren.end(); }
+    iterator begin() { return m_Children.begin(); }
+    const_iterator begin() const { return m_Children.begin(); }
+    iterator end() { return m_Children.end(); }
+    const_iterator end() const { return m_Children.end(); }
 
-    void clear(){
-        std::for_each(this->mChildren.begin(), this->mChildren.end(), ChildDetacher<TChild>());
-        this->mChildren.clear();
+    void clear()
+    {
+        std::for_each(this->m_Children.begin(), this->m_Children.end(), ChildDetacher<TChild>());
+        this->m_Children.clear();
     }
 
     iterator Begin() { return this->begin(); }
@@ -105,47 +113,53 @@ public:
 
     void Clear() { this->clear(); }
 
-    bool Attach(TChild* child){
-        if (child->GetParent() != 0){
+    bool Attach(TChild* child)
+    {
+        if (child->GetParent() != 0)
+        {
             return false;
         }
-        bool pushed = mChildren.push_back(child);
-        if (pushed){
-            child->SetParent(mParent);
+        bool pushed = m_Children.push_back(child);
+        if (pushed)
+        {
+            child->SetParent(m_Parent);
         }
         return pushed;
     }
 
-    bool Detach(TChild* child){
-        bool result = mChildren.erase_find(child);
-        if (result){
+    bool Detach(TChild* child)
+    {
+        bool result = m_Children.erase_find(child);
+        if (result)
+        {
             child->SetParent(NULL);
         }
         return result;
     }
 
-    void SetParent(TParent* parent){
+    void SetParent(TParent* parent)
+    {
         NW_NULL_ASSERT(parent);
-        NW_ASSERT(mParent == NULL);
-        mParent = parent;
+        NW_ASSERT(m_Parent == NULL);
+        m_Parent = parent;
     }
 
-    deleter_reference GetDeleter() { return mDeleter; }
-    deleter_const_reference GetDeleter() const { return mDeleter; }
+    deleter_reference GetDeleter() { return m_Deleter; }
+    deleter_const_reference GetDeleter() const { return m_Deleter; }
 
 private:
-    TParent* mParent;
-    TChildList mChildren;
-    deleter_type mDeleter;
+    TParent* m_Parent;
+    TChildList m_Children;
+    deleter_type m_Deleter;
 };
 
 #define NW_DECLARE_CHILD_PARENT(MParent) \
 public:\
-    const MParent* GetParent() const { return mParent; }\
-    MParent* GetParent() { return mParent; }\
-    void SetParent(MParent* parent) { mParent = parent; }\
+    const MParent* GetParent() const { return m_Parent; }\
+    MParent* GetParent() { return m_Parent; }\
+    void SetParent(MParent* parent) { m_Parent = parent; }\
 private:\
-    MParent* mParent
+    MParent* m_Parent
 
 }
 }

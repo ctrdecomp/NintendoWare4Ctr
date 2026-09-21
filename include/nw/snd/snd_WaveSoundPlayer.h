@@ -80,7 +80,13 @@ public:
     s32 GetPlaySamplePosition() const;
 
 public:
-    void DebugUpdate() { if (m_ActiveFlag) { Update(); } }
+    void DebugUpdate()
+    {
+        if (m_ActiveFlag)
+        {
+            Update();
+        }
+    }
 
 private:
     bool m_WavePlayFlag;

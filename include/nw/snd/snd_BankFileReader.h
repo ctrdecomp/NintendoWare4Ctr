@@ -36,7 +36,7 @@ public:
 
     const Util::WaveIdTable& GetWaveIdTable() const;
 
-    int GetInstrumentCount() const{ return m_pInfoBlockBody->GetInstrumentCount(); }
+    int GetInstrumentCount() const { return m_pInfoBlockBody->GetInstrumentCount(); }
     
 private:
     const BankFile::FileHeader*     m_pHeader;

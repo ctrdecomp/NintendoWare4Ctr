@@ -14,21 +14,26 @@ namespace gfx{
 
 NW_UT_RUNTIME_TYPEINFO_DEFINITION( ParticleModel, Model );
 
-void ParticleSetsAreEmpty::operator()(const ParticleSet* particleSet){
-    if (particleSet->GetParticleCollection()->GetCount() > 0){
-        *this->mResult = false;
+void ParticleSetsAreEmpty::operator()(const ParticleSet* particleSet)
+{
+    if (particleSet->GetParticleCollection()->GetCount() > 0)
+    {
+        *this->m_Result = false;
     }
 }
 
-void ParticleSetsResetDebugHint::operator()(ParticleSet* particleSet){
+void ParticleSetsResetDebugHint::operator()(ParticleSet* particleSet)
+{
     particleSet->ResetDebugHint();
 }
 
-void ParticleSetsClear::operator()(ParticleSet* particleSet){
+void ParticleSetsClear::operator()(ParticleSet* particleSet)
+{
     particleSet->ClearParticleCollection();
 }
 
-void ParticleModel::GetMemorySizeInternal(os::MemorySizeCalculator* pSize,ResParticleModel resNode,const ParticleModel::Description& description){
+void ParticleModel::GetMemorySizeInternal(os::MemorySizeCalculator* pSize,ResParticleModel resNode,const ParticleModel::Description& description)
+{
     os::MemorySizeCalculator& size = *pSize;
 
     size += sizeof(ParticleModel);
@@ -37,7 +42,8 @@ void ParticleModel::GetMemorySizeInternal(os::MemorySizeCalculator* pSize,ResPar
 
     int setCount = resNode.GetParticleSetsCount();
     NW_ASSERT(setCount == resNode.GetShapesCount());
-    for (int i = 0; i < setCount; ++i){
+    for (int i = 0; i < setCount; ++i)
+    {
         gfx::ResParticleSet resParticleSet = resNode.GetParticleSets(i);
 
         gfx::ResParticleShape resParticleShape = ResDynamicCast<ResParticleShape>(resNode.GetShapes(i));
@@ -54,12 +60,14 @@ void ParticleModel::GetMemorySizeInternal(os::MemorySizeCalculator* pSize,ResPar
     }
 }
 
-void ParticleModel::GetDeviceMemorySizeInternal(os::MemorySizeCalculator* pSize,ResParticleModel resNode,const ParticleModel::Description&){
+void ParticleModel::GetDeviceMemorySizeInternal(os::MemorySizeCalculator* pSize,ResParticleModel resNode,const ParticleModel::Description&)
+{
     os::MemorySizeCalculator& size = *pSize;
 
     int setCount = resNode.GetParticleSetsCount();
     NW_ASSERT(setCount == resNode.GetShapesCount());
-    for (int i = 0; i < setCount; ++i){
+    for (int i = 0; i < setCount; ++i)
+    {
         gfx::ResParticleSet resParticleSet = resNode.GetParticleSets(i);
 
         gfx::ResParticleShape resParticleShape = ResDynamicCast<ResParticleShape>(resNode.GetShapes(i));
@@ -72,7 +80,8 @@ void ParticleModel::GetDeviceMemorySizeInternal(os::MemorySizeCalculator* pSize,
     }
 }
 
-ParticleModel* ParticleModel::Create(SceneNode* parent,ResSceneObject resource,const ParticleModel::Description& modelDescription,os::IAllocator* mainAllocator,os::IAllocator* deviceAllocator){
+ParticleModel* ParticleModel::Create(SceneNode* parent,ResSceneObject resource,const ParticleModel::Description& modelDescription,os::IAllocator* mainAllocator,os::IAllocator* deviceAllocator)
+{
     NW_NULL_ASSERT(mainAllocator);
     NW_NULL_ASSERT(deviceAllocator);
 
@@ -80,7 +89,8 @@ ParticleModel* ParticleModel::Create(SceneNode* parent,ResSceneObject resource,c
     NW_ASSERT(resNode.IsValid());
 
     void* memory = mainAllocator->Alloc(sizeof(ParticleModel));
-    if (memory == NULL){
+    if (memory == NULL)
+    {
         return NULL;
     }
 
@@ -88,7 +98,8 @@ ParticleModel* ParticleModel::Create(SceneNode* parent,ResSceneObject resource,c
 
     {
         Result result = node->Initialize(mainAllocator);
-        if (!result.IsSuccess()){
+        if (!result.IsSuccess())
+        {
             SafeDestroy(node);
             return NULL;
         }
@@ -98,7 +109,8 @@ ParticleModel* ParticleModel::Create(SceneNode* parent,ResSceneObject resource,c
 
     int setCount = resNode.GetParticleSetsCount();
     NW_ASSERT(setCount == resNode.GetShapesCount());
-    for (int i = 0; i < setCount; ++i){
+    for (int i = 0; i < setCount; ++i)
+    {
         gfx::ResParticleSet resParticleSet = resNode.GetParticleSets(i);
 
         gfx::ResParticleShape resParticleShape = ResDynamicCast<ResParticleShape>(resNode.GetShapes(i));
@@ -106,7 +118,8 @@ ParticleModel* ParticleModel::Create(SceneNode* parent,ResSceneObject resource,c
 
         ParticleShape* shapeNode = ParticleShape::Create(resParticleShape,resParticleSet.GetParticleCollection().GetCapacity(),mainAllocator,deviceAllocator);
 
-        if (shapeNode == NULL){
+        if (shapeNode == NULL)
+        {
             isSuccess = false;
             break;
         }
@@ -120,7 +133,8 @@ ParticleModel* ParticleModel::Create(SceneNode* parent,ResSceneObject resource,c
 
         ParticleSet* setNode = ParticleSet::Create(node,resParticleSet,description,mainAllocator,deviceAllocator,shapeNode);
 
-        if (setNode == NULL){
+        if (setNode == NULL)
+        {
             isSuccess = false;
             break;
         }
@@ -128,11 +142,14 @@ ParticleModel* ParticleModel::Create(SceneNode* parent,ResSceneObject resource,c
         node->AttachParticleSet(setNode);
     }
 
-    if (isSuccess == false){
-        for (int i = 0; i < node->mMaximumParticleSet; ++i){
-            if (node->mParticleSets[i] != NULL){
-                SafeDestroy(node->mParticleSets[i]);
-                node->mParticleSets[i] = NULL;
+    if (isSuccess == false)
+    {
+        for (int i = 0; i < node->m_MaximumParticleSet; ++i)
+        {
+            if (node->m_ParticleSets[i] != NULL)
+            {
+                SafeDestroy(node->m_ParticleSets[i]);
+                node->m_ParticleSets[i] = NULL;
             }
         }
 
@@ -140,7 +157,8 @@ ParticleModel* ParticleModel::Create(SceneNode* parent,ResSceneObject resource,c
         return NULL;
     }
 
-    if(parent){
+    if (parent)
+    {
         bool result = parent->AttachChild(node);
         NW_ASSERT(result);
     }
@@ -148,12 +166,14 @@ ParticleModel* ParticleModel::Create(SceneNode* parent,ResSceneObject resource,c
     return node;
 }
 
-void ParticleModel::Accept(ISceneVisitor* visitor){
+void ParticleModel::Accept(ISceneVisitor* visitor)
+{
     visitor->VisitParticleModel(this);
     AcceptChildren(visitor);
 }
 
-void ParticleModel::GetMemorySizeForInitialize(os::MemorySizeCalculator* pSize,ResParticleModel resource,const ParticleModel::Description& description){
+void ParticleModel::GetMemorySizeForInitialize(os::MemorySizeCalculator* pSize,ResParticleModel resource,const ParticleModel::Description& description)
+{
     os::MemorySizeCalculator& size = *pSize;
 
     Model::GetMemorySizeForInitialize(pSize, resource, description);
@@ -162,37 +182,44 @@ void ParticleModel::GetMemorySizeForInitialize(os::MemorySizeCalculator* pSize,R
     size += sizeof(ParticleShape*) * description.particleSetCount;
 }
 
-Result  ParticleModel::Initialize(os::IAllocator* allocator){
+Result  ParticleModel::Initialize(os::IAllocator* allocator)
+{
     Result result = INITIALIZE_RESULT_OK;
 
     result |= Model::Initialize(allocator);
     NW_ENSURE_AND_RETURN(result);
 
-    if (mMaximumParticleSet != 0){
-        void* memory = allocator->Alloc(sizeof(ParticleSet*) * mMaximumParticleSet);
-        if (!memory){
+    if (m_MaximumParticleSet != 0)
+    {
+        void* memory = allocator->Alloc(sizeof(ParticleSet*) * m_MaximumParticleSet);
+        if (!memory)
+        {
             result |= Result::MASK_FAIL_BIT;
         }
         NW_ENSURE_AND_RETURN(result);
 
-        mParticleSets = ut::MoveArray<ParticleSet*>(memory, mMaximumParticleSet, allocator);
-        this->mParticleSets.Resize(this->mMaximumParticleSet);
-        for (int i = 0; i < mParticleSets.size(); ++i){
-            mParticleSets[i] = NULL;
+        m_ParticleSets = ut::MoveArray<ParticleSet*>(memory, m_MaximumParticleSet, allocator);
+        this->m_ParticleSets.Resize(this->m_MaximumParticleSet);
+        for (int i = 0; i < m_ParticleSets.size(); ++i)
+        {
+            m_ParticleSets[i] = NULL;
         }
     }
 
-    if (mMaximumParticleSet != 0){
-        void* memory = allocator->Alloc(sizeof(ParticleShape*) * mMaximumParticleSet);
-        if (!memory){
+    if (m_MaximumParticleSet != 0)
+    {
+        void* memory = allocator->Alloc(sizeof(ParticleShape*) * m_MaximumParticleSet);
+        if (!memory)
+        {
             result |= Result::MASK_FAIL_BIT;
         }
         NW_ENSURE_AND_RETURN(result);
 
-        mParticleShapes = ut::MoveArray<ParticleShape*>(memory, mMaximumParticleSet, allocator);
-        mParticleShapes.Resize(mMaximumParticleSet);
-        for (int i = 0; i < mParticleShapes.size(); ++i){
-            mParticleShapes[i] = NULL;
+        m_ParticleShapes = ut::MoveArray<ParticleShape*>(memory, m_MaximumParticleSet, allocator);
+        m_ParticleShapes.Resize(m_MaximumParticleSet);
+        for (int i = 0; i < m_ParticleShapes.size(); ++i)
+        {
+            m_ParticleShapes[i] = NULL;
         }
     }
 

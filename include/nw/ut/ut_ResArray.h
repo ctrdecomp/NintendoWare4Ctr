@@ -9,7 +9,8 @@ namespace nw {
 namespace ut {
 namespace internal {
     template <typename T>
-    class ResArrayPrimitiveTraits{
+    class ResArrayPrimitiveTraits
+    {
     public:
         typedef T*       pointer;
         typedef const T* const_pointer;
@@ -20,9 +21,9 @@ namespace internal {
         typedef int      difference_type;
         typedef std::input_iterator_tag iterator_category;
         
-        static reference   GetValue(void* ptr)   { return GetValue( reinterpret_cast<pointer>(ptr) ); }
+        static reference   GetValue(void* ptr) { return GetValue( reinterpret_cast<pointer>(ptr) ); }
         static reference   GetValue(pointer ptr) { return *ptr; }
-        static const_reference   GetValue(const void* ptr)   { return GetValue( reinterpret_cast<const_pointer>(ptr) ); }
+        static const_reference   GetValue(const void* ptr) { return GetValue( reinterpret_cast<const_pointer>(ptr) ); }
         static const_reference   GetValue(const_pointer ptr) { return *ptr; }
         
         static iter_pointer        GetPointer(pointer ptr) { return ptr; }
@@ -30,11 +31,12 @@ namespace internal {
 
         static pointer       GetNext(pointer ptr) { return ptr + 1; }
         static const_pointer GetNext(const_pointer ptr) { return ptr + 1; }
-        static size_t        ValueSize()          { return sizeof(T); }
+        static size_t        ValueSize() { return sizeof(T); }
     };
     
     template <typename T>
-    class ResArrayPrimitiveTraits<const T>{
+    class ResArrayPrimitiveTraits<const T>
+    {
     public:
         typedef T*       pointer;
         typedef const T* const_pointer;
@@ -45,12 +47,12 @@ namespace internal {
         typedef int      difference_type;
         typedef std::input_iterator_tag iterator_category;
         
-        static const_reference   GetValue(const void* ptr)   { return GetValue( reinterpret_cast<const_pointer>(ptr) ); }
+        static const_reference   GetValue(const void* ptr) { return GetValue( reinterpret_cast<const_pointer>(ptr) ); }
         static const_reference   GetValue(const_pointer ptr) { return *ptr; }
         static const_iter_pointer  GetPointer(const_pointer ptr) { return ptr; }
 
         static const_pointer     GetNext(const_pointer ptr) { return ptr + 1; }
-        static size_t            ValueSize()          { return sizeof(T); }
+        static size_t            ValueSize() { return sizeof(T); }
     };
 
     
@@ -58,24 +60,25 @@ namespace internal {
     class ResPtr
     {
     public:
-        ResPtr(void* ptr) : mRes(ptr) {}
-        TRes*   operator->() { return &mRes; }
+        ResPtr(void* ptr) : m_Res(ptr) {}
+        TRes*   operator->() { return &m_Res; }
     private:
-        TRes mRes;
+        TRes m_Res;
     };
     
     template <typename TRes>
     class ResPtr<const TRes>
     {
     public:
-        ResPtr(const void* ptr) : mRes(ptr) {}
-        const TRes*   operator->() const { return &mRes; }
+        ResPtr(const void* ptr) : m_Res(ptr) {}
+        const TRes*   operator->() const { return &m_Res; }
     private:
-        TRes mRes;
+        TRes m_Res;
     };
 
     template<typename T>
-    class ResArrayClassTraits{
+    class ResArrayClassTraits
+    {
     public:
         typedef Offset*       pointer;
         typedef const Offset* const_pointer;
@@ -90,18 +93,19 @@ namespace internal {
         static iter_pointer        GetPointer(pointer ptr) { return ResPtr<T>( ptr->to_ptr() ); }
         static const_iter_pointer  GetPointer(const_pointer ptr) { return ResPtr<T>( ptr->to_ptr() ); }
         
-        static reference   GetValue(void* ptr)   { return GetValue( reinterpret_cast<pointer>(ptr) ); }
+        static reference   GetValue(void* ptr) { return GetValue( reinterpret_cast<pointer>(ptr) ); }
         static reference   GetValue(pointer ptr) { return T( ptr->to_ptr() ); }
-        static const_reference   GetValue(const void* ptr)   { return GetValue( reinterpret_cast<const_pointer>(ptr) ); }
+        static const_reference   GetValue(const void* ptr) { return GetValue( reinterpret_cast<const_pointer>(ptr) ); }
         static const_reference   GetValue(const_pointer ptr) { return T( ptr->to_ptr() ); }
 
-        static pointer       GetNext(pointer ptr)       { return ptr + 1; }
+        static pointer       GetNext(pointer ptr) { return ptr + 1; }
         static const_pointer GetNext(const_pointer ptr) { return ptr + 1; }
-        static size_t        ValueSize()                { return sizeof(Offset); }
+        static size_t        ValueSize() { return sizeof(Offset); }
     };
 
     template<typename T>
-    class ResArrayClassTraits<const T>{
+    class ResArrayClassTraits<const T>
+    {
     public:
         typedef Offset*       pointer;
         typedef const Offset* const_pointer;
@@ -110,15 +114,16 @@ namespace internal {
         typedef int           difference_type;
         typedef std::bidirectional_iterator_tag iterator_category;
 
-        static const_reference   GetValue(const void* ptr)   { return GetValue( reinterpret_cast<const_pointer>(ptr) ); }
+        static const_reference   GetValue(const void* ptr) { return GetValue( reinterpret_cast<const_pointer>(ptr) ); }
         static const_reference   GetValue(const_pointer ptr) { return T( ptr->to_ptr() ); }
 
         static const_pointer     GetNext(const_pointer ptr) { return ptr + 1; }
-        static size_t      ValueSize()          { return sizeof(Offset); }
+        static size_t      ValueSize() { return sizeof(Offset); }
     };
 
     template <typename T, template <typename> class TTraits>
-    class ResArray{
+    class ResArray
+    {
     public:
 
         typedef T                                       value_type;
@@ -133,23 +138,23 @@ namespace internal {
         typedef typename TTraits<T>::const_iter_pointer const_iter_pointer;
 
         ResArray(void* pBegin, void* pEnd) : 
-            mPBegin(static_cast<pointer>(pBegin)),
-            mPEnd(static_cast<pointer>(pEnd)) 
-        {}
+            m_PBegin(static_cast<pointer>(pBegin)),
+            m_PEnd(static_cast<pointer>(pEnd)) {}
         ResArray(void* pBegin, s32 num): 
-            mPBegin( static_cast<pointer>(pBegin) ), 
-            mPEnd( mPBegin + num )
-        {}
+            m_PBegin( static_cast<pointer>(pBegin) ), 
+            m_PEnd( m_PBegin + num ) {}
         
-        operator pointer()             { return mPBegin; }
-        operator const pointer() const { return mPBegin; }
+        operator pointer() { return m_PBegin; }
+        operator const pointer() const { return m_PBegin; }
         
-        reference operator[](int index){
-            return TTraits<T>::GetValue(mPBegin + index);
+        reference operator[](int index)
+        {
+            return TTraits<T>::GetValue(m_PBegin + index);
         }
         
-        const_reference operator[](int index) const{
-            return TTraits<T>::GetValue(mPBegin + index);
+        const_reference operator[](int index) const
+        {
+            return TTraits<T>::GetValue(m_PBegin + index);
         }
         
         class const_iterator;
@@ -166,33 +171,33 @@ namespace internal {
             typedef typename TTraits<T>::iterator_category  iterator_category;
             
             iterator() : 
-                mPCurrent(NULL)
-            {}
+                m_PCurrent(NULL) {}
             
-            operator const_iterator() { return const_iterator(mPCurrent); }
+            operator const_iterator() { return const_iterator(m_PCurrent); }
             
-            reference operator*()  const { NW_NULL_ASSERT(mPCurrent); return TTraits<T>::GetValue(mPCurrent); }
+            reference operator*()  const { NW_NULL_ASSERT(m_PCurrent); return TTraits<T>::GetValue(m_PCurrent); }
 
-            iter_pointer   operator->() const { return TTraits<T>::GetPointer(mPCurrent); }
+            iter_pointer   operator->() const { return TTraits<T>::GetPointer(m_PCurrent); }
             
-            TIt &operator++()   { ++mPCurrent; return *this; }
+            TIt &operator++() { ++m_PCurrent; return *this; }
             TIt operator++(int) { TIt it(*this); (void)++*this; return it; }
-            TIt &operator--()   { --mPCurrent; return *this; }
+            TIt &operator--() { --m_PCurrent; return *this; }
             TIt operator--(int) { TIt it(*this); (void)--*this; return it; }
             
-            friend bool operator==(TIt it1, TIt it2) { return it1.mPCurrent == it2.mPCurrent; }
+            friend bool operator==(TIt it1, TIt it2) { return it1.m_PCurrent == it2.m_PCurrent; }
             friend bool operator!=(TIt it1_, TIt it2_) { return !(it1_ == it2_); }
             
         private:
-            explicit iterator(pointer p) : mPCurrent(p) {}
+            explicit iterator(pointer p) : m_PCurrent(p) {}
             
-            pointer mPCurrent;
+            pointer m_PCurrent;
             
             friend class const_iterator;
             friend class ResArray<T, TTraits>;
         };
         
-        class const_iterator{
+        class const_iterator
+        {
         public:
             typedef const_iterator  TIt;
             typedef const T value_type;
@@ -204,52 +209,52 @@ namespace internal {
             typedef typename TTraits<T>::iterator_category  iterator_category;
             
             const_iterator(): 
-                mPCurrent(0)
-            {}
+                m_PCurrent(0) {}
             
-            const_reference operator*()  const { NW_NULL_ASSERT(mPCurrent); return TTraits<T>::GetValue(mPCurrent); }
+            const_reference operator*()  const { NW_NULL_ASSERT(m_PCurrent); return TTraits<T>::GetValue(m_PCurrent); }
 
-            const_iter_pointer   operator->() const { return TTraits<T>::GetPointer(mPCurrent); }
+            const_iter_pointer   operator->() const { return TTraits<T>::GetPointer(m_PCurrent); }
 
-            TIt &operator++()   { ++mPCurrent; return *this; }
+            TIt &operator++() { ++m_PCurrent; return *this; }
             TIt operator++(int) { TIt it(*this); (void)++*this; return it; }
-            TIt &operator--()   { --mPCurrent; return *this; }
+            TIt &operator--() { --m_PCurrent; return *this; }
             TIt operator--(int) { TIt it(*this); (void)--*this; return it; }
             
-            friend bool operator==(TIt it1, TIt it2) { return it1.mPCurrent == it2.mPCurrent; }
+            friend bool operator==(TIt it1, TIt it2) { return it1.m_PCurrent == it2.m_PCurrent; }
             friend bool operator!=(TIt it1_, TIt it2_) { return !(it1_ == it2_); }
         private:
-            explicit const_iterator(const_pointer p) : mPCurrent(p) {}
+            explicit const_iterator(const_pointer p) : m_PCurrent(p) {}
             
-            const_pointer mPCurrent;
+            const_pointer m_PCurrent;
             
             friend class ResArray<T, TTraits>;
         };
         typedef typename internal::reverse_iterator<const_iterator> const_reverse_iterator;
         typedef typename internal::reverse_iterator<iterator> reverse_iterator;
         
-        s32  size() const { return (size_t(this->mPEnd) - size_t(this->mPBegin)) / TTraits<T>::ValueSize(); }
-        bool empty() const { return (this->mPBegin == this->mPEnd); }
+        s32  size() const { return (size_t(this->m_PEnd) - size_t(this->m_PBegin)) / TTraits<T>::ValueSize(); }
+        bool empty() const { return (this->m_PBegin == this->m_PEnd); }
         
-        iterator begin() { return iterator(this->mPBegin); }
-        const_iterator begin() const { return const_iterator(this->mPBegin); }
-        iterator end() { return iterator(this->mPEnd); }
-        const_iterator end() const { return const_iterator(this->mPEnd); }
+        iterator begin() { return iterator(this->m_PBegin); }
+        const_iterator begin() const { return const_iterator(this->m_PBegin); }
+        iterator end() { return iterator(this->m_PEnd); }
+        const_iterator end() const { return const_iterator(this->m_PEnd); }
 
-        reverse_iterator  rbegin()       { return reverse_iterator(end()); }
+        reverse_iterator  rbegin() { return reverse_iterator(end()); }
         const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
-        reverse_iterator rend()         { return reverse_iterator(begin()); }
-        const_reverse_iterator rend() const   { return const_reverse_iterator(begin()); }
+        reverse_iterator rend() { return reverse_iterator(begin()); }
+        const_reverse_iterator rend() const { return const_reverse_iterator(begin()); }
         
     private:
-        pointer   mPBegin;
-        pointer   mPEnd;
+        pointer   m_PBegin;
+        pointer   m_PEnd;
 
         friend class ResArray<const T, TTraits>;
     };
 
     template <typename T, template <typename> class TTraits>
-    class ResArray<const T, TTraits>{
+    class ResArray<const T, TTraits>
+    {
     public:
         typedef T                                       value_type;
         typedef typename TTraits<T>::pointer            pointer;
@@ -263,26 +268,25 @@ namespace internal {
         typedef typename TTraits<T>::const_iter_pointer const_iter_pointer;
         
         ResArray( const void* pBegin, const void* pEnd ) 
-          : mPBegin( static_cast<const_pointer>(pBegin) ), 
-            mPEnd( static_cast<const_pointer>(pEnd) ) 
-        {}
+          : m_PBegin( static_cast<const_pointer>(pBegin) ), 
+            m_PEnd( static_cast<const_pointer>(pEnd) ) {}
         ResArray( const void* pBegin, s32 num )
-          : mPBegin( static_cast<const_pointer>(pBegin) ), 
-            mPEnd( mPBegin + num )
-        {}
+          : m_PBegin( static_cast<const_pointer>(pBegin) ), 
+            m_PEnd( m_PBegin + num ) {}
 
         ResArray( const ResArray<T, TTraits>& rhs ): 
-        mPBegin(rhs.mPBegin),
-            mPEnd(rhs.mPEnd)
-        {}
+        m_PBegin(rhs.m_PBegin),
+            m_PEnd(rhs.m_PEnd) {}
         
-        operator const pointer() const { return mPBegin; }
+        operator const pointer() const { return m_PBegin; }
         
-        const_reference operator[](int index) const{
-            return TTraits<T>::GetValue(mPBegin + index);
+        const_reference operator[](int index) const
+        {
+            return TTraits<T>::GetValue(m_PBegin + index);
         }
         
-        class const_iterator{
+        class const_iterator
+        {
         public:
             typedef const_iterator  TIt;
             typedef T                                       value_type;
@@ -293,37 +297,37 @@ namespace internal {
             typedef typename TTraits<T>::difference_type    difference_type;
             typedef typename TTraits<T>::iterator_category  iterator_category;
             
-            const_iterator() : mPCurrent( NULL ) {}
+            const_iterator() : m_PCurrent( NULL ) {}
             
-            const_reference operator*()  const { NW_NULL_ASSERT(mPCurrent); return TTraits<T>::GetValue(mPCurrent); }
+            const_reference operator*()  const { NW_NULL_ASSERT(m_PCurrent); return TTraits<T>::GetValue(m_PCurrent); }
 
-            const_iter_pointer   operator->() const { return TTraits<T>::GetPointer(mPCurrent); }
+            const_iter_pointer   operator->() const { return TTraits<T>::GetPointer(m_PCurrent); }
             
-            TIt &operator++()   { ++mPCurrent; return *this; }
+            TIt &operator++() { ++m_PCurrent; return *this; }
             TIt operator++(int) { TIt it(*this); (void)++*this; return it; }
-            TIt &operator--()   { --mPCurrent; return *this; }
+            TIt &operator--() { --m_PCurrent; return *this; }
             TIt operator--(int) { TIt it(*this); (void)--*this; return it; }
             
-            friend bool operator==(TIt it1, TIt it2) { return it1.mPCurrent == it2.mPCurrent; }
+            friend bool operator==(TIt it1, TIt it2) { return it1.m_PCurrent == it2.m_PCurrent; }
             friend bool operator!=(TIt it1_, TIt it2_) { return !(it1_ == it2_); }
             
         private:
-            explicit const_iterator(const_pointer p) : mPCurrent(p) {}
-            const_pointer mPCurrent;
+            explicit const_iterator(const_pointer p) : m_PCurrent(p) {}
+            const_pointer m_PCurrent;
             friend class ResArray<const T, TTraits>;
         };
         
         typedef internal::reverse_iterator<const_iterator>  const_reverse_iterator;
         
-        s32 size() const { return (size_t(mPEnd) - size_t(mPBegin)) / TTraits<T>::ValueSize(); }
-        bool empty() const { return (mPBegin == mPEnd); }
-        const_iterator begin() const { return const_iterator(mPBegin); }
-        const_iterator end() const   { return const_iterator(mPEnd); }
+        s32 size() const { return (size_t(m_PEnd) - size_t(m_PBegin)) / TTraits<T>::ValueSize(); }
+        bool empty() const { return (m_PBegin == m_PEnd); }
+        const_iterator begin() const { return const_iterator(m_PBegin); }
+        const_iterator end() const { return const_iterator(m_PEnd); }
         const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
         const_reverse_iterator rend() const { return const_reverse_iterator(begin()); }
     private:
-        const_pointer   mPBegin;
-        const_pointer   mPEnd;
+        const_pointer   m_PBegin;
+        const_pointer   m_PEnd;
 
         friend class ResArray<T, TTraits>;
     };

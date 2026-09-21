@@ -10,7 +10,8 @@ namespace os{
 }
 namespace gfx{
 
-class TransformNode : public SceneNode{
+class TransformNode : public SceneNode
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(TransformNode);
 
@@ -20,76 +21,86 @@ public:
     typedef nw::ut::Signal2<void, TransformNode*, SceneContext*> CalculateMatrixSignal;
     typedef CalculateMatrixSignal::SlotType CalculateMatrixSlot;
 
-    struct Description : public SceneNode::Description{
+    struct Description : public SceneNode::Description
+    {
         Description() {}
     };
 
-    class DynamicBuilder{
+    class DynamicBuilder
+    {
     public:
         DynamicBuilder() {}
         ~DynamicBuilder() {}
 
-        DynamicBuilder& IsFixedSizeMemory(bool isFixedSizeMemory){
-            mDescription.isFixedSizeMemory = isFixedSizeMemory;
+        DynamicBuilder& IsFixedSizeMemory(bool isFixedSizeMemory)
+        {
+            m_Description.isFixedSizeMemory = isFixedSizeMemory;
             return *this;
         }
 
-        DynamicBuilder& MaxChildren(int maxChildren){
-            mDescription.maxChildren = maxChildren;
+        DynamicBuilder& MaxChildren(int maxChildren)
+        {
+            m_Description.maxChildren = maxChildren;
             return *this;
         }
 
-        DynamicBuilder& MaxCallbacks(int maxCallbacks){
-            mDescription.maxCallbacks = maxCallbacks;
+        DynamicBuilder& MaxCallbacks(int maxCallbacks)
+        {
+            m_Description.maxCallbacks = maxCallbacks;
             return *this;
         }
 
         TransformNode* Create(nw::os::IAllocator* allocator);
 
-        size_t GetMemorySize(size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT) const{
+        size_t GetMemorySize(size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT) const
+        {
             nw::os::MemorySizeCalculator size(alignment);
 
             size += sizeof(TransformNode);
-            GetMemorySizeForInitialize(&size, ResTransformNode(), mDescription);
+            GetMemorySizeForInitialize(&size, ResTransformNode(), m_Description);
 
             return size.GetSizeWithPadding(alignment);
         }
 
     private:
-        TransformNode::Description mDescription;
+        TransformNode::Description m_Description;
     };
 
     static TransformNode* Create(SceneNode* parent, ResSceneObject resource, const TransformNode::Description& description, nw::os::IAllocator* allocator);
 
-    static size_t GetMemorySize(ResTransformNode resTransformNode, Description description, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT){
+    static size_t GetMemorySize(ResTransformNode resTransformNode, Description description, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT)
+    {
         nw::os::MemorySizeCalculator size(alignment);
         GetMemorySizeInternal(&size, resTransformNode, description);
         return size.GetSizeWithPadding(alignment);
     }
 
-    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResTransformNode resTransformNode, Description description){
+    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResTransformNode resTransformNode, Description description)
+    {
         nw::os::MemorySizeCalculator& size = *pSize;
 
         size += sizeof(TransformNode);
         GetMemorySizeForInitialize(pSize, resTransformNode, description);
     }
 
-    ResTransformNode GetResTransformNode(){
+    ResTransformNode GetResTransformNode()
+    {
         return nw::ut::ResStaticCast<ResTransformNode>(GetResSceneObject());
     }
 
-    const ResTransformNode GetResTransformNode() const{
+    const ResTransformNode GetResTransformNode() const
+    {
         return ResStaticCast<ResTransformNode>(GetResSceneObject());
     }
 
-    CalculatedTransform& Transform() { return mTransform; }
-    const CalculatedTransform& Transform() const { return mTransform; }
+    CalculatedTransform& Transform() { return m_Transform; }
+    const CalculatedTransform& Transform() const { return m_Transform; }
 
-    MTX34& WorldMatrix() { return mWorldMatrix; }
-    const MTX34& WorldMatrix() const { return mWorldMatrix; }
+    MTX34& WorldMatrix() { return m_WorldMatrix; }
+    const MTX34& WorldMatrix() const { return m_WorldMatrix; }
 
-    CalculatedTransform& WorldTransform() { return mCalculatedTransform; }
-    const CalculatedTransform& WorldTransform() const { return mCalculatedTransform; }
+    CalculatedTransform& WorldTransform() { return m_CalculatedTransform; }
+    const CalculatedTransform& WorldTransform() const { return m_CalculatedTransform; }
 
     const MTX34& InverseWorldMatrix() const;
 
@@ -101,38 +112,46 @@ public:
 
     virtual void Accept(ISceneVisitor* visitor);
 
-    virtual const nw::math::MTX34& TrackbackWorldMatrix() const{
+    virtual const nw::math::MTX34& TrackbackWorldMatrix() const
+    {
         return WorldMatrix();
     }
 
-    virtual const CalculatedTransform& TrackbackWorldTransform() const{
+    virtual const CalculatedTransform& TrackbackWorldTransform() const
+    {
         return WorldTransform();
     }
 
-    virtual const CalculatedTransform& TrackbackLocalTransform() const{
+    virtual const CalculatedTransform& TrackbackLocalTransform() const
+    {
         return Transform();
     }
 
     inline virtual void InheritTraversalResults();
 
-    CalculateMatrixSignal& PostCalculateWorldMatrixSignal(){
-        return *this->mPostCalculateWorldMatrixSignal;
+    CalculateMatrixSignal& PostCalculateWorldMatrixSignal()
+    {
+        return *this->m_PostCalculateWorldMatrixSignal;
     }
 
-    const CalculateMatrixSignal& PostCalculateWorldMatrixSignal() const{
-        return *this->mPostCalculateWorldMatrixSignal;
+    const CalculateMatrixSignal& PostCalculateWorldMatrixSignal() const
+    {
+        return *this->m_PostCalculateWorldMatrixSignal;
     }
 
 protected:
     TransformNode(nw::os::IAllocator* allocator, ResTransformNode resObj, const TransformNode::Description& description);
-    virtual ~TransformNode(){
-        SafeDestroy(this->mPostCalculateWorldMatrixSignal);
+    virtual ~TransformNode()
+    {
+        SafeDestroy(this->m_PostCalculateWorldMatrixSignal);
     }
 
     virtual Result Initialize(nw::os::IAllocator* allocator);
 
-    void CalcInheritingDiretion(VEC3& inheritingDirection, const VEC3& direction) const{
-        if (GetParent() == NULL){
+    void CalcInheritingDiretion(VEC3& inheritingDirection, const VEC3& direction) const
+    {
+        if (GetParent() == NULL)
+        {
             inheritingDirection = direction;
         }
         else{
@@ -155,12 +174,14 @@ protected:
         }
     }
 
-    static void GetMemorySizeForInitialize(nw::os::MemorySizeCalculator* pSize, ResTransformNode resTransformNode, Description description){
+    static void GetMemorySizeForInitialize(nw::os::MemorySizeCalculator* pSize, ResTransformNode resTransformNode, Description description)
+    {
         NW_ASSERT(description.isFixedSizeMemory);
 
         SceneNode::GetMemorySizeForInitialize(pSize, resTransformNode, description);
 
-        if (description.maxCallbacks == 0){
+        if (description.maxCallbacks == 0)
+        {
             CalculateMatrixSignal::GetMemorySizeForInvalidateSignalInternal(pSize);
         }
         else{
@@ -171,31 +192,35 @@ protected:
 private:
     Result CreateCallbacks(nw::os::IAllocator* allocator);
 
-    CalculatedTransform mTransform;
-    nw::math::MTX34 mWorldMatrix;
-    CalculatedTransform mCalculatedTransform;
+    CalculatedTransform m_Transform;
+    nw::math::MTX34 m_WorldMatrix;
+    CalculatedTransform m_CalculatedTransform;
 
-    mutable nw::math::MTX34 mInverseWorldMatrix;
-    mutable bool mIsInverseWorldMatrixValid;
+    mutable nw::math::MTX34 m_InverseWorldMatrix;
+    mutable bool m_IsInverseWorldMatrixValid;
 
-    CalculateMatrixSignal* mPostCalculateWorldMatrixSignal;
-    bool mIsBranchWorldMatrixCalculationEnabled;
-    Description mDescription;
+    CalculateMatrixSignal* m_PostCalculateWorldMatrixSignal;
+    bool m_IsBranchWorldMatrixCalculationEnabled;
+    Description m_Description;
 };
 
-inline void TransformNode::InheritTraversalResults(){
+inline void TransformNode::InheritTraversalResults()
+{
     SceneNode::InheritTraversalResults();
 
     SceneNode* parent = GetParent();
     bit32 results = GetTraversalResults();
 
-    if (Transform().IsEnabledFlags(CalculatedTransform::FLAG_IS_DIRTY)){
+    if (Transform().IsEnabledFlags(CalculatedTransform::FLAG_IS_DIRTY))
+    {
         results = nw::ut::EnableFlag(results, SceneNode::FLAG_IS_DIRTY);
     }
-    else if (parent == NULL){
+    else if (parent == NULL)
+    {
         results = nw::ut::DisableFlag(results, SceneNode::FLAG_IS_DIRTY);
     }
-    else if (parent->IsEnabledResults(SceneNode::FLAG_IS_DIRTY)){
+    else if (parent->IsEnabledResults(SceneNode::FLAG_IS_DIRTY))
+    {
         results = nw::ut::EnableFlag(results, SceneNode::FLAG_IS_DIRTY);
     }
     else{

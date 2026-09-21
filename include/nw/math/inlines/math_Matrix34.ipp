@@ -4,14 +4,16 @@
 namespace nw { 
 namespace math {
 
-inline MTX34* MTX34LookAtFIdx(nw::math::MTX34* pOut, const nw::math::VEC3* pCamPos, f32 twist, const nw::math::VEC3* pTarget){
+inline MTX34* MTX34LookAtFIdx(nw::math::MTX34* pOut, const nw::math::VEC3* pCamPos, f32 twist, const nw::math::VEC3* pTarget)
+{
     using namespace nw::math;
 
     f32 (*const m)[4] = pOut->matrix;
 
     VEC3 lookReverse(pCamPos->x - pTarget->x, pCamPos->y - pTarget->y, pCamPos->z - pTarget->z);
 
-    if ((lookReverse.x == 0.0f) && (lookReverse.z == 0.0f)){
+    if ((lookReverse.x == 0.0f) && (lookReverse.z == 0.0f))
+    {
         m[0][0] = 1.0f;
         m[0][1] = 0.0f;
         m[0][2] = 0.0f;
@@ -23,14 +25,16 @@ inline MTX34* MTX34LookAtFIdx(nw::math::MTX34* pOut, const nw::math::VEC3* pCamP
         m[2][0] = 0.0f;
         m[2][2] = 0.0f;
 
-        if (lookReverse.y <= 0.0f){
+        if (lookReverse.y <= 0.0f)
+        {
             m[1][2] = 1.0f;
             m[1][3] = -pCamPos->z;
 
             m[2][1] = -1.0f;
             m[2][3] = pCamPos->y;
         }
-        else{
+        else
+        {
             m[1][2] = -1.0f;
             m[1][3] = pCamPos->z;
 
@@ -38,7 +42,8 @@ inline MTX34* MTX34LookAtFIdx(nw::math::MTX34* pOut, const nw::math::VEC3* pCamP
             m[2][3] = -pCamPos->y;
         }
     }
-    else{
+    else
+    {
         VEC3 r(lookReverse.z, 0.0f, -lookReverse.x);
 
         VEC3Normalize(&lookReverse, &lookReverse);
@@ -78,14 +83,16 @@ inline MTX34* MTX34LookAtFIdx(nw::math::MTX34* pOut, const nw::math::VEC3* pCamP
     return pOut;
 }
 
-inline MTX34* MTX34LookAtRad(MTX34* pOut, const VEC3* pCamPos, f32 twist, const VEC3* pTarget){
+inline MTX34* MTX34LookAtRad(MTX34* pOut, const VEC3* pCamPos, f32 twist, const VEC3* pTarget)
+{
     f32 twistFIdx = NN_MATH_RAD_TO_FIDX(twist);
     return MTX34LookAtFIdx(pOut, pCamPos, twistFIdx, pTarget);
 }
 
 
 
-inline MTX34* MTX34CameraRotateFIdx(nw::math::MTX34* pOut, const nw::math::VEC3* pCamPos, const nw::math::VEC3* pCamRotate){
+inline MTX34* MTX34CameraRotateFIdx(nw::math::MTX34* pOut, const nw::math::VEC3* pCamPos, const nw::math::VEC3* pCamRotate)
+{
     using namespace nw::math;
 
 
@@ -128,7 +135,8 @@ inline MTX34* MTX34CameraRotateFIdx(nw::math::MTX34* pOut, const nw::math::VEC3*
     return pOut;
 }
 
-inline MTX34* MTX34CameraRotateRad(MTX34* pOut, const VEC3* pCamPos, const VEC3* pCamRotate){
+inline MTX34* MTX34CameraRotateRad(MTX34* pOut, const VEC3* pCamPos, const VEC3* pCamRotate)
+{
     VEC3 rotateFIdx;
     rotateFIdx.x = NN_MATH_RAD_TO_FIDX(pCamRotate->x);
     rotateFIdx.y = NN_MATH_RAD_TO_FIDX(pCamRotate->y);
@@ -137,7 +145,8 @@ inline MTX34* MTX34CameraRotateRad(MTX34* pOut, const VEC3* pCamPos, const VEC3*
     return MTX34CameraRotateFIdx(pOut, pCamPos, &rotateFIdx);
 }
 
-inline VEC3* MTX34DecomposeToColumnScale(VEC3* pOut, const MTX34* pM){
+inline VEC3* MTX34DecomposeToColumnScale(VEC3* pOut, const MTX34* pM)
+{
     pOut->x = FSqrt((pM->matrix[0][0] * pM->matrix[0][0]) + (pM->matrix[1][0] * pM->matrix[1][0]) + (pM->matrix[2][0] * pM->matrix[1][0]));
     pOut->y = FSqrt((pM->matrix[0][1] * pM->matrix[0][1]) + (pM->matrix[1][1] * pM->matrix[1][1]) + (pM->matrix[2][1] * pM->matrix[2][1]));
     pOut->z = FSqrt((pM->matrix[0][2] * pM->matrix[0][2]) + (pM->matrix[1][2] * pM->matrix[1][2]) + (pM->matrix[2][2] * pM->matrix[2][2]));

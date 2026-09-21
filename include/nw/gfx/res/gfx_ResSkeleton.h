@@ -10,8 +10,10 @@ namespace nw {
 namespace gfx {
 namespace res {
 
-struct ResBoneData{
-    enum Flag{
+struct ResBoneData
+{
+    enum Flag
+    {
         FLAG_IS_IDENTITY                       = 0x1 << 0,
         FLAG_IS_TRANSLATE_ZERO                 = 0x1 << 1,
         FLAG_IS_ROTATE_ZERO                    = 0x1 << 2,
@@ -25,39 +27,43 @@ struct ResBoneData{
     };
     
     nw::ut::BinString toName;
-    nw::ut::ResU32 mFlags;
-    nw::ut::ResS32 mIndex;
-    nw::ut::ResS32 mParentBoneIndex;
+    nw::ut::ResU32 m_Flags;
+    nw::ut::ResS32 m_Index;
+    nw::ut::ResS32 m_ParentBoneIndex;
     nw::ut::Offset toParentBone;
     nw::ut::Offset toChildBone;
     nw::ut::Offset toPrevSibling;
     nw::ut::Offset toNextSibling;
-    nw::math::Transform3 mTransform;
-    nw::ut::ResMtx34 mLocalMatrix;
-    nw::ut::ResMtx34 mWorldMatrix;
-    nw::ut::ResMtx34 mInverseBaseMatrix;
-    nw::ut::ResS32 mBillboardMode;
-    nw::ut::ResS32 mUserDataDicCount;
+    nw::math::Transform3 m_Transform;
+    nw::ut::ResMtx34 m_LocalMatrix;
+    nw::ut::ResMtx34 m_WorldMatrix;
+    nw::ut::ResMtx34 m_InverseBaseMatrix;
+    nw::ut::ResS32 m_BillboardMode;
+    nw::ut::ResS32 m_UserDataDicCount;
     nw::ut::Offset toUserDataDic;
 };
 
-struct ResSkeletonData : public ResSceneObjectData{
-    enum Flag{
+struct ResSkeletonData : public ResSceneObjectData
+{
+    enum Flag
+    {
         FLAG_MODEL_COORDINATE                       = 0x1 << 0,
         FLAG_TRANSLATE_ANIMATION_ENABLED            = 0x1 << 1
     };
     
-    nw::ut::ResS32 mBonesDicCount;
+    nw::ut::ResS32 m_BonesDicCount;
     nw::ut::Offset toBonesDic;
     nw::ut::Offset toRootBone;
-    nw::ut::ResS32 mScalingRule;
-    nw::ut::ResU32 mFlags;
+    nw::ut::ResS32 m_ScalingRule;
+    nw::ut::ResU32 m_Flags;
 };
 
-class ResBone : public nw::ut::ResCommon< ResBoneData >{
+class ResBone : public nw::ut::ResCommon< ResBoneData >
+{
 public:
 
-    enum BillboardMode{
+    enum BillboardMode
+    {
         BILLBOARD_MODE_OFF,
         BILLBOARD_MODE_WORLD,
         BILLBOARD_MODE_WORLD_VIEWPOINT,
@@ -87,9 +93,11 @@ public:
 };
 typedef nw::ut::ResArrayPatricia<ResBone>::type  ResBoneArray;
 
-class ResSkeleton : public ResSceneObject{
+class ResSkeleton : public ResSceneObject
+{
 public:
-    enum Flag{
+    enum Flag
+    {
         FLAG_MODEL_COORDINATE                       = 0x1 << 0,
         FLAG_TRANSLATE_ANIMATION_ENABLED            = 0x1 << 1
     };

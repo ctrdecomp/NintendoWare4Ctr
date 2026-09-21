@@ -5,19 +5,20 @@
 
 #include <cstring>
 
-namespace adsl{
+namespace nw{
 namespace gfx{
 
 NW_UT_RUNTIME_TYPEINFO_DEFINITION(FragmentLight, Light);
 
-FragmentLight* FragmentLight::DynamicBuilder::Create(nw::os::IAllocator* allocator){
+FragmentLight* FragmentLight::DynamicBuilder::Create(nw::os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
 
     ResPtr resource(CreateResFragmentLight(allocator), ResFragmentLightDataDestroyer(allocator));
 
     void* memory = allocator->Alloc(sizeof(FragmentLight));
     NW_NULL_ASSERT(memory);
-    FragmentLight* light = new(memory) FragmentLight(allocator, resource, mDescription);
+    FragmentLight* light = new(memory) FragmentLight(allocator, resource, m_Description);
 
     Result result = light->Initialize(allocator);
     NW_ASSERT(result.IsSuccess());
@@ -25,8 +26,9 @@ FragmentLight* FragmentLight::DynamicBuilder::Create(nw::os::IAllocator* allocat
     return light;
 }
 
-size_t FragmentLight::DynamicBuilder::GetMemorySize(size_t alignment) const{
-    NW_ASSERT(mDescription.isFixedSizeMemory);
+size_t FragmentLight::DynamicBuilder::GetMemorySize(size_t alignment) const
+{
+    NW_ASSERT(m_Description.isFixedSizeMemory);
 
     nw::os::MemorySizeCalculator size(alignment);
 
@@ -37,14 +39,15 @@ size_t FragmentLight::DynamicBuilder::GetMemorySize(size_t alignment) const{
 
     size += sizeof(FragmentLight);
 
-    TransformNode::GetMemorySizeForInitialize(&size, ResTransformNode(), mDescription);
+    TransformNode::GetMemorySizeForInitialize(&size, ResTransformNode(), m_Description);
 
     size += sizeof(ResFragmentLightData);
 
     return size.GetSizeWithPadding(alignment);
 }
 
-FragmentLight* FragmentLight::Create(SceneNode* parent, ResSceneObject resource, const FragmentLight::Description& description, nw::os::IAllocator* allocator){
+FragmentLight* FragmentLight::Create(SceneNode* parent, ResSceneObject resource, const FragmentLight::Description& description, nw::os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
 
     ResFragmentLight resNode = ResDynamicCast<ResFragmentLight>(resource);
@@ -68,10 +71,12 @@ FragmentLight* FragmentLight::Create(SceneNode* parent, ResSceneObject resource,
     return light;
 }
 
-void FragmentLight::UpdateDirection(){
+void FragmentLight::UpdateDirection()
+{
     ResFragmentLight resLight = GetResFragmentLight();
 
-    if (ut::CheckFlag(resLight.GetFlags(), ResFragmentLightData::FLAG_IS_INHERITING_DIRECTION_ROTATE)){
+    if (ut::CheckFlag(resLight.GetFlags(), ResFragmentLightData::FLAG_IS_INHERITING_DIRECTION_ROTATE))
+    {
         CalcInheritingDiretion(Direction(), resLight.GetDirection());
     }
     else{
@@ -79,33 +84,35 @@ void FragmentLight::UpdateDirection(){
     }
 }
 
-void FragmentLight::Accept(ISceneVisitor* visitor){
+void FragmentLight::Accept(ISceneVisitor* visitor)
+{
     visitor->VisitFragmentLight(this);
     AcceptChildren(visitor);
 }
 
-ResFragmentLightData* FragmentLight::CreateResFragmentLight(nw::os::IAllocator* allocator, const char* name /* = NULL */){
+ResFragmentLightData* FragmentLight::CreateResFragmentLight(nw::os::IAllocator* allocator, const char* name /* = NULL */)
+{
     ResFragmentLightData* resFragmentLight = AllocateAndFillN<ResFragmentLightData>(allocator, sizeof(ResFragmentLightData), 0);
 
     resFragmentLight->typeInfo = ResFragmentLight::TYPE_INFO;
-    resFragmentLight->mHeader.revision = ResLight::BINARY_REVISION;
-    resFragmentLight->mHeader.signature = ResLight::SIGNATURE;
+    resFragmentLight->m_Header.revision = ResLight::BINARY_REVISION;
+    resFragmentLight->m_Header.signature = ResLight::SIGNATURE;
 
-    resFragmentLight->mUserDataDicCount = 0;
+    resFragmentLight->m_UserDataDicCount = 0;
     resFragmentLight->toUserDataDic.set_ptr(NULL);
 
     resFragmentLight->toName.set_ptr(AllocateAndCopyString(name, allocator, MAX_NAME_LENGTH));
 
-    resFragmentLight->mChildrenTableCount = 0;
+    resFragmentLight->m_ChildrenTableCount = 0;
     resFragmentLight->toChildrenTable.set_ptr(NULL);
-    resFragmentLight->mAnimGroupsDicCount = 0;
+    resFragmentLight->m_AnimGroupsDicCount = 0;
     resFragmentLight->toAnimGroupsDic.set_ptr(NULL);
 
     const math::VEC3 scale(1.0f, 1.0f, 1.0f);
     const math::VEC3 rotate(0.0f, 0.0f, 0.0f);
     const math::VEC3 translate(0.0f, 0.0f, 0.0f);
-    resFragmentLight->mTransform = math::Transform3(scale, rotate, translate);
-    resFragmentLight->mWorldMatrix = math::MTX34::Identity();
+    resFragmentLight->m_Transform = math::Transform3(scale, rotate, translate);
+    resFragmentLight->m_WorldMatrix = math::MTX34::Identity();
     ResTransformNode(resFragmentLight).SetBranchVisible(true);
 
     ResReferenceLookupTableData* distanceSampler = AllocateAndFill<ResReferenceLookupTableData>(allocator, 0);
@@ -123,8 +130,8 @@ ResFragmentLightData* FragmentLight::CreateResFragmentLight(nw::os::IAllocator* 
     referenceAngleSampler->toTargetLut.set_ptr(NULL);
 
     angleSampler->toSampler.set_ptr(referenceAngleSampler);
-    angleSampler->mInput = ResLightingLookupTable::INPUT_NH;
-    angleSampler->mScale = ResLightingLookupTable::SCALE_1;
+    angleSampler->m_Input = ResLightingLookupTable::INPUT_NH;
+    angleSampler->m_Scale = ResLightingLookupTable::SCALE_1;
 
     resFragmentLight->toDistanceSampler.set_ptr(distanceSampler);
     resFragmentLight->toAngleSampler.set_ptr(angleSampler);
@@ -132,37 +139,39 @@ ResFragmentLightData* FragmentLight::CreateResFragmentLight(nw::os::IAllocator* 
     return resFragmentLight;
 }
 
-ResFragmentLightData* FragmentLight::CloneResFragmentLight(ResFragmentLight resource, nw::os::IAllocator* allocator){
+ResFragmentLightData* FragmentLight::CloneResFragmentLight(ResFragmentLight resource, nw::os::IAllocator* allocator)
+{
     ResFragmentLightData* resFragmentLight = AllocateAndFillN<ResFragmentLightData>(allocator, sizeof(ResFragmentLightData), 0);
     ResFragmentLightData* source = resource.ptr();
 
     resFragmentLight->typeInfo = source->typeInfo;
-    resFragmentLight->mHeader = source->mHeader;
+    resFragmentLight->m_Header = source->m_Header;
 
     resFragmentLight->toName.set_ptr(NULL);
 
-    resFragmentLight->mUserDataDicCount = 0;
+    resFragmentLight->m_UserDataDicCount = 0;
     resFragmentLight->toUserDataDic.set_ptr(NULL);
 
-    resFragmentLight->mFlags = source->mFlags;
-    resFragmentLight->mIsBranchVisible = source->mIsBranchVisible;
-    resFragmentLight->mChildrenTableCount = 0;
+    resFragmentLight->m_Flags = source->m_Flags;
+    resFragmentLight->m_IsBranchVisible = source->m_IsBranchVisible;
+    resFragmentLight->m_ChildrenTableCount = 0;
     resFragmentLight->toChildrenTable.set_ptr(NULL);
-    resFragmentLight->mAnimGroupsDicCount = 0;
+    resFragmentLight->m_AnimGroupsDicCount = 0;
     resFragmentLight->toAnimGroupsDic.set_ptr(NULL);
 
-    resFragmentLight->mTransform = source->mTransform;
-    resFragmentLight->mLocalMatrix = source->mLocalMatrix;
-    resFragmentLight->mWorldMatrix = source->mWorldMatrix;
+    resFragmentLight->m_Transform = source->m_Transform;
+    resFragmentLight->m_LocalMatrix = source->m_LocalMatrix;
+    resFragmentLight->m_WorldMatrix = source->m_WorldMatrix;
 
-    resFragmentLight->mIsLightEnabled = source->mIsLightEnabled;
+    resFragmentLight->m_IsLightEnabled = source->m_IsLightEnabled;
 
     ResLookupTable srcDistanceSampler = resource.GetDistanceSampler();
 
     ResReferenceLookupTableData* distanceSampler = AllocateAndFill<ResReferenceLookupTableData>(allocator, 0);
 
     distanceSampler->typeInfo = ResReferenceLookupTable_TYPE_INFO;
-    if (srcDistanceSampler.IsValid()){
+    if (srcDistanceSampler.IsValid())
+    {
         distanceSampler->toTargetLut.set_ptr(srcDistanceSampler.Dereference().ptr());
     }
     else{
@@ -177,13 +186,15 @@ ResFragmentLightData* FragmentLight::CloneResFragmentLight(ResFragmentLight reso
 
     ResLightingLookupTableData* angleSampler = AllocateAndFill<ResLightingLookupTableData>(allocator, 0);
 
-    if (srcAngleSampler.IsValid()){
+    if (srcAngleSampler.IsValid())
+    {
         ResLookupTable srcReferenceAngleSampler = srcAngleSampler.GetSampler();
 
         ResReferenceLookupTableData* referenceAngleSampler = AllocateAndFill<ResReferenceLookupTableData>(allocator, 0);
 
         referenceAngleSampler->typeInfo = ResReferenceLookupTable_TYPE_INFO;
-        if (srcReferenceAngleSampler.IsValid()){
+        if (srcReferenceAngleSampler.IsValid())
+        {
             referenceAngleSampler->toTargetLut.set_ptr(srcReferenceAngleSampler.Dereference().ptr());
         }
         else{
@@ -193,8 +204,8 @@ ResFragmentLightData* FragmentLight::CloneResFragmentLight(ResFragmentLight reso
         referenceAngleSampler->toPath.set_ptr(NULL);
 
         angleSampler->toSampler.set_ptr(referenceAngleSampler);
-        angleSampler->mInput = srcAngleSampler.GetInput();
-        angleSampler->mScale = srcAngleSampler.GetScale();
+        angleSampler->m_Input = srcAngleSampler.GetInput();
+        angleSampler->m_Scale = srcAngleSampler.GetScale();
     }
     else{
         angleSampler->toSampler.set_ptr(NULL);
@@ -202,58 +213,63 @@ ResFragmentLightData* FragmentLight::CloneResFragmentLight(ResFragmentLight reso
 
     resFragmentLight->toAngleSampler.set_ptr(angleSampler);
 
-    resFragmentLight->mLightKind = source->mLightKind;
-    resFragmentLight->mAmbient = source->mAmbient;
-    resFragmentLight->mDiffuse = source->mDiffuse;
-    resFragmentLight->mSpecular0 = source->mSpecular0;
-    resFragmentLight->mSpecular1 = source->mSpecular1;
-    resFragmentLight->mAmbientU32 = source->mAmbientU32;
-    resFragmentLight->mDiffuseU32 = source->mDiffuseU32;
-    resFragmentLight->mSpecular0U32 = source->mSpecular0U32;
-    resFragmentLight->mSpecular1U32 = source->mSpecular1U32;
-    resFragmentLight->mDirection = source->mDirection;
-    resFragmentLight->mDistanceAttenuationStart = source->mDistanceAttenuationStart;
-    resFragmentLight->mDistanceAttenuationEnd = source->mDistanceAttenuationEnd;
-    resFragmentLight->mDistanceAttenuationScale = source->mDistanceAttenuationScale;
-    resFragmentLight->mDistanceAttenuationBias = source->mDistanceAttenuationBias;
+    resFragmentLight->m_LightKind = source->m_LightKind;
+    resFragmentLight->m_Ambient = source->m_Ambient;
+    resFragmentLight->m_Diffuse = source->m_Diffuse;
+    resFragmentLight->m_Specular0 = source->m_Specular0;
+    resFragmentLight->m_Specular1 = source->m_Specular1;
+    resFragmentLight->m_AmbientU32 = source->m_AmbientU32;
+    resFragmentLight->m_DiffuseU32 = source->m_DiffuseU32;
+    resFragmentLight->m_Specular0U32 = source->m_Specular0U32;
+    resFragmentLight->m_Specular1U32 = source->m_Specular1U32;
+    resFragmentLight->m_Direction = source->m_Direction;
+    resFragmentLight->m_DistanceAttenuationStart = source->m_DistanceAttenuationStart;
+    resFragmentLight->m_DistanceAttenuationEnd = source->m_DistanceAttenuationEnd;
+    resFragmentLight->m_DistanceAttenuationScale = source->m_DistanceAttenuationScale;
+    resFragmentLight->m_DistanceAttenuationBias = source->m_DistanceAttenuationBias;
 
     return resFragmentLight;
 }
 
-void FragmentLight::DestroyResFragmentLight(nw::os::IAllocator* allocator, ResFragmentLightData* resFragmentLight){
+void FragmentLight::DestroyResFragmentLight(nw::os::IAllocator* allocator, ResFragmentLightData* resFragmentLight)
+{
     NW_NULL_ASSERT(allocator);
     NW_NULL_ASSERT(resFragmentLight);
 
     allocator->Free(resFragmentLight->toDistanceSampler.to_ptr());
 
     ResLightingLookupTableData* angleSampler = reinterpret_cast<ResLightingLookupTableData*>(resFragmentLight->toAngleSampler.to_ptr());
-    if (angleSampler->toSampler.to_ptr() != NULL){
+    if (angleSampler->toSampler.to_ptr() != NULL)
+    {
         allocator->Free(angleSampler->toSampler.to_ptr());
     }
     allocator->Free(angleSampler);
 
-    if (resFragmentLight->toName.to_ptr() != NULL){
+    if (resFragmentLight->toName.to_ptr() != NULL)
+    {
         allocator->Free(const_cast<char*>(resFragmentLight->toName.to_ptr()));
     }
 
     allocator->Free(resFragmentLight);
 }
 
-Result FragmentLight::CreateOriginalValue(nw::os::IAllocator* allocator){
+Result FragmentLight::CreateOriginalValue(nw::os::IAllocator* allocator)
+{
     Result result = INITIALIZE_RESULT_OK;
 
     void* buffer = allocator->Alloc(sizeof(ResFragmentLightData));
     NW_NULL_ASSERT(buffer);
 
     ResFragmentLightData* originalValue = new(buffer) ResFragmentLightData(GetResFragmentLight().ref());
-    mOriginalValue = ResFragmentLight(originalValue);
+    m_OriginalValue = ResFragmentLight(originalValue);
 
-    mOriginalTransform = GetResTransformNode().GetTransform();
+    m_OriginalTransform = GetResTransformNode().GetTransform();
 
     return result;
 }
 
-Result FragmentLight::Initialize(nw::os::IAllocator* allocator){
+Result FragmentLight::Initialize(nw::os::IAllocator* allocator)
+{
     Result result = INITIALIZE_RESULT_OK;
 
     result |= TransformNode::Initialize(allocator);
@@ -268,7 +284,8 @@ Result FragmentLight::Initialize(nw::os::IAllocator* allocator){
     return result;
 }
 
-void FragmentLight::GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResFragmentLight resFragmentLight, Description description){
+void FragmentLight::GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResFragmentLight resFragmentLight, Description description)
+{
     NW_ASSERT(description.isFixedSizeMemory);
 
     nw::os::MemorySizeCalculator& size = *pSize;
@@ -279,7 +296,8 @@ void FragmentLight::GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, R
 
     size += sizeof(ResFragmentLightData);
 
-    if (description.isAnimationEnabled && resFragmentLight.GetAnimGroupsCount() > 0){
+    if (description.isAnimationEnabled && resFragmentLight.GetAnimGroupsCount() > 0)
+    {
         AnimGroup::Builder().ResAnimGroup(resFragmentLight.GetAnimGroups(0)).UseOriginalValue(true).GetMemorySizeInternal(&size);
     }
 }

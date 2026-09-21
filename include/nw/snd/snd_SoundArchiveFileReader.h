@@ -22,12 +22,12 @@ public:
     void SetStringBlock(const void* stringBlock);
     void SetInfoBlock(const void* infoBlock);
 
-    u32 GetStringBlockSize() const   { return m_Header.GetStringBlockSize(); }
+    u32 GetStringBlockSize() const { return m_Header.GetStringBlockSize(); }
     s32 GetStringBlockOffset() const { return m_Header.GetStringBlockOffset(); }
-    u32 GetInfoBlockSize() const     { return m_Header.GetInfoBlockSize(); }
-    s32 GetInfoBlockOffset() const   { return m_Header.GetInfoBlockOffset(); }
-    u32 GetFileBlockSize() const     { return m_Header.GetFileBlockSize(); }
-    s32 GetFileBlockOffset() const   { return m_Header.GetFileBlockOffset(); }
+    u32 GetInfoBlockSize() const { return m_Header.GetInfoBlockSize(); }
+    s32 GetInfoBlockOffset() const { return m_Header.GetInfoBlockOffset(); }
+    u32 GetFileBlockSize() const { return m_Header.GetFileBlockSize(); }
+    s32 GetFileBlockOffset() const { return m_Header.GetFileBlockOffset(); }
 
     u32 GetStringCount() const;
     SoundArchive::ItemId GetItemId(const char* pStr) const;

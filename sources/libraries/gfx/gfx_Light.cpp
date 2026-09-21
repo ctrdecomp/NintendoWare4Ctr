@@ -10,18 +10,21 @@ namespace gfx{
 
 NW_UT_RUNTIME_TYPEINFO_DEFINITION(Light, TransformNode);
 
-void Light::Accept(ISceneVisitor* visitor){
+void Light::Accept(ISceneVisitor* visitor)
+{
     visitor->VisitLight(this);
     AcceptChildren(visitor);
 }
 
 
-Result Light::CreateAnimGroup(os::IAllocator* allocator){
+Result Light::CreateAnimGroup(os::IAllocator* allocator)
+{
     Result result = INITIALIZE_RESULT_OK;
 
-    NW_ASSERT(this->mOriginalValue.IsValid());
+    NW_ASSERT(this->m_OriginalValue.IsValid());
 
-    if (!mAnimBinding){
+    if (!m_AnimBinding)
+    {
         return result;
     }
 
@@ -35,56 +38,63 @@ Result Light::CreateAnimGroup(os::IAllocator* allocator){
 
     AnimGroup* animGroup = AnimGroup::Builder().ResAnimGroup(resAnimGroup).SetSceneNode(this).UseOriginalValue(true).Create(allocator);
 
-    if (animGroup == NULL){
+    if (animGroup == NULL)
+    {
         result |= Result::MASK_FAIL_BIT;
     }
 
     NW_ENSURE_AND_RETURN(result);
 
-    this->mAnimGroup = animGroup;
+    this->m_AnimGroup = animGroup;
 
-    const int animMemberCount = this->mAnimGroup->GetMemberCount();
-    for (int memberIdx = 0; memberIdx < animMemberCount; ++memberIdx){
-        anim::ResAnimGroupMember member = this->mAnimGroup->GetResAnimGroupMember(memberIdx);
+    const int animMemberCount = this->m_AnimGroup->GetMemberCount();
+    for (int memberIdx = 0; memberIdx < animMemberCount; ++memberIdx)
+    {
+        anim::ResAnimGroupMember member = this->m_AnimGroup->GetResAnimGroupMember(memberIdx);
 
         void* object = GetAnimTargetObject(member);
         m_AnimGroup->SetTargetObject(memberIdx, object);
 
-        if (member.GetObjectType() == anim::ResAnimGroupMember::OBJECT_TYPE_TRANSFORM && member.GetMemberType() == anim::ResTransformMember::MEMBER_TYPE_TRANSFORM){
-            this->mAnimGroup->SetTargetPtr(memberIdx, &this->Transform());
+        if (member.GetObjectType() == anim::ResAnimGroupMember::OBJECT_TYPE_TRANSFORM && member.GetMemberType() == anim::ResTransformMember::MEMBER_TYPE_TRANSFORM)
+        {
+            this->m_AnimGroup->SetTargetPtr(memberIdx, &this->Transform());
         }
         else{
             u8* target = static_cast<u8*>(object);
             target += member.GetMemberOffset();
-            this->mAnimGroup->SetTargetPtr(memberIdx, target);
+            this->m_AnimGroup->SetTargetPtr(memberIdx, target);
         }
 
-        this->mAnimGroup->SetTargetObjectIndex(memberIdx, 0);
+        this->m_AnimGroup->SetTargetObjectIndex(memberIdx, 0);
 
-        if (member.GetObjectType() == nw::anim::ResAnimGroupMember::OBJECT_TYPE_TRANSFORM){
-            this->mAnimGroup->SetOriginalValue(memberIdx, &this->mOriginalTransform);
+        if (member.GetObjectType() == nw::anim::ResAnimGroupMember::OBJECT_TYPE_TRANSFORM)
+        {
+            this->m_AnimGroup->SetOriginalValue(memberIdx, &this->m_OriginalTransform);
         }
         else{
-            u8* originalValue = reinterpret_cast<u8*>(this->mOriginalValue.ptr());
+            u8* originalValue = reinterpret_cast<u8*>(this->m_OriginalValue.ptr());
             originalValue += member.GetMemberOffset();
-            this->mAnimGroup->SetOriginalValue(memberIdx, originalValue);
+            this->m_AnimGroup->SetOriginalValue(memberIdx, originalValue);
         }
     }
 
-    this->mAnimBinding->SetAnimGroup(0, this->mAnimGroup);
+    this->m_AnimBinding->SetAnimGroup(0, this->m_AnimGroup);
 
     return result;
 }
 
-void Light::DestroyOriginalValue(){
-    NW_ASSERT(mOriginalValue.IsValid());
+void Light::DestroyOriginalValue()
+{
+    NW_ASSERT(m_OriginalValue.IsValid());
 
-    GetAllocator().Free(this->mOriginalValue.ptr());
-    mOriginalValue = ResLight(NULL);
+    GetAllocator().Free(this->m_OriginalValue.ptr());
+    m_OriginalValue = ResLight(NULL);
 }
 
-void* Light::GetAnimTargetObject(const anim::ResAnimGroupMember& anim){
-    switch (anim.GetObjectType()){
+void* Light::GetAnimTargetObject(const anim::ResAnimGroupMember& anim)
+{
+    switch (anim.GetObjectType())
+    {
     case anim::ResAnimGroupMember::OBJECT_TYPE_TRANSFORM:{
             return static_cast<gfx::TransformNode*>(this);
         }
@@ -127,19 +137,24 @@ void* Light::GetAnimTargetObject(const anim::ResAnimGroupMember& anim){
     }
 }
 
-bool Light::ValidateLightAnimType(AnimObject* animObject){
-    if (animObject == NULL){
+bool Light::ValidateLightAnimType(AnimObject* animObject)
+{
+    if (animObject == NULL)
+    {
         return true;
     }
 
     AnimBlender* blender = ut::DynamicCast<AnimBlender*>(animObject);
 
-    if (blender != NULL){
+    if (blender != NULL)
+    {
         const int animObjCount = blender->GetAnimObjectCount();
-        for (int i = 0; i < animObjCount; ++i){
+        for (int i = 0; i < animObjCount; ++i)
+        {
             AnimObject* animObj = blender->GetAnimObject(i);
 
-            if (!ValidateLightAnimType(animObj)){
+            if (!ValidateLightAnimType(animObj))
+            {
                 return false;
             }
         }

@@ -1,4 +1,8 @@
-﻿#include <nw/gfx/gfx_AnimObject.h>
+﻿// Filename: gfx_AnimBlender.cpp
+//
+// Project: NintendoWare4Ctr
+
+#include <nw/gfx/gfx_AnimObject.h>
 
 namespace nw{
 namespace gfx{

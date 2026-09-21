@@ -7,7 +7,8 @@
 namespace nw{ 
 namespace ut{ 
 
-ResDicPatriciaData::ResDicNodeData* ResDicPatricia::Get(const ResName rhs) const{
+ResDicPatriciaData::ResDicNodeData* ResDicPatricia::Get(const ResName rhs) const
+{
     size_t len = rhs.GetLength();
     const char* s = rhs.GetName();
     const ResDataType& r = ref();
@@ -18,20 +19,23 @@ ResDicPatriciaData::ResDicNodeData* ResDicPatricia::Get(const ResName rhs) const
     p = &r.data[0];
     x = &r.data[p->idxLeft];
 
-    while(p->ref > x->ref){
+    while (p->ref > x->ref)
+    {
         p = x;
 
         u32 wd = u32(x->ref) >> 3;
         u32 pos = u32(x->ref) & 7;
 
-        if (wd < len && ((s[wd] >> pos) & 1)){
+        if (wd < len && ((s[wd] >> pos) & 1))
+        {
             x = &r.data[x->idxRight];
         }
         else{
             x = &r.data[x->idxLeft];
         }
     }
-    if (rhs == ResName(((u8*)&r + x->ofsString - sizeof(u32)))){
+    if (rhs == ResName(((u8*)&r + x->ofsString - sizeof(u32))))
+    {
         return const_cast<ResDicPatriciaData::ResDicNodeData*>(x);
     }
     return NULL;

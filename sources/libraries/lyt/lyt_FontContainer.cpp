@@ -15,13 +15,13 @@ namespace lyt{
 
 FontRefLink::FontRefLink():   
     mpFont(0),
-    mOwn(false)
+    m_Own(false)
 { 
 }
 
 FontRefLink::~FontRefLink()
 {
-    if (mOwn)
+    if (m_Own)
     {
         font::ResFont* pResFont = (font::ResFont*)(this->mpFont);
         if (pResFont != NULL)
@@ -40,9 +40,9 @@ FontRefLink::~FontRefLink()
 
 void FontRefLink::Set(const char* name,font::Font* pFont,bool own)
 {
-    ut::strcpy(this->mFontName, sizeof(this->mFontName), name);
+    ut::strcpy(this->m_FontName, sizeof(this->m_FontName), name);
     this->mpFont = pFont;
-    this->mOwn = own;
+    this->m_Own = own;
 }
 
 /* FontContainer */
@@ -67,7 +67,7 @@ font::Font* FontContainer::FindFontByName(const char* name)
     for (Iterator it = this->GetBeginIter(); it != this->GetEndIter(); ++it)
     {
         if (0 == std::strcmp(name, it->GetFontName()))
-        {
+    {
             return it->GetFont();
         }
     }

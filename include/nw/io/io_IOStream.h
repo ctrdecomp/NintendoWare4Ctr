@@ -6,7 +6,8 @@
 namespace nw   {
 namespace io   {
 
-class IOStream{
+class IOStream
+{
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
@@ -29,21 +30,20 @@ public:
     virtual bool IsBusy() const;
     virtual void Close() = 0;
 
-    bool IsAvailable() const { return mAvailable; }
+    bool IsAvailable() const { return m_Available; }
 
 protected:
 
     IOStream() : 
-        mAvailable(false),
-        mCallback (NULL),
-        mArg (NULL)
-    {}
+        m_Available(false),
+        m_Callback (NULL),
+        m_Arg (NULL) {}
 
 
-    bool mAvailable;
-    s32 mAsyncResult;
-    IOStreamCallback mCallback;
-    void* mArg;
+    bool m_Available;
+    s32 m_AsyncResult;
+    IOStreamCallback m_Callback;
+    void* m_Arg;
 };
 
 }

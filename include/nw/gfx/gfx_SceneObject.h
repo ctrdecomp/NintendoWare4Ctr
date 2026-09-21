@@ -18,7 +18,8 @@ class TransformNode;
 
 typedef nw::ut::Children<SceneNode, SceneNode, nw::ut::ChildDetacher<SceneNode> > SceneNodeChildren;
 
-class SceneObject : public GfxObject{
+class SceneObject : public GfxObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(SceneObject);
 
@@ -29,24 +30,24 @@ public:
     static const int DEFAULT_MAX_CALLBACKS = 4;
     static const int MAX_NAME_LENGTH = 256;
 
-    ResSceneObject GetResSceneObject() { return mResObject; }
-    const ResSceneObject GetResSceneObject() const { return mResObject; }
+    ResSceneObject GetResSceneObject() { return m_ResObject; }
+    const ResSceneObject GetResSceneObject() const { return m_ResObject; }
 
-    const char* GetName() const{
-        NW_ASSERT(this->mResObject.IsValid());
-        return this->mResObject.GetName();
+    const char* GetName() const
+    {
+        NW_ASSERT(this->m_ResObject.IsValid());
+        return this->m_ResObject.GetName();
     }
     
 protected:
     SceneObject(nw::os::IAllocator* allocator, ResSceneObject resObj): 
         GfxObject(allocator), 
-        mResObject(resObj)
-    {}
+        m_ResObject(resObj) {}
 
     virtual ~SceneObject() {}
 
 private:
-    ResSceneObject  mResObject;
+    ResSceneObject  m_ResObject;
 };
 
 }

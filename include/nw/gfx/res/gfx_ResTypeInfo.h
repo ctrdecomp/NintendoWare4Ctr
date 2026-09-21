@@ -8,7 +8,8 @@ namespace res{
 
 #define NW_GFX_RES_TYPE_INFO(name)  res::name##_TYPE_INFO
 
-enum ResTypeInfoDefinition{
+enum ResTypeInfoDefinition
+{
     ResCameraViewUpdater_TYPE_INFO      = 0x00000000,
     ResAimTargetViewUpdater_TYPE_INFO   = 0x80000000,
     ResLookAtTargetViewUpdater_TYPE_INFO = 0x40000000,

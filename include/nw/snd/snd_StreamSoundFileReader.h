@@ -30,9 +30,9 @@ public:
     bool ReadStreamTrackInfo(TrackInfo* trackInfo, int trackIndex ) const;
     bool ReadDspAdpcmChannelInfo(DspAdpcmParam* param, DspAdpcmLoopParam* loopParam, int channelIndex) const;
 
-    u32 GetChannelCount() const{ return m_pInfoBlockBody->GetChannelInfoTable()->GetChannelCount(); }
+    u32 GetChannelCount() const { return m_pInfoBlockBody->GetChannelInfoTable()->GetChannelCount(); }
 
-    u32 GetTrackCount() const{ return m_pInfoBlockBody->GetTrackInfoTable()->GetTrackCount(); }
+    u32 GetTrackCount() const { return m_pInfoBlockBody->GetTrackInfoTable()->GetTrackCount(); }
 
     u32 GetSeekBlockOffset() const
     {

@@ -8,7 +8,8 @@ namespace internal {
 
 #define NW_UT_RES_TYPE_INFO(name)  internal::name##_TYPE_INFO
 
-enum ResTypeInfoDefinition{
+enum ResTypeInfoDefinition
+{
     ResMetaData_TYPE_INFO               = 0x00000000,
     ResFloatArrayMetaData_TYPE_INFO     = 0x80000000,
     ResColorArrayMetaData_TYPE_INFO     = 0x40000000,

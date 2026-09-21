@@ -7,7 +7,6 @@ namespace nw {
 namespace snd {
 namespace internal {
 
-
 struct CurveLfoParam
 {
     f32 depth;
@@ -23,8 +22,8 @@ struct CurveLfoParam
 class CurveLfo
 {
 private:
-    static const int TABLE_SIZE         = 32;
-    static const int PERIOD             = TABLE_SIZE * 4;
+    static const int TABLE_SIZE = 32;
+    static const int PERIOD = TABLE_SIZE * 4;
 
 private:
     static s8 GetSinIdx(int index);
@@ -33,7 +32,7 @@ public:
     CurveLfo() : 
         m_DelayCounter(0), 
         m_Counter(0.0f) 
-    {
+        {
     }
     void Reset();
 

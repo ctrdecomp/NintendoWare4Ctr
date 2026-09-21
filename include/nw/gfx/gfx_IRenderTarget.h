@@ -16,7 +16,8 @@ namespace res{
     class ResTexture;
 }
 
-enum RenderColorFormat{
+enum RenderColorFormat
+{
     RENDER_COLOR_FORMAT_NONE,
     RENDER_COLOR_FORMAT_RGBA8 = GL_RGBA8_OES,
     RENDER_COLOR_FORMAT_RGB8 = GL_RGB8_OES,
@@ -26,7 +27,8 @@ enum RenderColorFormat{
     RENDER_COLOR_FORMAT_COUNT
 };
 
-enum RenderDepthFormat{
+enum RenderDepthFormat
+{
     RENDER_DEPTH_FORMAT_NONE,
     RENDER_DEPTH_FORMAT_16 = GL_DEPTH_COMPONENT16,
     RENDER_DEPTH_FORMAT_24 = GL_DEPTH_COMPONENT24_OES,
@@ -35,7 +37,8 @@ enum RenderDepthFormat{
 };
 
 namespace internal{
-    enum{
+    enum
+    {
         MEMORY_AREA_FCRAM_INTERNAL = NN_GX_MEM_FCRAM,
         MEMORY_AREA_VRAMA_INTERNAL = NN_GX_MEM_VRAMA,
         MEMORY_AREA_VRAMB_INTERNAL = NN_GX_MEM_VRAMB
@@ -43,7 +46,8 @@ namespace internal{
 }
 
 
-enum GraphicsMemoryArea{
+enum GraphicsMemoryArea
+{
     MEMORY_AREA_NONE,
     MEMORY_AREA_FCRAM = internal::MEMORY_AREA_FCRAM_INTERNAL,
     MEMORY_AREA_VRAMA = internal::MEMORY_AREA_VRAMA_INTERNAL,
@@ -51,17 +55,20 @@ enum GraphicsMemoryArea{
     GRAPHICS_MEMORY_AREA_COUNT
 };
 
-enum ShadowKind{
+enum ShadowKind
+{
     SHADOW_KIND_NONE,
     SHADOW_KIND_TEXTURE,
     SHADOW_KIND_CUBE
 };
 
-class IRenderTarget : public GfxObject{
+class IRenderTarget : public GfxObject
+{
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    struct Description{
+    struct Description
+    {
         s32 width;
         s32 height;
         RenderColorFormat colorFormat;
@@ -81,61 +88,69 @@ public:
             depthArea(MEMORY_AREA_VRAMB),
             colorAddress(NULL),
             depthAddress(NULL),
-            shadowKind(SHADOW_KIND_NONE)
-        {}
+            shadowKind(SHADOW_KIND_NONE) {}
     };
 
-    class Builder{
+    class Builder
+    {
     public:
-        Builder& Described(const Description& description){
-            mDescription = description;
+        Builder& Described(const Description& description)
+        {
+            m_Description = description;
             return *this;
         }
 
-        Builder& BufferSize(s32 width, s32 height){
-            mDescription.width = width;
-            mDescription.height = height;
+        Builder& BufferSize(s32 width, s32 height)
+        {
+            m_Description.width = width;
+            m_Description.height = height;
             return *this;
         }
 
-        Builder& Width(s32 width) { mDescription.width = width; return *this; }
+        Builder& Width(s32 width) { m_Description.width = width; return *this; }
 
-        Builder& Height(s32 height) { mDescription.height = height; return *this; }
+        Builder& Height(s32 height) { m_Description.height = height; return *this; }
 
-        Builder& ColorFormat(RenderColorFormat format){
-            mDescription.colorFormat = format;
+        Builder& ColorFormat(RenderColorFormat format)
+        {
+            m_Description.colorFormat = format;
             return *this;
         }
 
-        Builder& DepthFormat(RenderDepthFormat format){
-            mDescription.depthFormat = format;
+        Builder& DepthFormat(RenderDepthFormat format)
+        {
+            m_Description.depthFormat = format;
             return *this;
         }
 
-        Builder& ColorArea(GraphicsMemoryArea memory){
-            mDescription.colorArea = memory;
+        Builder& ColorArea(GraphicsMemoryArea memory)
+        {
+            m_Description.colorArea = memory;
             return *this;
         }
 
-        Builder& DepthArea(GraphicsMemoryArea memory){
-            mDescription.depthArea = memory;
+        Builder& DepthArea(GraphicsMemoryArea memory)
+        {
+            m_Description.depthArea = memory;
             return *this;
         }
 
-        Builder& ColorAddress(u32 colorAddress){
-            mDescription.colorAddress = colorAddress;
+        Builder& ColorAddress(u32 colorAddress)
+        {
+            m_Description.colorAddress = colorAddress;
             return *this;
         }
 
-        Builder& DepthAddress(u32 depthAddress){
-            mDescription.depthAddress = depthAddress;
+        Builder& DepthAddress(u32 depthAddress)
+        {
+            m_Description.depthAddress = depthAddress;
             return *this;
         }
 
         IRenderTarget* Create(nw::os::IAllocator* allocator);
         
     private:
-        Description mDescription;
+        Description m_Description;
     };
     static IRenderTarget* CreateOffScreenBuffer(nw::os::IAllocator* allocator, ResTexture resTexture);
     virtual const Description& GetDescription() const = 0;

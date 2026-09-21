@@ -25,18 +25,21 @@ class TexMap;
 class TextBox;
 class GraphicsResource;
 
-class Drawer : public font::RectDrawer{
+class Drawer : public font::RectDrawer
+{
     typedef RectDrawer  Base;
 public:
     Drawer();
     explicit Drawer(GraphicsResource& graphicsResource);
     void Initialize(GraphicsResource& graphicsResource,void* vertexBuffer = NULL);
 protected:
-    void Initialize(void* vtxBufCmdBuf,const void* shaderBinary,u32 size){
+    void Initialize(void* vtxBufCmdBuf,const void* shaderBinary,u32 size)
+{
         Base::Initialize(vtxBufCmdBuf, shaderBinary, size);
     }
 
-    void Initialize(void* vertexBuffer,void* commandBuffer,const void* shaderBinary,u32 size){
+    void Initialize(void* vertexBuffer,void* commandBuffer,const void* shaderBinary,u32 size)
+    {
         Base::Initialize(vertexBuffer, commandBuffer, shaderBinary, size);
     }
 
@@ -49,7 +52,8 @@ public:
     void Draw(const Layout* pLayout, DrawInfo& drawInfo);
     void Draw(const Pane* pPane, DrawInfo& drawInfo);
 
-    void DrawEnd( const DrawInfo& drawInfo ){
+    void DrawEnd( const DrawInfo& drawInfo )
+    {
         NW_UNUSED_VARIABLE(drawInfo);
         u32 flag = 0;
         DrawEnd(flag);
@@ -68,8 +72,10 @@ public:
     void SetCurrentUniformAlpha( const f32 alpha );
     u8 CalcTextureCoords(const Material* pMaterial,const TexCoordQuad* pTexCoordQuad,nw::math::VEC4 texCoords[TexMapMax * 2]) const;
 
-    void FlushBuffer(){
-        if (mUniformAddrIndex > 0){
+    void FlushBuffer()
+    {
+        if (m_UniformAddrIndex > 0)
+        {
             UniformAndDraw();
         }
     }
@@ -83,14 +89,15 @@ protected:
     void SetUpAlphaTest(const Material* pMaterial);
 
 protected:
-    GLuint mPrevTexObj;
-    int mActiveTexureNum;
-    int mTexCoordNum;
-    bool mIsBlendDefault;
-    bool mAlphaTestEnable;
+    GLuint m_PrevTexObj;
+    int m_ActiveTexureNum;
+    int m_TexCoordNum;
+    bool m_IsBlendDefault;
+    bool m_AlphaTestEnable;
 
 protected:
-    enum TEX_ENV_TYPE{
+    enum TEX_ENV_TYPE
+    {
         TEX_ENV_TYPE_0_TEX,
         TEX_ENV_TYPE_1_TEX,
         TEX_ENV_TYPE_2_TEX,
@@ -100,13 +107,14 @@ protected:
         TEX_ENV_TYPE_NUM
     };
 
-    TEX_ENV_TYPE mCurrentTexEnvType;
+    TEX_ENV_TYPE m_CurrentTexEnvType;
 
 #if ! defined(NW_RELEASE)
-    TEX_ENV_TYPE mPreviousTexEnvType;
+    TEX_ENV_TYPE m_PreviousTexEnvType;
 #endif
 
-    enum{
+    enum
+    {
         TEX_ENV_UNIFORM_NUM = 8,
         TEX_ENV_STAGE_NUM = 3,
         TEX_ENV_UNIFORM_VALUE_NUM = 16

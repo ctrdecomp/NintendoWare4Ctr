@@ -21,15 +21,17 @@ class RenderContext;
 class PrimitiveSet;
 class Primitive;
 
-class MeshRenderer : public GfxObject{
+class MeshRenderer : public GfxObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(MeshRenderer);
 
 public:
     static MeshRenderer* Create(nw::os::IAllocator* pAllocator);
 
-    void SetRenderContext(RenderContext* renderContext){
-        mRenderContext = renderContext;
+    void SetRenderContext(RenderContext* renderContext)
+    {
+        m_RenderContext = renderContext;
     }
     
     void RenderMesh(ResMesh mesh, Model* model);
@@ -37,8 +39,7 @@ public:
 private:    
     MeshRenderer(nw::os::IAllocator* allocator): 
         GfxObject(allocator),
-        mRenderContext(NULL) 
-    {}
+        m_RenderContext(NULL) {}
 
     virtual ~MeshRenderer() {}
 
@@ -48,7 +49,7 @@ private:
 
     void SetMatrixPalette(SkeletalModel* skeletalModel,ResPrimitiveSet primitiveSet,s32 boneIndexCount);
 
-    RenderContext*      mRenderContext;
+    RenderContext*      m_RenderContext;
 };
 
 }

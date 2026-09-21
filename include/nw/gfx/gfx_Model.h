@@ -11,7 +11,8 @@
 namespace nw{
 namespace gfx{
 
-class Model : public TransformNode{
+class Model : public TransformNode
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(Model);
 
@@ -22,7 +23,8 @@ public:
 
     typedef RenderSignal::SlotType RenderSlot;
 
-    enum BufferOption{
+    enum BufferOption
+    {
         FLAG_BUFFER_SHADER_PARAMETER_SHIFT,
 
         FLAG_BUFFER_SHADING_PARAMETER_SHIFT,
@@ -100,25 +102,28 @@ public:
             FLAG_BUFFER_SCENE_ENVIRONMENT
     };
 
-    struct Description : public TransformNode::Description{
+    struct Description : public TransformNode::Description
+    {
         bit32 bufferOption;
         Model* sharedMaterialModel;
 
         Description() :
             bufferOption(0),
-            sharedMaterialModel(NULL)
-        {}
+            sharedMaterialModel(NULL) {}
     };
 
-    struct IsVisibleModelDefaultFunctor{
-        bool IsVisible(const gfx::Model* model){
+    struct IsVisibleModelDefaultFunctor
+    {
+        bool IsVisible(const gfx::Model* model)
+        {
             return model->IsVisible() && model->IsEnabledResults(SceneNode::FLAG_IS_VISIBLE);
         }
     };
 
     static Model* Create(SceneNode* parent,ResSceneObject resource,const Model::Description& description,nw::os::IAllocator* allocator);
 
-    static size_t GetMemorySize(ResModel resModel,Description description, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT){
+    static size_t GetMemorySize(ResModel resModel,Description description, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT)
+    {
         nw::os::MemorySizeCalculator size(alignment);
 
         GetMemorySizeInternal(&size, resModel, description);
@@ -126,7 +131,8 @@ public:
         return size.GetSizeWithPadding(alignment);
     }
 
-    static void GetMemorySizeInternal( nw::os::MemorySizeCalculator* pSize,ResModel resModel,Description description){
+    static void GetMemorySizeInternal( nw::os::MemorySizeCalculator* pSize,ResModel resModel,Description description)
+    {
         nw::os::MemorySizeCalculator& size = *pSize;
 
         size += sizeof(Model);
@@ -135,147 +141,173 @@ public:
 
     virtual void Accept(ISceneVisitor* visitor);
 
-    ResModel GetResModel() {
+    ResModel GetResModel() 
+    {
         return ResModel(this->GetResSceneObject().ptr());
     }
 
-    const ResModel GetResModel() const {
+    const ResModel GetResModel() const 
+    {
         return ResModel(this->GetResSceneObject().ptr());
     }
 
-    ResMeshArray GetResMeshes(){
-        if (this->mMeshBuffers.empty()){
+    ResMeshArray GetResMeshes()
+    {
+        if (this->m_MeshBuffers.empty())
+        {
             ResModel model = this->GetResModel();
             NW_ASSERT(model.IsValid());
             return model.GetMeshes();
         }
-        return this->mMeshBuffers;
+        return m_MeshBuffers;
     }
 
-    ResMeshNodeVisibility GetResMeshNodeVisibilities(int idx){
-        if (this->mMeshNodeVisibilityBuffers.empty()){
+    ResMeshNodeVisibility GetResMeshNodeVisibilities(int idx)
+    {
+        if (this->m_MeshNodeVisibilityBuffers.empty())
+        {
             ResModel model = this->GetResModel();
             NW_ASSERT(model.IsValid());
             return model.GetMeshNodeVisibilities(idx);
         }
-        return ResMeshNodeVisibility(&this->mMeshNodeVisibilityBuffers[idx] );
+        return ResMeshNodeVisibility(&this->m_MeshNodeVisibilityBuffers[idx] );
     }
 
-    AnimGroup* GetMaterialAnimGroup() { return mMaterialAnimGroup; }
+    AnimGroup* GetMaterialAnimGroup() { return m_MaterialAnimGroup; }
 
-    const AnimGroup* GetMaterialAnimGroup() const { return mMaterialAnimGroup; }
+    const AnimGroup* GetMaterialAnimGroup() const { return m_MaterialAnimGroup; }
 
-    int GetMaterialAnimBindingIndex() const { return mMaterialAnimBindingIndex; }
+    int GetMaterialAnimBindingIndex() const { return m_MaterialAnimBindingIndex; }
 
-    const AnimObject* GetMaterialAnimObject(int objectIndex = 0) const{
-        NW_NULL_ASSERT(this->mAnimBinding);
-        return this->mAnimBinding->GetAnimObject(this->mMaterialAnimBindingIndex, objectIndex);
+    const AnimObject* GetMaterialAnimObject(int objectIndex = 0) const
+    {
+        NW_NULL_ASSERT(m_AnimBinding);
+        return this->m_AnimBinding->GetAnimObject(this->m_MaterialAnimBindingIndex, objectIndex);
     }
 
-    AnimObject* GetMaterialAnimObject(int objectIndex = 0){
-        NW_NULL_ASSERT(this->mAnimBinding);
-        return this->mAnimBinding->GetAnimObject(this->mMaterialAnimBindingIndex, objectIndex);
+    AnimObject* GetMaterialAnimObject(int objectIndex = 0)
+    {
+        NW_NULL_ASSERT(m_AnimBinding);
+        return this->m_AnimBinding->GetAnimObject(this->m_MaterialAnimBindingIndex, objectIndex);
     }
 
-    void SetMaterialAnimObject(AnimObject* animObject, int objectIndex = 0){
-        NW_NULL_ASSERT(this->mAnimBinding);
-        this->mAnimBinding->SetAnimObject(this->mMaterialAnimBindingIndex, animObject, objectIndex);
+    void SetMaterialAnimObject(AnimObject* animObject, int objectIndex = 0)
+    {
+        NW_NULL_ASSERT(m_AnimBinding);
+        this->m_AnimBinding->SetAnimObject(this->m_MaterialAnimBindingIndex, animObject, objectIndex);
     }
 
-    AnimGroup* GetVisibilityAnimGroup() { return mVisibilityAnimGroup; }
+    AnimGroup* GetVisibilityAnimGroup() { return m_VisibilityAnimGroup; }
 
-    const AnimGroup* GetVisibilityAnimGroup() const { return mVisibilityAnimGroup; }
+    const AnimGroup* GetVisibilityAnimGroup() const { return m_VisibilityAnimGroup; }
 
-    int GetVisibilityAnimBindingIndex() const { return mVisibilityAnimBindingIndex; }
+    int GetVisibilityAnimBindingIndex() const { return m_VisibilityAnimBindingIndex; }
 
-    const AnimObject* GetVisibilityAnimObject(int objectIndex = 0) const{
-        NW_NULL_ASSERT(this->mAnimBinding);
-        return this->mAnimBinding->GetAnimObject(this->mVisibilityAnimBindingIndex, objectIndex);
+    const AnimObject* GetVisibilityAnimObject(int objectIndex = 0) const
+    {
+        NW_NULL_ASSERT(m_AnimBinding);
+        return this->m_AnimBinding->GetAnimObject(this->m_VisibilityAnimBindingIndex, objectIndex);
     }
 
-    AnimObject* GetVisibilityAnimObject(int objectIndex = 0){
-        NW_NULL_ASSERT(this->mAnimBinding);
-        return this->mAnimBinding->GetAnimObject(this->mVisibilityAnimBindingIndex, objectIndex);
+    AnimObject* GetVisibilityAnimObject(int objectIndex = 0)
+    {
+        NW_NULL_ASSERT(m_AnimBinding);
+        return this->m_AnimBinding->GetAnimObject(this->m_VisibilityAnimBindingIndex, objectIndex);
     }
 
-   void SetVisibilityAnimObject(AnimObject* animObject, int objectIndex = 0){
-        NW_NULL_ASSERT(this->mAnimBinding);
-        this->mAnimBinding->SetAnimObject(this->mVisibilityAnimBindingIndex, animObject, objectIndex);
+   void SetVisibilityAnimObject(AnimObject* animObject, int objectIndex = 0)
+    {
+        NW_NULL_ASSERT(m_AnimBinding);
+        this->m_AnimBinding->SetAnimObject(this->m_VisibilityAnimBindingIndex, animObject, objectIndex);
     }
 
-    RenderSignal& PreRenderSignal() { return *this->mPreRenderSignal; }
+    RenderSignal& PreRenderSignal() { return *this->m_PreRenderSignal; }
 
-    const RenderSignal& PreRenderSignal() const { return *this->mPreRenderSignal; }
+    const RenderSignal& PreRenderSignal() const { return *this->m_PreRenderSignal; }
 
-    RenderSignal& PostRenderSignal() { return *this->mPostRenderSignal; }
+    RenderSignal& PostRenderSignal() { return *this->m_PostRenderSignal; }
 
-    const RenderSignal& PostRenderSignal() const { return *this->mPostRenderSignal; }
+    const RenderSignal& PostRenderSignal() const { return *this->m_PostRenderSignal; }
 
     typedef gfx::MaterialArray MaterialArray;
 
     typedef std::pair<gfx::MaterialArray::iterator,gfx::MaterialArray::iterator> MaterialRange;
 
-    MaterialRange GetMaterials(){
-        return std::make_pair(this->mMaterials.begin(),this->mMaterials.end());
+    MaterialRange GetMaterials()
+    {
+        return std::make_pair(this->m_Materials.begin(),this->m_Materials.end());
     }
 
-    int GetMaterialCount() const { return this->mMaterials.size(); }
+    int GetMaterialCount() const { return this->m_Materials.size(); }
 
-    Material* GetMaterial(int index){
-        return mMaterials[index];
+    Material* GetMaterial(int index)
+    {
+        return m_Materials[index];
     }
 
-    const Material* GetMaterial(int index) const{
-        return mMaterials[index];
+    const Material* GetMaterial(int index) const
+    {
+        return m_Materials[index];
     }
 
-    const IMaterialActivator* GetMaterialActivator() const{
-        return this->mMaterialActivator.Get();
+    const IMaterialActivator* GetMaterialActivator() const
+    {
+        return this->m_MaterialActivator.Get();
     }
 
-    IMaterialActivator* GetMaterialActivator(){
-        return this->mMaterialActivator.Get();
+    IMaterialActivator* GetMaterialActivator()
+    {
+        return this->m_MaterialActivator.Get();
     }
 
-    void SetMaterialActivator(IMaterialActivator* materialActivator){
-        return this->mMaterialActivator.Reset(materialActivator);
+    void SetMaterialActivator(IMaterialActivator* materialActivator)
+    {
+        return this->m_MaterialActivator.Reset(materialActivator);
     }
 
-    void SetSharedMaterialActivator(IMaterialActivator* materialActivator){
-        return this->mMaterialActivator.Reset(materialActivator, false);
+    void SetSharedMaterialActivator(IMaterialActivator* materialActivator)
+    {
+        return this->m_MaterialActivator.Reset(materialActivator, false);
     }
 
-    bool CheckBufferOption(bit32 bufferOption) const{
-        return ut::CheckFlag(this->mBufferOption, bufferOption);
+    bool CheckBufferOption(bit32 bufferOption) const
+    {
+        return ut::CheckFlag(this->m_BufferOption, bufferOption);
     }
 
-    bit32 GetBufferOption() const{
-        return this->mBufferOption;
+    bit32 GetBufferOption() const
+    {
+        return this->m_BufferOption;
     }
 
-    nw::math::MTX34& ModelViewMatrix(){
-        return this->mModelViewMatrix;
+    nw::math::MTX34& ModelViewMatrix()
+    {
+        return this->m_ModelViewMatrix;
     }
 
-    const nw::math::MTX34& ModelViewMatrix() const{
-        return this->mModelViewMatrix;
+    const nw::math::MTX34& ModelViewMatrix() const
+    {
+        return this->m_ModelViewMatrix;
     }
 
-    nw::math::MTX34& NormalMatrix(){
-        return this->mNormalMatrix;
+    nw::math::MTX34& NormalMatrix()
+    {
+        return this->m_NormalMatrix;
     }
 
-    const nw::math::MTX34& NormalMatrix() const{
-        return this->mNormalMatrix;
+    const nw::math::MTX34& NormalMatrix() const
+    {
+        return this->m_NormalMatrix;
     }
 
     inline void UpdateNormalMatrix(const math::MTX34& viewMatrix, bool isModelCoordinate);
 
-    u8 GetLayerId() const { return mLayerId; }
+    u8 GetLayerId() const { return m_LayerId; }
 
-    void SetLayerId(u8 layerId) { mLayerId = layerId; }
+    void SetLayerId(u8 layerId) { m_LayerId = layerId; }
 
-    ResMaterial::TranslucencyKind GetRenderLayerId(ResMesh mesh){
+    ResMaterial::TranslucencyKind GetRenderLayerId(ResMesh mesh)
+    {
         NW_ASSERT(mesh.IsValid());
         Material* material = this->GetMaterial(mesh.GetMaterialIndex());
         
@@ -285,18 +317,21 @@ public:
         return shadingParametersResMaterial.GetTranslucencyKind();
     }
 
-    bool IsVisible() const { return mVisible; }
+    bool IsVisible() const { return m_Visible; }
 
-    void SetVisible(bool visible) { mVisible = visible; }
+    void SetVisible(bool visible) { m_Visible = visible; }
 
-    bool IsMeshVisible(ResMesh mesh){
+    bool IsMeshVisible(ResMesh mesh)
+    {
         int index = mesh.GetMeshNodeVisibilityIndex();
-        if (index < 0){
+        if (index < 0)
+        {
             return mesh.IsVisible();
         }
         else{
             ResMeshNodeVisibility visibility = this->GetResMeshNodeVisibilities(index);
-            NW_ASSERT(visibility.IsValid());{
+            NW_ASSERT(visibility.IsValid());
+            {
                 return visibility.IsVisible() && mesh.IsVisible();
             }
         }
@@ -305,13 +340,15 @@ public:
     void InvalidateRenderKeyCache();
 
     template<typename Type>
-    Type GetUserParameter() const{
-        return *reinterpret_cast<const Type*>(&mUserParameter);
+    Type GetUserParameter() const
+    {
+        return *reinterpret_cast<const Type*>(&m_UserParameter);
     }
 
     template<typename Type>
-    void SetUserParameter(Type parameter){
-        mUserParameter = *reinterpret_cast<u32*>(&parameter);
+    void SetUserParameter(Type parameter)
+    {
+        m_UserParameter = *reinterpret_cast<u32*>(&parameter);
     }
 
 protected:
@@ -319,39 +356,43 @@ protected:
 
     Model(nw::os::IAllocator* allocator,ResTransformNode resource,const Model::Description& description): 
         TransformNode(allocator,resource,description),
-        mMaterialAnimGroup(NULL),
-        mMaterialAnimBindingIndex(0),
-        mVisibilityAnimGroup(NULL),
-        mVisibilityAnimBindingIndex(0),
-        mPreRenderSignal(NULL),
-        mPostRenderSignal(NULL),
-        mMeshBuffers(NULL, NULL),
-        mBufferOption(description.bufferOption),
-        mModelViewMatrix(nw::math::MTX34::Identity()),
-        mNormalMatrix(nw::math::MTX34::Identity()),
-        mLayerId(0),
-        mOriginalVisibility(true),
-        mVisible(true),
-        mSharingMaterial(description.sharedMaterialModel != NULL),
-        mDescription(description),
-        mUserParameter(0){
+        m_MaterialAnimGroup(NULL),
+        m_MaterialAnimBindingIndex(0),
+        m_VisibilityAnimGroup(NULL),
+        m_VisibilityAnimBindingIndex(0),
+        m_PreRenderSignal(NULL),
+        m_PostRenderSignal(NULL),
+        m_MeshBuffers(NULL, NULL),
+        m_BufferOption(description.bufferOption),
+        m_ModelViewMatrix(nw::math::MTX34::Identity()),
+        m_NormalMatrix(nw::math::MTX34::Identity()),
+        m_LayerId(0),
+        m_OriginalVisibility(true),
+        m_Visible(true),
+        m_SharingMaterial(description.sharedMaterialModel != NULL),
+        m_Description(description),
+        m_UserParameter(0)
+        {
         this->SetVisible(ResStaticCast<ResModel>(resource).IsVisible());
     }
 
-    virtual ~Model(){
-        DestroyResMeshes(&GetAllocator(), mMeshBuffers);
-        SafeDestroy(this->mPreRenderSignal);
-        SafeDestroy(this->mPostRenderSignal);
+    virtual ~Model()
+    {
+        DestroyResMeshes(&GetAllocator(), m_MeshBuffers);
+        SafeDestroy(this->m_PreRenderSignal);
+        SafeDestroy(this->m_PostRenderSignal);
         
-        if (!mSharingMaterial){
-            SafeDestroyAll(this->mMaterials);
+        if (!m_SharingMaterial)
+        {
+            SafeDestroyAll(this->m_Materials);
         }
 
-        SafeDestroy(this->mMaterialAnimGroup);
-        SafeDestroy(this->mVisibilityAnimGroup);
+        SafeDestroy(this->m_MaterialAnimGroup);
+        SafeDestroy(this->m_VisibilityAnimGroup);
     }
 
-    static void GetMemorySizeForInitialize(nw::os::MemorySizeCalculator* pSize,ResModel resModel,Description description){
+    static void GetMemorySizeForInitialize(nw::os::MemorySizeCalculator* pSize,ResModel resModel,Description description)
+    {
         NW_ASSERT(description.isFixedSizeMemory);
 
         os::MemorySizeCalculator& size = *pSize;
@@ -368,7 +409,8 @@ protected:
         size += sizeof(ResMeshNodeVisibilityData) * visibilitiesConut;
         size += sizeof(bool) * visibilitiesConut;
 
-        if (description.sharedMaterialModel != NULL){
+        if (description.sharedMaterialModel != NULL)
+        {
             const int materialCount = description.sharedMaterialModel->GetMaterialCount();
             size += sizeof(Material*) * materialCount;
         }
@@ -378,7 +420,8 @@ protected:
 
             size += sizeof(Material*) * materialCount;
 
-            for (int i=0; i < materialCount ; i++){
+            for (int i=0; i < materialCount ; i++)
+            {
                 Material::GetMemorySizeInternal(
                     pSize,
                     resModel.GetMaterials(i),
@@ -387,7 +430,8 @@ protected:
             }
         }
 
-        if (description.maxCallbacks == 0){
+        if (description.maxCallbacks == 0)
+        {
             RenderSignal::GetMemorySizeForInvalidateSignalInternal(pSize);
             RenderSignal::GetMemorySizeForInvalidateSignalInternal(pSize);
         }
@@ -396,15 +440,17 @@ protected:
             RenderSignal::GetMemorySizeForFixedSizedSignalInternal(pSize, description.maxCallbacks);
         }
 
-        if (description.isAnimationEnabled){
+        if (description.isAnimationEnabled)
+        {
             const int animGroupCount = resModel.GetAnimGroupsCount();
-            for (int animGroupIdx = 0; animGroupIdx < animGroupCount; ++animGroupIdx){
+            for (int animGroupIdx = 0; animGroupIdx < animGroupCount; ++animGroupIdx)
+            {
                 anim::ResAnimGroup resAnimGroup = resModel.GetAnimGroups(animGroupIdx);
 
                 if (
                     resAnimGroup.GetTargetType() == anim::ResGraphicsAnimGroup::TARGET_TYPE_MATERIAL ||
                     resAnimGroup.GetTargetType() == anim::ResGraphicsAnimGroup::TARGET_TYPE_VISIBILITY) 
-                {
+                    {
                     AnimGroup::Builder()
                         .ResAnimGroup(resAnimGroup)
                         .UseOriginalValue(true)
@@ -413,8 +459,10 @@ protected:
             }
         }
 
-        if (description.sharedMaterialModel == NULL){
-            if (description.bufferOption == 0 || description.bufferOption == FLAG_BUFFER_SCENE_ENVIRONMENT){
+        if (description.sharedMaterialModel == NULL)
+        {
+            if (description.bufferOption == 0 || description.bufferOption == FLAG_BUFFER_SCENE_ENVIRONMENT)
+            {
                 SimpleMaterialActivator::GetMemorySizeInternal(pSize);
             }
             else{
@@ -448,43 +496,46 @@ private:
 
     int GetMaterialIndex(const anim::ResAnimGroupMember& anim) const;
 
-    AnimGroup* mMaterialAnimGroup;
-    s32 mMaterialAnimBindingIndex;
+    AnimGroup* m_MaterialAnimGroup;
+    s32 m_MaterialAnimBindingIndex;
 
-    AnimGroup* mVisibilityAnimGroup;
-    s32 mVisibilityAnimBindingIndex;
+    AnimGroup* m_VisibilityAnimGroup;
+    s32 m_VisibilityAnimBindingIndex;
 
-    RenderSignal* mPreRenderSignal;
-    RenderSignal* mPostRenderSignal;
+    RenderSignal* m_PreRenderSignal;
+    RenderSignal* m_PostRenderSignal;
 
-    gfx::MaterialArray mMaterials;
-    ResMeshArray mMeshBuffers;
-    nw::ut::MoveArray<ResMeshNodeVisibilityData> mMeshNodeVisibilityBuffers;
-    bit32 mBufferOption;
-    nw::math::MTX34 mModelViewMatrix;
-    nw::math::MTX34 mNormalMatrix;
-    GfxPtr<IMaterialActivator> mMaterialActivator;
+    gfx::MaterialArray m_Materials;
+    ResMeshArray m_MeshBuffers;
+    nw::ut::MoveArray<ResMeshNodeVisibilityData> m_MeshNodeVisibilityBuffers;
+    bit32 m_BufferOption;
+    nw::math::MTX34 m_ModelViewMatrix;
+    nw::math::MTX34 m_NormalMatrix;
+    GfxPtr<IMaterialActivator> m_MaterialActivator;
 
-    u8 mLayerId;
-    bool mOriginalVisibility;
-    bool mVisible;
-    bool mSharingMaterial;
+    u8 m_LayerId;
+    bool m_OriginalVisibility;
+    bool m_Visible;
+    bool m_SharingMaterial;
 
-    nw::ut::MoveArray<bool> mMeshOriginalVisibilities;
-    nw::ut::MoveArray<bool> mMeshNodeOriginalVisibilities;
+    nw::ut::MoveArray<bool> m_MeshOriginalVisibilities;
+    nw::ut::MoveArray<bool> m_MeshNodeOriginalVisibilities;
 
-    const Model::Description& mDescription;
-    u32 mUserParameter;
+    const Model::Description& m_Description;
+    u32 m_UserParameter;
 };
 
-inline void Model::UpdateNormalMatrix(const math::MTX34& viewMatrix,bool isModelCoordinate){
-    if (isModelCoordinate){
+inline void Model::UpdateNormalMatrix(const math::MTX34& viewMatrix,bool isModelCoordinate)
+{
+    if (isModelCoordinate)
+    {
         math::MTX34 worldInvTranspose;
         math::MTX34InvTranspose(&worldInvTranspose, &this->WorldMatrix());
         math::MTX34Mult(&this->NormalMatrix(), &viewMatrix, &worldInvTranspose);
     }
     else{
-        if (this->WorldTransform().IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE)){
+        if (this->WorldTransform().IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE))
+        {
             math::MTX34Copy(&this->NormalMatrix(), &viewMatrix);
         }
         else{

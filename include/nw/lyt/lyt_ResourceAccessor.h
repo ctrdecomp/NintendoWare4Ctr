@@ -9,7 +9,8 @@ namespace font{
 namespace lyt{
 typedef u32 ResType;
 
-class ResourceAccessor{
+class ResourceAccessor
+{
 protected:
     ResourceAccessor();
 public:

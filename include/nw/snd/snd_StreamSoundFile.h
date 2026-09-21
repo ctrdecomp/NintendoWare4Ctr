@@ -117,7 +117,7 @@ struct StreamSoundFile
         Util::Table<u8> table;
 
         u32 GetCount() const { return table.count; }
-        u8 GetGlobalIndex(u32 index) const{ return table.item[index]; }
+        u8 GetGlobalIndex(u32 index) const { return table.item[index]; }
     };
 
     struct ChannelInfo;

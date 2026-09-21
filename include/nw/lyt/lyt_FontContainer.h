@@ -9,24 +9,26 @@
 namespace nw{
 namespace lyt{
 
-class FontRefLink{
+class FontRefLink
+{
 public:
     static const int FONTNAMEBUF_MAX = 128;
 
     FontRefLink();
     ~FontRefLink();
     void Set(const char* name,font::Font* pFont,bool own);
-    const char* GetFontName() const{return mFontName;}
-    font::Font* GetFont() const{return mpFont;}
+    const char* GetFontName() const {return m_FontName;}
+    font::Font* GetFont() const {return m_pFont;}
     
-    ut::LinkListNode mLink;
+    ut::LinkListNode m_Link;
 protected:
-    char mFontName[FONTNAMEBUF_MAX];
-    font::Font* mpFont;
-    bool mOwn;
+    char m_FontName[FONTNAMEBUF_MAX];
+    font::Font* m_pFont;
+    bool m_Own;
 };
 
-class FontContainer : public ut::LinkList<FontRefLink, offsetof(FontRefLink, mLink)>{
+class FontContainer : public ut::LinkList<FontRefLink, offsetof(FontRefLink, m_Link)>
+{
 public:
     ~FontContainer();
     void Finalize();

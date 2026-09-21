@@ -47,6 +47,9 @@ public:
 
     void Initialize();
     void Finalize();
+
+    void RegisterPlayerCallback(PlayerCallback* callback);
+    void UnregisterPlayerCallback(PlayerCallback* callback);
       
     void Pause(bool pauseFlag) { m_PauseFlag = pauseFlag; }
     void FrameProcess();

@@ -7,32 +7,35 @@ namespace nw{
 namespace gfx{
 
 
-class SceneInitializer : public ISceneVisitor{
+class SceneInitializer : public ISceneVisitor
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(SceneInitializer);
 
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    struct Description{
+    struct Description
+    {
         IMaterialIdGenerator* materialIdGenerator;
 
         Description(): 
-            materialIdGenerator(NULL)
-        {}
+            materialIdGenerator(NULL) {}
     };
 
-    class Builder{
+    class Builder
+    {
     public:
-        Builder& MaterialIdGenerator(IMaterialIdGenerator* materialIdGenerator){
-            mDescription.materialIdGenerator = materialIdGenerator;
+        Builder& MaterialIdGenerator(IMaterialIdGenerator* materialIdGenerator)
+        {
+            m_Description.materialIdGenerator = materialIdGenerator;
             return *this;
         }
 
         SceneInitializer* Create(nw::os::IAllocator* allocator);
 
     private:
-        Description mDescription;
+        Description m_Description;
     };
 
     void Begin();
@@ -58,12 +61,11 @@ private:
 
     SceneInitializer(nw::os::IAllocator* allocator, Description description): 
         ISceneVisitor(allocator),
-        mMaterialIdGenerator(description.materialIdGenerator)
-    {}
+        m_MaterialIdGenerator(description.materialIdGenerator) {}
 
     virtual ~SceneInitializer() {}
 
-    GfxPtr<IMaterialIdGenerator> mMaterialIdGenerator;
+    GfxPtr<IMaterialIdGenerator> m_MaterialIdGenerator;
 };
 
 }

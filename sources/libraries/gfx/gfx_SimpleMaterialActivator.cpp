@@ -11,15 +11,16 @@ namespace gfx{
 NW_UT_RUNTIME_TYPEINFO_DEFINITION(SimpleMaterialActivator, IMaterialActivator);
 
 SimpleMaterialActivator::SimpleMaterialActivator(nw::os::IAllocator* allocator): 
-    IMaterialActivator(allocator)
-{}
+    IMaterialActivator(allocator) {}
 
 SimpleMaterialActivator::~SimpleMaterialActivator() {}
 
-SimpleMaterialActivator* SimpleMaterialActivator::Create(os::IAllocator* allocator){
+SimpleMaterialActivator* SimpleMaterialActivator::Create(os::IAllocator* allocator)
+{
     void* memory = allocator->Alloc(sizeof(SimpleMaterialActivator));
     
-    if (memory == NULL){
+    if (memory == NULL)
+    {
         return NULL;
     }
     else{
@@ -27,7 +28,8 @@ SimpleMaterialActivator* SimpleMaterialActivator::Create(os::IAllocator* allocat
     }
 }
 
-void SimpleMaterialActivator::Activate(RenderContext* renderContext, const Material* material){
+void SimpleMaterialActivator::Activate(RenderContext* renderContext, const Material* material)
+{
     NW_NULL_ASSERT(renderContext);
 
     const SceneEnvironment& sceneEnvironment = renderContext->GetSceneEnvironment();
@@ -39,7 +41,8 @@ void SimpleMaterialActivator::Activate(RenderContext* renderContext, const Mater
          ( cacheMaterial->GetBufferCount() == 0) &&
          ( cacheMaterial->GetOriginal() == material->GetOriginal() ) &&
          ( !areFragmentLightsDirty ) &&
-         ( !areVertexLightsDirty ) ){
+         ( !areVertexLightsDirty ) )
+         {
         return;
     }
 
@@ -58,7 +61,8 @@ void SimpleMaterialActivator::Activate(RenderContext* renderContext, const Mater
         (shaderParametersHash == 0x0) ||
         (shaderParametersHash != materialHash.shaderParameter) ||
         renderContext->IsShaderProgramDirty();
-    if (isShaderParametersEnabled){
+    if (isShaderParametersEnabled)
+    {
         internal::MaterialState::ActivateShaderParameter(shaderProgram, resShaderParameterMaterial);
         materialHash.shaderParameter = shaderParametersHash;
     }
@@ -69,7 +73,8 @@ void SimpleMaterialActivator::Activate(RenderContext* renderContext, const Mater
 
     u32 shadingParametersHash = resShadingParametersMaterial.GetShadingParameterHash();
     bool isShadingParametersEnabled = (shadingParametersHash == 0x0) || (shadingParametersHash != materialHash.shadingParameter) || areVertexLightsDirty;
-    if (isShadingParametersEnabled){
+    if (isShadingParametersEnabled)
+    {
         internal::MaterialState::ActivateShadingParameters(sceneEnvironment, shaderProgram, resShadingParametersMaterial);
         materialHash.shadingParameter = shadingParametersHash;
     }
@@ -77,7 +82,8 @@ void SimpleMaterialActivator::Activate(RenderContext* renderContext, const Mater
     ResRasterization resRasterization = original.GetRasterization();
     u32 rasterizationHash = original.GetRasterizationHash();
     bool isRasterizationEnabled = (rasterizationHash == 0x0) || (rasterizationHash != materialHash.rasterization);
-    if (isRasterizationEnabled){
+    if (isRasterizationEnabled)
+    {
         internal::MaterialState::ActivateRasterization(resRasterization);
         materialHash.rasterization = rasterizationHash;
     }
@@ -85,7 +91,8 @@ void SimpleMaterialActivator::Activate(RenderContext* renderContext, const Mater
     ResMaterial resTextureCoordinatorsMaterial = original;
     u32 textureCoordinatorHash = resTextureCoordinatorsMaterial.GetTextureCoordinatorsHash();
     bool isTextureCoordinatorEnabled = (textureCoordinatorHash == 0x0) || (textureCoordinatorHash != materialHash.textureCoordinator);
-    if (isTextureCoordinatorEnabled){
+    if (isTextureCoordinatorEnabled)
+    {
         internal::MaterialState::ActivateTextureCoordinators(renderContext, shaderProgram, resTextureCoordinatorsMaterial);
         materialHash.textureCoordinator = textureCoordinatorHash;
     }
@@ -93,7 +100,8 @@ void SimpleMaterialActivator::Activate(RenderContext* renderContext, const Mater
     ResMaterial resTextureMappersMaterial = original;
     u32 textureMappersHash = resTextureMappersMaterial.GetTextureMappersHash();
     bool isTextureMappersEnabled = (textureMappersHash == 0x0) || (textureMappersHash != materialHash.textureMapper);
-    if (isTextureMappersEnabled){
+    if (isTextureMappersEnabled)
+    {
         internal::MaterialState::ActivateTextureMappers(resTextureMappersMaterial);
         materialHash.textureMapper = textureMappersHash;
     }
@@ -105,12 +113,14 @@ void SimpleMaterialActivator::Activate(RenderContext* renderContext, const Mater
 
     bool reflectionEnabled = false;
     bool lightEnabled = nw::ut::CheckFlag(original.GetFlags(), ResMaterialData::FLAG_FRAGMENTLIGHT_ENABLED);
-    if (lightEnabled){
+    if (lightEnabled)
+    {
         ResFragmentLighting resFragmentLighting =original.GetFragmentShader().GetFragmentLighting();
         reflectionEnabled = ut::CheckFlag(resFragmentLighting.GetFlags(), ResFragmentLightingData::FLAG_REFLECTION_ENABLED);
         u32 fragmentLightingHash = original.GetFragmentLightingHash();
         bool isFragmentLightingEnabled = (fragmentLightingHash == 0x0) || (fragmentLightingHash != materialHash.fragmentLighting) || areFragmentLightsDirty;
-        if (isFragmentLightingEnabled){
+        if (isFragmentLightingEnabled)
+        {
             internal::MaterialState::ActivateFragmentLighting(sceneEnvironment, resFragmentLighting);
             materialHash.fragmentLighting = fragmentLightingHash;
         }
@@ -118,7 +128,8 @@ void SimpleMaterialActivator::Activate(RenderContext* renderContext, const Mater
         ResFragmentLightingTable resFragmentLightingTable =original.GetFragmentShader().GetFragmentLightingTable();
         u32 fragmentLightingTableHash = original.GetFragmentLightingTableHash();
         bool isFragmentLightingTableEnabled = (fragmentLightingTableHash == 0x0) || (fragmentLightingTableHash != materialHash.fragmentLightingTable);
-        if (isFragmentLightingTableEnabled){
+        if (isFragmentLightingTableEnabled)
+        {
             internal::MaterialState::ActivateFragmentLightingTable(resFragmentLighting, resFragmentLightingTable);
             materialHash.fragmentLightingTable = fragmentLightingTableHash;
         }
@@ -127,11 +138,13 @@ void SimpleMaterialActivator::Activate(RenderContext* renderContext, const Mater
     ResMaterialColor resMaterialColor =  original.GetMaterialColor();
     u32 materialColorHash = original.GetMaterialColorHash();
     bool isMaterialColorEnabled = (materialColorHash == 0x0) || (materialColorHash != materialHash.materialColor) || areFragmentLightsDirty;
-    if (!isMaterialColorEnabled && cacheMaterial != NULL){
+    if (!isMaterialColorEnabled && cacheMaterial != NULL)
+    {
         bool isPreReflectionEnabled = nw::ut::CheckFlag(cacheMaterial->GetOriginal().GetFragmentShader().GetFragmentLighting().GetFlags(), ResFragmentLightingData::FLAG_REFLECTION_ENABLED);
         isMaterialColorEnabled = (reflectionEnabled != isPreReflectionEnabled);
     }
-    if (isMaterialColorEnabled){
+    if (isMaterialColorEnabled)
+    {
         internal::MaterialState::ActivateMaterialColor(sceneEnvironment, shaderProgram, resMaterialColor, reflectionEnabled);
         materialHash.materialColor = materialColorHash;
     }
@@ -139,7 +152,8 @@ void SimpleMaterialActivator::Activate(RenderContext* renderContext, const Mater
     ResFragmentShader resTextureCombinerFragmentShader = original.GetFragmentShader();
     u32 textureCombinersHash = original.GetTextureCombinersHash();
     bool isTextureCombinersEnabled = (textureCombinersHash == 0x0) || (textureCombinersHash != materialHash.textureCombiner);
-    if (isTextureCombinersEnabled || isMaterialColorEnabled){
+    if (isTextureCombinersEnabled || isMaterialColorEnabled)
+    {
         internal::MaterialState::ActivateTextureCombiners(resTextureCombinerFragmentShader, resMaterialColor);
         materialHash.textureCombiner = textureCombinersHash;
     }
@@ -147,7 +161,8 @@ void SimpleMaterialActivator::Activate(RenderContext* renderContext, const Mater
     ResAlphaTest resAlphaTest = original.GetFragmentShader().GetAlphaTest();
     u32 alphaTestHash = original.GetAlphaTestHash();
     bool isAlphaTestEnabled = (alphaTestHash == 0x0) || (alphaTestHash != materialHash.alphaTest);
-    if (isAlphaTestEnabled){
+    if (isAlphaTestEnabled)
+    {
         internal::MaterialState::ActivateAlphaTest(resAlphaTest);
         materialHash.alphaTest = alphaTestHash;
     }
@@ -155,7 +170,8 @@ void SimpleMaterialActivator::Activate(RenderContext* renderContext, const Mater
     ResFragmentOperation resFragmentOperation = original.GetFragmentOperation();
     u32 fragmentOperationHash = original.GetFragmentOperationHash();
     bool isFragmentOperationEnabled = (fragmentOperationHash == 0x0) || (fragmentOperationHash != materialHash.fragmentOperation);
-    if (isFragmentOperationEnabled){
+    if (isFragmentOperationEnabled)
+    {
         internal::MaterialState::ActivateFragmentOperation(resFragmentOperation);
         materialHash.fragmentOperation = fragmentOperationHash;
     }

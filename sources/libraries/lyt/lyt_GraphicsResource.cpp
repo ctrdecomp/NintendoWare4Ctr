@@ -14,7 +14,8 @@ namespace nw{
 namespace lyt{
 namespace{
 
-enum ResouceFileID{
+enum ResouceFileID
+{
     RESOURCEFILEID_RECTDRAWERSHADER,
     RESOURCEFILEID_FONTSHADER,
     RESOURCEFILEID_PANESHADER,
@@ -22,7 +23,7 @@ enum ResouceFileID{
     RESOURCEFILEID_MAX
 };
 
-const wchar_t* sResourceFiles[] =
+const wchar_t* s_ResourceFiles[] =
 {
     L"/shaders/nwfont_RectDrawerShader.shbin",
     L"/shaders/nwfont_TextWriterShader.shbin",
@@ -115,9 +116,11 @@ const char* s_UniformNames[] =
     "dmp_FragOperation.alphaTestFunc",
 };
 
-wchar_t* StrCopy(wchar_t* dst, const wchar_t* src){
+wchar_t* StrCopy(wchar_t* dst, const wchar_t* src)
+{
     size_t i = 0;
-    for (; src[i] != L'\0'; ++i){
+    for (; src[i] != L'\0'; ++i)
+    {
         dst[i] = src[i];
     }
 
@@ -133,11 +136,11 @@ bool s_ResourcePathsInitialized = false;
 
 GraphicsResource::GraphicsResource(): 
     mpRectShaderBinary(NULL), 
-    mRectShaderBinarySize(0), 
-    mGlProgram(0), 
-    mGlProgramDebug(0), 
-    mInitialized(false)
-{
+    m_RectShaderBinarySize(0), 
+    m_GlProgram(0), 
+    m_GlProgramDebug(0), 
+    m_Initialized(false)
+    {
 }
 
 GraphicsResource::~GraphicsResource()
@@ -147,42 +150,44 @@ GraphicsResource::~GraphicsResource()
 
 void GraphicsResource::Finalize()
 {
-    if (!mInitialized)
+    if (!m_Initialized)
     {
         return;
     }
 
-    mInitialized = false;
+    m_Initialized = false;
 
     glUseProgram(0);
 
-    glDeleteProgram(this->mGlProgram);
-    mGlProgram = 0;
+    glDeleteProgram(this->m_GlProgram);
+    m_GlProgram = 0;
 
-    glDeleteProgram(this->mGlProgramDebug);
-    mGlProgramDebug = 0;
+    glDeleteProgram(this->m_GlProgramDebug);
+    m_GlProgramDebug = 0;
 
-    glDeleteBuffers(this->VBO_MAX, this->mGlVertexBufferObject);
+    glDeleteBuffers(this->VBO_MAX, this->m_GlVertexBufferObject);
 
     if (NULL != mpRectShaderBinary)
     {
         Layout::FreeMemory(this->mpRectShaderBinary);
     }
     mpRectShaderBinary = NULL;
-    mRectShaderBinarySize = 0;
+    m_RectShaderBinarySize = 0;
 
-    this->mTextWriter.SetTextWriterResource(0);
-    this->mTextWriterResource.DeleteResource();
+    this->m_TextWriter.SetTextWriterResource(0);
+    this->m_TextWriterResource.DeleteResource();
 }
 
-const wchar_t* GraphicsResource::GetResourcePath(int index){
+const wchar_t* GraphicsResource::GetResourcePath(int index)
+{
     if (!s_ResourcePathsInitialized)
     {
         static const wchar_t* pResourceRoot = L"rom:";
-        for (int i = 0; i < RESOURCEFILEID_MAX; ++i){
+        for (int i = 0; i < RESOURCEFILEID_MAX; ++i)
+        {
             wchar_t* buff = s_ResourcePaths[i];
             buff = StrCopy(buff, pResourceRoot);
-            buff = StrCopy(buff, sResourceFiles[i]);
+            buff = StrCopy(buff, s_ResourceFiles[i]);
         }
 
         s_ResourcePathsInitialized = true;
@@ -190,7 +195,7 @@ const wchar_t* GraphicsResource::GetResourcePath(int index){
 
     if (0 <= index && index < RESOURCEFILEID_MAX)
     {
-        return sResourcePaths[index];
+        return s_ResourcePaths[index];
     }
     else
     {
@@ -205,7 +210,7 @@ void GraphicsResource::SetResource(int index, void* content, u32 fileSize, bool 
     case RESOURCEFILEID_RECTDRAWERSHADER:
     {
             mpRectShaderBinary = Layout::AllocMemory(fileSize);
-            mRectShaderBinarySize = fileSize;
+            m_RectShaderBinarySize = fileSize;
             std::memcpy(this->mpRectShaderBinary, content, fileSize);
             if (bFree)
             {
@@ -215,8 +220,8 @@ void GraphicsResource::SetResource(int index, void* content, u32 fileSize, bool 
         }
     case RESOURCEFILEID_FONTSHADER:
     {
-            mTextWriterResource.InitResource(static_cast<u8*>(content), fileSize);
-            mTextWriter.SetTextWriterResource(&this->mTextWriterResource);
+            m_TextWriterResource.InitResource(static_cast<u8*>(content), fileSize);
+            m_TextWriter.SetTextWriterResource(&this->m_TextWriterResource);
 
             if (bFree)
             {
@@ -226,26 +231,26 @@ void GraphicsResource::SetResource(int index, void* content, u32 fileSize, bool 
         }
     case RESOURCEFILEID_PANESHADER:
     {
-            mGlProgram = glCreateProgram();
+            m_GlProgram = glCreateProgram();
 
             GLuint shader = glCreateShader(GL_VERTEX_SHADER);
 
             glShaderBinary(1, &shader, GL_PLATFORM_BINARY_DMP, content, fileSize);
 
-            glAttachShader(this->mGlProgram, shader);
-            glAttachShader(this->mGlProgram, GL_DMP_FRAGMENT_SHADER_DMP);
+            glAttachShader(this->m_GlProgram, shader);
+            glAttachShader(this->m_GlProgram, GL_DMP_FRAGMENT_SHADER_DMP);
 
             glDeleteShader(shader);
 
-            glBindAttribLocation(this->mGlProgram, VERTEXATTR_VERTEX_INDEX, "aVertexIndex");
+            glBindAttribLocation(this->m_GlProgram, VERTEXATTR_VERTEX_INDEX, "aVertexIndex");
 
-            glLinkProgram(this->mGlProgram);
+            glLinkProgram(this->m_GlProgram);
 
-            glUseProgram(this->mGlProgram);
+            glUseProgram(this->m_GlProgram);
 
-            glUniform1i(glGetUniformLocation(this->mGlProgram, "dmp_FragOperation.mode"), GL_FRAGOP_MODE_GL_DMP);
+            glUniform1i(glGetUniformLocation(this->m_GlProgram, "dmp_FragOperation.mode"), GL_FRAGOP_MODE_GL_DMP);
 
-            glUniform1i(glGetUniformLocation(this->mGlProgram, "dmp_FragmentLighting.enabled"), GL_FALSE);
+            glUniform1i(glGetUniformLocation(this->m_GlProgram, "dmp_FragmentLighting.enabled"), GL_FALSE);
 
             if (bFree)
             {
@@ -256,20 +261,20 @@ void GraphicsResource::SetResource(int index, void* content, u32 fileSize, bool 
 
     case RESOURCEFILEID_CONSTCOLORSHADER:
     {
-            mGlProgramDebug = glCreateProgram();
+            m_GlProgramDebug = glCreateProgram();
 
             GLuint shader = glCreateShader(GL_VERTEX_SHADER);
 
             glShaderBinary(1, &shader, GL_PLATFORM_BINARY_DMP, content, fileSize);
 
-            glAttachShader(this->mGlProgramDebug, shader);
-            glAttachShader(this->mGlProgramDebug, GL_DMP_FRAGMENT_SHADER_DMP);
+            glAttachShader(this->m_GlProgramDebug, shader);
+            glAttachShader(this->m_GlProgramDebug, GL_DMP_FRAGMENT_SHADER_DMP);
 
             glDeleteShader(shader);
 
-            glBindAttribLocation(this->mGlProgramDebug, VERTEXATTR_POS, "aPosition");
+            glBindAttribLocation(this->m_GlProgramDebug, VERTEXATTR_POS, "aPosition");
 
-            glLinkProgram(this->mGlProgramDebug);
+            glLinkProgram(this->m_GlProgramDebug);
 
             if (bFree)
             {
@@ -283,12 +288,12 @@ void GraphicsResource::SetResource(int index, void* content, u32 fileSize, bool 
 
 void GraphicsResource::StartSetup()
 {
-    NW_ASSERT(!this->mInitialized);
+    NW_ASSERT(!this->m_Initialized);
 }
 
 bool GraphicsResource::FinishSetup()
 {
-    math::MTX34Identity(&this->mMtxModelView);
+    math::MTX34Identity(&this->m_MtxModelView);
 
     this->InitVBO();
 
@@ -296,14 +301,14 @@ bool GraphicsResource::FinishSetup()
     {
         if (s_UniformNames[i] == NULL)
         {
-            mUniformLocation[i] = 0;
+            m_UniformLocation[i] = 0;
         }
         else
         {
-            mUniformLocation[i] = glGetUniformLocation(mGlProgram, s_UniformNames[i]);
+            m_UniformLocation[i] = glGetUniformLocation(m_GlProgram, s_UniformNames[i]);
         }
     }
-    mInitialized = true;
+    m_Initialized = true;
 
     return true;
 }
@@ -320,8 +325,8 @@ void GraphicsResource::SetProjectionMtx(const nw::math::MTX44& mtx)
     glUseProgram(program);
     glUniformMatrix4fv(glGetUniformLocation(program, "uProjection"), 1, GL_TRUE, mtx.a);
 
-    this->mTextWriterResource.ActiveGlProgram();
-    this->mTextWriterResource.SetProjectionMtx(mtx);
+    this->m_TextWriterResource.ActiveGlProgram();
+    this->m_TextWriterResource.SetProjectionMtx(mtx);
 }
 
 void GraphicsResource::ResetGlProgramState()
@@ -332,7 +337,7 @@ void GraphicsResource::ResetGlProgramState()
 
 void GraphicsResource::ResetGlState()
 {
-    mFirstDraw = true;
+    m_FirstDraw = true;
 }
 
 void GraphicsResource::ActiveVBO()

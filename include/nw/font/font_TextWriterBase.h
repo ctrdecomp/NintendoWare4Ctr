@@ -16,9 +16,11 @@ namespace nw {
 namespace font {
 
 template <typename CharType>
-class TextWriterBase : public CharWriter{
+class TextWriterBase : public CharWriter
+{
 public:
-    enum PositionFlag{
+    enum PositionFlag
+    {
         HORIZONTAL_ALIGN_LEFT    = 0x0,
         HORIZONTAL_ALIGN_CENTER  = 0x1,
         HORIZONTAL_ALIGN_RIGHT   = 0x2,
@@ -36,7 +38,8 @@ public:
         VERTICAL_ORIGIN_MASK     = 0x300
     };
 
-    enum ContextFlag{
+    enum ContextFlag
+    {
         CONTEXT_NO_CHAR_SPACE = 0x1
     };
 
@@ -45,36 +48,38 @@ public:
     TextWriterBase();
     ~TextWriterBase();
 
-    void SetLineSpace(f32 space) { this->mLineSpace = space; }
-    f32  GetLineSpace() const { return this->mLineSpace; }
+    void SetLineSpace(f32 space) { this->m_LineSpace = space; }
+    f32  GetLineSpace() const { return this->m_LineSpace; }
 
     void SetLineHeight(f32 height);
     f32 GetLineHeight() const;
 
-    void SetCharSpace(f32 space) { this->mCharSpace = space; }
-    f32 GetCharSpace() const { return this->mCharSpace; }
+    void SetCharSpace(f32 space) { this->m_CharSpace = space; }
+    f32 GetCharSpace() const { return this->m_CharSpace; }
 
-    void SetTabWidth(int tabWidth) { this->mTabWidth = tabWidth; }
-    int GetTabWidth() const { return this->mTabWidth; }
+    void SetTabWidth(int tabWidth) { this->m_TabWidth = tabWidth; }
+    int GetTabWidth() const { return this->m_TabWidth; }
 
-    void SetWidthLimit(f32 limit) { this->mWidthLimit = limit; }
-    f32 GetWidthLimit() const { return this->mWidthLimit; }
+    void SetWidthLimit(f32 limit) { this->m_WidthLimit = limit; }
+    f32 GetWidthLimit() const { return this->m_WidthLimit; }
     void ResetWidthLimit() { SetWidthLimit(FLT_MAX); }
 
-    void SetDrawFlag(u32 flags) { this->mDrawFlag = flags; }
-    u32 GetDrawFlag() const { return this->mDrawFlag; }
+    void SetDrawFlag(u32 flags) { this->m_DrawFlag = flags; }
+    u32 GetDrawFlag() const { return this->m_DrawFlag; }
 
-    void SetTagProcessor(TagProcessorBase<CharType>* tagProcessor){
+    void SetTagProcessor(TagProcessorBase<CharType>* tagProcessor)
+    {
         NN_POINTER_ASSERT(tagProcessor);
-        this->mTagProcessor = tagProcessor;
+        this->m_TagProcessor = tagProcessor;
     }
 
-    TagProcessorBase<CharType>& GetTagProcessor() const { return *this->mTagProcessor; }
-    void ResetTagProcessor() { this->mTagProcessor = &sDefaultTagProcessor; }
+    TagProcessorBase<CharType>& GetTagProcessor() const { return *this->m_TagProcessor; }
+    void ResetTagProcessor() { this->m_TagProcessor = &s_DefaultTagProcessor; }
 
     f32 CalcFormatStringWidth(const CharType* format, ...) const;
 
-    f32 CalcStringWidth(const CharType* str) const{
+    f32 CalcStringWidth(const CharType* str) const
+    {
         NN_POINTER_ASSERT(str);
         return CalcStringWidth(str, StrLen(str));
     }
@@ -83,7 +88,8 @@ public:
 
     f32 CalcFormatStringHeight(const CharType* format, ...) const;
 
-    f32 CalcStringHeight(const CharType* str) const{
+    f32 CalcStringHeight(const CharType* str) const
+    {
         NN_POINTER_ASSERT(str);
         return CalcStringHeight(str, StrLen(str));
     }
@@ -94,7 +100,8 @@ public:
 
     void CalcVStringRect(ut::Rect* pRect, const CharType* format, std::va_list args) const;
 
-    void CalcStringRect(ut::Rect* pRect, const CharType* str) const{
+    void CalcStringRect(ut::Rect* pRect, const CharType* str) const
+    {
         NN_POINTER_ASSERT(pRect);
         NN_POINTER_ASSERT(str);
         CalcStringRect(pRect, str, StrLen(str));
@@ -105,37 +112,42 @@ public:
     f32 Printf(const CharType* format, ...);
     f32 VPrintf(const CharType* format, std::va_list args);
 
-    f32 Print(const CharType* str){
+    f32 Print(const CharType* str)
+    {
         NN_POINTER_ASSERT(str);
         return Print(str, StrLen(str));
     }
 
     f32 Print(const CharType* str, int length);
 
-    static void* SetBuffer(std::size_t size){
-        void* oldBuffer = sFormatBuffer;
-        sFormatBuffer = NULL;
-        sFormatBufferSize = size;
+    static void* SetBuffer(std::size_t size)
+    {
+        void* oldBuffer = s_FormatBuffer;
+        s_FormatBuffer = NULL;
+        s_FormatBufferSize = size;
         return oldBuffer;
     }
 
-    static void* SetBuffer(CharType* buffer, std::size_t size){
+    static void* SetBuffer(CharType* buffer, std::size_t size)
+    {
         NN_POINTER_ASSERT(buffer);
-        void* oldBuffer = sFormatBuffer;
-        sFormatBuffer = buffer;
-        sFormatBufferSize = size;
+        void* oldBuffer = s_FormatBuffer;
+        s_FormatBuffer = buffer;
+        s_FormatBufferSize = size;
         return oldBuffer;
     }
 
-    static const void* GetBuffer() { return sFormatBuffer; }
-    static std::size_t GetBufferSize() { return sFormatBufferSize; }
+    static const void* GetBuffer() { return s_FormatBuffer; }
+    static std::size_t GetBufferSize() { return s_FormatBufferSize; }
 
-    static int VSNPrintf(char* buffer, std::size_t count, const char* format, std::va_list arg){
+    static int VSNPrintf(char* buffer, std::size_t count, const char* format, std::va_list arg)
+    {
         using namespace std;
         return vsnprintf(buffer, count, format, arg);
     }
 
-    static int VSNPrintf(wchar_t* buffer, std::size_t count, const wchar_t* format, std::va_list arg){
+    static int VSNPrintf(wchar_t* buffer, std::size_t count, const wchar_t* format, std::va_list arg)
+    {
         using namespace std;
         return vswprintf(buffer, count, format, arg);
     }
@@ -157,20 +169,21 @@ private:
     f32 PrintImpl(StreamType str, int length);
     f32 AdjustCursor(f32* pXOrigin, f32* pYOrigin, StreamType str, int length);
 
-    bool IsDrawFlagSet(u32 mask, u32 flag) const{
-        return (this->mDrawFlag & mask) == flag;
+    bool IsDrawFlagSet(u32 mask, u32 flag) const
+    {
+        return (this->m_DrawFlag & mask) == flag;
     }
 
-    static CharType*    sFormatBuffer;
-    static std::size_t  sFormatBufferSize;
-    static TagProcessor sDefaultTagProcessor;
+    static CharType*    s_FormatBuffer;
+    static std::size_t  s_FormatBufferSize;
+    static TagProcessor s_DefaultTagProcessor;
 
-    f32 mWidthLimit;
-    f32 mCharSpace;
-    f32 mLineSpace;
-    int mTabWidth;
-    u32 mDrawFlag;
-    TagProcessor* mTagProcessor;
+    f32 m_WidthLimit;
+    f32 m_CharSpace;
+    f32 m_LineSpace;
+    int m_TabWidth;
+    u32 m_DrawFlag;
+    TagProcessor* m_TagProcessor;
 };
 
 } // namespace font

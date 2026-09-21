@@ -27,8 +27,8 @@ struct BankFile
         const Util::WaveIdTable& GetWaveIdTable() const;
         const Util::ReferenceTable& GetInstrumentReferenceTable() const;
 
-        s32 GetInstrumentCount() const{ return GetInstrumentReferenceTable().count; }
-        const Util::WaveId& GetWaveId(u32 index) const{ return GetWaveIdTable().GetWaveId(index); }
+        s32 GetInstrumentCount() const { return GetInstrumentReferenceTable().count; }
+        const Util::WaveId& GetWaveId(u32 index) const { return GetWaveIdTable().GetWaveId(index); }
 
         const Instrument* GetInstrument(int programNo) const;
     };

@@ -9,7 +9,8 @@ namespace os{
 }
 namespace gfx{
 
-class PerspectiveProjectionUpdater : public CameraProjectionUpdater{
+class PerspectiveProjectionUpdater : public CameraProjectionUpdater
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(PerspectiveProjectionUpdater);
 
@@ -19,7 +20,8 @@ public:
     static PerspectiveProjectionUpdater* Create(nw::os::IAllocator* allocator);
     static PerspectiveProjectionUpdater* Create(nw::os::IAllocator* allocator,ResPerspectiveProjectionUpdater resUpdater);
 
-    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize,bool isDynamicBuild){
+    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize,bool isDynamicBuild)
+    {
         nw::os::MemorySizeCalculator& size = *pSize;
 
         size += sizeof(PerspectiveProjectionUpdater);
@@ -31,15 +33,18 @@ public:
 
     void virtual Update(nw::math::MTX44* projectionMatrix, nw::math::MTX34* textureProjectionMatrix);
 
-    virtual ResCameraProjectionUpdater GetResource() {
-        return this->mResource;
+    virtual ResCameraProjectionUpdater GetResource() 
+    {
+        return this->m_Resource;
     }
 
-    virtual const ResCameraProjectionUpdater GetResource() const {
-        return this->mResource;
+    virtual const ResCameraProjectionUpdater GetResource() const 
+    {
+        return this->m_Resource;
     }
 
-    virtual anim::ResCameraAnimData::ProjectionUpdaterKind Kind() const{
+    virtual anim::ResCameraAnimData::ProjectionUpdaterKind Kind() const
+    {
         return anim::ResCameraAnimData::PROJECTION_UPDATER_PERSPECTIVE;
     }
     
@@ -49,7 +54,7 @@ private:
 
     virtual ~PerspectiveProjectionUpdater();
 
-    ResPerspectiveProjectionUpdater mResource;
+    ResPerspectiveProjectionUpdater m_Resource;
 };
 
 }

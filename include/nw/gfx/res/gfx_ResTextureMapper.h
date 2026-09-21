@@ -9,42 +9,53 @@ namespace res {
 
 class ResGraphicsFile;
 
-struct ResTextureSamplerData{
+struct ResTextureSamplerData
+{
     nw::ut::ResTypeInfo typeInfo;
     nw::ut::Offset toOwner;
-    nw::ut::ResS32 mMinFilter;
+    nw::ut::ResS32 m_MinFilter;
 };
 
-struct ResStandardTextureSamplerData : public ResTextureSamplerData{
-    nw::ut::ResFloatColor mBorderColor;
-    nw::ut::ResF32 mLodBias;
+struct ResStandardTextureSamplerData : public ResTextureSamplerData
+{
+    nw::ut::ResFloatColor m_BorderColor;
+    nw::ut::ResF32 m_LodBias;
 };
 
-struct ResShadowTextureSamplerData : public ResTextureSamplerData{};
+struct ResShadowTextureSamplerData : public ResTextureSamplerData
+{};
 
-struct ResTextureMapperData{
+struct ResTextureMapperData
+{
     nw::ut::ResTypeInfo typeInfo;
-    nw::os::IAllocator* mDynamicAllocator;
+    nw::os::IAllocator* m_DynamicAllocator;
     nw::ut::Offset toTexture;
 };
 
-struct ResPixelBasedTextureMapperData : public ResTextureMapperData{
+struct ResPixelBasedTextureMapperData : public ResTextureMapperData
+{
     nw::ut::Offset toSampler;
     
-    enum { ADDRESS_INDEX = 7 };
+    enum
+{ ADDRESS_INDEX = 7 };
     
-    nw::ut::ResU32 mCommandCache[14];
-    nw::ut::ResU32 mCommandSizeToSend;
+    nw::ut::ResU32 m_CommandCache[14];
+    nw::ut::ResU32 m_CommandSizeToSend;
 };
 
-struct ResProceduralTextureMapperData : public ResTextureMapperData{};
+struct ResProceduralTextureMapperData : public ResTextureMapperData
+{};
 
-class ResTextureSampler : public nw::ut::ResCommon< ResTextureSamplerData >{
+class ResTextureSampler : public nw::ut::ResCommon< ResTextureSamplerData >
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResTextureSampler) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('BSTS') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResTextureSampler) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('BSTS') };
 
-    enum MinFilter{
+    enum MinFilter
+    {
         MINFILTER_NEAREST,
         MINFILTER_LINEAR,
         MINFILTER_NEAREST_MIPMAP_NEAREST,
@@ -59,7 +70,8 @@ public:
         MAGFILTER_LINEAR
     };
 
-    enum SamplerType{
+    enum SamplerType
+    {
         SAMPLERTYPE_TEXTURE_2D,
         SAMPLERTYPE_CUBE_MAP,
         SAMPLERTYPE_SHADOW,
@@ -69,7 +81,7 @@ public:
     
     NW_RES_CTOR( ResTextureSampler )
     
-    MinFilter GetMinFilter() const{return static_cast<MinFilter>(this->ref().mMinFilter);}
+    MinFilter GetMinFilter() const {return static_cast<MinFilter>(this->ref().m_MinFilter);}
 
     ResTextureMapperData* GetOwnerData() {return static_cast<ResTextureMapperData*>( ref().toOwner.to_ptr() ); }
     const ResTextureMapperData* GetOwnerData() const {return static_cast<const ResTextureMapperData*>( ref().toOwner.to_ptr() ); }
@@ -82,28 +94,20 @@ protected:
     void SetTextureMipmapCommand();
 };
 
-class ResStandardTextureSampler : public ResTextureSampler{
+class ResStandardTextureSampler : public ResTextureSampler
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResStandardTextureSampler) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('STTS') };
 
     NW_RES_CTOR_INHERIT( ResStandardTextureSampler, ResTextureSampler )
 
-    const nw::ut::FloatColor& GetBorderColor() const { return ref().mBorderColor; }
+    const nw::ut::FloatColor& GetBorderColor() const { return ref().m_BorderColor; }
 
-    void SetBorderColor(const nw::ut::FloatColor& value) {
-        ref().mBorderColor = value;
-        u32 borderColorU32 = ref().mBorderColor.ToPicaU32();
-
-        enum { CMD_INDEX = 2 };
-        ::std::pair<u32, u32*> command = GetOwnerCommand();
-
-        command.second[CMD_INDEX] = borderColorU32;
-    }
-
-    void SetBorderColor( f32 r, f32 g, f32 b ){
-        ref().mBorderColor.Set(r, g, b);
-        u32 borderColorU32 = ref().mBorderColor.ToPicaU32();
+    void SetBorderColor(const nw::ut::FloatColor& value)
+    {
+        ref().m_BorderColor = value;
+        u32 borderColorU32 = ref().m_BorderColor.ToPicaU32();
 
         enum { CMD_INDEX = 2 };
         ::std::pair<u32, u32*> command = GetOwnerCommand();
@@ -111,9 +115,21 @@ public:
         command.second[CMD_INDEX] = borderColorU32;
     }
 
-    void SetBorderColor( f32 r, f32 g, f32 b, f32 a ){
-        ref().mBorderColor.Set(r, g, b, a);
-        u32 borderColorU32 = ref().mBorderColor.ToPicaU32();
+    void SetBorderColor(f32 r, f32 g, f32 b)
+    {
+        ref().m_BorderColor.Set(r, g, b);
+        u32 borderColorU32 = ref().m_BorderColor.ToPicaU32();
+
+        enum { CMD_INDEX = 2 };
+        ::std::pair<u32, u32*> command = GetOwnerCommand();
+
+        command.second[CMD_INDEX] = borderColorU32;
+    }
+
+    void SetBorderColor( f32 r, f32 g, f32 b, f32 a )
+    {
+        ref().m_BorderColor.Set(r, g, b, a);
+        u32 borderColorU32 = ref().m_BorderColor.ToPicaU32();
 
         enum { CMD_INDEX = 2 };
         ::std::pair<u32, u32*> command = GetOwnerCommand();
@@ -122,17 +138,19 @@ public:
         command.second[CMD_INDEX] = borderColorU32;
     }
 
-    enum Wrap{
+    enum Wrap
+    {
         WRAP_CLAMP_TO_EDGE   = 0,
         WRAP_CLAMP_TO_BORDER = 1,
         WRAP_REPEAT          = 2,
         WRAP_MIRRORED_REPEAT = 3
     };
 
-    f32 GetLodBias() const { return this->ref().mLodBias; }
+    f32 GetLodBias() const { return this->ref().m_LodBias; }
 };
 
-class ResShadowTextureSampler : public ResTextureSampler{
+class ResShadowTextureSampler : public ResTextureSampler
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResShadowTextureSampler) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('SHTS') };
@@ -140,7 +158,8 @@ public:
     NW_RES_CTOR_INHERIT(ResShadowTextureSampler, ResTextureSampler)
 };
 
-class ResTextureMapper : public nw::ut::ResCommon< ResTextureMapperData >{
+class ResTextureMapper : public nw::ut::ResCommon< ResTextureMapperData >
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResTextureMapper) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('TMAP') };
@@ -155,7 +174,8 @@ public:
 
     ResTextureMapper CloneDynamic(nw::os::IAllocator* allocator);
 
-    size_t GetMemorySizeForClone(size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT) const{
+    size_t GetMemorySizeForClone(size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT) const
+    {
         nw::os::MemorySizeCalculator size(alignment);
 
         GetMemorySizeForCloneInternal(&size);
@@ -172,7 +192,8 @@ public:
 
 typedef nw::ut::ResArrayClass<ResTextureMapper>::type  ResTextureMapperArray;
 
-class ResPixelBasedTextureMapper : public ResTextureMapper{
+class ResPixelBasedTextureMapper : public ResTextureMapper
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResPixelBasedTextureMapper)};
     enum { SIGNATURE = NW_RES_SIGNATURE32('PMAP') };
@@ -182,17 +203,19 @@ public:
     const ResTextureSampler  GetSampler() const { return ResTextureSampler( ref().toSampler.to_ptr() ); }
     ResTextureSampler  GetSampler() { return ResTextureSampler( ref().toSampler.to_ptr() ); }
 
-    u32* GetCommandCache() { return &ref().mCommandCache[0]; }
-    const u32* GetCommandCache() const { return &ref().mCommandCache[0]; }
+    u32* GetCommandCache() { return &ref().m_CommandCache[0]; }
+    const u32* GetCommandCache() const { return &ref().m_CommandCache[0]; }
     
     NW_RES_FIELD_PRIMITIVE_DECL(u32, CommandSizeToSend)
     
-    bool IsCommandReady() const{
-        return ref().mCommandCache[ResPixelBasedTextureMapperData::ADDRESS_INDEX] != 0; 
+    bool IsCommandReady() const
+    {
+        return ref().m_CommandCache[ResPixelBasedTextureMapperData::ADDRESS_INDEX] != 0;
     }
     
-    void ResetCommand(){
-        ref().mCommandCache[ResPixelBasedTextureMapperData::ADDRESS_INDEX] = 0; 
+    void ResetCommand()
+    {
+        ref().m_CommandCache[ResPixelBasedTextureMapperData::ADDRESS_INDEX] = 0;
     }
 
     void ForceSetupTexture(ResTexture texture);
@@ -201,7 +224,8 @@ public:
 typedef nw::ut::ResArrayClass<ResPixelBasedTextureMapper>::type        ResPixelBasedTextureMapperArray;
 typedef nw::ut::ResArrayClass<const ResPixelBasedTextureMapper>::type  ResPixelBasedTextureMapperArrayConst;
 
-class ResProceduralTextureMapper : public ResTextureMapper{
+class ResProceduralTextureMapper : public ResTextureMapper
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResProceduralTextureMapper) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('PRCM') };

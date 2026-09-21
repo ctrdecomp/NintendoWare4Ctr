@@ -9,9 +9,11 @@
 namespace nw {
 namespace ut {
 
-struct ResDicLinearData : public DataBlockHeader{
+struct ResDicLinearData : public DataBlockHeader
+{
     Size   numData;
-    struct ResDicNodeData{
+    struct ResDicNodeData
+    {
         BinString toName;
         Offset    ofsData;
     }
@@ -21,9 +23,11 @@ struct ResDicLinearData : public DataBlockHeader{
     const ResDicNodeData* GetBeginNode() const { return data; }
 };
 
-struct ResDicPatriciaData : public DataBlockHeader{
+struct ResDicPatriciaData : public DataBlockHeader
+{
     ResU32 numData;
-    struct ResDicNodeData{
+    struct ResDicNodeData
+    {
         ResU32 ref;
         ResU16 idxLeft;
         ResU16 idxRight;
@@ -36,59 +40,72 @@ struct ResDicPatriciaData : public DataBlockHeader{
     const ResDicNodeData* GetBeginNode() const { return &data[1]; }
 };
 
-class ResDicPatricia : public ResCommon<ResDicPatriciaData>{
+class ResDicPatricia : public ResCommon<ResDicPatriciaData>
+{
 public:
     NW_RES_CTOR(ResDicPatricia)
-    enum { NOT_FOUND = -1 };
+    enum{ NOT_FOUND = -1 };
 
     s32 GetCount() const { return ref().numData; }
 
-    void* operator[](int idx) const{
+    void* operator[](int idx) const
+    {
         if (!this->IsValid()) { return NULL; }
         return const_cast<void*>(ref().data[idx + 1].ofsData.to_ptr());
     }
     void* operator[](u32 idx) const { return operator[](int(idx)); }
     
-    void* operator[](const char* s) const{
-        if (this->IsValid() && s){
+    void* operator[](const char* s) const
+    {
+        if (this->IsValid() && s)
+        {
             ResDicPatriciaData::ResDicNodeData* x = Get(s, std::strlen(s));
 
-            if (x){
+            if (x)
+            {
                 return const_cast<void*>(x->ofsData.to_ptr());
             }
         }
         return NULL;
     }
 
-    s32 GetIndex(const char* s) const{
-        if (IsValid() && s){
+    s32 GetIndex(const char* s) const
+    {
+        if (IsValid() && s)
+        {
             size_t len = std::strlen(s);
             ResDicPatriciaData::ResDicNodeData* x = Get(s, len);
 
-            if (x){
+            if (x)
+            {
                 return static_cast<s32>(x - &ptr()->data[1]);
             }
         }
         return -1;
     }
     
-    s32 GetIndex(const ResName n) const{
-        if (IsValid() && n.IsValid()){
+    s32 GetIndex(const ResName n) const
+    {
+        if (IsValid() && n.IsValid())
+        {
             ResDicPatriciaData::ResDicNodeData* x = Get(n);
 
-            if (x){
+            if (x)
+            {
                 return static_cast<s32>(x - &ptr()->data[1]);
             }
         }
         return -1;
     }
 
-    const ResName GetResName(u32 idx) const{
+    const ResName GetResName(u32 idx) const
+    {
         if (!IsValid()) { return ResName(NULL); }
         ptr()->data[idx + 1].ofsString - s32(sizeof(u32));
     }
 
-    const char* GetName(u32 idx) const{
+    const char* GetName(u32 idx) const
+    {
         if (!IsValid()) { return NULL; }
         return GetResName(idx).GetName();
     }
@@ -102,7 +119,8 @@ protected:
 
 namespace internal {
 
-inline ResDicPatriciaData* InitializeResDicPatricia(ResDicPatriciaData* resData){
+inline ResDicPatriciaData* InitializeResDicPatricia(ResDicPatriciaData* resData)
+{
     resData->signature = NW_RES_SIGNATURE32('DICT');
     resData->length = sizeof(ResDicPatriciaData);
     resData->numData = 0;

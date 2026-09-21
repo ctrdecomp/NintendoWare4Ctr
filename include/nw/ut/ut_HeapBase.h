@@ -7,19 +7,21 @@
 namespace nw {
 namespace ut {
 
-class HeapNode{
+class HeapNode
+{
   public:
     HeapNode() {}
     virtual ~HeapNode() {}
 
   public:
-    LinkListNode mLinkNode;
+    LinkListNode m_LinkNode;
 };
 
 
-class HeapBase : public HeapNode{
+class HeapBase : public HeapNode
+{
 public:
-    typedef ut::LinkList< HeapBase, offsetof(HeapNode,mLinkNode)> HeapList;
+    typedef ut::LinkList< HeapBase, offsetof(HeapNode,m_LinkNode)> HeapList;
 
     static const int DEFAULT_ALIGNMENT  = 4;
 
@@ -33,14 +35,16 @@ public:
 
     static const int ERROR_PRINT            = ( 1 << 0 );
 
-    enum FillType {
+    enum FillType
+    {
         HEAP_FILL_NOUSE,
         HEAP_FILL_ALLOC,
         HEAP_FILL_FREE,
         HEAP_FILL_MAX
     };
 
-    enum HeapType {
+    enum HeapType
+    {
         HEAP_TYPE_EXP,
         HEAP_TYPE_FRM,
         HEAP_TYPE_UNIT,
@@ -50,10 +54,10 @@ public:
     static HeapBase* FindContainHeap(const void* memBlock);
 
     void* GetHeapStartAddress() { return this; }
-    void* GetHeapEndAddress()   { return mHeapEnd; }
+    void* GetHeapEndAddress() { return m_HeapEnd; }
 
-    s32 GetTotalSize()          { return ((s32)(mHeapEnd) - (s32)(this)); }
-    s32 GetTotalUsableSize()    { return ((s32)(mHeapEnd) - (s32)(mHeapStart)); }
+    s32 GetTotalSize() { return ((s32)(m_HeapEnd) - (s32)(this)); }
+    s32 GetTotalUsableSize() { return ((s32)(m_HeapEnd) - (s32)(m_HeapStart)); }
 
     u32 GetFillValue(FillType type);
 
@@ -65,9 +69,9 @@ public:
     void Initialize( u32 signature, void* start, void* end, u16 optFlag );
     void Finalize();
 
-    u32 GetSignature() const { return mSignature; }
-    void* GetHeapStart() const { return mHeapStart; }
-    void* GetHeapEnd() const { return mHeapEnd; }
+    u32 GetSignature() const { return m_Signature; }
+    void* GetHeapStart() const { return m_HeapStart; }
+    void* GetHeapEnd() const { return m_HeapEnd; }
 
     void LockHeap();
     void UnlockHeap();
@@ -76,22 +80,19 @@ public:
     void FillNoUseMemory(void* address, u32 size);
     void FillAllocMemory(void* address, u32 size);
 
-    void*       mHeapStart;
-    void*       mHeapEnd;
+    void*       m_HeapStart;
+    void*       m_HeapEnd;
 
   private:
     static HeapBase* FindContainHeap(HeapList* pList, const void* memBlock);
     static HeapList* FindListContainHeap(HeapBase* pHeapBase);
 
     u16  GetOptionFlag();
-    void SetOptionFlag( u16 optFlag );
+    void SetOptionFlag(u16 optFlag);
 
-    u32         mSignature;
-    HeapList    mChildList;
-#ifdef NW_UT_HEAP_MULTITHREADED
-    OSMutex     mMutex;
-#endif
-    u32         mAttribute;
+    u32         m_Signature;
+    HeapList    m_ChildList;
+    u32         m_Attribute;
 };
 
 }

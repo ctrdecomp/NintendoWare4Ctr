@@ -12,7 +12,8 @@ class DrawInfo;
 class AnimationLink;
 
 
-class Window : public Pane{
+class Window : public Pane
+{
     typedef Pane Base;
 
     struct Content
@@ -21,14 +22,15 @@ class Window : public Pane{
         internal::TexCoordAry texCoordAry;
     };
 
-    struct Frame{
+    struct Frame
+    {
         Frame():   
             textureFlip(0),
-            pMaterial(0)
-        {}
+            pMaterial(0) {}
         ~Frame();
 
-        TextureFlip GetTextureFlip() const{
+        TextureFlip GetTextureFlip() const
+        {
             return (TextureFlip) this->textureFlip;
         }
 
@@ -71,7 +73,7 @@ public:
     void SetTexCoord(u32 idx, const TexCoordQuad coords);
 
 
-    u8 GetFrameNum() const{return mFrameNum;}
+    u8 GetFrameNum() const {return m_FrameNum;}
 
     virtual Material* FindMaterialByName(const char* findName,bool bRecursive = true);
 
@@ -94,16 +96,16 @@ public:
     virtual void MakeUniformDataSelf( DrawInfo* pDrawInfo, Drawer* pDrawer ) const;
 
 protected:
-    mutable bool mIsTexCoordInited;
-    mutable u32 mUniformTexCoordNum;
-    mutable nw::math::VEC4 mUniformTexCoords[TexMapMax * 2]; 
+    mutable bool m_IsTexCoordInited;
+    mutable u32 m_UniformTexCoordNum;
+    mutable nw::math::VEC4 m_UniformTexCoords[TexMapMax * 2]; 
 
 protected:
-    InflationLRTB mContentInflation;
-    Content mContent;
-    Frame* mFrames;
-    u8 mFrameNum;
-    Material* mpMaterial;
+    InflationLRTB m_ContentInflation;
+    Content m_Content;
+    Frame* m_Frames;
+    u8 m_FrameNum;
+    Material* m_pMaterial;
 
 private:
     Window(const Window& other);

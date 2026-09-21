@@ -17,7 +17,8 @@ namespace font {
 
 namespace{
 
-int GetUniformLocation(GLuint programId,const char* name){
+int GetUniformLocation(GLuint programId,const char* name)
+{
     int result = glGetUniformLocation(programId, name);
     return result;
 }
@@ -25,102 +26,111 @@ int GetUniformLocation(GLuint programId,const char* name){
 }
 
 TextWriterResource::TextWriterResource():
-    mPosZ(0.f),
-    mIsInitialized(false){
+    m_PosZ(0.f),
+    m_IsInitialized(false)
+    {
     this->ResetLoadingTexture();
 }
 
-TextWriterResource::~TextWriterResource(){
+TextWriterResource::~TextWriterResource()
+{
     this->Finalize();
 }
 
-void TextWriterResource::InitResource(const void* shaderBinary,u32 size){
-    this->mProgramId = glCreateProgram();
+void TextWriterResource::InitResource(const void* shaderBinary,u32 size)
+{
+    this->m_ProgramId = glCreateProgram();
 
     GLuint shaderHandle = glCreateShader(GL_VERTEX_SHADER);
 
     glShaderBinary(1, &shaderHandle, GL_PLATFORM_BINARY_DMP, shaderBinary, size);
-    glAttachShader(this->mProgramId, shaderHandle);
+    glAttachShader(this->m_ProgramId, shaderHandle);
     glDeleteShader(shaderHandle);
-    glAttachShader(this->mProgramId, GL_DMP_FRAGMENT_SHADER_DMP);
-    glBindAttribLocation(this->mProgramId, internal::VERTEX_ATTR_POS,      "aPosition");
-    glBindAttribLocation(this->mProgramId, internal::VERTEX_ATTR_POS_Z,    "aPositionZ");
-    glBindAttribLocation(this->mProgramId, internal::VERTEX_ATTR_COLOR,    "aColor");
-    glBindAttribLocation(this->mProgramId, internal::VERTEX_ATTR_TEXCOORD, "aTexCoord");
-    glLinkProgram(this->mProgramId);
-    glGenTextures(1, &this->mTextureId);
+    glAttachShader(this->m_ProgramId, GL_DMP_FRAGMENT_SHADER_DMP);
+    glBindAttribLocation(this->m_ProgramId, internal::VERTEX_ATTR_POS,      "aPosition");
+    glBindAttribLocation(this->m_ProgramId, internal::VERTEX_ATTR_POS_Z,    "aPositionZ");
+    glBindAttribLocation(this->m_ProgramId, internal::VERTEX_ATTR_COLOR,    "aColor");
+    glBindAttribLocation(this->m_ProgramId, internal::VERTEX_ATTR_TEXCOORD, "aTexCoord");
+    glLinkProgram(this->m_ProgramId);
+    glGenTextures(1, &this->m_TextureId);
 
     /* Uniform Location*/ 
-    mUniformLocations[internal::LOC_PROJECTION] =GetUniformLocation(this->mProgramId, "uProjection");
-    mUniformLocations[internal::LOC_MODELVIEW] = GetUniformLocation(this->mProgramId, "uModelView");
-    mUniformLocations[internal::LOC_FRAGMENTLIGHTING_ENABLED] = GetUniformLocation(this->mProgramId, "dmp_FragmentLighting.enabled"),
-    mUniformLocations[internal::LOC_TEXTURE0_SAMPLERTYPE] = GetUniformLocation(this->mProgramId, "dmp_Texture[0].samplerType"),
-    mUniformLocations[internal::LOC_FOG_MODE] = GetUniformLocation(this->mProgramId, "dmp_Fog.mode");
-    mUniformLocations[internal::LOC_FRAGOPERATION_ENABLEALPHATEST] = GetUniformLocation(this->mProgramId, "dmp_FragOperation.enableAlphaTest");
+    m_UniformLocations[internal::LOC_PROJECTION] =GetUniformLocation(this->m_ProgramId, "uProjection");
+    m_UniformLocations[internal::LOC_MODELVIEW] = GetUniformLocation(this->m_ProgramId, "uModelView");
+    m_UniformLocations[internal::LOC_FRAGMENTLIGHTING_ENABLED] = GetUniformLocation(this->m_ProgramId, "dmp_FragmentLighting.enabled"),
+    m_UniformLocations[internal::LOC_TEXTURE0_SAMPLERTYPE] = GetUniformLocation(this->m_ProgramId, "dmp_Texture[0].samplerType"),
+    m_UniformLocations[internal::LOC_FOG_MODE] = GetUniformLocation(this->m_ProgramId, "dmp_Fog.mode");
+    m_UniformLocations[internal::LOC_FRAGOPERATION_ENABLEALPHATEST] = GetUniformLocation(this->m_ProgramId, "dmp_FragOperation.enableAlphaTest");
 
     /* Texture Env Uniforms */
 
     /* Tex Env 3*/
-    mTexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_SRCRGB      ] = GetUniformLocation(this->mProgramId, NW_FONT_TEXENV3 ".srcRgb"      );
-    mTexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_SRCALPHA    ] = GetUniformLocation(this->mProgramId, NW_FONT_TEXENV3 ".srcAlpha"    );
-    mTexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_OPERANDRGB  ] = GetUniformLocation(this->mProgramId, NW_FONT_TEXENV3 ".operandRgb"  );
-    mTexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_OPERANDALPHA] = GetUniformLocation(this->mProgramId, NW_FONT_TEXENV3 ".operandAlpha");
-    mTexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_COMBINERGB  ] = GetUniformLocation(this->mProgramId, NW_FONT_TEXENV3 ".combineRgb"  );
-    mTexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_COMBINEALPHA] = GetUniformLocation(this->mProgramId, NW_FONT_TEXENV3 ".combineAlpha");
-    mTexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_SCALERGB    ] = GetUniformLocation(this->mProgramId, NW_FONT_TEXENV3 ".scaleRgb"    );
-    mTexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_SCALEALPHA  ] = GetUniformLocation(this->mProgramId, NW_FONT_TEXENV3 ".scaleAlpha"  );
-    mTexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_CONSTRGBA   ] = GetUniformLocation(this->mProgramId, NW_FONT_TEXENV3 ".constRgba"   );
+    m_TexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_SRCRGB      ] = GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV3 ".srcRgb"      );
+    m_TexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_SRCALPHA    ] = GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV3 ".srcAlpha"    );
+    m_TexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_OPERANDRGB  ] = GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV3 ".operandRgb"  );
+    m_TexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_OPERANDALPHA] = GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV3 ".operandAlpha");
+    m_TexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_COMBINERGB  ] = GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV3 ".combineRgb"  );
+    m_TexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_COMBINEALPHA] = GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV3 ".combineAlpha");
+    m_TexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_SCALERGB    ] = GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV3 ".scaleRgb"    );
+    m_TexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_SCALEALPHA  ] = GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV3 ".scaleAlpha"  );
+    m_TexEnvUniformLocations[internal::TEXENV_3][internal::TCLOC_CONSTRGBA   ] = GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV3 ".constRgba"   );
 
 
     /* Tex Env 4*/
-    mTexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_SRCRGB      ] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV4 ".srcRgb"      );
-    mTexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_SRCALPHA    ] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV4 ".srcAlpha"    );
-    mTexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_OPERANDRGB  ] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV4 ".operandRgb"  );
-    mTexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_OPERANDALPHA] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV4 ".operandAlpha");
-    mTexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_COMBINERGB  ] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV4 ".combineRgb"  );
-    mTexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_COMBINEALPHA] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV4 ".combineAlpha");
-    mTexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_SCALERGB    ] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV4 ".scaleRgb"    );
-    mTexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_SCALEALPHA  ] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV4 ".scaleAlpha"  );
-    mTexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_CONSTRGBA   ] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV4 ".constRgba"   );
+    m_TexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_SRCRGB      ] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV4 ".srcRgb"      );
+    m_TexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_SRCALPHA    ] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV4 ".srcAlpha"    );
+    m_TexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_OPERANDRGB  ] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV4 ".operandRgb"  );
+    m_TexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_OPERANDALPHA] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV4 ".operandAlpha");
+    m_TexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_COMBINERGB  ] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV4 ".combineRgb"  );
+    m_TexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_COMBINEALPHA] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV4 ".combineAlpha");
+    m_TexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_SCALERGB    ] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV4 ".scaleRgb"    );
+    m_TexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_SCALEALPHA  ] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV4 ".scaleAlpha"  );
+    m_TexEnvUniformLocations[internal::TEXENV_4][internal::TCLOC_CONSTRGBA   ] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV4 ".constRgba"   );
 
-    mTexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_SRCRGB      ] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV5 ".srcRgb"      );
-    mTexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_SRCALPHA    ] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV5 ".srcAlpha"    );
-    mTexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_OPERANDRGB  ] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV5 ".operandRgb"  );
-    mTexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_OPERANDALPHA] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV5 ".operandAlpha");
-    mTexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_COMBINERGB  ] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV5 ".combineRgb"  );
-    mTexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_COMBINEALPHA] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV5 ".combineAlpha");
-    mTexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_SCALERGB    ] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV5 ".scaleRgb"    );
-    mTexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_SCALEALPHA  ] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV5 ".scaleAlpha"  );
-    mTexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_CONSTRGBA   ] =GetUniformLocation(this->mProgramId, NW_FONT_TEXENV5 ".constRgba"   );
+    m_TexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_SRCRGB      ] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV5 ".srcRgb"      );
+    m_TexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_SRCALPHA    ] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV5 ".srcAlpha"    );
+    m_TexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_OPERANDRGB  ] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV5 ".operandRgb"  );
+    m_TexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_OPERANDALPHA] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV5 ".operandAlpha");
+    m_TexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_COMBINERGB  ] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV5 ".combineRgb"  );
+    m_TexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_COMBINEALPHA] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV5 ".combineAlpha");
+    m_TexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_SCALERGB    ] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV5 ".scaleRgb"    );
+    m_TexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_SCALEALPHA  ] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV5 ".scaleAlpha"  );
+    m_TexEnvUniformLocations[internal::TEXENV_5][internal::TCLOC_CONSTRGBA   ] =GetUniformLocation(this->m_ProgramId, NW_FONT_TEXENV5 ".constRgba"   );
 
-    this->mIsInitialized = true;
+    this->m_IsInitialized = true;
 }
 
-void TextWriterResource::FinalizeGX(){
-    for (int i = 0; i < internal::VERTEX_ATTR_NUM; ++i){
+void TextWriterResource::FinalizeGX()
+{
+    for (int i = 0; i < internal::VERTEX_ATTR_NUM; ++i)
+    {
         glDisableVertexAttribArray(i);
     }
 }
 
 
-void TextWriterResource::Finalize(){
-    if (this->mIsInitialized){
+void TextWriterResource::Finalize()
+{
+    if (this->m_IsInitialized)
+    {
         FinalizeGX();
-        glDeleteTextures(1, &this->mTextureId);
-        this->mIsInitialized = false;
+        glDeleteTextures(1, &this->m_TextureId);
+        this->m_IsInitialized = false;
 
         glUseProgram(0);
-        glDeleteProgram(this->mProgramId);
+        glDeleteProgram(this->m_ProgramId);
     }
 }
 
-void TextWriterResource::SetProjectionMtx(const nn::math::MTX44& mtx) const{
-    glUniform4fv(this->mUniformLocations[internal::LOC_PROJECTION], 4, mtx.a);
+void TextWriterResource::SetProjectionMtx(const nn::math::MTX44& mtx) const
+{
+    glUniform4fv(this->m_UniformLocations[internal::LOC_PROJECTION], 4, mtx.a);
 }
 
-void TextWriterResource::SetPosZ(f32 posZ){
-    this->mPosZ = posZ;
-    glVertexAttrib1f(internal::VERTEX_ATTR_POS_Z, this->mPosZ);
+void TextWriterResource::SetPosZ(f32 posZ)
+{
+    this->m_PosZ = posZ;
+    glVertexAttrib1f(internal::VERTEX_ATTR_POS_Z, this->m_PosZ);
 }
 
 }

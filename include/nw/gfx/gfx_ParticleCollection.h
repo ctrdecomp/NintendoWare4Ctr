@@ -20,22 +20,25 @@ namespace internal{
 class ParticleSet;
 class ParticleCollection;
 
-class ParticleCollection : public GfxObject{
+class ParticleCollection : public GfxObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(ParticleCollection);
 
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    struct ParticleAttribute{
-        s32 mUsage;
-        bool mIsStream;
-        f32* mStream;
+    struct ParticleAttribute
+    {
+        s32 m_Usage;
+        bool m_IsStream;
+        f32* m_Stream;
     };
 
     static ParticleCollection* Create(ParticleSet* parent,ResParticleCollection resource,nw::os::IAllocator* mainAllocator,nw::os::IAllocator* deviceAllocator,ParticleShape* shape);
 
-    static size_t GetMemorySize(ResParticleCollection resource, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT){
+    static size_t GetMemorySize(ResParticleCollection resource, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT)
+    {
         nw::os::MemorySizeCalculator size(alignment);
         GetMemorySizeInternal(&size, resource);
         return size.GetSizeWithPadding(alignment);
@@ -43,7 +46,8 @@ public:
 
     static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResParticleCollection resource);
 
-    static size_t GetDeviceMemorySize(ResParticleCollection resource, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT){
+    static size_t GetDeviceMemorySize(ResParticleCollection resource, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT)
+    {
         nw::os::MemorySizeCalculator size(alignment);
         GetDeviceMemorySizeInternal(&size, resource);
         return size.GetSizeWithPadding(alignment);
@@ -51,116 +55,142 @@ public:
 
     static void GetDeviceMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResParticleCollection resource);
 
-    ResParticleCollection GetResParticleCollection(){
-        return mResParticleCollection;
+    ResParticleCollection GetResParticleCollection()
+    {
+        return m_ResParticleCollection;
     }
 
-    const ResParticleCollection GetResParticleCollection() const{
-        return mResParticleCollection;
+    const ResParticleCollection GetResParticleCollection() const
+    {
+        return m_ResParticleCollection;
     }
 
-    int GetCapacity() const{
-        return mCapacity;
+    int GetCapacity() const
+    {
+        return m_Capacity;
     }
 
-    int GetCount() const{
-        return mCount;
+    int GetCount() const
+    {
+        return m_Count;
     }
 
-    void SetCount(int count){
-        mCount = count;
+    void SetCount(int count)
+    {
+        m_Count = count;
     }
 
-    u16 GetMinActiveIndex() const{
-        return mMinActiveIndex;
+    u16 GetMinActiveIndex() const
+    {
+        return m_MinActiveIndex;
     }
 
-    u16 GetMaxActiveIndex() const{
-        return mMaxActiveIndex;
+    u16 GetMaxActiveIndex() const
+    {
+        return m_MaxActiveIndex;
     }
 
-    void SetMinActiveIndex(u16 minActiveIndex){
-        mMinActiveIndex = minActiveIndex;
+    void SetMinActiveIndex(u16 minActiveIndex)
+    {
+        m_MinActiveIndex = minActiveIndex;
     }
 
-    void SetMaxActiveIndex(u16 maxActiveIndex){
-        mMaxActiveIndex = maxActiveIndex;
+    void SetMaxActiveIndex(u16 maxActiveIndex)
+    {
+        m_MaxActiveIndex = maxActiveIndex;
     }
 
-    bool IsStream(ParticleUsage usage) const{
+    bool IsStream(ParticleUsage usage) const
+    {
         NW_ASSERT(usage >= 0 && usage < PARTICLEUSAGE_COUNT);
-        return mIsStream[usage];
+        return m_IsStream[usage];
     }
 
-    bool GetBufferSide() const{
-        return mBufferSide;
+    bool GetBufferSide() const
+    {
+        return m_BufferSide;
     }
 
-    int GetLastBuffer() const{
-        return mLastBuffer;
+    int GetLastBuffer() const
+    {
+        return m_LastBuffer;
     }
 
-    void SetLastBuffer(int value){
-        mLastBuffer = value;
+    void SetLastBuffer(int value)
+    {
+        m_LastBuffer = value;
     }
 
-    void* GetStreamPtr(ParticleUsage usage, ParticleBuffer side){
+    void* GetStreamPtr(ParticleUsage usage, ParticleBuffer side)
+    {
         NW_ASSERT(usage >= 0 && usage < PARTICLEUSAGE_COUNT);
 
-        if (!mIsStream[usage]){
+        if (!m_IsStream[usage])
+        {
             return NULL;
         }
 
-        if (mBufferSide){
+        if (m_BufferSide)
+        {
             side = (ParticleBuffer)(1 - side);
         }
 
-        return mStreamPtr[usage][side];
+        return m_StreamPtr[usage][side];
     }
 
-    const void* GetStreamPtr(ParticleUsage usage, ParticleBuffer side) const{
+    const void* GetStreamPtr(ParticleUsage usage, ParticleBuffer side) const
+    {
         NW_ASSERT(usage >= 0 && usage < PARTICLEUSAGE_COUNT);
 
-        if (!mIsStream[usage]){
+        if (!m_IsStream[usage])
+        {
             return NULL;
         }
 
-        if (mBufferSide){
+        if (m_BufferSide)
+        {
             side = (ParticleBuffer)(1 - side);
         }
 
-        return mStreamPtr[usage][side];
+        return m_StreamPtr[usage][side];
     }
 
-    const void* GetParameterPtr(ParticleUsage usage) const{
+    const void* GetParameterPtr(ParticleUsage usage) const
+    {
         NW_ASSERT(usage >= 0 && usage < PARTICLEUSAGE_COUNT);
 
-        if (mIsStream[usage]){
+        if (m_IsStream[usage])
+        {
             return NULL;
         }
 
-        return mStreamPtr[usage][0];
+        return m_StreamPtr[usage][0];
     }
 
     void SetParameter(ParticleUsage usage, ParticleBuffer side, const f32* ptr);
 
-    void SetLifeParameter(const ParticleTime* ptr){
+    void SetLifeParameter(const ParticleTime* ptr)
+    {
         SetParameter(PARTICLEUSAGE_LIFE, PARTICLE_BUFFER_FRONT, (const f32*)ptr);
     }
 
     template <class T>
-    NW_FORCE_INLINE bool GetStreamOrParameter(ParticleUsage usage, T** stream, T* param, ParticleBuffer side){
-        if (mIsStream[usage]){
-            if (mBufferSide){
+    NW_FORCE_INLINE bool GetStreamOrParameter(ParticleUsage usage, T** stream, T* param, ParticleBuffer side)
+    {
+        if (m_IsStream[usage])
+        {
+            if (m_BufferSide)
+            {
                 side = (ParticleBuffer)(1 - side);
             }
 
-            *stream = (T*)mStreamPtr[usage][side];
+            *stream = (T*)m_StreamPtr[usage][side];
         }
         else{
             *stream = NULL;
-            if (param != NULL && mStreamPtr[usage][0] != NULL){
-                memcpy(param, mStreamPtr[usage][0], sizeof(T));
+            if (param != NULL && m_StreamPtr[usage][0] != NULL)
+            {
+                memcpy(param, m_StreamPtr[usage][0], sizeof(T));
             }
         }
 
@@ -169,30 +199,35 @@ public:
 
     void Clear();
 
-    void SwapBuffer(){
-        ParticleShape* shape = mParticleShape;
+    void SwapBuffer()
+    {
+        ParticleShape* shape = m_ParticleShape;
 
         ParticleBuffer side = PARTICLE_BUFFER_FRONT;
-        if (mBufferSide){
+        if (m_BufferSide)
+        {
             side = (ParticleBuffer)(1 - side);
         }
 
-        mBufferSide = !mBufferSide;
-        shape->SetBufferSide(mBufferSide);
+        m_BufferSide = !m_BufferSide;
+        shape->SetBufferSide(m_BufferSide);
 
         int size = GetMaxActiveIndex() + 1;
-        for (int usage = 0; usage < PARTICLEUSAGE_COUNT; ++usage){
-            void* src = mStreamPtr[usage][side];
-            void* dst = mStreamPtr[usage][(ParticleBuffer)(1 - side)];
+        for (int usage = 0; usage < PARTICLEUSAGE_COUNT; ++usage)
+        {
+            void* src = m_StreamPtr[usage][side];
+            void* dst = m_StreamPtr[usage][(ParticleBuffer)(1 - side)];
 
-            if (usage != PARTICLEUSAGE_ACTIVEINDEX){
-                if (src != dst){
-                    nw::os::MemCpy(dst, src, mStreamStride[usage] * size);
+            if (usage != PARTICLEUSAGE_ACTIVEINDEX)
+            {
+                if (src != dst)
+                {
+                    nw::os::MemCpy(dst, src, m_StreamStride[usage] * size);
                 }
             }
         }
 
-        mLastBuffer = 1 - mLastBuffer;
+        m_LastBuffer = 1 - m_LastBuffer;
     }
 
 protected:
@@ -201,25 +236,25 @@ protected:
     virtual ~ParticleCollection();
 
 private:
-    ParticleAttribute mParticleAttribute[PARTICLEUSAGE_COUNT];
-    int mCapacity;
-    int mCount;
-    bool mBufferSide;
-    bool mIsStream[PARTICLEUSAGE_COUNT];
-    void* mStreamPtr[PARTICLEUSAGE_COUNT][2];
-    int mStreamStride[PARTICLEUSAGE_COUNT];
+    ParticleAttribute m_ParticleAttribute[PARTICLEUSAGE_COUNT];
+    int m_Capacity;
+    int m_Count;
+    bool m_BufferSide;
+    bool m_IsStream[PARTICLEUSAGE_COUNT];
+    void* m_StreamPtr[PARTICLEUSAGE_COUNT][2];
+    int m_StreamStride[PARTICLEUSAGE_COUNT];
 
-    u16 mMinActiveIndex;
-    u16 mMaxActiveIndex;
+    u16 m_MinActiveIndex;
+    u16 m_MaxActiveIndex;
 
-    ResParticleCollection mResParticleCollection;
-    ParticleShape* mParticleShape;
-    ParticleSet* mParticleSet;
+    ResParticleCollection m_ResParticleCollection;
+    ParticleShape* m_ParticleShape;
+    ParticleSet* m_ParticleSet;
 
-    nw::os::IAllocator* mDeviceAllocator;
-    void* mDeviceMemory;
+    nw::os::IAllocator* m_DeviceAllocator;
+    void* m_DeviceMemory;
 
-    int mLastBuffer;
+    int m_LastBuffer;
 };
 
 }

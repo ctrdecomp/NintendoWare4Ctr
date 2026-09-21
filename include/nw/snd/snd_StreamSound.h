@@ -50,8 +50,8 @@ public:
     long GetPlaySamplePosition() const;
     float GetFilledBufferPercentage() const;
 
-    const driver::StreamSoundPlayer& detail_GetStreamSoundPlayer() const{ return m_StreamSoundPlayerInstance; }
-    driver::StreamSoundPlayer& detail_GetStreamSoundPlayer(){ return m_StreamSoundPlayerInstance; }
+    const driver::StreamSoundPlayer& detail_GetStreamSoundPlayer() const { return m_StreamSoundPlayerInstance; }
+    driver::StreamSoundPlayer& detail_GetStreamSoundPlayer() { return m_StreamSoundPlayerInstance; }
 private:
     driver::StreamSoundPlayer m_StreamSoundPlayerInstance;
     StreamSoundHandle* m_pTempSpecialHandle;

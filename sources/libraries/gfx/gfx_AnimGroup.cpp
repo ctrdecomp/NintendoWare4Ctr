@@ -1,4 +1,8 @@
-﻿#include <nw/anim/anim_AnimBlend.h>
+// Filename: gfx_AnimGroup.cpp
+//
+// Project: NintendoWare4Ctr
+
+#include <nw/anim/anim_AnimBlend.h>
 #include <nw/gfx/gfx_AnimObject.h>
 #include <nw/gfx/gfx_TransformAnim.h>
 
@@ -7,7 +11,8 @@ namespace gfx{
 
 namespace {
 
-anim::AnimBlendOp* GetAnimBlendOpByType(int blendOpType){
+anim::AnimBlendOp* GetAnimBlendOpByType(int blendOpType)
+{
     static anim::AnimBlendOpBool blendOpBool;
     static anim::AnimBlendOpInt blendOpInt;
     static anim::AnimBlendOpFloat blendOpFloat;
@@ -23,7 +28,8 @@ anim::AnimBlendOp* GetAnimBlendOpByType(int blendOpType){
 
     static AnimBlendOpTransform blendOpTransformNode;
 
-    switch (blendOpType){
+    switch (blendOpType)
+    {
     case anim::ResAnimGroup::BLENDOP_BOOL:
         return &blendOpBool;
     case anim::ResAnimGroup::BLENDOP_INT:
@@ -61,13 +67,13 @@ anim::AnimBlendOp* GetAnimBlendOpByType(int blendOpType){
 
 AnimGroup::AnimGroup(anim::ResAnimGroup resAnimGroup,SceneNode* sceneNode,os::IAllocator* allocator): 
     GfxObject(allocator),
-    mResAnimGroup(resAnimGroup),
-    mSceneNode(sceneNode),
-    mPreEvaluateCallback(NULL),
-    mFullBakedAnimEnabled(false)
-{}
+    m_ResAnimGroup(resAnimGroup),
+    m_SceneNode(sceneNode),
+    m_PreEvaluateCallback(NULL),
+    m_FullBakedAnimEnabled(false) {}
 
-void AnimGroup::GetMemorySizeForInitialize(os::MemorySizeCalculator* pSize,const anim::ResAnimGroup resAnimGroup, bool useOriginalValue){
+void AnimGroup::GetMemorySizeForInitialize(os::MemorySizeCalculator* pSize,const anim::ResAnimGroup resAnimGroup, bool useOriginalValue)
+    {
     const int blendOpCount = resAnimGroup.GetBlendOperationsCount();
     const int memberCount = resAnimGroup.GetMemberInfoSetCount();
 
@@ -78,28 +84,32 @@ void AnimGroup::GetMemorySizeForInitialize(os::MemorySizeCalculator* pSize,const
     size += sizeof(void*) * memberCount;
     size += sizeof(void*) * memberCount;
 
-    if (useOriginalValue){
+    if (useOriginalValue)
+    {
         size += sizeof(void*) * memberCount;
     }
 }
 
-Result AnimGroup::Initialize(bool useOriginalValue){
+Result AnimGroup::Initialize(bool useOriginalValue)
+{
     Result result = INITIALIZE_RESULT_OK;
     {
-        const int blendOpCount = this->mResAnimGroup.GetBlendOperationsCount();
+        const int blendOpCount = this->m_ResAnimGroup.GetBlendOperationsCount();
         NW_ASSERT(blendOpCount > 0);
 
         void* memory = GetAllocator().Alloc(sizeof(anim::AnimBlendOp*) * blendOpCount);
 
-        if (memory == NULL){
+        if (memory == NULL)
+        {
             result |= Result::MASK_FAIL_BIT;
         }
         NW_ENSURE_AND_RETURN(result);
 
-        mBlendOperations = ut::MoveArray<anim::AnimBlendOp*>(memory, blendOpCount, &GetAllocator());
-        for (int blendOpIdx = 0; blendOpIdx < blendOpCount; ++blendOpIdx){
-            const int blendOpType = this->mResAnimGroup.GetBlendOperations(blendOpIdx);
-            this->mBlendOperations.PushBackFast(GetAnimBlendOpByType(blendOpType));
+        m_BlendOperations = ut::MoveArray<anim::AnimBlendOp*>(memory, blendOpCount, &GetAllocator());
+        for (int blendOpIdx = 0; blendOpIdx < blendOpCount; ++blendOpIdx)
+        {
+            const int blendOpType = this->m_ResAnimGroup.GetBlendOperations(blendOpIdx);
+            this->m_BlendOperations.PushBackFast(GetAnimBlendOpByType(blendOpType));
         }
     }
 
@@ -108,57 +118,65 @@ Result AnimGroup::Initialize(bool useOriginalValue){
 
     {
         void* memory = GetAllocator().Alloc(sizeof(int) * memberCount);
-        if (memory == NULL){
+        if (memory == NULL)
+        {
             result |= Result::MASK_FAIL_BIT;
         }
         NW_ENSURE_AND_RETURN(result);
 
-        mTargetObjectIndicies = ut::MoveArray<int>(memory, memberCount, &GetAllocator());
-        this->mTargetObjectIndicies.Resize(memberCount);
+        m_TargetObjectIndicies = ut::MoveArray<int>(memory, memberCount, &GetAllocator());
+        this->m_TargetObjectIndicies.Resize(memberCount);
     }
 
     {
         void* memory = GetAllocator().Alloc(sizeof(void*) * memberCount);
-        if (memory == NULL){
+        if (memory == NULL)
+        {
             result |= Result::MASK_FAIL_BIT;
         }
         NW_ENSURE_AND_RETURN(result);
 
-        mTargetObjects = ut::MoveArray<void*>(memory, memberCount, &GetAllocator());
-        this->mTargetObjects.Resize(memberCount);
+        m_TargetObjects = ut::MoveArray<void*>(memory, memberCount, &GetAllocator());
+        this->m_TargetObjects.Resize(memberCount);
     }
     
     {
         void* memory = GetAllocator().Alloc(sizeof(void*) * memberCount);
-        if (memory == NULL){
+        if (memory == NULL)
+        {
             result |= Result::MASK_FAIL_BIT;
         }
         NW_ENSURE_AND_RETURN(result);
 
-        mTargetPtrs = ut::MoveArray<void*>(memory, memberCount, &GetAllocator());
-        this->mTargetPtrs.Resize(memberCount);
+        m_TargetPtrs = ut::MoveArray<void*>(memory, memberCount, &GetAllocator());
+        this->m_TargetPtrs.Resize(memberCount);
     }
     
-    if (useOriginalValue){
+    if (useOriginalValue)
+    {
         void* memory = GetAllocator().Alloc(sizeof(void*) * memberCount);
-        if (memory == NULL){
+        if (memory == NULL)
+        {
             result |= Result::MASK_FAIL_BIT;
         }
         NW_ENSURE_AND_RETURN(result);
 
-        mOriginalValues = ut::MoveArray<const void*>(memory, memberCount, &GetAllocator());
-        this->mOriginalValues.Resize(memberCount);
+        m_OriginalValues = ut::MoveArray<const void*>(memory, memberCount, &GetAllocator());
+        this->m_OriginalValues.Resize(memberCount);
     }
 
     return result;
 }
 
-void AnimGroup::Reset(){
-    if (!this->HasOriginalValue()){
+void AnimGroup::Reset()
+{
+    if (!this->HasOriginalValue())
+    {
         return;
     }
 
-    for ( int memberIdx = 0 ; memberIdx < this->GetMemberCount() ; ++memberIdx ){
+    for ( int memberIdx = 0 ; memberIdx < this->GetMemberCount() ; ++memberIdx )
+    {
         const anim::ResAnimGroupMember resAnimGroupMember = this->GetResAnimGroupMember(memberIdx);
         resAnimGroupMember.SetValueForType(this->GetTargetObject(memberIdx),this->GetOriginalValue(memberIdx));
     }

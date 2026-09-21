@@ -14,19 +14,22 @@ namespace gfx{
 
 class CalculatedTransform;
 
-class WorldMatrixUpdater : public GfxObject{
+class WorldMatrixUpdater : public GfxObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(WorldMatrixUpdater);
 
 public:
-    enum ScalingRule{
+    enum ScalingRule
+    {
         SCALING_RULE_STANDARD,
         SCALING_RULE_MAYA,
         SCALING_RULE_SOFTIMAGE
     };
 
 public:
-    class Builder{
+    class Builder
+    {
     public:
         Builder() {}
         WorldMatrixUpdater* Create(nw::os::IAllocator* allocator);
@@ -56,7 +59,8 @@ private:
         const CalculatedTransform& localTransform,const CalculatedTransform& parentWorldTransform,const CalculatedTransform& parentLocalTransform) const;
 
     template<typename TMatrix, typename UMatrix>
-    void MultScale(TMatrix* dstMatrix, const UMatrix* srcMatrix, const math::VEC3& scale) const{
+    void MultScale(TMatrix* dstMatrix, const UMatrix* srcMatrix, const math::VEC3& scale) const
+    {
         dstMatrix->matrix[0][0] = srcMatrix->matrix[0][0] * scale.x;
         dstMatrix->matrix[1][0] = srcMatrix->matrix[1][0] * scale.x;
         dstMatrix->matrix[2][0] = srcMatrix->matrix[2][0] * scale.x;
@@ -71,7 +75,8 @@ private:
     }
 
     template<typename TMatrix>
-    void ScaleMatrix(TMatrix* dstMatrix, const math::VEC3& scale) const{
+    void ScaleMatrix(TMatrix* dstMatrix, const math::VEC3& scale) const
+    {
         dstMatrix->matrix[0][0] *= scale.x;
         dstMatrix->matrix[1][0] *= scale.x;
         dstMatrix->matrix[2][0] *= scale.x;
@@ -85,23 +90,27 @@ private:
         dstMatrix->matrix[2][2] *= scale.z;
     }
 
-    void CopyTranslate(nw::math::MTX34* dstMatrix, const nw::math::MTX34& srcMatrix) const{
+    void CopyTranslate(nw::math::MTX34* dstMatrix, const nw::math::MTX34& srcMatrix) const
+    {
         dstMatrix->matrix[0][3] = srcMatrix.matrix[0][3];
         dstMatrix->matrix[1][3] = srcMatrix.matrix[1][3];
         dstMatrix->matrix[2][3] = srcMatrix.matrix[2][3];
     }
 
-    void AddTranslate(nw::math::MTX34* dstMatrix, const nw::math::VEC3& translate) const{
+    void AddTranslate(nw::math::MTX34* dstMatrix, const nw::math::VEC3& translate) const
+    {
         dstMatrix->matrix[0][3] += translate.x;
         dstMatrix->matrix[1][3] += translate.y;
         dstMatrix->matrix[2][3] += translate.z;
     }
 
-    void CompensateScale(math::VEC3& scale) const{
+    void CompensateScale(math::VEC3& scale) const
+    {
         const float MinimumScale = 0.001f * 0.001f;
         float mag = (scale.x * scale.x + scale.y * scale.y + scale.z * scale.z);
 
-        if (mag < MinimumScale){
+        if (mag < MinimumScale)
+        {
             scale.x = (scale.x < 0.0f) ? -MinimumScale : MinimumScale;
             scale.y = (scale.y < 0.0f) ? -MinimumScale : MinimumScale;
             scale.z = (scale.z < 0.0f) ? -MinimumScale : MinimumScale;
@@ -110,23 +119,26 @@ private:
 };
 
 inline void WorldMatrixUpdater::UpdateMaya(math::MTX34* worldMatrix,CalculatedTransform* worldTransform,const CalculatedTransform& localTransform,
-    const CalculatedTransform& parentWorldTransform,const CalculatedTransform& parentLocalTransform,bool isSSC) const{
+    const CalculatedTransform& parentWorldTransform,const CalculatedTransform& parentLocalTransform,bool isSSC) const
+{
     NW_NULL_ASSERT(worldMatrix);
     NW_NULL_ASSERT(worldTransform);
 
     math::VEC3 scale;
-    if (isSSC){
+    if (isSSC)
+    {
         CalculateWorldMayaSsc(
-            &worldTransform->mTransformMatrix,
+            &worldTransform->m_TransformMatrix,
             &scale,
             localTransform,
             parentWorldTransform,
             parentLocalTransform
         );
     }
-    else{
+    else
+    {
         CalculateWorldBasic(
-            &worldTransform->mTransformMatrix,
+            &worldTransform->m_TransformMatrix,
             &scale,
             localTransform,
             parentWorldTransform,
@@ -136,30 +148,31 @@ inline void WorldMatrixUpdater::UpdateMaya(math::MTX34* worldMatrix,CalculatedTr
 
     this->CompensateScale(scale);
 
-    worldTransform->mScale = scale;
+    worldTransform->m_Scale = scale;
 
-    nw::math::MTX34MultScale(worldMatrix, worldTransform->mTransformMatrix, localTransform.mScale);
+    nw::math::MTX34MultScale(worldMatrix, worldTransform->m_TransformMatrix, localTransform.m_Scale);
 
     worldTransform->ResetTransformFlags();
     worldTransform->UpdateScaleFlags();
 }
 
 inline void WorldMatrixUpdater::UpdateBasic(nw::math::MTX34* worldMatrix,CalculatedTransform* worldTransform,
-    const CalculatedTransform& localTransform, const CalculatedTransform& parentWorldTransform,const CalculatedTransform& parentLocalTransform) const{
+    const CalculatedTransform& localTransform, const CalculatedTransform& parentWorldTransform,const CalculatedTransform& parentLocalTransform) const
+{
     NW_NULL_ASSERT(worldMatrix);
     NW_NULL_ASSERT(worldTransform);
 
     math::VEC3 scale;
 
-    CalculateWorldBasic(&worldTransform->mTransformMatrix,&scale,
+    CalculateWorldBasic(&worldTransform->m_TransformMatrix,&scale,
         localTransform,parentWorldTransform,parentLocalTransform
     );
 
     this->CompensateScale(scale);
 
-    worldTransform->mScale = scale;
+    worldTransform->m_Scale = scale;
 
-    nw::math::MTX34MultScale(worldMatrix, worldTransform->mTransformMatrix, localTransform.mScale);
+    nw::math::MTX34MultScale(worldMatrix, worldTransform->m_TransformMatrix, localTransform.m_Scale);
 
     worldTransform->ResetTransformFlags();
     worldTransform->UpdateScaleFlags();
@@ -167,19 +180,20 @@ inline void WorldMatrixUpdater::UpdateBasic(nw::math::MTX34* worldMatrix,Calcula
 
 inline void WorldMatrixUpdater::UpdateXsi(nw::math::MTX34* worldMatrix,CalculatedTransform* worldTransform,
     const CalculatedTransform& localTransform,const CalculatedTransform& parentWorldTransform,
-    const CalculatedTransform& parentLocalTransform) const{
+    const CalculatedTransform& parentLocalTransform) const
+{
     NW_NULL_ASSERT(worldMatrix);
     NW_NULL_ASSERT(worldTransform);
 
     nw::math::VEC3 scale;
 
-    CalculateWorldXsi(&worldTransform->mTransformMatrix,&scale,localTransform,parentWorldTransform,parentLocalTransform);
+    CalculateWorldXsi(&worldTransform->m_TransformMatrix,&scale,localTransform,parentWorldTransform,parentLocalTransform);
 
     this->CompensateScale(scale);
 
-    worldTransform->mScale = scale;
+    worldTransform->m_Scale = scale;
 
-    nw::math::MTX34MultScale(worldMatrix, worldTransform->mTransformMatrix, worldTransform->mScale);
+    nw::math::MTX34MultScale(worldMatrix, worldTransform->m_TransformMatrix, worldTransform->m_Scale);
 
     worldTransform->ResetTransformFlags();
     worldTransform->UpdateScaleFlags();

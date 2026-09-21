@@ -4,19 +4,22 @@
 namespace nw{
 namespace gfx{
     
-void ShaderBinaryInfo::AnalyzeBinary(){
+void ShaderBinaryInfo::AnalyzeBinary()
+{
     const u32* binary = this->mpShaderBinary;
 
     ++binary;
 
-    mExeImageCount = *binary;
+    m_ExeImageCount = *binary;
     ++binary;
 
-    for (int i = 0; i < mExeImageCount; ++i){
-        mExeImageInfo[i] = reinterpret_cast< const ExeImageInfo* >((u8*)this->mpShaderBinary + *binary);
+    for (int i = 0; i < m_ExeImageCount; ++i)
+    {
+        m_ExeImageInfo[i] = reinterpret_cast< const ExeImageInfo* >((u8*)this->mpShaderBinary + *binary);
         
-        if (mExeImageInfo[i]->isGeometryShader){
-            ++mGeometryShaderCount;
+        if (m_ExeImageInfo[i]->isGeometryShader)
+        {
+            ++m_GeometryShaderCount;
         }
         
         ++binary;
@@ -30,21 +33,23 @@ void ShaderBinaryInfo::AnalyzeBinary(){
     this->mpInstruction = static_cast<const u32*>(nw::ut::AddOffsetToPtr(packageInfo, *binary));
     ++binary;
 
-    this->mInstructionCount = *binary;
+    this->m_InstructionCount = *binary;
     ++binary;
 
     const u32* swizzle = static_cast<const u32*>(nw::ut::AddOffsetToPtr(packageInfo, *binary));
     ++binary;
 
-    mSwizzleCount = *binary;
+    m_SwizzleCount = *binary;
     ++binary;
 
-    for (int i = 0; i < mSwizzleCount; i++){
-        mSwizzle[i] = swizzle[i * 2];
+    for (int i = 0; i < m_SwizzleCount; i++)
+    {
+        m_Swizzle[i] = swizzle[i * 2];
     }
 }
 
-s32 ShaderBinaryInfo::GetCommonCommandSize() const{
+s32 ShaderBinaryInfo::GetCommonCommandSize() const
+{
     s32 size = 0;
 
     size += sizeof(u32) * 2;
@@ -55,14 +60,16 @@ s32 ShaderBinaryInfo::GetCommonCommandSize() const{
     return size;
 }
 
-s32 ShaderBinaryInfo::GetShaderProgramCommandSize( s32 vertexIndex, s32 geometryIndex ) const{
+s32 ShaderBinaryInfo::GetShaderProgramCommandSize( s32 vertexIndex, s32 geometryIndex ) const
+{
     s32 size = 0;
     
     size += 2 * sizeof(u32);
     
     size += this->GetConstRegCommandSize( vertexIndex );
     
-    if (geometryIndex >= 0){
+    if (geometryIndex >= 0)
+    {
         size += this->GetConstRegCommandSize( geometryIndex );
     }
     
@@ -71,10 +78,12 @@ s32 ShaderBinaryInfo::GetShaderProgramCommandSize( s32 vertexIndex, s32 geometry
     return size;
 }
 
-s32 ShaderBinaryInfo::GetProgramCommandSize() const{
-    enum { VS_INSTRUCTION_MAX = 512 };
+s32 ShaderBinaryInfo::GetProgramCommandSize() const
+{
+    enum
+{ VS_INSTRUCTION_MAX = 512 };
     
-    u32 vertexInstructionCount = nw::ut::Min(this->mInstructionCount, u32(VS_INSTRUCTION_MAX));
+    u32 vertexInstructionCount = nw::ut::Min(this->m_InstructionCount, u32(VS_INSTRUCTION_MAX));
     
     s32 size = 0;
     
@@ -82,53 +91,61 @@ s32 ShaderBinaryInfo::GetProgramCommandSize() const{
     size += this->GetLoadCommandSize( vertexInstructionCount );
     size += 2 * sizeof(u32);
 
-    if (this->GetGeometryShaderCount() > 0){
+    if (this->GetGeometryShaderCount() > 0)
+    {
         size += 2 * sizeof(u32);
-        size += this->GetLoadCommandSize(this->mInstructionCount);
+        size += this->GetLoadCommandSize(this->m_InstructionCount);
         size += 2 * sizeof(u32);
     }
     
     return size;
 }
 
-s32 ShaderBinaryInfo::GetSwizzleCommandSize() const{
+s32 ShaderBinaryInfo::GetSwizzleCommandSize() const
+{
     s32 size = 0;
     
     size += 2 * sizeof(u32);
-    size += this->GetLoadCommandSize(this->mSwizzleCount);
+    size += this->GetLoadCommandSize(this->m_SwizzleCount);
     
-    if (this->GetGeometryShaderCount() > 0){
+    if (this->GetGeometryShaderCount() > 0)
+    {
         size += 2 * sizeof(u32);
-        size += this->GetLoadCommandSize(this->mSwizzleCount);
+        size += this->GetLoadCommandSize(this->m_SwizzleCount);
     }
     
     return size;
 }
 
-s32 ShaderBinaryInfo::GetPrepareCommandSize() const{
+s32 ShaderBinaryInfo::GetPrepareCommandSize() const
+{
     return 0;
 }
 
-s32 ShaderBinaryInfo::GetConstRegCommandSize(s32 shaderIndex) const{
+s32 ShaderBinaryInfo::GetConstRegCommandSize(s32 shaderIndex) const
+{
     s32 size = 0;
     const s32 INT_COMMAND_SIZE = 2;
     const s32 FLOAT_COMMAND_SIZE = 6;
     
     bool isGeometry = this->IsGeometryShader(shaderIndex);
 
-    const ExeImageInfo* exeInfo = mExeImageInfo[shaderIndex];
+    const ExeImageInfo* exeInfo = m_ExeImageInfo[shaderIndex];
 
-    struct SetupInfo { 
+    struct SetupInfo
+{ 
         u16 type; 
         u16 index; 
         u32 value[4]; 
     };
 
-    enum { TYPE_BOOL = 0, TYPE_INT = 1, TYPE_FLOAT = 2 };
+    enum
+{ TYPE_BOOL = 0, TYPE_INT = 1, TYPE_FLOAT = 2 };
     
     const SetupInfo* setupInfoTable = static_cast<const SetupInfo*>(nw::ut::AddOffsetToPtr(exeInfo, exeInfo->setupOffset));
 
-    for (int i = 0; i < exeInfo->setupCount; ++i){
+    for (int i = 0; i < exeInfo->setupCount; ++i)
+    {
         const SetupInfo& info = setupInfoTable[i];
 
         switch ( info.type )
@@ -149,7 +166,8 @@ s32 ShaderBinaryInfo::GetConstRegCommandSize(s32 shaderIndex) const{
     return size;
 }
 
-s32 ShaderBinaryInfo::GetOutAttrCommandSize(s32 vertexIndex, s32 geometryIndex) const{
+s32 ShaderBinaryInfo::GetOutAttrCommandSize(s32 vertexIndex, s32 geometryIndex) const
+{
     NW_UNUSED_VARIABLE(vertexIndex);
     
     const s32 GEOMETRY_SETTING_COMMAND_SIZE = 8;
@@ -164,17 +182,20 @@ s32 ShaderBinaryInfo::GetOutAttrCommandSize(s32 vertexIndex, s32 geometryIndex) 
     size += geometrySettingCommandSize;
     size += SHADER_PROGRAM_COMMAND_SIZE * sizeof(u32);
     
-    if (hasGeometry){
+    if (hasGeometry)
+    {
         size += GEOMETRY_COMMAND_SIZE * sizeof(u32);
     }
     
     return size;
 }
 
-s32 ShaderBinaryInfo::BuildCommonCommand(u32* bufferAddress, u32 bufferSize) const{
+s32 ShaderBinaryInfo::BuildCommonCommand(u32* bufferAddress, u32 bufferSize) const
+{
     SafeBuffer buffer(bufferAddress, bufferSize);
     
-    if (this->GetGeometryShaderCount() > 0){
+    if (this->GetGeometryShaderCount() > 0)
+    {
         this->PutEnableMirroringShaderSetting(buffer, false);
     }
     else{
@@ -187,10 +208,12 @@ s32 ShaderBinaryInfo::BuildCommonCommand(u32* bufferAddress, u32 bufferSize) con
     return buffer.UsedSize();
 }
 
-void ShaderBinaryInfo::BuildProgramCommand( SafeBuffer& buffer ) const{ 
-    enum { VS_INSTRUCTION_MAX = 512 };
+void ShaderBinaryInfo::BuildProgramCommand( SafeBuffer& buffer ) const
+{ 
+    enum
+{ VS_INSTRUCTION_MAX = 512 };
     
-    u32 vertexInstructionCount = nw::ut::Min(this->mInstructionCount, u32(VS_INSTRUCTION_MAX));
+    u32 vertexInstructionCount = nw::ut::Min(this->m_InstructionCount, u32(VS_INSTRUCTION_MAX));
     
     const u32 VS_COMMAND[] = {
         0, internal::MakeCommandHeader(PICA_REG_VS_PROG_ADDR, 1, false, 0xF)
@@ -206,14 +229,15 @@ void ShaderBinaryInfo::BuildProgramCommand( SafeBuffer& buffer ) const{
     
     buffer.Write(&VS_RENEWAL_COMMAND[0], sizeof(VS_RENEWAL_COMMAND));
     
-    if (this->GetGeometryShaderCount() > 0){
+    if (this->GetGeometryShaderCount() > 0)
+    {
         const u32 GS_COMMAND[] = {
             0, internal::MakeCommandHeader(PICA_REG_GS_PROG_ADDR, 1, false, 0xF)
         };
         
         buffer.Write( &GS_COMMAND[0], sizeof(GS_COMMAND) );
 
-        this->PutLoadCommand(buffer, PICA_REG_GS_PROG_DATA0,&this->mpInstruction[0],this->mInstructionCount);
+        this->PutLoadCommand(buffer, PICA_REG_GS_PROG_DATA0,&this->mpInstruction[0],this->m_InstructionCount);
         
         const u32 GS_RENEWAL_COMMAND[] = {
             1,internal::MakeCommandHeader(PICA_REG_GS_PROG_RENEWAL_END, 1, false, 0xF)
@@ -223,7 +247,8 @@ void ShaderBinaryInfo::BuildProgramCommand( SafeBuffer& buffer ) const{
     }
 }
 
-void ShaderBinaryInfo::BuildSwizzleCommand(SafeBuffer& buffer) const{
+void ShaderBinaryInfo::BuildSwizzleCommand(SafeBuffer& buffer) const
+{
     
     const u32 COMMAND[] = {
         0, internal::MakeCommandHeader(PICA_REG_VS_PROG_SWIZZLE_ADDR, 1, false, 0xF)
@@ -231,24 +256,26 @@ void ShaderBinaryInfo::BuildSwizzleCommand(SafeBuffer& buffer) const{
     
     buffer.Write(&COMMAND[0], sizeof(COMMAND));
     
-    NW_ASSERT(this->mSwizzleCount > 0);
+    NW_ASSERT(this->m_SwizzleCount > 0);
 
-    this->PutLoadCommand(buffer,PICA_REG_VS_PROG_SWIZZLE_DATA0,&this->mSwizzle[0],this->mSwizzleCount);
+    this->PutLoadCommand(buffer,PICA_REG_VS_PROG_SWIZZLE_DATA0,&this->m_Swizzle[0],this->m_SwizzleCount);
     
-    if (this->GetGeometryShaderCount() > 0){
+    if (this->GetGeometryShaderCount() > 0)
+    {
         const u32 GS_COMMAND[] = {
             0, internal::MakeCommandHeader( PICA_REG_GS_PROG_SWIZZLE_ADDR, 1, false, 0xF )
         };
 
         buffer.Write(&GS_COMMAND[0], sizeof(GS_COMMAND));
         
-        NW_ASSERT(this->mSwizzleCount > 0);
+        NW_ASSERT(this->m_SwizzleCount > 0);
 
-        this->PutLoadCommand(buffer,PICA_REG_GS_PROG_SWIZZLE_DATA0,&this->mSwizzle[0],this->mSwizzleCount );
+        this->PutLoadCommand(buffer,PICA_REG_GS_PROG_SWIZZLE_DATA0,&this->m_Swizzle[0],this->m_SwizzleCount );
     }
 }
 
-s32 ShaderBinaryInfo::BuildShaderProgramCommand(s32 vertexIndex, s32 geometryIndex, u32* bufferAddress, u32 bufferSize) const{
+s32 ShaderBinaryInfo::BuildShaderProgramCommand(s32 vertexIndex, s32 geometryIndex, u32* bufferAddress, u32 bufferSize) const
+{
     SafeBuffer buffer(bufferAddress, bufferSize);
     
     NW_ASSERT(! this->IsGeometryShader( vertexIndex ));
@@ -256,7 +283,8 @@ s32 ShaderBinaryInfo::BuildShaderProgramCommand(s32 vertexIndex, s32 geometryInd
     NW_ASSERT(geometryIndex < 0 || this->IsGeometryShader(geometryIndex));
     NW_ASSERT(geometryIndex < this->GetShaderCount());
     
-    if (geometryIndex < 0){
+    if (geometryIndex < 0)
+    {
         this->PutEnableMirroringShaderSetting(buffer, true);
     }
     else{
@@ -265,7 +293,8 @@ s32 ShaderBinaryInfo::BuildShaderProgramCommand(s32 vertexIndex, s32 geometryInd
 
     this->BuildConstRegCommand( buffer, vertexIndex );
     
-    if (geometryIndex >= 0){
+    if (geometryIndex >= 0)
+    {
         this->BuildConstRegCommand( buffer, geometryIndex );
     }
     
@@ -274,35 +303,41 @@ s32 ShaderBinaryInfo::BuildShaderProgramCommand(s32 vertexIndex, s32 geometryInd
     return buffer.UsedSize();
 }
 
-void ShaderBinaryInfo::BuildConstRegCommand(SafeBuffer& buffer, s32 shaderIndex) const{
+void ShaderBinaryInfo::BuildConstRegCommand(SafeBuffer& buffer, s32 shaderIndex) const
+{
     bool isGeometry = this->IsGeometryShader(shaderIndex);
     
     u32 regFloat    = PICA_REG_VS_FLOAT_ADDR;
     u32 regInteger  = PICA_REG_VS_INT0;
 
-    if (isGeometry){
+    if (isGeometry)
+    {
         regFloat    = PICA_REG_GS_FLOAT_ADDR;
         regInteger  = PICA_REG_GS_INT0;
     }
 
-    const ExeImageInfo* exeInfo = this->mExeImageInfo[shaderIndex];
+    const ExeImageInfo* exeInfo = this->m_ExeImageInfo[shaderIndex];
 
-    struct SetupInfo { 
+    struct SetupInfo
+{ 
         u16 type; 
         u16 index; 
         u32 value[4]; 
     };
 
-    enum { TYPE_BOOL = 0, TYPE_INT = 1, TYPE_FLOAT = 2 };
+    enum
+{ TYPE_BOOL = 0, TYPE_INT = 1, TYPE_FLOAT = 2 };
     
     const SetupInfo* setupInfoTable = 
         static_cast<const SetupInfo*>(nw::ut::AddOffsetToPtr( exeInfo, exeInfo->setupOffset) );
 
-    for (int i = 0; i < exeInfo->setupCount; ++i){
+    for (int i = 0; i < exeInfo->setupCount; ++i)
+    {
         const SetupInfo& info = setupInfoTable[ i ];
         const u32* value = info.value;
 
-        switch ( info.type ){
+        switch ( info.type )
+        {
         case TYPE_BOOL:
             break;
 
@@ -332,7 +367,8 @@ void ShaderBinaryInfo::BuildConstRegCommand(SafeBuffer& buffer, s32 shaderIndex)
     }
 }
 
-void ShaderBinaryInfo::BuildOutAttrCommand(SafeBuffer& buffer, s32 vertexIndex, s32 geometryIndex) const{
+void ShaderBinaryInfo::BuildOutAttrCommand(SafeBuffer& buffer, s32 vertexIndex, s32 geometryIndex) const
+{
     bool hasGeometry = geometryIndex >= 0;
     
     u32 vertexOutputMask;
@@ -358,8 +394,10 @@ void ShaderBinaryInfo::BuildOutAttrCommand(SafeBuffer& buffer, s32 vertexIndex, 
         0x00000000, 0x00020289, 
     };
     
-    if (hasGeometry){
-        enum { IDX_REG_252 = 0, IDX_REG_254 = 2, IDX_REG_229 = 4, IDX_REG_289 = 6 };
+    if (hasGeometry)
+    {
+        enum
+{ IDX_REG_252 = 0, IDX_REG_254 = 2, IDX_REG_229 = 4, IDX_REG_289 = 6 };
         
         geometryInputNum = vertexOutputNum;
         geometryEntry = this->GetEntryAddress( geometryIndex );
@@ -368,7 +406,8 @@ void ShaderBinaryInfo::BuildOutAttrCommand(SafeBuffer& buffer, s32 vertexIndex, 
         
         GEOMETRY_SETTING_COMMAND[IDX_REG_252] |= geometryMode & 0x3;
         
-        switch (geometryMode){
+        switch (geometryMode)
+        {
         case 0:
             break;
         case 1:{
@@ -416,7 +455,8 @@ void ShaderBinaryInfo::BuildOutAttrCommand(SafeBuffer& buffer, s32 vertexIndex, 
     buffer.Write(&GEOMETRY_SETTING_COMMAND[0], geometrySettingCommandSize);
     buffer.Write(&SHADER_PROGRAM_COMMAND[0], sizeof(SHADER_PROGRAM_COMMAND));
     
-    if (hasGeometry){
+    if (hasGeometry)
+    {
         const u32 GEOMETRY_COMMAND[] ={
             shaderOutputMask, 0x000f028d,
             0x08000000 | (geometryInputNum - 1), 0x00090289,
@@ -427,7 +467,8 @@ void ShaderBinaryInfo::BuildOutAttrCommand(SafeBuffer& buffer, s32 vertexIndex, 
     }
 }
 
-void ShaderBinaryInfo::PutEnableMirroringShaderSetting(SafeBuffer& buffer, bool enableMirroring) const{
+void ShaderBinaryInfo::PutEnableMirroringShaderSetting(SafeBuffer& buffer, bool enableMirroring) const
+{
     const u32 COMMAND[] ={
         enableMirroring ? 0 : 1, internal::MakeCommandHeader(PICA_REG_VS_COM_MODE, 1, false, 0x1)
     };
@@ -435,13 +476,16 @@ void ShaderBinaryInfo::PutEnableMirroringShaderSetting(SafeBuffer& buffer, bool 
     buffer.Write(&COMMAND[0], sizeof(COMMAND));
 }
 
-void ShaderBinaryInfo::PutLoadCommand(SafeBuffer& buffer, u32 regAddr, const u32* src, u32 count) const{
-    enum { WRITE_MAX = 128 };
+void ShaderBinaryInfo::PutLoadCommand(SafeBuffer& buffer, u32 regAddr, const u32* src, u32 count) const
+{
+    enum
+{ WRITE_MAX = 128 };
 
     u32 restCount = count;
     u32 index = 0;
     
-    while (true){
+    while (true)
+    {
         u32 countPerCommand = nw::ut::Min(restCount, u32(WRITE_MAX));
         
         const u32 COMMAND[] = {
@@ -451,38 +495,45 @@ void ShaderBinaryInfo::PutLoadCommand(SafeBuffer& buffer, u32 regAddr, const u32
         buffer.Write(&COMMAND[0], sizeof(COMMAND));
         buffer.Write(&src[index + 1], (countPerCommand - 1) * sizeof(u32));
         
-        if ((countPerCommand % 2) == 0){
+        if ((countPerCommand % 2) == 0)
+        {
             buffer.Write(0);
         }
         
         index += countPerCommand;
         restCount -= countPerCommand;
         
-        if (restCount == 0){
+        if (restCount == 0)
+        {
             break;
         }
     }
 }
 
-s32 ShaderBinaryInfo::GetLoadCommandSize(u32 count) const{
-    enum { WRITE_MAX = 128 };
+s32 ShaderBinaryInfo::GetLoadCommandSize(u32 count) const
+{
+    enum
+{ WRITE_MAX = 128 };
     
     s32 commandSize = 0;
     u32 restCount = count;
     
-    while (true){
+    while (true)
+    {
         u32 countPerCommand = nw::ut::Min( restCount, u32(WRITE_MAX) );
         
         commandSize += 2 * sizeof(u32);
         commandSize += (countPerCommand - 1) * sizeof(u32);
         
-        if ((countPerCommand % 2) == 0){
+        if ((countPerCommand % 2) == 0)
+        {
             commandSize += sizeof(u32);
         }
         
         restCount -= countPerCommand;
         
-        if (restCount == 0){
+        if (restCount == 0)
+        {
             break;
         }
     }

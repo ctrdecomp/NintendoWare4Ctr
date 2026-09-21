@@ -9,22 +9,26 @@ namespace nw  {
 namespace gfx {
 namespace res {
 
-struct ResParticleAnimationData{
+struct ResParticleAnimationData
+{
     nw::ut::ResTypeInfo typeInfo;
     nw::ut::Offset toParticleAnimationOption;
-    nw::ut::ResS32 mAnimationLength;
-    nw::ut::ResS32 mAnimationDimension;
-    nw::ut::ResS32 mAnimationStride;
-    nw::ut::ResS32 mAnimationEnabledTableCount;
+    nw::ut::ResS32 m_AnimationLength;
+    nw::ut::ResS32 m_AnimationDimension;
+    nw::ut::ResS32 m_AnimationStride;
+    nw::ut::ResS32 m_AnimationEnabledTableCount;
     nw::ut::Offset toAnimationEnabledTable;
-    nw::ut::ResS32 mAnimationDataTableCount;
+    nw::ut::ResS32 m_AnimationDataTableCount;
     nw::ut::Offset toAnimationDataTable;
 };
 
-class ResParticleAnimation : public nw::ut::ResCommon<ResParticleAnimationData>{
+class ResParticleAnimation : public nw::ut::ResCommon<ResParticleAnimationData>
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleAnimation) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('ANIM') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleAnimation) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('ANIM') };
 
     NW_RES_CTOR( ResParticleAnimation )
 

@@ -8,12 +8,14 @@ namespace nw {
 namespace gfx {
 namespace res {
 
-struct ResParticleAttributeData{
+struct ResParticleAttributeData
+{
     nw::ut::ResTypeInfo typeInfo;
-    nw::ut::ResS32 mUsage;
+    nw::ut::ResS32 m_Usage;
 };
 
-class ResParticleAttribute : public nw::ut::ResCommon< ResParticleAttributeData >{
+class ResParticleAttribute : public nw::ut::ResCommon< ResParticleAttributeData >
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleAttribute) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('PSAT') };
@@ -30,7 +32,8 @@ struct ResParticleStreamAttributeData : public ResParticleAttributeData
 {
 };
 
-class ResParticleStreamAttribute : public ResParticleAttribute{
+class ResParticleStreamAttribute : public ResParticleAttribute
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleStreamAttribute) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('PSST') };
@@ -38,13 +41,15 @@ public:
     NW_RES_CTOR_INHERIT( ResParticleStreamAttribute, ResParticleAttribute )
 };
 
-struct ResParticleParameterAttributeData : public ResParticleAttributeData{
-    nw::ut::ResS32 mDimension;
-    nw::ut::ResS32 mDataTableCount;
+struct ResParticleParameterAttributeData : public ResParticleAttributeData
+{
+    nw::ut::ResS32 m_Dimension;
+    nw::ut::ResS32 m_DataTableCount;
     nw::ut::Offset toDataTable;
 };
 
-class ResParticleParameterAttribute : public ResParticleAttribute{
+class ResParticleParameterAttribute : public ResParticleAttribute
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleParameterAttribute) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('PSPA') };
@@ -57,13 +62,15 @@ public:
     nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
 };
 
-struct ResParticleCollectionData{
-    nw::ut::ResS32 mCapacity;
-    nw::ut::ResS32 mAttributesTableCount;
+struct ResParticleCollectionData
+{
+    nw::ut::ResS32 m_Capacity;
+    nw::ut::ResS32 m_AttributesTableCount;
     nw::ut::Offset toAttributesTable;
 };
 
-class ResParticleCollection : public nw::ut::ResCommon< ResParticleCollectionData >{
+class ResParticleCollection : public nw::ut::ResCommon< ResParticleCollectionData >
+{
 public:
     NW_RES_CTOR( ResParticleCollection )
 

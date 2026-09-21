@@ -18,69 +18,74 @@ namespace res {
 
 class ResGraphicsFile;
 
-struct ResTextureData : public ResSceneObjectData{};
+struct ResTextureData : public ResSceneObjectData
+{};
 
-struct ResPixelBasedTextureData : public ResTextureData{
-    nw::ut::ResS32 mHeight;
-    nw::ut::ResS32 mWidth;
-    nw::ut::ResU32 mFormat;
-    nw::ut::ResU32 mFormatType;
-    nw::ut::ResS32 mMipmapSize;
-    nw::ut::ResU32 mTextureObject;
-    nw::ut::ResU32 mLocationFlag;
-    nw::ut::ResU32 mFormatHW;
+struct ResPixelBasedTextureData : public ResTextureData
+{
+    nw::ut::ResS32 m_Height;
+    nw::ut::ResS32 m_Width;
+    nw::ut::ResU32 m_Format;
+    nw::ut::ResU32 m_FormatType;
+    nw::ut::ResS32 m_MipmapSize;
+    nw::ut::ResU32 m_TextureObject;
+    nw::ut::ResU32 m_LocationFlag;
+    nw::ut::ResU32 m_FormatHW;
 };
 
-struct ResPixelBasedImageData{
-    enum{
+struct ResPixelBasedImageData
+{
+    enum
+    {
         AREA_NO_MALLOC = 0,
         AREA_VRAMA     = NN_GX_MEM_VRAMA,
         AREA_VRAMB     = NN_GX_MEM_VRAMB
     };
 
-    nw::ut::ResS32       mHeight;
-    nw::ut::ResS32       mWidth;
-    nw::ut::ResS32       mImageDataTableCount;
-    nw::ut::Offset       toImageDataTable;
-    nw::os::IAllocator*  mDynamicAllocator;
-    u32                  mBitsPerPixel;
-    u32                  mLocationAddress;
-    u32                  mMemoryArea;
+    nw::ut::ResS32 m_Height;
+    nw::ut::ResS32 m_Width;
+    nw::ut::ResS32 m_ImageDataTableCount;
+    nw::ut::Offset toImageDataTable;
+    nw::os::IAllocator*  m_DynamicAllocator;
+    u32 m_BitsPerPixel;
+    u32 m_LocationAddress;
+    u32                  m_MemoryArea;
 };
 
-struct ResImageTextureData : public ResPixelBasedTextureData{
+struct ResImageTextureData : public ResPixelBasedTextureData
+{
     nw::ut::Offset toImage;
 };
 
-struct ResCubeTextureData : public ResPixelBasedTextureData{
+struct ResCubeTextureData : public ResPixelBasedTextureData
+{
     enum { MAX_CUBE_FACE = 6 };
 
-    union{
-        struct{
-            nw::ut::Offset toPositiveXImage;
-            nw::ut::Offset toNegativeXImage;
-            nw::ut::Offset toPositiveYImage;
-            nw::ut::Offset toNegativeYImage;
-            nw::ut::Offset toPositiveZImage;
-            nw::ut::Offset toNegativeZImage;
-        };
-        nw::ut::Offset toImagesTables[MAX_CUBE_FACE];
-    };
+    nw::ut::Offset toPositiveXImage;
+    nw::ut::Offset toNegativeXImage;
+    nw::ut::Offset toPositiveYImage;
+    nw::ut::Offset toNegativeYImage;
+    nw::ut::Offset toPositiveZImage;
+    nw::ut::Offset toNegativeZImage;
+    nw::ut::Offset toImagesTables[MAX_CUBE_FACE];
 };
 
-struct ResShadowTextureData : public ResPixelBasedTextureData{
+struct ResShadowTextureData : public ResPixelBasedTextureData
+{
     nw::ut::Offset  toImage;
-    nw::ut::ResBool mIsPerspectiveShadow;
-    nw::ut::ResF32  mShadowZBias;
-    nw::ut::ResF32  mShadowZScale;
+    nw::ut::ResBool m_IsPerspectiveShadow;
+    nw::ut::ResF32  m_ShadowZBias;
+    nw::ut::ResF32  m_ShadowZScale;
 };
 
-struct ResReferenceTextureData : public ResTextureData{
+struct ResReferenceTextureData : public ResTextureData
+{
     nw::ut::BinString toPath;
     nw::ut::Offset    toTargetTexture;
 };
 
-class ResTexture : public ResSceneObject{
+class ResTexture : public ResSceneObject
+{
 public:
     enum { TYPE_INFO       = NW_GFX_RES_TYPE_INFO(ResTexture) };
     enum { SIGNATURE       = NW_RES_SIGNATURE32('TXOB') };
@@ -100,7 +105,8 @@ public:
 
 typedef nw::ut::ResArrayPatricia<ResTexture>::type ResTextureArray;
 
-class ResPixelBasedTexture : public ResTexture{
+class ResPixelBasedTexture : public ResTexture
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResPixelBasedTexture) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('TXPB') };
@@ -115,7 +121,8 @@ public:
     NW_RES_FIELD_PRIMITIVE_DECL(u32, LocationFlag)
     NW_RES_FIELD_PRIMITIVE_DECL(u32, FormatHW)
 
-    enum FormatHW{
+    enum FormatHW
+    {
         FORMAT_HW_RGBA8    = 0,
         FORMAT_HW_RGB8     = 1,
         FORMAT_HW_RGBA5551 = 2,
@@ -133,7 +140,8 @@ public:
     };
 };
 
-class ResPixelBasedImage : public nw::ut::ResCommon<ResPixelBasedImageData>{
+class ResPixelBasedImage : public nw::ut::ResCommon<ResPixelBasedImageData>
+{
 public:
     NW_RES_CTOR(ResPixelBasedImage)
 
@@ -141,12 +149,13 @@ public:
     NW_RES_FIELD_PRIMITIVE_DECL(s32, Width)
     NW_RES_FIELD_PRIMITIVE_LIST_DECL(u8, ImageData)
 
-    u32  GetLocationAddress() const { return ref().mLocationAddress; }
-    void SetLocationAddress(u32 address) { ref().mLocationAddress = address; }
-    void SetLocationAddress(const void* address) { ref().mLocationAddress = reinterpret_cast<u32>(address); }
-    u32  GetBitsPerPixel() const { return ref().mBitsPerPixel; }
+    u32  GetLocationAddress() const { return ref().m_LocationAddress; }
+    void SetLocationAddress(u32 address) { ref().m_LocationAddress = address; }
+    void SetLocationAddress(const void* address) { ref().m_LocationAddress = reinterpret_cast<u32>(address); }
+    u32  GetBitsPerPixel() const { return ref().m_BitsPerPixel; }
 
-    u32 GetImageAddress() const{
+    u32 GetImageAddress() const
+    {
         u32 locationAddress = this->GetLocationAddress();
         if (locationAddress)
             return locationAddress;
@@ -160,7 +169,8 @@ public:
 typedef nw::ut::ResArrayClass<ResPixelBasedImage>::type       ResPixelBasedImageArray;
 typedef nw::ut::ResArrayClass<const ResPixelBasedImage>::type ResPixelBasedImageArrayConst;
 
-class ResImageTexture : public ResPixelBasedTexture{
+class ResImageTexture : public ResPixelBasedTexture
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResImageTexture) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('TXIM') };
@@ -173,7 +183,8 @@ public:
     void SetLocationAddress(u32 address) { this->GetImage().SetLocationAddress(address); }
     void SetLocationAddress(const void* address) { this->GetImage().SetLocationAddress(address); }
 
-    struct Description{
+    struct Description
+    {
         s32  height;
         s32  width;
         s32  mipmapSize;
@@ -191,36 +202,38 @@ public:
             locationAddress(0),
             formatHW(ResPixelBasedTexture::FORMAT_HW_RGBA8),
             executingMemoryFill(false),
-            isDynamicAllocation(true)
-        {}
+            isDynamicAllocation(true) {}
     };
 
-    class DynamicBuilder{
+    class DynamicBuilder
+    {
     public:
         DynamicBuilder() {}
         ~DynamicBuilder() {}
 
-        DynamicBuilder& Height(s32 height)                          { mDescription.height = height; return *this; }
-        DynamicBuilder& Width(s32 width)                            { mDescription.width = width; return *this; }
-        DynamicBuilder& MipmapSize(s32 mipmapSize)                  { mDescription.mipmapSize = mipmapSize; return *this; }
-        DynamicBuilder& LocationFlag(u32 locationFlag)              { mDescription.locationFlag = locationFlag; return *this; }
-        DynamicBuilder& LocationAddress(u32 locationAddress)        { mDescription.locationAddress = locationAddress; return *this; }
-        DynamicBuilder& Format(ResPixelBasedTexture::FormatHW fmt)  { mDescription.formatHW = static_cast<u32>(fmt); return *this; }
-        DynamicBuilder& ExecutingMemoryFill(bool v)                 { mDescription.executingMemoryFill = v; return *this; }
-        DynamicBuilder& DynamicAllocation(bool v)                   { mDescription.isDynamicAllocation = v; return *this; }
+        DynamicBuilder& Height(s32 height) { m_Description.height = height; return *this; }
+        DynamicBuilder& Width(s32 width) { m_Description.width = width; return *this; }
+        DynamicBuilder& MipmapSize(s32 mipmapSize) { m_Description.mipmapSize = mipmapSize; return *this; }
+        DynamicBuilder& LocationFlag(u32 locationFlag) { m_Description.locationFlag = locationFlag; return *this; }
+        DynamicBuilder& LocationAddress(u32 locationAddress) { m_Description.locationAddress = locationAddress; return *this; }
+        DynamicBuilder& Format(ResPixelBasedTexture::FormatHW fmt) { m_Description.formatHW = static_cast<u32>(fmt); return *this; }
+        DynamicBuilder& ExecutingMemoryFill(bool v) { m_Description.executingMemoryFill = v; return *this; }
+        DynamicBuilder& DynamicAllocation(bool v) { m_Description.isDynamicAllocation = v; return *this; }
 
         ResImageTexture Create(nw::os::IAllocator* allocator);
 
     private:
-        Description mDescription;
+        Description m_Description;
     };
 
     void DynamicDestroy();
 };
 
-class ResCubeTexture : public ResPixelBasedTexture{
+class ResCubeTexture : public ResPixelBasedTexture
+{
 public:
-    enum CubeFace{
+    enum CubeFace
+    {
         CUBE_FACE_POSITIVE_X = 0,
         CUBE_FACE_NEGATIVE_X,
         CUBE_FACE_POSITIVE_Y,
@@ -244,11 +257,14 @@ public:
 
     s32 GetCubeFaceCount() const { return MAX_CUBE_FACE; }
 
-    ResPixelBasedImage GetImage(CubeFace face){
+    ResPixelBasedImage GetImage(CubeFace face)
+    {
         NW_ASSERT(0 <= face && face < MAX_CUBE_FACE);
         return ResPixelBasedImage(ref().toImagesTables[face].to_ptr());
     }
-    const ResPixelBasedImage GetImage(CubeFace face) const{
+
+    const ResPixelBasedImage GetImage(CubeFace face) const
+    {
         NW_ASSERT(0 <= face && face < MAX_CUBE_FACE);
         return ResPixelBasedImage(ref().toImagesTables[face].to_ptr());
     }
@@ -257,7 +273,8 @@ public:
     void SetLocationAddress(CubeFace face, u32 address) { this->GetImage(face).SetLocationAddress(address); }
     void SetLocationAddress(CubeFace face, const void* address) { this->GetImage(face).SetLocationAddress(address); }
 
-    struct Description{
+    struct Description
+    {
         s32  width;
         s32  mipmapSize;
         u32  locationFlag;
@@ -273,38 +290,41 @@ public:
             formatHW(ResPixelBasedTexture::FORMAT_HW_RGBA8),
             executingMemoryFill(false),
             isDynamicAllocation(true)
-        {
+            {
             for (int i = 0; i < MAX_CUBE_FACE; ++i)
                 locationAddress[i] = 0;
         }
     };
 
-    class DynamicBuilder{
+    class DynamicBuilder
+    {
     public:
         DynamicBuilder() {}
         ~DynamicBuilder() {}
 
-        DynamicBuilder& Width(s32 width)                                               { mDescription.width = width; return *this; }
-        DynamicBuilder& MipmapSize(s32 mipmapSize)                                     { mDescription.mipmapSize = mipmapSize; return *this; }
-        DynamicBuilder& LocationFlag(u32 locationFlag)                                 { mDescription.locationFlag = locationFlag; return *this; }
-        DynamicBuilder& LocationAddress(CubeFace face, u32 locationAddress){
-            mDescription.locationAddress[face] = locationAddress;
+        DynamicBuilder& Width(s32 width) { m_Description.width = width; return *this; }
+        DynamicBuilder& MipmapSize(s32 mipmapSize) { m_Description.mipmapSize = mipmapSize; return *this; }
+        DynamicBuilder& LocationFlag(u32 locationFlag) { m_Description.locationFlag = locationFlag; return *this; }
+        DynamicBuilder& LocationAddress(CubeFace face, u32 locationAddress)
+        {
+            m_Description.locationAddress[face] = locationAddress;
             return *this;
         }
-        DynamicBuilder& Format(ResPixelBasedTexture::FormatHW fmt)                     { mDescription.formatHW = static_cast<u32>(fmt); return *this; }
-        DynamicBuilder& ExecutingMemoryFill(bool v)                                    { mDescription.executingMemoryFill = v; return *this; }
-        DynamicBuilder& DynamicAllocation(bool v)                                      { mDescription.isDynamicAllocation = v; return *this; }
+        DynamicBuilder& Format(ResPixelBasedTexture::FormatHW fmt) { m_Description.formatHW = static_cast<u32>(fmt); return *this; }
+        DynamicBuilder& ExecutingMemoryFill(bool v) { m_Description.executingMemoryFill = v; return *this; }
+        DynamicBuilder& DynamicAllocation(bool v) { m_Description.isDynamicAllocation = v; return *this; }
 
         ResCubeTexture Create(nw::os::IAllocator* allocator);
 
     private:
-        Description mDescription;
+        Description m_Description;
     };
 
     void DynamicDestroy();
 };
 
-class ResShadowTexture : public ResPixelBasedTexture{
+class ResShadowTexture : public ResPixelBasedTexture
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResShadowTexture) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('TXSH') };
@@ -320,7 +340,8 @@ public:
     void SetLocationAddress(u32 address) { this->GetImage().SetLocationAddress(address); }
     void SetLocationAddress(const void* address) { this->GetImage().SetLocationAddress(address); }
 
-    struct Description{
+    struct Description
+    {
         s32  height;
         s32  width;
         u32  locationFlag;
@@ -340,35 +361,36 @@ public:
             isPerspectiveShadow(true),
             shadowZBias(0.0f),
             shadowZScale(1.0f),
-            isDynamicAllocation(false)
-        {}
+            isDynamicAllocation(false) {}
     };
 
-    class DynamicBuilder{
+    class DynamicBuilder
+    {
     public:
         DynamicBuilder() {}
         ~DynamicBuilder() {}
 
-        DynamicBuilder& Height(s32 height)                          { mDescription.height = height; return *this; }
-        DynamicBuilder& Width(s32 width)                            { mDescription.width = width; return *this; }
-        DynamicBuilder& LocationFlag(u32 locationFlag)              { mDescription.locationFlag = locationFlag; return *this; }
-        DynamicBuilder& LocationAddress(u32 locationAddress)        { mDescription.locationAddress = locationAddress; return *this; }
-        DynamicBuilder& ExecutingMemoryFill(bool v)                 { mDescription.executingMemoryFill = v; return *this; }
-        DynamicBuilder& PerspectiveShadow(bool v)                   { mDescription.isPerspectiveShadow = v; return *this; }
-        DynamicBuilder& ShadowZBias(f32 v)                          { mDescription.shadowZBias = v; return *this; }
-        DynamicBuilder& ShadowZScale(f32 v)                         { mDescription.shadowZScale = v; return *this; }
-        DynamicBuilder& DynamicAllocation(bool v)                   { mDescription.isDynamicAllocation = v; return *this; }
+        DynamicBuilder& Height(s32 height) { m_Description.height = height; return *this; }
+        DynamicBuilder& Width(s32 width) { m_Description.width = width; return *this; }
+        DynamicBuilder& LocationFlag(u32 locationFlag) { m_Description.locationFlag = locationFlag; return *this; }
+        DynamicBuilder& LocationAddress(u32 locationAddress) { m_Description.locationAddress = locationAddress; return *this; }
+        DynamicBuilder& ExecutingMemoryFill(bool v) { m_Description.executingMemoryFill = v; return *this; }
+        DynamicBuilder& PerspectiveShadow(bool v) { m_Description.isPerspectiveShadow = v; return *this; }
+        DynamicBuilder& ShadowZBias(f32 v) { m_Description.shadowZBias = v; return *this; }
+        DynamicBuilder& ShadowZScale(f32 v) { m_Description.shadowZScale = v; return *this; }
+        DynamicBuilder& DynamicAllocation(bool v) { m_Description.isDynamicAllocation = v; return *this; }
 
         ResShadowTexture Create(nw::os::IAllocator* allocator);
 
     private:
-        Description mDescription;
+        Description m_Description;
     };
 
     void DynamicDestroy();
 };
 
-class ResReferenceTexture : public ResTexture{
+class ResReferenceTexture : public ResTexture
+{
 public:
     enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResReferenceTexture) };
     enum { SIGNATURE = NW_RES_SIGNATURE32('TXRF') };
@@ -379,7 +401,8 @@ public:
     NW_RES_FIELD_CLASS_DECL(ResTexture, TargetTexture)
 };
 
-inline ResTexture ResTexture::Dereference(){
+inline ResTexture ResTexture::Dereference()
+{
     NW_ASSERT(this->IsValid());
     if (this->ref().typeInfo == ResReferenceTexture::TYPE_INFO)
         return nw::ut::ResStaticCast<ResReferenceTexture>(*this).GetTargetTexture();
@@ -387,7 +410,8 @@ inline ResTexture ResTexture::Dereference(){
         return *this;
 }
 
-inline const ResTexture ResTexture::Dereference() const{
+inline const ResTexture ResTexture::Dereference() const
+{
     NW_ASSERT(this->IsValid());
     if (this->ref().typeInfo == ResReferenceTexture::TYPE_INFO)
         return nw::ut::ResStaticCast<ResReferenceTexture>(*this).GetTargetTexture();

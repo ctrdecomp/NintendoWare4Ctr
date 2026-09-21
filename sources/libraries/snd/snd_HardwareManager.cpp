@@ -18,12 +18,14 @@ const BiquadFilterBpf1024 HardwareManager::BIQUAD_FILTER_BPF_1024;
 const BiquadFilterBpf2048 HardwareManager::BIQUAD_FILTER_BPF_2048;
 
 HardwareManager::HardwareManager():
-    m_IsInitialized(false), m_OutputMode(OUTPUT_MODE_STEREO), m_SrcType(SRC_TYPE_4TAP)
-{
+    m_IsInitialized(false), 
+    m_OutputMode(OUTPUT_MODE_STEREO), 
+    m_SrcType(SRC_TYPE_4TAP)
+    {
     m_MasterVolume.InitValue(0);
     m_VolumeForReset.InitValue(0);
 
-    for(s32 i = 0; i < AUX_BUS_NUM; i++)
+    for (s32 i = 0; i < AUX_BUS_NUM; i++)
     {
         m_AuxFadeVolume[i].InitValue(1.0f);
         m_AuxUserVolume[i].InitValue(1.0f);
@@ -35,18 +37,18 @@ HardwareManager::HardwareManager():
 
 void HardwareManager::Initialize()
 {
-    if(m_IsInitialized)
+    if (m_IsInitialized)
     {
         return;
     }
 
-    for(s32 i = 0; i < AUX_BUS_NUM; i++)
+    for (s32 i = 0; i < AUX_BUS_NUM; i++)
     {
         nn::snd::CTR::GetAuxCallback(static_cast<nn::snd::CTR::AuxBusId>(i), &m_AuxCallback[i], &m_AuxCallbackContext[i]);
         nn::snd::CTR::RegisterAuxCallback(static_cast<nn::snd::CTR::AuxBusId>(i), NULL, 0);
     }
 
-    for(s32 j = 0; j < SOUND_BIQAUDS_COUNT; j += AUX_BUS_NUM)
+    for (s32 j = 0; j < SOUND_BIQAUDS_COUNT; j += AUX_BUS_NUM)
     {
         m_BiquadFilterCallbackTable[j] = NULL;
     }
@@ -59,7 +61,7 @@ void HardwareManager::Initialize()
 
     nn::snd::CTR::SetMasterVolume(1.0f);
     nn::snd::CTR::OutputMode mode = nn::snd::CTR::GetSoundOutputMode();
-    switch(mode)
+    switch (mode)
     {
     case OUTPUT_MODE_MONO:
         m_OutputMode = OUTPUT_MODE_MONO;
@@ -80,12 +82,12 @@ void HardwareManager::Initialize()
 
 void HardwareManager::Finalize()
 {
-    if(m_IsInitialized == false)
+    if (m_IsInitialized == false)
     {
         return;
     }
 
-    for(s32 i = 0; i < AUX_BUS_NUM; i++)
+    for (s32 i = 0; i < AUX_BUS_NUM; i++)
     {
         FinalizeEffect(static_cast<AuxBus>(i));
         nn::snd::CTR::GetAuxCallback(static_cast<nn::snd::CTR::AuxBusId>(i), &m_AuxCallback[i], &m_AuxCallbackContext[i]);
@@ -146,11 +148,11 @@ void HardwareManager::Update()
 void HardwareManager::SetMasterVolume(float volume, int fadeTimes)
 {
     m_MasterVolume.SetTarget(0.0f, (fadeTimes + SOUND_FRAME_INTERVAL_MSEC - 1) / SOUND_FRAME_INTERVAL_MSEC);
-    if(fadeTimes != 0)
+    if (fadeTimes != 0)
     {
         return;
     }
-{
+    {
     DriverCommandManager& cmdmgr = DriverCommandManager::GetInstance();
     DriverCommandAllVoicesSync* command = cmdmgr.AllocCommand<DriverCommandAllVoicesSync>();
     command->id = DRIVER_COMMAND_SET_MASTER_VOLUME;
@@ -162,7 +164,7 @@ void HardwareManager::SetMasterVolume(float volume, int fadeTimes)
 
 void HardwareManager::SetBiquadFilterCallback(int type, const BiquadFilterCallback* callback)
 {
-    if(type != BIQUAD_FILTER_TYPE_INHERIT)
+    if (type != BIQUAD_FILTER_TYPE_INHERIT)
     {
         m_BiquadFilterCallbackTable[type] = callback;
     }
@@ -217,7 +219,7 @@ void HardwareManager::SetOutputMode(OutputMode mode)
 
 bool HardwareManager::AppendEffect(AuxBus bus, FxBase* pFx)
 {
-    if(m_AuxFadeVolume[bus].IsFinished())
+    if (m_AuxFadeVolume[bus].IsFinished())
     {
         FinalizeEffect(bus);
     }
@@ -225,7 +227,7 @@ bool HardwareManager::AppendEffect(AuxBus bus, FxBase* pFx)
     m_AuxFadeVolume[bus].SetTarget(1.0f, 0);
     nn::snd::CTR::SetAuxReturnVolume(static_cast<AuxBusId>(bus), 1.0f);
 
-    if(m_FxList[bus].size() == 0)
+    if (m_FxList[bus].size() == 0)
     {
         nn::snd::CTR::RegisterAuxCallback(static_cast<AuxBusId>(bus), AuxCallbackFunc, static_cast<uptr>(bus));
     }
@@ -236,7 +238,7 @@ bool HardwareManager::AppendEffect(AuxBus bus, FxBase* pFx)
 
 bool HardwareManager::AppendEffect(AuxBus bus, nn::snd::CTR::FxDelay* delay)
 {
-    if(m_AuxFadeVolume[bus].IsFinished())
+    if (m_AuxFadeVolume[bus].IsFinished())
     {
         FinalizeEffect(bus);
     }
@@ -248,7 +250,7 @@ bool HardwareManager::AppendEffect(AuxBus bus, nn::snd::CTR::FxDelay* delay)
 
 bool HardwareManager::AppendEffect(AuxBus bus, nn::snd::CTR::FxReverb* reverb)
 {
-    if(m_AuxFadeVolume[bus].IsFinished())
+    if (m_AuxFadeVolume[bus].IsFinished())
     {
         FinalizeEffect(bus);
     }
@@ -260,11 +262,11 @@ bool HardwareManager::AppendEffect(AuxBus bus, nn::snd::CTR::FxReverb* reverb)
 
 void HardwareManager::ClearEffect(AuxBus bus, int fadeTimes)
 {
-    if(fadeTimes == 0)
+    if (fadeTimes == 0)
     {
         FinalizeEffect(bus);
 
-        if(m_AuxFadeVolume[bus].IsFinished())
+        if (m_AuxFadeVolume[bus].IsFinished())
         {
             m_AuxFadeVolume[bus].SetTarget(0.0f, 0);
         }

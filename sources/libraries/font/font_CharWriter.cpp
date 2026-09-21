@@ -19,7 +19,8 @@ namespace nw {
 namespace font {
 namespace {
 
-void MultiplyAlpha(ut::FloatColor* pDst,const ut::Color8 src,u8 alpha){
+void MultiplyAlpha(ut::FloatColor* pDst,const ut::Color8 src,u8 alpha)
+{
     const f32 floatAlphaMax = ut::Color8::ALPHA_MAX;
 
     pDst->r = src.r / floatAlphaMax;
@@ -31,12 +32,13 @@ void MultiplyAlpha(ut::FloatColor* pDst,const ut::Color8 src,u8 alpha){
 }
 
 CharWriter::CharWriter() :   
-    mFixedWidth(0),
+    m_FixedWidth(0),
     mpFont(NULL),
     mpTextWriterResource(NULL),
     mpDispStringBuffer(NULL),
-    mIsWidthFixed(false),
-    mAlpha(ut::Color8::ALPHA_MAX){
+    m_IsWidthFixed(false),
+    m_Alpha(ut::Color8::ALPHA_MAX)
+    {
 
     this->ResetColorMapping();
     this->SetGradationMode(GRADMODE_NONE);
@@ -45,9 +47,10 @@ CharWriter::CharWriter() :
     this->SetCursor(0, 0, 0);
 }
 
-CharWriter::~CharWriter(){ }
+CharWriter::~CharWriter() { }
 
-void CharWriter::SetupGXCommon(){
+void CharWriter::SetupGXCommon()
+{
     const int *const locations = *this->mpTextWriterResource->GetTexEnvUniformLocations();
 
     glUniform1i(locations[internal::LOC_FRAGMENTLIGHTING_ENABLED], GL_FALSE);
@@ -61,13 +64,16 @@ void CharWriter::SetupGXCommon(){
     glDisable(GL_COLOR_LOGIC_OP);
 }
 
-void CharWriter::SetupGX(){
+void CharWriter::SetupGX()
+{
     this->mpTextWriterResource->ResetLoadingTexture();
     SetupGXCommon();
 
     bool bAlphaTex = false;
-    if (this->mpFont){
-        switch (mpFont->GetTextureFormat()){
+    if (this->mpFont)
+    {
+        switch (mpFont->GetTextureFormat())
+        {
         case FONT_SHEET_FORMAT_A4:
         case FONT_SHEET_FORMAT_A8:
             bAlphaTex = true;
@@ -75,7 +81,8 @@ void CharWriter::SetupGX(){
         }
     }
 
-    if (this->mAlpha != ut::Color8::ALPHA_MAX || this->mColorMapping.min != DEFAULT_COLOR_MAPPING_MIN || this->mColorMapping.max != DEFAULT_COLOR_MAPPING_MAX){
+    if (this->m_Alpha != ut::Color8::ALPHA_MAX || this->m_ColorMapping.min != DEFAULT_COLOR_MAPPING_MIN || this->m_ColorMapping.max != DEFAULT_COLOR_MAPPING_MAX)
+    {
         SetupGXWithColorMapping(bAlphaTex);
     }
     else{
@@ -85,32 +92,38 @@ void CharWriter::SetupGX(){
     this->SetupVertexFormat();
 }
 
-void CharWriter::SetFontSize(f32 width,f32 height){
+void CharWriter::SetFontSize(f32 width,f32 height)
+{
     NN_POINTER_ASSERT(this->mpFont);
     SetScale(width / this->mpFont->GetWidth(), height / this->mpFont->GetHeight());
 }
 
-f32 CharWriter::GetFontWidth() const{
+f32 CharWriter::GetFontWidth() const
+{
     NN_POINTER_ASSERT(this->mpFont);
-    return this->mpFont->GetWidth() * this->mScale.x;
+    return this->mpFont->GetWidth() * this->m_Scale.x;
 }
 
-f32 CharWriter::GetFontHeight() const{
+f32 CharWriter::GetFontHeight() const
+{
     NN_POINTER_ASSERT(vmpFont);
-    return this->mpFont->GetHeight() * this->mScale.y;
+    return this->mpFont->GetHeight() * this->m_Scale.y;
 }
 
-f32 CharWriter::GetFontAscent() const{
+f32 CharWriter::GetFontAscent() const
+{
     NN_POINTER_ASSERT(this->mpFont);
-    return this->mpFont->GetAscent() * this->mScale.y;
+    return this->mpFont->GetAscent() * this->m_Scale.y;
 }
 
-f32 CharWriter::GetFontDescent() const{
+f32 CharWriter::GetFontDescent() const
+{
     NN_POINTER_ASSERT(this->mpFont);
-    return this->mpFont->GetDescent() * this->mScale.y;
+    return this->mpFont->GetDescent() * this->m_Scale.y;
 }
 
-f32 CharWriter::Print(CharCode code){
+f32 CharWriter::Print(CharCode code)
+{
     Glyph glyph;
     this->mpFont->GetGlyph(&glyph, code);
 
@@ -118,34 +131,37 @@ f32 CharWriter::Print(CharCode code){
 
     f32 width;
     f32 left;
-    if (this->mIsWidthFixed){
-        f32 margin = (this->mFixedWidth - widths.charWidth * this->mScale.x) / 2;
+    if (this->m_IsWidthFixed)
+    {
+        f32 margin = (this->m_FixedWidth - widths.charWidth * this->m_Scale.x) / 2;
 
-        width = this->mFixedWidth;
-        left = margin + widths.left * this->mScale.x;
+        width = this->m_FixedWidth;
+        left = margin + widths.left * this->m_Scale.x;
     }
     else{
-        width = widths.charWidth * mScale.x;
-        left = widths.left * mScale.x;
+        width = widths.charWidth * m_Scale.x;
+        left = widths.left * m_Scale.x;
     }
 
-    PrintGlyph(this->mCursorPos.x + left, glyph);
+    PrintGlyph(this->m_CursorPos.x + left, glyph);
 
-    this->mCursorPos.x += width;
+    this->m_CursorPos.x += width;
 
     return width;
 }
 
-void CharWriter::DrawGlyph(const Glyph& glyph){
+void CharWriter::DrawGlyph(const Glyph& glyph)
+{
     NN_POINTER_ASSERT(&glyph);
-    PrintGlyph(this->mCursorPos.x, glyph);
-    this->mCursorPos.x += glyph.widths.glyphWidth * this->mScale.x;
+    PrintGlyph(this->m_CursorPos.x, glyph);
+    this->m_CursorPos.x += glyph.widths.glyphWidth * this->m_Scale.x;
 }
 
-void CharWriter::PrintGlyph(f32 x,const Glyph& glyph){
+void CharWriter::PrintGlyph(f32 x,const Glyph& glyph)
+{
     NN_POINTER_ASSERT(&glyph);
 
-    const f32 y = this->mCursorPos.y;
+    const f32 y = this->m_CursorPos.y;
 
     const f32 texLeft = 1.0f * glyph.cellX / glyph.texWidth;
     const f32 texRight = 1.0f * (glyph.cellX + glyph.widths.glyphWidth) / glyph.texWidth;
@@ -153,12 +169,14 @@ void CharWriter::PrintGlyph(f32 x,const Glyph& glyph){
     const f32 texTop = 1.0f * (glyph.texHeight - glyph.cellY) / glyph.texHeight;
     const f32 texBottom = 1.0f * (glyph.texHeight - (glyph.cellY + glyph.height)) / glyph.texHeight;
 
-    if (NULL != this->mpDispStringBuffer){
-        const f32 width = glyph.widths.glyphWidth * this->mScale.x;
-        const f32 height = - glyph.height * this->mScale.y;
+    if (NULL != this->mpDispStringBuffer)
+    {
+        const f32 width = glyph.widths.glyphWidth * this->m_Scale.x;
+        const f32 height = - glyph.height * this->m_Scale.y;
         const u32 charIdx = this->mpDispStringBuffer->charCount;
 
-        if (charIdx >= this->mpDispStringBuffer->charCountMax){
+        if (charIdx >= this->mpDispStringBuffer->charCountMax)
+        {
             return;
         }
 
@@ -168,8 +186,9 @@ void CharWriter::PrintGlyph(f32 x,const Glyph& glyph){
 
         pCharAttrs->pos.Set(width,height,x,y);
 
-        for (int i = 0; i < internal::TEXTCOLOR_MAX; ++i){
-            pCharAttrs->color[i] = this->mTextColors[i];
+        for (int i = 0; i < internal::TEXTCOLOR_MAX; ++i)
+        {
+            pCharAttrs->color[i] = this->m_TextColors[i];
         }
 
         pCharAttrs->tex.Set(texLeft,texTop,texRight,texBottom);
@@ -177,9 +196,9 @@ void CharWriter::PrintGlyph(f32 x,const Glyph& glyph){
     }
     else{
         const f32 posLeft = x;
-        const f32 posRight = posLeft + glyph.widths.glyphWidth * this->mScale.x;
+        const f32 posRight = posLeft + glyph.widths.glyphWidth * this->m_Scale.x;
 
-        const f32 posTop = y + glyph.height * this->mScale.y;
+        const f32 posTop = y + glyph.height * this->m_Scale.y;
         const f32 posBottom = y;
 
 
@@ -202,8 +221,9 @@ void CharWriter::PrintGlyph(f32 x,const Glyph& glyph){
             attrs[internal::POS_X] = posRight;
             attrs[internal::POS_Y] = posBottom;
         }
-        for (int i = 0; i < internal::TRIFAN_VTX_MAX; ++i){
-            pVtxAttrs[i].color = this->mVertexColors[i];
+        for (int i = 0; i < internal::TRIFAN_VTX_MAX; ++i)
+        {
+            pVtxAttrs[i].color = this->m_VertexColors[i];
         }
 
         {
@@ -225,25 +245,28 @@ void CharWriter::PrintGlyph(f32 x,const Glyph& glyph){
         }
 
         this->LoadTexture(glyph);
-        this->mpTextWriterResource->UpdatePosZ(this->mCursorPos.z);
+        this->mpTextWriterResource->UpdatePosZ(this->m_CursorPos.z);
 
         glDrawArrays(GL_TRIANGLE_FAN, 0, internal::TRIFAN_VTX_MAX);
     }
 }
 
-void CharWriter::LoadTexture(const Glyph& glyph){
+void CharWriter::LoadTexture(const Glyph& glyph)
+{
     NN_POINTER_ASSERT(&glyph);
 
     bool doLoad = false;
     GLuint texName = 0;
 
-    if (NULL == glyph.pTextureObject){
-        texName = this->mpTextWriterResource->mTextureId;
+    if (NULL == glyph.pTextureObject)
+    {
+        texName = this->mpTextWriterResource->m_TextureId;
         doLoad =  mpTextWriterResource->SetLoadingTexture(glyph.pTexture);
     }
     else{
         texName = glyph.pTextureObject->GetName();
-        if (texName == 0){
+        if (texName == 0)
+        {
             glGenTextures(1, &texName);
             const_cast<internal::TextureObject*>(glyph.pTextureObject)->SetName(texName);
             doLoad = true;
@@ -255,28 +278,33 @@ void CharWriter::LoadTexture(const Glyph& glyph){
 
     glBindTexture(GL_TEXTURE_2D, texName);
 
-    if (doLoad){
+    if (doLoad)
+    {
         internal::LoadTexture(glyph.texWidth,glyph.texHeight,glyph.texFormat,glyph.pTexture,mpFont->IsLinearFilterEnableAtSmall(),mpFont->IsLinearFilterEnableAtLarge());
     }
 }
 
-void CharWriter::StartPrint(){
+void CharWriter::StartPrint()
+{
     mpDispStringBuffer->charCount = 0;
     this->mpDispStringBuffer->ClearCommand();
 }
 
-u32 CharWriter::GetDispStringBufferSize(u32 charNum){
+u32 CharWriter::GetDispStringBufferSize(u32 charNum)
+{
     const u32 drawFlagBytes = nn::math::RoundUp(charNum, 8) / 8;
     return sizeof(DispStringBuffer)+ sizeof(internal::CharAttribute) * charNum + nn::math::RoundUp(drawFlagBytes, sizeof(u32))
                 + sizeof(u32) * DispStringBuffer::CalcCommandBufferCapacity(charNum);
 }
 
-DispStringBuffer* CharWriter::InitDispStringBuffer(void* drawBuffer,u32 charNum){
+DispStringBuffer* CharWriter::InitDispStringBuffer(void* drawBuffer,u32 charNum)
+{
     return new (drawBuffer) DispStringBuffer(charNum);
 }
 
-void CharWriter::SetupGXDefault(bool bAlphaTex){
-    const int (*locations)[internal::TCLOC_MAX] = this->mpTextWriterResource->mTexEnvUniformLocations;
+void CharWriter::SetupGXDefault(bool bAlphaTex)
+{
+    const int (*locations)[internal::TCLOC_MAX] = this->mpTextWriterResource->m_TexEnvUniformLocations;
 
     static const GLint src[] = { GL_PRIMARY_COLOR, GL_TEXTURE0, GL_CONSTANT };
     static const GLint operandRgb[] = { GL_SRC_COLOR, GL_SRC_COLOR, GL_SRC_COLOR };
@@ -293,8 +321,9 @@ void CharWriter::SetupGXDefault(bool bAlphaTex){
     glUniform1f (locations[internal::TEXENV_5][internal::TCLOC_SCALEALPHA], 1.0);
 }
 
-void CharWriter::SetupGXWithColorMapping(bool bAlphaTex){
-    const int (*locations)[internal::TCLOC_MAX] = this->mpTextWriterResource->mTexEnvUniformLocations;
+void CharWriter::SetupGXWithColorMapping(bool bAlphaTex)
+{
+    const int (*locations)[internal::TCLOC_MAX] = this->mpTextWriterResource->m_TexEnvUniformLocations;
 
     static const GLint Src0[] = { GL_TEXTURE0, GL_CONSTANT, GL_CONSTANT };
     static const GLint OpRgb0[] = { GL_SRC_COLOR, GL_SRC_COLOR, GL_SRC_COLOR };
@@ -309,7 +338,7 @@ void CharWriter::SetupGXWithColorMapping(bool bAlphaTex){
     glUniform1f (locations[internal::TEXENV_3][internal::TCLOC_SCALERGB    ], 1.0);
     glUniform1f (locations[internal::TEXENV_3][internal::TCLOC_SCALEALPHA  ], 1.0);
     ut::FloatColor maxCol;
-    MultiplyAlpha(&maxCol, this->mColorMapping.max, this->mAlpha);
+    MultiplyAlpha(&maxCol, this->m_ColorMapping.max, this->m_Alpha);
     glUniform4fv(locations[internal::TEXENV_3][internal::TCLOC_CONSTRGBA   ], 1, maxCol.ToArray());
 
     static const GLint Src1[] = { GL_TEXTURE0, GL_CONSTANT, GL_PREVIOUS };
@@ -323,7 +352,7 @@ void CharWriter::SetupGXWithColorMapping(bool bAlphaTex){
     glUniform1f (locations[internal::TEXENV_4][internal::TCLOC_SCALERGB    ], 1.0);
     glUniform1f (locations[internal::TEXENV_4][internal::TCLOC_SCALEALPHA  ], 1.0);
     ut::FloatColor minCol;
-    MultiplyAlpha(&minCol, this->mColorMapping.min, this->mAlpha);
+    MultiplyAlpha(&minCol, this->m_ColorMapping.min, this->m_Alpha);
     glUniform4fv(locations[internal::TEXENV_4][internal::TCLOC_CONSTRGBA   ], 1, minCol.ToArray());
 
     static const GLint Src2[] = { GL_PRIMARY_COLOR, GL_PREVIOUS, GL_PREVIOUS };

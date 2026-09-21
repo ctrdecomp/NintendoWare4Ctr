@@ -31,94 +31,112 @@ using namespace ::nw::anim::res;
 
 namespace res {
 
-struct ResAnimData{
-    enum LoopMode{
+struct ResAnimData
+{
+    enum LoopMode
+    {
         LOOP_MODE_ONETIME,
         LOOP_MODE_LOOP
     };
 
-    nw::ut::BinaryRevisionHeader mHeader;
+    nw::ut::BinaryRevisionHeader m_Header;
     nw::ut::BinString   toName;
     nw::ut::BinString   toTargetAnimGroupName;
-    nw::ut::ResU8       mLoopMode;
+    nw::ut::ResU8       m_LoopMode;
     u8              padding_[3];
-    nw::ut::ResF32      mFrameSize;
-    nw::ut::ResS32      mMemberAnimSetDicCount;
+    nw::ut::ResF32      m_FrameSize;
+    nw::ut::ResS32      m_MemberAnimSetDicCount;
     nw::ut::Offset      toMemberAnimSetDic;
-    nw::ut::ResS32      mUserDataDicCount;
+    nw::ut::ResS32      m_UserDataDicCount;
     nw::ut::Offset      toUserDataDic;
 };
 
-struct ResLightAnimData : public ResAnimData{
-    enum LightType{
+struct ResLightAnimData : public ResAnimData
+{
+    enum LightType
+    {
         LIGHT_TYPE_FRAGMENT,
         LIGHT_TYPE_VERTEX,
         LIGHT_TYPE_HEMISPHERE,
         LIGHT_TYPE_AMBIENT
     };
 
-    nw::ut::ResU32 mLightKind;
+    nw::ut::ResU32 m_LightKind;
 
-    nw::ut::ResU32 mLightType;
+    nw::ut::ResU32 m_LightType;
 };
 
-struct ResCameraAnimData : public ResAnimData{
-    enum ProjectionUpdaterKind{
+struct ResCameraAnimData : public ResAnimData
+{
+    enum ProjectionUpdaterKind
+    {
         PROJECTION_UPDATER_PERSPECTIVE,
         PROJECTION_UPDATER_ORTHO,
         PROJECTION_UPDATER_FRUSTUM
     };
 
-    enum ViewUpdaterKind{
+    enum ViewUpdaterKind
+    {
         VIEW_UPDATER_AIM,
         VIEW_UPDATER_LOOKAT,
         VIEW_UPDATER_ROTATE
     };
 
-    nw::ut::ResU32 mProjectionUpdaterKind;
+    nw::ut::ResU32 m_ProjectionUpdaterKind;
 
-    nw::ut::ResU32 mViewUpdaterKind;
+    nw::ut::ResU32 m_ViewUpdaterKind;
 };
 
 
-struct ResMemberAnimData{
-    nw::ut::ResU32                      mFlags;
+struct ResMemberAnimData
+{
+    nw::ut::ResU32                      m_Flags;
     nw::ut::BinString                   toPath;
-    nw::ut::ResU32                      mPrimitiveType;
+    nw::ut::ResU32                      m_PrimitiveType;
 };
 
-struct ResFloatAnimData : public ResMemberAnimData{
-    enum Flag{
+struct ResFloatAnimData : public ResMemberAnimData
+{
+    enum Flag
+    {
         FLAG_CONSTANT = 0x1 << 0
     };
     
-    union{
+    union
+    {
         nw::ut::ResF32      constantValue;
         nw::ut::Offset      toCurve;
     };
 };
 
-struct ResIntAnimData : public ResMemberAnimData{
-    enum Flag{
+struct ResIntAnimData : public ResMemberAnimData
+{
+    enum Flag
+    {
         FLAG_CONSTANT = 0x1 << 0
     };
     
-    union{
+    union
+    {
         nw::ut::ResS32      constantValue;
         nw::ut::Offset      toCurve;
     };
 };
 
-struct ResBoolAnimData : public ResMemberAnimData{
-    enum Flag{
+struct ResBoolAnimData : public ResMemberAnimData
+{
+    enum Flag
+    {
         FLAG_CONSTANT       = 0x1 << 0,
         FLAG_CONSTANT_VALUE = 0x1 << 1
     };
     nw::ut::Offset      toCurve;
 };
 
-struct ResVec2AnimData : public ResMemberAnimData{
-    enum Flag{
+struct ResVec2AnimData : public ResMemberAnimData
+{
+    enum Flag
+    {
         FLAG_CONSTANT_X_SHIFT = 0,
         FLAG_CONSTANT_Y_SHIFT,
         FLAG_X_NOT_EXIST_SHIFT,
@@ -130,18 +148,22 @@ struct ResVec2AnimData : public ResMemberAnimData{
         FLAG_Y_NOT_EXIST    = 0x1 << FLAG_Y_NOT_EXIST_SHIFT
     };
     
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueCurveX;
         nw::ut::Offset      toCurveX;
     };
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueCurveY;
         nw::ut::Offset      toCurveY;
     };
 };
 
-struct ResVec3AnimData : public ResMemberAnimData{
-    enum Flag{
+struct ResVec3AnimData : public ResMemberAnimData
+{
+    enum Flag
+    {
         FLAG_CONSTANT_X_SHIFT = 0,
         FLAG_CONSTANT_Y_SHIFT,
         FLAG_CONSTANT_Z_SHIFT,
@@ -157,22 +179,27 @@ struct ResVec3AnimData : public ResMemberAnimData{
         FLAG_Z_NOT_EXIST    = 0x1 << FLAG_Z_NOT_EXIST_SHIFT
     };
     
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueCurveX;
         nw::ut::Offset      toCurveX;
     };
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueCurveY;
         nw::ut::Offset      toCurveY;
     };
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueCurveZ;
         nw::ut::Offset      toCurveZ;
     };
 };
 
-struct ResRgbaColorAnimData : public ResMemberAnimData{
-    enum Flag{
+struct ResRgbaColorAnimData : public ResMemberAnimData
+{
+    enum Flag
+    {
         FLAG_CONSTANT_R_SHIFT = 0,
         FLAG_CONSTANT_G_SHIFT,
         FLAG_CONSTANT_B_SHIFT,
@@ -192,40 +219,49 @@ struct ResRgbaColorAnimData : public ResMemberAnimData{
         FLAG_A_NOT_EXIST    = 0x1 << FLAG_A_NOT_EXIST_SHIFT
     };
     
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueCurveR;
         nw::ut::Offset      toCurveR;
     };
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueCurveG;
         nw::ut::Offset      toCurveG;
     };
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueCurveB;
         nw::ut::Offset      toCurveB;
     };
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueCurveA;
         nw::ut::Offset      toCurveA;
     };
 };
 
-struct ResTextureAnimData : public ResMemberAnimData{
-    enum Flag{
+struct ResTextureAnimData : public ResMemberAnimData
+{
+    enum Flag
+    {
         FLAG_CONSTANT = 0x1 << 0
     };
 
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueCurve;
         nw::ut::Offset      toCurve;
     };
     
-    nw::ut::ResS32 mTexturesTableCount;
+    nw::ut::ResS32 m_TexturesTableCount;
     nw::ut::Offset toTexturesTable;
 };
 
-struct ResTransformAnimData : public ResMemberAnimData{
-    enum Flag{
+struct ResTransformAnimData : public ResMemberAnimData
+{
+    enum Flag
+    {
         FLAG_IDENTITY_SHIFT     = 0,
         FLAG_RT_ZERO_SHIFT,
         FLAG_SCALE_ONE_SHIFT,
@@ -289,59 +325,71 @@ struct ResTransformAnimData : public ResMemberAnimData{
         FLAG_TRANSLATE_NOT_EXIST    = (FLAG_TRANSLATE_X_NOT_EXIST | FLAG_TRANSLATE_Y_NOT_EXIST | FLAG_TRANSLATE_Z_NOT_EXIST)
     };
     
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueScaleX;
         nw::ut::Offset      toScaleX;
     };
     
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueScaleY;
         nw::ut::Offset      toScaleY;
     };
     
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueScaleZ;
         nw::ut::Offset      toScaleZ;
     };
     
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueRotateX;
         nw::ut::Offset      toRotateX;
     };
     
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueRotateY;
         nw::ut::Offset      toRotateY;
     };
     
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueRotateZ;
         nw::ut::Offset      toRotateZ;
     };
     
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueRotateW;
         nw::ut::Offset      toRotateW;
     };
     
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueTranslateX;
         nw::ut::Offset      toTranslateX;
     };
     
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueTranslateY;
         nw::ut::Offset      toTranslateY;
     };
     
-    union{
+    union
+    {
         nw::ut::ResF32      constantValueTranslateZ;
         nw::ut::Offset      toTranslateZ;
     };
 };
 
-struct ResBakedTransformAnimData : public ResMemberAnimData{
-    enum Flag{
+struct ResBakedTransformAnimData : public ResMemberAnimData
+{
+    enum Flag
+    {
         FLAG_CONSTANT_TRANSLATE_SHIFT = 0,
         FLAG_CONSTANT_ROTATE_SHIFT,
         FLAG_CONSTANT_SCALE_SHIFT,
@@ -362,13 +410,16 @@ struct ResBakedTransformAnimData : public ResMemberAnimData{
     nw::ut::Offset      toScale;
 };
 
-struct ResFullBakedAnimData : public ResMemberAnimData{
+struct ResFullBakedAnimData : public ResMemberAnimData
+{
     nw::ut::Offset      toTransform;
 };
 
-class ResMemberAnim : public nw::ut::ResCommon< ResMemberAnimData >{
+class ResMemberAnim : public nw::ut::ResCommon< ResMemberAnimData >
+{
 public:
-    enum PrimitiveType{
+    enum PrimitiveType
+    {
         PRIMITIVETYPE_FLOAT,
         PRIMITIVETYPE_INT,
         PRIMITIVETYPE_BOOL,
@@ -402,7 +453,8 @@ public:
 
 typedef nw::ut::ResArrayClass<ResMemberAnim>::type  ResMemberAnimArray;
 
-class ResAnim : public nw::ut::ResCommon< ResAnimData >{
+class ResAnim : public nw::ut::ResCommon< ResAnimData >
+{
 public:
     enum { BINARY_REVISION = REVISION_RES_ANIM_DATA };
     enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResAnim) };
@@ -430,23 +482,28 @@ public:
 
     void Cleanup();
 
-    static ResAnim CreateEmptySkeletalAnim(nw::os::IAllocator* allocator){
+    static ResAnim CreateEmptySkeletalAnim(nw::os::IAllocator* allocator)
+    {
         return CreateEmptyResAnim(allocator, "SkeletalAnimation");
     }
 
-    static ResAnim CreateEmptyMaterialAnim(nw::os::IAllocator* allocator){
+    static ResAnim CreateEmptyMaterialAnim(nw::os::IAllocator* allocator)
+    {
         return CreateEmptyResAnim(allocator, "MaterialAnimation");
     }
 
-    static ResAnim CreateEmptyVisibilityAnim(nw::os::IAllocator* allocator){
+    static ResAnim CreateEmptyVisibilityAnim(nw::os::IAllocator* allocator)
+    {
         return CreateEmptyResAnim(allocator, "VisibilityAnimation");
     }
 
-    static ResAnim CreateEmptyCameraAnim(nw::os::IAllocator* allocator){
+    static ResAnim CreateEmptyCameraAnim(nw::os::IAllocator* allocator)
+    {
         return CreateEmptyResAnim(allocator, "CameraAnimation");
     }
 
-    static ResAnim CreateEmptyLightAnim(nw::os::IAllocator* allocator){
+    static ResAnim CreateEmptyLightAnim(nw::os::IAllocator* allocator)
+    {
         return CreateEmptyResAnim(allocator, "LightAnimation");
     }
 
@@ -456,10 +513,11 @@ private:
     static ResAnim CreateEmptyResAnim(nw::os::IAllocator* allocator, const char* targetAnimGroupName);
 };
 
-class ResLightAnim : public ResAnim{
+class ResLightAnim : public ResAnim
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResLightAnim) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('ADLT') };
+    enum{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResLightAnim) };
+    enum{ SIGNATURE = NW_RES_SIGNATURE32('ADLT') };
 
     NW_RES_CTOR_INHERIT( ResLightAnim, ResAnim )
 
@@ -467,10 +525,13 @@ public:
     NW_RES_FIELD_PRIMITIVE_DECL( u32, LightType )
 };
 
-class ResCameraAnim : public ResAnim{
+class ResCameraAnim : public ResAnim
+{
 public:
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResCameraAnim) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('ADCM') };
+    enum
+{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResCameraAnim) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('ADCM') };
 
     NW_RES_CTOR_INHERIT( ResCameraAnim, ResAnim )
     
@@ -481,7 +542,7 @@ public:
 #define NW_RESANM_GETCURVE_DECL( type, name, hasNoCurveFlag )                   \
     const type* Get##name() const                                               \
     {                                                                           \
-        if ( ref().mFlags & (hasNoCurveFlag) )                                 \
+        if ( ref().m_Flags & (hasNoCurveFlag) )                                 \
         {                                                                       \
             return NULL;                                                        \
         }                                                                       \
@@ -493,7 +554,7 @@ public:
                                                                                 \
     type* Get##name()                                                           \
     {                                                                           \
-        if ( ref().mFlags & (hasNoCurveFlag) )                                 \
+        if ( ref().m_Flags & (hasNoCurveFlag) )                                 \
         {                                                                       \
             return NULL;                                                        \
         }                                                                       \
@@ -507,7 +568,7 @@ public:
 #define NW_RESANM_EVALUATE_FLOAT_DECL(name, constantFlag)                       \
     f32 Evaluate##name( f32 frame ) const                                       \
     {                                                                           \
-        if ( ref().mFlags & (constantFlag) )                                   \
+        if ( ref().m_Flags & (constantFlag) )                                   \
         {                                                                       \
             return ref().constantValue##name;                                   \
         }                                                                       \
@@ -523,7 +584,7 @@ public:
 #define NW_RESANM_EVALUATE_INT_DECL(name, constantFlag)                         \
     s32 Evaluate##name( f32 frame ) const                                       \
     {                                                                           \
-        if ( ref().mFlags & (constantFlag) )                                   \
+        if ( ref().m_Flags & (constantFlag) )                                   \
         {                                                                       \
             return ref().constantValue##name;                                   \
         }                                                                       \
@@ -539,7 +600,7 @@ public:
 #define NW_RESANM_EVALUATE_VEC3_DECL(name, constantFlag)                        \
     void Evaluate##name( math::VEC3* result, bit32* flags, f32 frame ) const    \
     {                                                                           \
-        if ( ref().mFlags & (constantFlag) )                                   \
+        if ( ref().m_Flags & (constantFlag) )                                   \
         {                                                                       \
             CalcVector3Curve(                                                     \
                 result,                                                         \
@@ -558,21 +619,24 @@ public:
     }                                                                           \
 
 
-class ResFloatAnim : public ResMemberAnim{
+class ResFloatAnim : public ResMemberAnim
+{
 public:
     NW_RES_CTOR_INHERIT( ResFloatAnim, ResMemberAnim )
     
     /* ctor */ ResFloatAnim( ResMemberAnim res )
      : ResMemberAnim( res )
-    {
+     {
         NW_ASSERT( (!res.IsValid()) || 
                     res.GetPrimitiveType() == ResMemberAnim::PRIMITIVETYPE_FLOAT );
     }
     
     NW_RESANM_GETCURVE_DECL( ResFloatCurveData, Curve, ResFloatAnimData::FLAG_CONSTANT )
 
-    f32 Evaluate( f32 frame ) const{
-        if ( ref().mFlags & ResFloatAnimData::FLAG_CONSTANT ){
+    f32 Evaluate( f32 frame ) const
+    {
+        if ( ref().m_Flags & ResFloatAnimData::FLAG_CONSTANT )
+        {
             return ref().constantValue;
         }
         else{
@@ -580,30 +644,36 @@ public:
         }
     }
 
-    bit32 EvaluateResult(void* dstBuf,bit32 dstFlags,float frame) const{
+    bit32 EvaluateResult(void* dstBuf,bit32 dstFlags,float frame) const
+    {
         *reinterpret_cast<float*>(dstBuf) = Evaluate(frame);
         dstFlags |= AnimResult::FLAG_VALID_COMPONENT0;
         return dstFlags;
     }
 
-    void ApplyCache(void* target,const void* cacheBuf) const{
+    void ApplyCache(void* target,const void* cacheBuf) const
+    {
         *reinterpret_cast<float*>(target) = *reinterpret_cast<const float*>(cacheBuf);
     }
 };
 
-class ResIntAnim : public ResMemberAnim{
+class ResIntAnim : public ResMemberAnim
+{
 public:
     NW_RES_CTOR_INHERIT( ResIntAnim, ResMemberAnim )
     
     ResIntAnim( ResMemberAnim res ): 
-    ResMemberAnim( res ){
+    ResMemberAnim( res )
+    {
         NW_ASSERT( (!res.IsValid()) || res.GetPrimitiveType() == ResMemberAnim::PRIMITIVETYPE_INT );
     }
     
     NW_RESANM_GETCURVE_DECL( ResIntCurveData, Curve, ResIntAnimData::FLAG_CONSTANT )
 
-    s32 Evaluate( f32 frame ) const{
-        if ( ref().mFlags & ResIntAnimData::FLAG_CONSTANT ){
+    s32 Evaluate( f32 frame ) const
+    {
+        if ( ref().m_Flags & ResIntAnimData::FLAG_CONSTANT )
+        {
             return ref().constantValue;
         }
         else{
@@ -611,54 +681,64 @@ public:
         }
     }
 
-    bit32 EvaluateResult(void* dstBuf,bit32 dstFlags,float frame) const{
+    bit32 EvaluateResult(void* dstBuf,bit32 dstFlags,float frame) const
+    {
         *reinterpret_cast<s32*>(dstBuf) = Evaluate(frame);
         dstFlags |= AnimResult::FLAG_VALID_COMPONENT0;
         return dstFlags;
     }
 
-    void ApplyCache(void* target,const void* cacheBuf) const{
+    void ApplyCache(void* target,const void* cacheBuf) const
+    {
         *reinterpret_cast<s32*>(target) = *reinterpret_cast<const s32*>(cacheBuf);
     }
 };
 
-class ResBoolAnim : public ResMemberAnim{
+class ResBoolAnim : public ResMemberAnim
+{
 public:
     NW_RES_CTOR_INHERIT( ResBoolAnim, ResMemberAnim )
 
     ResBoolAnim( ResMemberAnim res ): 
-    ResMemberAnim( res ){
+    ResMemberAnim( res )
+    {
         NW_ASSERT( (!res.IsValid()) || res.GetPrimitiveType() == ResMemberAnim::PRIMITIVETYPE_BOOL );
     }
     
     NW_RESANM_GETCURVE_DECL( ResBoolCurveData, Curve, ResBoolAnimData::FLAG_CONSTANT )
 
-    bool Evaluate( f32 frame ) const{
-        if ( ref().mFlags & ResBoolAnimData::FLAG_CONSTANT ){
-            return (ref().mFlags & ResBoolAnimData::FLAG_CONSTANT_VALUE)? true : false;
+    bool Evaluate( f32 frame ) const
+    {
+        if ( ref().m_Flags & ResBoolAnimData::FLAG_CONSTANT )
+        {
+            return (ref().m_Flags & ResBoolAnimData::FLAG_CONSTANT_VALUE)? true : false;
         }
         else{
             return CalcBoolCurve(reinterpret_cast<const ResBoolCurveData*>( ref().toCurve.to_ptr() ),frame );
         }
     }
 
-    bit32 EvaluateResult(void* dstBuf,bit32 dstFlags,float frame) const{
+    bit32 EvaluateResult(void* dstBuf,bit32 dstFlags,float frame) const
+    {
         *reinterpret_cast<bool*>(dstBuf) = Evaluate(frame);
         dstFlags |= AnimResult::FLAG_VALID_COMPONENT0;
         return dstFlags;
     }
 
-    void ApplyCache(void* target,const void* cacheBuf) const{
+    void ApplyCache(void* target,const void* cacheBuf) const
+    {
         *reinterpret_cast<bool*>(target) = *reinterpret_cast<const bool*>(cacheBuf);
     }
 };
 
-class ResVec2Anim : public ResMemberAnim{
+class ResVec2Anim : public ResMemberAnim
+{
 public:
     NW_RES_CTOR_INHERIT( ResVec2Anim, ResMemberAnim )
 
     ResVec2Anim( ResMemberAnim res ): 
-    ResMemberAnim( res ){
+    ResMemberAnim( res )
+    {
         NW_ASSERT( (!res.IsValid()) || res.GetPrimitiveType() == ResMemberAnim::PRIMITIVETYPE_VECTOR2 );
     }
 
@@ -673,12 +753,14 @@ public:
     void ApplyCache(void* target,const void* cacheBuf) const;
 };
 
-class ResVec3Anim : public ResMemberAnim{
+class ResVec3Anim : public ResMemberAnim
+{
 public:
     NW_RES_CTOR_INHERIT( ResVec3Anim, ResMemberAnim )
 
     ResVec3Anim( ResMemberAnim res ): 
-    ResMemberAnim( res ){
+    ResMemberAnim( res )
+    {
         NW_ASSERT( (!res.IsValid()) || res.GetPrimitiveType() == ResMemberAnim::PRIMITIVETYPE_VECTOR3 );
     }
 
@@ -695,12 +777,14 @@ public:
     void ApplyCache(void* target,const void* cacheBuf) const;
 };
 
-class ResRgbaColorAnim : public ResMemberAnim{
+class ResRgbaColorAnim : public ResMemberAnim
+{
 public:
     NW_RES_CTOR_INHERIT( ResRgbaColorAnim, ResMemberAnim )
 
     ResRgbaColorAnim( ResMemberAnim res ): 
-    ResMemberAnim( res ){
+    ResMemberAnim( res )
+    {
         NW_ASSERT( (!res.IsValid()) || res.GetPrimitiveType() == ResMemberAnim::PRIMITIVETYPE_RGBA_COLOR );
     }
 
@@ -719,12 +803,14 @@ public:
     void ApplyCache(void* target,const void* cacheBuf) const;
 };
 
-class ResTextureAnim : public ResMemberAnim{
+class ResTextureAnim : public ResMemberAnim
+{
 public:
     NW_RES_CTOR_INHERIT( ResTextureAnim, ResMemberAnim )
 
     ResTextureAnim( ResMemberAnim res ): 
-    ResMemberAnim( res ){
+    ResMemberAnim( res )
+    {
         NW_ASSERT( (!res.IsValid()) || res.GetPrimitiveType() == ResMemberAnim::PRIMITIVETYPE_TEXTURE );
     }
 
@@ -742,12 +828,14 @@ public:
     void ApplyCache(void* target,const void* cacheBuf) const;
 };
 
-class ResTransformAnim : public ResMemberAnim{
+class ResTransformAnim : public ResMemberAnim
+{
 public:
     NW_RES_CTOR_INHERIT( ResTransformAnim, ResMemberAnim )
 
     ResTransformAnim( ResMemberAnim res ): 
-    ResMemberAnim( res ){
+    ResMemberAnim( res )
+    {
         NW_ASSERT( (!res.IsValid()) || res.GetPrimitiveType() == ResMemberAnim::PRIMITIVETYPE_TRANSFORM );
     }
     
@@ -777,12 +865,14 @@ public:
     void ApplyCache(void* target,const void* cacheBuf) const;
 };
 
-class ResBakedTransformAnim : public ResMemberAnim{
+class ResBakedTransformAnim : public ResMemberAnim
+{
 public:
     NW_RES_CTOR_INHERIT( ResBakedTransformAnim, ResMemberAnim )
 
     ResBakedTransformAnim( ResMemberAnim res ): 
-    ResMemberAnim( res ){
+    ResMemberAnim( res )
+    {
         NW_ASSERT( (!res.IsValid()) || res.GetPrimitiveType() == ResMemberAnim::PRIMITIVETYPE_BAKED_TRANSFORM );
     }
     
@@ -792,14 +882,16 @@ public:
     
     NW_RESANM_EVALUATE_VEC3_DECL( Scale, ResBakedTransformAnimData::FLAG_CONSTANT_SCALE )
 
-    void EvaluateRotate( math::MTX34* result, bit32* flags, f32 frame ) const{
+    void EvaluateRotate( math::MTX34* result, bit32* flags, f32 frame ) const
+    {
         float f =
-            ( ref().mFlags & ResBakedTransformAnimData::FLAG_CONSTANT_ROTATE ) ? 0 : frame;
+            ( ref().m_Flags & ResBakedTransformAnimData::FLAG_CONSTANT_ROTATE ) ? 0 : frame;
         
         CalcRotateCurve( result, flags, reinterpret_cast<const ResVector4CurveData*>( ref().toRotate.to_ptr() ), f );
     }
-    void EvaluateTranslate( math::MTX34* result, bit32* flags, f32 frame ) const{
-        float f = (ref().mFlags & ResBakedTransformAnimData::FLAG_CONSTANT_TRANSLATE ) ? 0 : frame;
+    void EvaluateTranslate( math::MTX34* result, bit32* flags, f32 frame ) const
+    {
+        float f = (ref().m_Flags & ResBakedTransformAnimData::FLAG_CONSTANT_TRANSLATE ) ? 0 : frame;
 
         CalcTranslateCurve(result, flags, reinterpret_cast<const ResVector3CurveData*>( ref().toTranslate.to_ptr() ), f );
     }
@@ -807,25 +899,30 @@ public:
     static void ApplyBakedFlags(gfx::CalculatedTransform* transform, const bit32 flags);
 };
 
-class ResFullBakedAnim : public ResMemberAnim{
+class ResFullBakedAnim : public ResMemberAnim
+{
 public:
     NW_RES_CTOR_INHERIT( ResFullBakedAnim, ResMemberAnim )
 
     ResFullBakedAnim( ResMemberAnim res ): 
-        ResMemberAnim( res ){
+        ResMemberAnim( res )
+        {
         NW_ASSERT((!res.IsValid()) || 
                     res.GetPrimitiveType() == ResMemberAnim::PRIMITIVETYPE_FULL_BAKED );
     }
 
-    const ResFullBakedCurveData* GetTransform() const{
+    const ResFullBakedCurveData* GetTransform() const
+    {
         return reinterpret_cast<const ResFullBakedCurveData*>( ref().toTransform.to_ptr() );
     }
 
-    ResFullBakedCurveData* GetTransform(){
+    ResFullBakedCurveData* GetTransform()
+    {
         return reinterpret_cast<ResFullBakedCurveData*>( ref().toTransform.to_ptr() );
     }
 
-    void EvaluateTransform( math::MTX34* result, f32 frame ) const{
+    void EvaluateTransform( math::MTX34* result, f32 frame ) const
+    {
         CalcTransformCurve( result, GetTransform(), frame );
     }
 };

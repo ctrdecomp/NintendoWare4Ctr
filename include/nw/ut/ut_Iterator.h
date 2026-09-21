@@ -11,7 +11,8 @@ namespace ut{
 namespace internal{
 
 template <typename TIt>
-struct iterator_traits{
+struct iterator_traits
+{
     typedef typename TIt::value_type        value_type;
     typedef typename TIt::pointer           pointer;
     typedef typename TIt::reference         reference;
@@ -20,7 +21,8 @@ struct iterator_traits{
 };
 
 template <typename T>
-struct iterator_traits<T*>{
+struct iterator_traits<T*>
+{
     typedef T  value_type;
     typedef T* pointer;
     typedef T& reference;
@@ -29,7 +31,8 @@ struct iterator_traits<T*>{
 };
 
 template <typename T>
-struct iterator_traits<const T*>{
+struct iterator_traits<const T*>
+{
     typedef T           value_type;
     typedef const T*    pointer;
     typedef const T&    reference;
@@ -39,7 +42,8 @@ struct iterator_traits<const T*>{
 
 
 template <typename Category,typename T,typename Difference = PtrDiff,typename Pointer = T*,typename Reference = T&>
-struct iterator{
+struct iterator
+{
     typedef T           value_type;
     typedef Difference  difference_type;
     typedef Pointer     pointer;
@@ -50,7 +54,8 @@ struct iterator{
 
 template <typename TIt>
 class reverse_iterator : public iterator<typename iterator_traits<TIt>::iterator_category,typename iterator_traits<TIt>::value_type,typename iterator_traits<TIt>::difference_type,
-typename iterator_traits<TIt>::pointer, typename iterator_traits<TIt>::reference > {
+typename iterator_traits<TIt>::pointer, typename iterator_traits<TIt>::reference >
+{
 private: 
 typedef iterator<typename iterator_traits<TIt>::iterator_category,typename iterator_traits<TIt>::value_type,typename iterator_traits<TIt>::difference_type, typename iterator_traits<TIt>::pointer, typename iterator_traits<TIt>::reference >    BaseIt;
 
@@ -65,23 +70,24 @@ public:
     typedef reverse_iterator<TIt>      Self;
     
     explicit reverse_iterator() {}
-    explicit reverse_iterator(TIt it) : mCurrent(it) {}
-    template<typename T>
-    explicit reverse_iterator(const reverse_iterator<T>& rhs ) : mCurrent( rhs.GetBase() ) {}
+    explicit reverse_iterator(TIt it) : m_Current(it) {}
     
-    TIt GetBase() const { return mCurrent; }
-    reference operator*() const { TIt tmp = mCurrent; return (*--tmp); }
+    template<typename T>
+    explicit reverse_iterator(const reverse_iterator<T>& rhs ) : m_Current( rhs.GetBase() ) {}
+    
+    TIt GetBase() const { return m_Current; }
+    reference operator*() const { TIt tmp = m_Current; return (*--tmp); }
     pointer operator->() const { return &(this->operator*()); }
     
-    Self& operator++() { (void)--mCurrent; return *this; }
-    Self operator++(int) { Self tmp = *this; (void)--mCurrent; return tmp; }
-    Self& operator--() { (void)++mCurrent; return *this;}
-    Self operator--(int) { Self tmp = *this; (void)++mCurrent; return tmp; }
+    Self& operator++() { (void)--m_Current; return *this; }
+    Self operator++(int) { Self tmp = *this; (void)--m_Current; return tmp; }
+    Self& operator--() { (void)++m_Current; return *this;}
+    Self operator--(int) { Self tmp = *this; (void)++m_Current; return tmp; }
     
-    friend bool operator==(const Self &r1_,const Self &r2_) { return r1_.mCurrent==r2_.mCurrent; }
+    friend bool operator==(const Self &r1_,const Self &r2_) { return r1_.m_Current==r2_.m_Current; }
     friend bool operator!=(const Self &r1,const Self &r2) { return !(r1==r2); }
 private:
-    TIt mCurrent;
+    TIt m_Current;
 };
 
 } // namespace internal

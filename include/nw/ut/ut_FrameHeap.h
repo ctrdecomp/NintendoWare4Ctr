@@ -5,14 +5,16 @@
 namespace nw {
 namespace ut {
 
-class FrameHeap : public HeapBase{
+class FrameHeap : public HeapBase
+{
 public:
     static const int FREE_HEAD = (1 << 0);
     static const int FREE_TAIL = (1 << 1);
     static const int FREE_ALL = (FREE_HEAD | FREE_TAIL);
 
 private:
-    struct HeapState{
+    struct HeapState
+    {
         u32         tagName;
         void*       headAllocator;
         void*       tailAllocator; 
@@ -22,12 +24,11 @@ private:
             tagName(0),
             headAllocator(NULL),
             tailAllocator(NULL),
-            pPrevState(NULL)
-        {}
+            pPrevState(NULL) {}
     };
 
   public:
-    static  FrameHeap* Create( void* startAddress, u32 heapSize, u16 optFlag = 0 );
+    static  FrameHeap* Create(void* startAddress, u32 heapSize, u16 optFlag = 0);
 
     void* Destroy();
     void* Alloc(u32 size, int alignment = DEFAULT_ALIGNMENT);
@@ -41,9 +42,9 @@ private:
     void FreeHead();
     void FreeTail();
 
-    void* mHeadAllocator;
-    void* mTailAllocator;
-    HeapState* mpState;
+    void* m_HeadAllocator;
+    void* m_TailAllocator;
+    HeapState* m_pState;
 };
 
 

@@ -7,14 +7,16 @@ namespace gfx{
 
 class SceneContext;
 
-class SceneTraverser  : public ISceneVisitor{
+class SceneTraverser  : public ISceneVisitor
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(SceneTraverser);
 
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    class Builder{
+    class Builder
+    {
     public:
         SceneTraverser* Create(os::IAllocator* allocator);
     };
@@ -42,12 +44,11 @@ public:
 private:
     SceneTraverser(nw::os::IAllocator* allocator): 
         ISceneVisitor(allocator), 
-        mSceneContext(NULL) 
-    {}
+        m_SceneContext(NULL) {}
 
     virtual ~SceneTraverser() {}
 
-    SceneContext* mSceneContext;
+    SceneContext* m_SceneContext;
 };
 
 }

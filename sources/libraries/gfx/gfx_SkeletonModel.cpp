@@ -13,15 +13,17 @@ namespace gfx{
 
 NW_UT_RUNTIME_TYPEINFO_DEFINITION( SkeletalModel, Model );
 
-SkeletalModel* SkeletalModel::Builder::Create(SceneNode* parent,ResSceneObject resource,os::IAllocator* allocator){
+SkeletalModel* SkeletalModel::Builder::Create(SceneNode* parent,ResSceneObject resource,os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
 
     ResSkeletalModel resModel = ResStaticCast<ResSkeletalModel>(resource);
 
     GfxPtr<Skeleton> skeleton;
     bool isSharedSkeleton = true;
-    if (mDescription.sharedSkeleton != NULL){
-        skeleton.Reset(this->mDescription.sharedSkeleton, false);
+    if (m_Description.sharedSkeleton != NULL)
+    {
+        skeleton.Reset(this->m_Description.sharedSkeleton, false);
         isSharedSkeleton = true;
     }
     else{
@@ -30,11 +32,12 @@ SkeletalModel* SkeletalModel::Builder::Create(SceneNode* parent,ResSceneObject r
         Skeleton::TransformPose::TransformArray poseTransforms(resSkeleton.GetBonesCount(), allocator);
         ResBoneArray bones = resSkeleton.GetBones();
         ResBoneArray::iterator bonesEnd = bones.end();
-        for (ResBoneArray::iterator bone = bones.begin(); bone != bonesEnd; ++bone){
+        for (ResBoneArray::iterator bone = bones.begin(); bone != bonesEnd; ++bone)
+        {
             poseTransforms.PushBackFast(*bone);
         }
-        skeleton.Reset(StandardSkeleton::Create(resSkeleton,mDescription.maxCallbacks,
-            mDescription.isFixedSizeMemory,
+        skeleton.Reset(StandardSkeleton::Create(resSkeleton,m_Description.maxCallbacks,
+            m_Description.isFixedSizeMemory,
             poseTransforms,
             allocator));
 
@@ -46,12 +49,13 @@ SkeletalModel* SkeletalModel::Builder::Create(SceneNode* parent,ResSceneObject r
     
     SkeletalModel* model = new(memory) SkeletalModel(allocator,resModel,skeleton,
         isSharedSkeleton,
-        this->mDescription);
+        this->m_Description);
 
     Result result = model->Initialize(allocator);
     NW_ASSERT(result.IsSuccess());
 
-    if (parent){
+    if (parent)
+    {
         bool isAttached = parent->AttachChild(model);
         NW_ASSERT(isAttached);
     }
@@ -59,30 +63,35 @@ SkeletalModel* SkeletalModel::Builder::Create(SceneNode* parent,ResSceneObject r
     return model;
 }
 
-void SkeletalModel::Accept(ISceneVisitor* visitor){
+void SkeletalModel::Accept(ISceneVisitor* visitor)
+{
     visitor->VisitSkeletalModel(this);
     AcceptChildren(visitor);
 }
 
-void SkeletalModel::SetFullBakedAnimEnabled(bool enable){
-    mFullBakedAnimEnabled = enable;
+void SkeletalModel::SetFullBakedAnimEnabled(bool enable)
+{
+    m_FullBakedAnimEnabled = enable;
 
-    if (enable){
-        this->mSkeleton->GetResSkeleton().EnableFlags(ResSkeletonData::FLAG_MODEL_COORDINATE);
+    if (enable)
+    {
+        this->m_Skeleton->GetResSkeleton().EnableFlags(ResSkeletonData::FLAG_MODEL_COORDINATE);
     }
     else{
-        this->mSkeleton->GetResSkeleton().DisableFlags(ResSkeletonData::FLAG_MODEL_COORDINATE);
+        this->m_Skeleton->GetResSkeleton().DisableFlags(ResSkeletonData::FLAG_MODEL_COORDINATE);
     }
 
-    NW_NULL_ASSERT(this->mSkeletalAnimGroup);
-    this->SetupAnimGroup(this->mSkeletalAnimGroup, enable);
+    NW_NULL_ASSERT(this->m_SkeletalAnimGroup);
+    this->SetupAnimGroup(this->m_SkeletalAnimGroup, enable);
 }
 
-Result SkeletalModel::CreateSkeletalAnimGroup(os::IAllocator* allocator){
+Result SkeletalModel::CreateSkeletalAnimGroup(os::IAllocator* allocator)
+{
     Result result = INITIALIZE_RESULT_OK;
 
     AnimBinding* animBinding = GetAnimBinding();
-    if (animBinding == NULL){
+    if (animBinding == NULL)
+    {
         return result;
     }
 
@@ -91,31 +100,35 @@ Result SkeletalModel::CreateSkeletalAnimGroup(os::IAllocator* allocator){
     NW_ASSERT(resModel.IsValid());
 
     ResSkeleton resSkeleton = resModel.GetSkeleton();
-    Skeleton::TransformPose& pose = this->mSkeleton->LocalTransformPose();
-    Skeleton::OriginalPose& originalPose = this->mSkeleton->LocalOriginalPose();
+    Skeleton::TransformPose& pose = this->m_Skeleton->LocalTransformPose();
+    Skeleton::OriginalPose& originalPose = this->m_Skeleton->LocalOriginalPose();
 
     const int animGroupCount = resModel.GetAnimGroupsCount();
-    for (int animGroupIdx = 0; animGroupIdx < animGroupCount; ++animGroupIdx){
+    for (int animGroupIdx = 0; animGroupIdx < animGroupCount; ++animGroupIdx)
+    {
         anim::ResAnimGroup resAnimGroup = resModel.GetAnimGroups(animGroupIdx);
         const int targetType = resAnimGroup.GetTargetType();
         const bool transformFlag = 
             (resAnimGroup.GetFlags() & anim::ResAnimGroup::FLAG_IS_CALCULATED_TRANSFORM) != 0;
         if (transformFlag &&
-            targetType == anim::ResGraphicsAnimGroup::TARGET_TYPE_BONE){
+            targetType == anim::ResGraphicsAnimGroup::TARGET_TYPE_BONE)
+            {
             AnimGroup* animGroup = AnimGroup::Builder()
                 .ResAnimGroup(resAnimGroup)
                 .SetSceneNode(this)
                 .UseOriginalValue(true)
                 .Create(allocator);
 
-            if (animGroup == NULL){
+            if (animGroup == NULL)
+            {
                 result |= Result::MASK_FAIL_BIT;
             }
 
             NW_ENSURE_AND_RETURN(result);
 
             const int animMemberCount = animGroup->GetMemberCount();
-            for (int memberIdx = 0; memberIdx < animMemberCount; ++memberIdx){
+            for (int memberIdx = 0; memberIdx < animMemberCount; ++memberIdx)
+            {
                 anim::ResAnimGroupMember resAnimGroupMember = animGroup->GetResAnimGroupMember(memberIdx);
 
                 ResBone bone = resSkeleton.GetBones(resAnimGroupMember.GetPath());
@@ -128,10 +141,10 @@ Result SkeletalModel::CreateSkeletalAnimGroup(os::IAllocator* allocator){
                 animGroup->SetTargetObject(memberIdx, object);
             }
             animBinding->SetAnimGroup(animGroupIdx, animGroup);
-            mSkeletalAnimGroup = animGroup;
-            mSkeletalAnimBindingIndex = animGroupIdx;
+            m_SkeletalAnimGroup = animGroup;
+            m_SkeletalAnimBindingIndex = animGroupIdx;
 
-            SetupAnimGroup(animGroup, this->mFullBakedAnimEnabled);
+            SetupAnimGroup(animGroup, this->m_FullBakedAnimEnabled);
 
             break;
         }
@@ -140,8 +153,10 @@ Result SkeletalModel::CreateSkeletalAnimGroup(os::IAllocator* allocator){
     return result;
 }
 
-void* SkeletalModel::GetAnimTargetObject(const anim::ResAnimGroupMember& anim){
-    switch(anim.GetObjectType()){
+void* SkeletalModel::GetAnimTargetObject(const anim::ResAnimGroupMember& anim)
+{
+    switch (anim.GetObjectType())
+    {
     case anim::ResAnimGroupMember::OBJECT_TYPE_BONE:{
             anim::ResBoneMember member = ResStaticCast<anim::ResBoneMember>(anim);
             const char* boneName = member.GetBoneName();
@@ -159,13 +174,15 @@ void* SkeletalModel::GetAnimTargetObject(const anim::ResAnimGroupMember& anim){
     }
 }
 
-Result SkeletalModel::Initialize(os::IAllocator* allocator){
+Result SkeletalModel::Initialize(os::IAllocator* allocator)
+{
     Result result = INITIALIZE_RESULT_OK;
 
     result |= Model::Initialize(allocator);
     NW_ENSURE_AND_RETURN(result);
 
-    if (!mSharingSkeleton){
+    if (!m_SharingSkeleton)
+    {
         result |= CreateSkeletalAnimGroup(allocator);
         NW_ENSURE_AND_RETURN(result);
     }
@@ -173,26 +190,29 @@ Result SkeletalModel::Initialize(os::IAllocator* allocator){
     return result;
 }
 
-void SkeletalModel::SetupAnimGroup(AnimGroup* animGroup, bool fullBakedAnimEnabled) const{
+void SkeletalModel::SetupAnimGroup(AnimGroup* animGroup, bool fullBakedAnimEnabled) const
+{
     const int animMemberCount = animGroup->GetMemberCount();
-    for (int memberIdx = 0; memberIdx < animMemberCount; ++memberIdx){
+    for (int memberIdx = 0; memberIdx < animMemberCount; ++memberIdx)
+    {
         anim::ResAnimGroupMember resAnimGroupMember = animGroup->GetResAnimGroupMember(memberIdx);
 
-        ResBone bone = this->mSkeleton->GetResSkeleton().GetBones(resAnimGroupMember.GetPath());
+        ResBone bone = this->m_Skeleton->GetResSkeleton().GetBones(resAnimGroupMember.GetPath());
         NW_ASSERT(bone.IsValid());
         const int boneIdx = bone.GetIndex();
 
-        if (fullBakedAnimEnabled){
-            void* target = this->mSkeleton->WorldMatrixPose().GetMatrix(boneIdx);
+        if (fullBakedAnimEnabled)
+        {
+            void* target = this->m_Skeleton->WorldMatrixPose().GetMatrix(boneIdx);
             animGroup->SetTargetPtr(memberIdx, target);
         }
         else{
-            void* target = this->mSkeleton->LocalTransformPose().GetTransform(boneIdx);
+            void* target = this->m_Skeleton->LocalTransformPose().GetTransform(boneIdx);
             animGroup->SetTargetPtr(memberIdx, target);
         }
     }
 
-    this->mSkeletalAnimGroup->SetFullBakedAnimEnabled(fullBakedAnimEnabled);
+    this->m_SkeletalAnimGroup->SetFullBakedAnimEnabled(fullBakedAnimEnabled);
 }
 
 }

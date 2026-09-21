@@ -25,7 +25,8 @@
         NW_FONT_RECTDRAWER_ADD_COMMAND( commands, sizeof(commands) );   \
     }
 
-enum{
+enum
+{
     NW_FONT_CMD_CULL_FACE_DISABLE,
     NW_FONT_CMD_CULL_FACE_FRONT,
     NW_FONT_CMD_CULL_FACE_BACK,
@@ -36,7 +37,8 @@ enum{
 namespace nw {
 namespace font {
 
-struct ColorBufferInfo{
+struct ColorBufferInfo
+{
     u16 width;
     u16 height;
     u8 depth;

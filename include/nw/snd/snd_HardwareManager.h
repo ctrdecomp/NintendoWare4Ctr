@@ -40,7 +40,7 @@ public:
     bool AppendEffect(AuxBus bus, nn::snd::CTR::FxDelay* pFx);
     bool AppendEffect(AuxBus bus, nn::snd::CTR::FxReverb* pFx);
     void ClearEffect(AuxBus bus, int fadeTimes);
-    bool IsFinishedClearEffect(AuxBus bus) const{ return m_AuxFadeVolume[bus].IsFinished(); }
+    bool IsFinishedClearEffect(AuxBus bus) const { return m_AuxFadeVolume[bus].IsFinished(); }
     void FinalizeEffect(AuxBus bus);
 
     /* Set Modes */
@@ -52,10 +52,10 @@ public:
     /* Inlines for sub-classes */
     bool IsInitialized() { return m_IsInitialized != 0; }
     OutputMode GetOutputMode() const { return m_OutputMode; }
-    nn::os::Tick GetEffectProcessTick(AuxBus bus) const{ return m_EffectProcessTick[bus]; }
+    nn::os::Tick GetEffectProcessTick(AuxBus bus) const { return m_EffectProcessTick[bus]; }
     f32 GetMasterVolume() const { return m_MasterVolume.GetValue(); }
     SrcType GetSrcType() const { return m_SrcType; }
-    const BiquadFilterCallback* GetBiquadFilterCallback(int type){ return m_BiquadFilterCallbackTable[type]; }
+    const BiquadFilterCallback* GetBiquadFilterCallback(int type) { return m_BiquadFilterCallbackTable[type]; }
 
     f32 GetOutputVolume() const;
 

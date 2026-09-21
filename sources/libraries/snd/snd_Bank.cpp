@@ -16,20 +16,20 @@ Channel* Bank::NoteOn(const void* bankFile, const NoteOnInfo& noteOnInfo, const 
         const SoundArchivePlayer& player, const PlayerHeapDataManager* dataMgr) const
 {
     VelocityRegionInfo regionInfo;
-{
+    {
     BankFileReader reader(bankFile);
-    if(reader.ReadVelocityRegionInfo(&regionInfo, noteOnInfo.prgNo, noteOnInfo.key, noteOnInfo.velocity) == false)
+    if (reader.ReadVelocityRegionInfo(&regionInfo, noteOnInfo.prgNo, noteOnInfo.key, noteOnInfo.velocity) == false)
     {
         return NULL;
     }
 }
     const void* waveFile = Util::GetWaveFile(regionInfo.waveArchiveId, regionInfo.waveIndex, archive, dataMgr);
-    if(waveFile == NULL)
+    if (waveFile == NULL)
     {
-        if(dataMgr != NULL)
+        if (dataMgr != NULL)
         {
             waveFile = Util::GetWaveFile(regionInfo.waveArchiveId, regionInfo.waveIndex, archive, player);
-            if(waveFile == NULL)
+            if (waveFile == NULL)
             {
                 return NULL;
             }
@@ -40,10 +40,10 @@ Channel* Bank::NoteOn(const void* bankFile, const NoteOnInfo& noteOnInfo, const 
         }
     }
     WaveInfo info;
-{
+    {
     WaveFileReader reader(waveFile);
 
-    if(reader.ReadWaveInfo(&info) == false)
+    if (reader.ReadWaveInfo(&info) == false)
     {
         return NULL;
     }

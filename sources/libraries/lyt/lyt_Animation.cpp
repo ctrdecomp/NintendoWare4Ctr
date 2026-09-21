@@ -216,7 +216,8 @@ void AnimateTexturePattern(Material* pMaterial,const res::AnimationInfo* pAnimIn
             const res::StepKey* keys = internal::ConvertOffsToPtr<res::StepKey>(pAnimTarget, pAnimTarget->keysOffset);
             const u16 fileIdx = GetStepCurveValue(frame, keys, pAnimTarget->keyNum);
 
-            if (texInfos[fileIdx].IsValid()){
+            if (texInfos[fileIdx].IsValid())
+            {
                 pMaterial->SetTexMap(pAnimTarget->id, texInfos[fileIdx]);
             }
         }
@@ -239,8 +240,8 @@ inline bool IsBindAnimation(Material* pMaterial,AnimTransform* pAnimTrans)
 
 AnimTransform::AnimTransform(): 
     mpRes(0),
-    mFrame(0)
-{
+    m_Frame(0)
+    {
 }
 
 AnimTransform::~AnimTransform()
@@ -267,7 +268,8 @@ bool AnimResource::IsDescendingBind() const
     return internal::TestBit(this->mpTagBlock->flag, ANIMTAGFLAG_DESCENDINGBIND);
 }
 
-const AnimationShareInfo* AnimResource::GetAnimationShareInfoArray() const{
+const AnimationShareInfo* AnimResource::GetAnimationShareInfoArray() const
+{
     if (!mpShareBlock)
     {
         return 0;
@@ -281,13 +283,13 @@ const AnimationShareInfo* AnimResource::GetAnimationShareInfoArray() const{
 AnimTransformBasic::AnimTransformBasic(): 
     mpTexAry(0),
     mpAnimLinkAry(0),
-    mAnimLinkNum(0)
-{
+    m_AnimLinkNum(0)
+    {
 }
 
 AnimTransformBasic::~AnimTransformBasic()
 {
-    Layout::DeleteArray(this->mpAnimLinkAry, this->mAnimLinkNum);
+    Layout::DeleteArray(this->mpAnimLinkAry, this->m_AnimLinkNum);
     Layout::DeletePrimArray(this->mpTexAry);
 }
 
@@ -324,7 +326,7 @@ void AnimTransformBasic::SetResource(const res::AnimationBlock* pRes,ResourceAcc
     mpAnimLinkAry = Layout::NewArray<AnimationLink>(animNum);
     if (mpAnimLinkAry)
     {
-        mAnimLinkNum = animNum;
+        m_AnimLinkNum = animNum;
     }
 }
 
@@ -339,11 +341,12 @@ void AnimTransformBasic::Bind(Pane* pPane,bool bRecursive,bool bDisable)
     for (u16 i = 0; i < pRes->animContNum; ++i)
     {
         const res::AnimationContent& animCont = *internal::ConvertOffsToPtr<res::AnimationContent>(pRes, animContOffsets[i]);
-        if (animCont.type == ANIMCONTENTTYPE_PANE){
+        if (animCont.type == ANIMCONTENTTYPE_PANE)
+        {
             if (Pane *const pFindPane = pPane->FindPaneByName(animCont.name, bRecursive))
-            {
+        {
                 if (!IsBindAnimation(pFindPane, this))
-                {
+        {
                     pCrAnimLink = Bind(pFindPane, pCrAnimLink, i, bDisable);
                     if (!pCrAnimLink)
                     {
@@ -355,8 +358,9 @@ void AnimTransformBasic::Bind(Pane* pPane,bool bRecursive,bool bDisable)
         else
         {
             if (Material *const pFindMat = pPane->FindMaterialByName(animCont.name, bRecursive))
-            {
-                if (!IsBindAnimation(pFindMat, this)){
+        {
+                if (!IsBindAnimation(pFindMat, this))
+        {
                     pCrAnimLink = Bind(pFindMat, pCrAnimLink, i, bDisable);
                     if (!pCrAnimLink)
                     {
@@ -384,9 +388,9 @@ void AnimTransformBasic::Bind(Material* pMaterial,bool bDisable)
         if (animCont.type == ANIMCONTENTTYPE_MATERIAL)
         {
             if (internal::EqualsMaterialName(pMaterial->GetName(), animCont.name))
-            {
+        {
                 if (!IsBindAnimation(pMaterial, this))
-                {
+        {
                     pCrAnimLink = Bind(pMaterial, pCrAnimLink, i, bDisable);
                     if (!pCrAnimLink)
                     {

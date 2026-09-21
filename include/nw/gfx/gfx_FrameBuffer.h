@@ -6,9 +6,11 @@
 namespace nw {
 namespace gfx {
 
-class FrameBufferObject{
+class FrameBufferObject
+{
 public:
-    struct Description{
+    struct Description
+    {
         GLuint fboID;
         u32 height;
         u32 width;
@@ -19,7 +21,8 @@ public:
         
         bool useBlock32;
 
-        Description(){
+        Description()
+        {
             fboID = 0;
             useBlock32 = false;
             colorAddress = NULL;
@@ -27,46 +30,48 @@ public:
         }
     };
     
-    operator GLuint() const{
-        return mDescription.fboID;
+    operator GLuint() const
+    {
+        return m_Description.fboID;
     }
     
-    const Description& GetDescription() const { return mDescription; }
-    Description& GetDescription() { return mDescription; }
+    const Description& GetDescription() const { return m_Description; }
+    Description& GetDescription() { return m_Description; }
 
     void  SetDescription(const Description& description);
 
-    GLuint GetFboID() const { return mDescription.fboID; }
+    GLuint GetFboID() const { return m_Description.fboID; }
 
     void   SetFboID(GLuint fboID);
 
-    u32    GetHeight() const { return mDescription.height; }
+    u32    GetHeight() const { return m_Description.height; }
 
-    void   SetHeight(u32 height) { mDescription.height = height; }
+    void   SetHeight(u32 height) { m_Description.height = height; }
 
-    u32    GetWidth() const { return mDescription.width; }
+    u32    GetWidth() const { return m_Description.width; }
 
-    void   SetWidth(u32 width) { mDescription.width = width; }
+    void   SetWidth(u32 width) { m_Description.width = width; }
 
-    u32    GetColorFormat() const { return mDescription.colorFormat; }
+    u32    GetColorFormat() const { return m_Description.colorFormat; }
 
-    void   SetColorFormat(u32 colorFormat) { mDescription.colorFormat = colorFormat; }
+    void   SetColorFormat(u32 colorFormat) { m_Description.colorFormat = colorFormat; }
 
-    u32    GetDepthFormat() const { return mDescription.depthFormat; }
+    u32    GetDepthFormat() const { return m_Description.depthFormat; }
 
-    void SetDepthFormat(u32 depthFormat) { mDescription.depthFormat = depthFormat; }
+    void SetDepthFormat(u32 depthFormat) { m_Description.depthFormat = depthFormat; }
 
-    u32 GetColorAddress() const { return mDescription.colorAddress; }
+    u32 GetColorAddress() const { return m_Description.colorAddress; }
 
-    void SetColorAddress(u32 colorAddress) { mDescription.colorAddress = colorAddress; }
+    void SetColorAddress(u32 colorAddress) { m_Description.colorAddress = colorAddress; }
 
-    u32 GetDepthAddress() const { return mDescription.depthAddress; }
+    u32 GetDepthAddress() const { return m_Description.depthAddress; }
 
-    void SetDepthAddress(u32 depthAddress) { mDescription.depthAddress = depthAddress; }
+    void SetDepthAddress(u32 depthAddress) { m_Description.depthAddress = depthAddress; }
 
     void ActivateBuffer() const;
 
-    void TransferRenderImage(u32 dstAddress, GLenum dstFormat, GLenum antiAliasMode, bool yFlip) const{
+    void TransferRenderImage(u32 dstAddress, GLenum dstFormat, GLenum antiAliasMode, bool yFlip) const
+    {
         const void* srcAddress = reinterpret_cast<const void*>(this->GetColorAddress());
         const u32 width        = this->GetWidth();
         const u32 height       = this->GetHeight();
@@ -75,19 +80,21 @@ public:
         nngxAddB2LTransferCommand(srcAddress, width, height, srcFormat,reinterpret_cast<void*>(dstAddress), width, height, dstFormat,antiAliasMode, yFlip, 8);
     }
     
-    enum{
+    enum
+    {
         CLEAR_MASK_COLOR = GL_COLOR_BUFFER_BIT,
         CLEAR_MASK_DEPTH = GL_DEPTH_BUFFER_BIT, 
         CLEAR_MASK_ALL   = CLEAR_MASK_COLOR | CLEAR_MASK_DEPTH 
     };
 
     void ClearBuffer(u32 mask, const nw::ut::FloatColor& clearColor, f32 clearDepth, u8 clearStencil = 0) const;
-    void ClearBuffer(const nw::ut::FloatColor& clearColor, f32 clearDepth, u8 clearStencil = 0) const{
+    void ClearBuffer(const nw::ut::FloatColor& clearColor, f32 clearDepth, u8 clearStencil = 0) const
+    {
         this->ClearBuffer(CLEAR_MASK_ALL, clearColor, clearDepth, clearStencil);
     }
 
 private:
-    Description mDescription;
+    Description m_Description;
 };
 
 }

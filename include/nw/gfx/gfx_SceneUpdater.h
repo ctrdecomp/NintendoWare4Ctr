@@ -16,44 +16,50 @@ class BillboardUpdater;
 
 class SceneContext;
 
-class SceneUpdater  : public ISceneUpdater{
+class SceneUpdater  : public ISceneUpdater
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(SceneUpdater);
 
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    class Builder{
+    class Builder
+    {
     public:
         Builder() {}
 
-        Builder& SkeletonUpdaterPtr(SkeletonUpdater* skeletonUpdater){
-            this->mSkeletonUpdater.Reset(skeletonUpdater);
+        Builder& SkeletonUpdaterPtr(SkeletonUpdater* skeletonUpdater)
+        {
+            this->m_SkeletonUpdater.Reset(skeletonUpdater);
             return *this;
         }
 
-        Builder& WorldMatrixUpdaterPtr(WorldMatrixUpdater* worldMatrixUpdater){
-            this->mWorldMatrixUpdater.Reset(worldMatrixUpdater);
+        Builder& WorldMatrixUpdaterPtr(WorldMatrixUpdater* worldMatrixUpdater)
+        {
+            this->m_WorldMatrixUpdater.Reset(worldMatrixUpdater);
             return *this;
         }
 
-        Builder& BillboardUpdaterPtr(BillboardUpdater* billboardUpdater){
-            this->mBillboardUpdater.Reset(billboardUpdater);
+        Builder& BillboardUpdaterPtr(BillboardUpdater* billboardUpdater)
+        {
+            this->m_BillboardUpdater.Reset(billboardUpdater);
             return *this;
         }
 
         SceneUpdater* Create(os::IAllocator* allocator);
 
     private:
-        GfxPtr<SkeletonUpdater> mSkeletonUpdater;
-        GfxPtr<WorldMatrixUpdater> mWorldMatrixUpdater;
-        GfxPtr<BillboardUpdater> mBillboardUpdater;
+        GfxPtr<SkeletonUpdater> m_SkeletonUpdater;
+        GfxPtr<WorldMatrixUpdater> m_WorldMatrixUpdater;
+        GfxPtr<BillboardUpdater> m_BillboardUpdater;
     };
 
-    virtual DepthSortMode GetDepthSortMode() const { return mDepthSortMode; }
+    virtual DepthSortMode GetDepthSortMode() const { return m_DepthSortMode; }
 
-    virtual void SetDepthSortMode(DepthSortMode depthSortMode){
-        mDepthSortMode = depthSortMode;
+    virtual void SetDepthSortMode(DepthSortMode depthSortMode)
+    {
+        m_DepthSortMode = depthSortMode;
     }
 
     virtual void UpdateAll(SceneContext* sceneContext);
@@ -78,18 +84,17 @@ protected:
     SceneUpdater(nw::os::IAllocator* allocator,GfxPtr<SkeletonUpdater> skeletonUpdater,GfxPtr<WorldMatrixUpdater> worldMatrixUpdater,
     GfxPtr<BillboardUpdater> billboardUpdater): 
         ISceneUpdater(allocator),
-        mSkeletonUpdater(skeletonUpdater),
-        mWorldMatrixUpdater(worldMatrixUpdater),
-        mBillboardUpdater(billboardUpdater),
-        mDepthSortMode(SORT_DEPTH_OF_ALL_MESH)
-    {}
+        m_SkeletonUpdater(skeletonUpdater),
+        m_WorldMatrixUpdater(worldMatrixUpdater),
+        m_BillboardUpdater(billboardUpdater),
+        m_DepthSortMode(SORT_DEPTH_OF_ALL_MESH) {}
 
     virtual ~SceneUpdater() {}
 
-    GfxPtr<SkeletonUpdater> mSkeletonUpdater;
-    GfxPtr<WorldMatrixUpdater> mWorldMatrixUpdater;
-    GfxPtr<BillboardUpdater> mBillboardUpdater;
-    DepthSortMode mDepthSortMode;
+    GfxPtr<SkeletonUpdater> m_SkeletonUpdater;
+    GfxPtr<WorldMatrixUpdater> m_WorldMatrixUpdater;
+    GfxPtr<BillboardUpdater> m_BillboardUpdater;
+    DepthSortMode m_DepthSortMode;
 };
 
 }

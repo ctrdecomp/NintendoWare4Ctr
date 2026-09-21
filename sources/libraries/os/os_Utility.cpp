@@ -9,7 +9,8 @@ namespace nw {
 namespace os {
 namespace internal {
 
-void Printf(const char *fmt, ...){
+void Printf(const char *fmt, ...)
+{
     std::va_list vlist;
     va_start(vlist, fmt);
     
@@ -18,7 +19,8 @@ void Printf(const char *fmt, ...){
     va_end(vlist);
 }
 
-void Warning(const char* fileName, int line, const char* fmt, ...){
+void Warning(const char* fileName, int line, const char* fmt, ...)
+{
     va_list vlist;
     va_start(vlist, fmt);
     
@@ -29,7 +31,8 @@ void Warning(const char* fileName, int line, const char* fmt, ...){
     va_end(vlist);
 }
 
-void Panic( const char* fileName, int line, const char* fmt, ...){
+void Panic(const char* fileName, int line, const char* fmt, ...)
+{
     std::va_list vlist;
     va_start(vlist, fmt);
 

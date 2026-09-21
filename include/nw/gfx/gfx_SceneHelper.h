@@ -5,21 +5,23 @@
 #include <nw/ut/ut_MoveArray.h>
 #include <nw/math/math_Types.h>
 
-using namespace nw;
-
 namespace nw{
 namespace gfx{
 
-class SceneHelper{
+class SceneHelper
+{
 private:
     SceneHelper();
     NW_DISALLOW_COPY_AND_ASSIGN(SceneHelper);
 
 public:
     template<typename TIterator>
-    static void ResolveReference(TIterator begin, TIterator end){
-        for (TIterator parent = begin; parent != end; ++parent){
-            for (TIterator child = begin; child != end; ++child){
+    static void ResolveReference(TIterator begin, TIterator end)
+    {
+        for (TIterator parent = begin; parent != end; ++parent)
+        {
+            for (TIterator child = begin; child != end; ++child)
+            {
                 NW_NULL_ASSERT(nw::ut::DynamicCast<SceneNode*>(*child));
                 ResolveReferenceImpl(*parent, *child);
             }
@@ -27,25 +29,31 @@ public:
     }
 
     template<typename TIterator>
-    static void ResolveReference(const std::pair<TIterator, TIterator>& range){
+    static void ResolveReference(const std::pair<TIterator, TIterator>& range)
+    {
         ResolveReference<TIterator>(range.first, range.second);
     }
 
     template<typename TNode, int TSize>
-    static void ResolveReference(TNode (&nodes)[TSize]){
+    static void ResolveReference(TNode (&nodes)[TSize])
+    {
         ResolveReference<TNode*>(nodes, nodes + TSize);
     }
 
     template<typename TNodeArray>
-    static void ResolveReference(TNodeArray& nodes){
+    static void ResolveReference(TNodeArray& nodes)
+    {
         ResolveReference<TNodeArray::iterator>(nodes.begin(), nodes.end());
     }
 
     template <typename TIterator, typename TFunction>
     static void
-    ForeachRootNodes(TIterator begin, TIterator end, TFunction function){
-        for (TIterator iter = begin; iter != end; ++iter){
-            if ((*iter)->GetParent() == NULL){
+    ForeachRootNodes(TIterator begin, TIterator end, TFunction function)
+    {
+        for (TIterator iter = begin; iter != end; ++iter)
+        {
+            if ((*iter)->GetParent() == NULL)
+            {
                 function(*iter);
             }
         }
@@ -54,7 +62,8 @@ public:
     static float CalculateDepth(
         const math::VEC3& localPosition,
         const math::MTX34& worldMatrix,
-        const Camera& camera){
+        const Camera& camera)
+        {
         math::VEC3 position;
         math::VEC3Transform(&position, &worldMatrix, &localPosition);
         math::VEC3Transform(&position, &camera.ViewMatrix(), &position);
@@ -74,7 +83,8 @@ public:
 
     static float CalculateDepth(
         const math::MTX34& worldMatrix,
-        const Camera& camera){
+        const Camera& camera)
+        {
         math::VEC3 position(worldMatrix.GetColumn(3));
         math::VEC3Transform(&position, (const math::MTX34*)&camera.ViewMatrix(), &position);
         const math::MTX44& projection = camera.ProjectionMatrix();
@@ -94,20 +104,21 @@ private:
     static void ResolveReferenceImpl(SceneNode* parent, SceneNode* child);
 };
 
-class AttachNode{
+class AttachNode
+{
 public:
     AttachNode(gfx::SceneNode* parent): 
-        mParent(parent)
-    {}
+        m_Parent(parent) {}
 
     template <typename TNode>
-    void operator() (TNode* node){
-        NW_POINTER_ASSERT(this->mParent);
-        this->mParent->AttachChild(node);
+    void operator() (TNode* node)
+    {
+        NW_POINTER_ASSERT(this->m_Parent);
+        this->m_Parent->AttachChild(node);
     }
     
 private:
-    gfx::SceneNode* mParent;
+    gfx::SceneNode* m_Parent;
 };
 
 }

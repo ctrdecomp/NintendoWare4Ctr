@@ -28,7 +28,7 @@ static void ResReferenceTexture_Cleanup(ResTexture resTex);
 static void ResProceduralTexture_Cleanup(ResTexture resTex);
 static void ResShadowTexture_Cleanup(ResTexture resTex);
 
-static SetupFunc sTextureSetupTable[] = {
+static SetupFunc s_TextureSetupTable[] = {
     ResImageTexture_Setup,
     ResCubeTexture_Setup,
     ResReferenceTexture_Setup,
@@ -36,7 +36,7 @@ static SetupFunc sTextureSetupTable[] = {
     ResShadowTexture_Setup
 };
 
-static SetupFunc sTextureCleanupTable[] = {
+static SetupFunc s_TextureCleanupTable[] = {
     ResImageTexture_Cleanup,
     ResCubeTexture_Cleanup,
     ResReferenceTexture_Cleanup,
@@ -101,43 +101,50 @@ namespace {
     };
 }
 
-static void TexImage2D(u32 texID, ResPixelBasedImage resImage, u32 loadFlag){
+static void TexImage2D(u32 texID, ResPixelBasedImage resImage, u32 loadFlag)
+{
     u32 size = resImage.GetImageDataCount();
     GLenum transtype = loadFlag & 0xFFFF0000;
     const u32 NN_GX_MEM_MASK = 0x00030000;
     void* address = NULL;
     
-    if (size == 0){
+    if (size == 0)
+    {
         size = resImage.GetWidth() * resImage.GetHeight() * resImage.GetBitsPerPixel() / 8;
     }
     
-    switch (transtype){
+    switch (transtype)
+    {
     case (NN_GX_MEM_FCRAM | GL_NO_COPY_FCRAM_DMP):
         nngxUpdateBuffer(resImage.GetImageData(), size);
         break;
         
     case (NN_GX_MEM_VRAMA | GL_NO_COPY_FCRAM_DMP):
-    case (NN_GX_MEM_VRAMB | GL_NO_COPY_FCRAM_DMP):{
+    case (NN_GX_MEM_VRAMB | GL_NO_COPY_FCRAM_DMP):
+    {
             GLuint area = (transtype & NN_GX_MEM_MASK);
             address = __dmpgl_allocator(area, NN_GX_MEM_TEXTURE, texID, size);
-            if (resImage.GetImageData()){
+            if (resImage.GetImageData())
+            {
                 nngxAddVramDmaCommand( resImage.GetImageData(), address, size );
             }
             
             resImage.SetLocationAddress( address );
-            resImage.ref().mMemoryArea = area;
+            resImage.ref().m_MemoryArea = area;
         }
         break;
         
-    case (NN_GX_MEM_FCRAM | GL_COPY_FCRAM_DMP):{
+    case (NN_GX_MEM_FCRAM | GL_COPY_FCRAM_DMP):
+    {
             address = __dmpgl_allocator(NN_GX_MEM_FCRAM, NN_GX_MEM_TEXTURE, texID, size);
-            if (resImage.GetImageData()){
+            if (resImage.GetImageData())
+            {
                 nw::os::MemCpy( address, resImage.GetImageData(), size );
                 nngxUpdateBuffer( address, size );
             }
             
             resImage.SetLocationAddress( address );
-            resImage.ref().mMemoryArea = NN_GX_MEM_FCRAM;
+            resImage.ref().m_MemoryArea = NN_GX_MEM_FCRAM;
         }
         break;
         
@@ -151,25 +158,30 @@ static void TexImage2D(u32 texID, ResPixelBasedImage resImage, u32 loadFlag){
     }
 }
 
-static void DeleteImage2D( u32 texID, ResPixelBasedImage resImage ){
-    GLuint area = resImage.ref().mMemoryArea;
+static void DeleteImage2D( u32 texID, ResPixelBasedImage resImage )
+{
+    GLuint area = resImage.ref().m_MemoryArea;
     
-    if (area != ResPixelBasedImageData::AREA_NO_MALLOC){
+    if (area != ResPixelBasedImageData::AREA_NO_MALLOC)
+    {
         void* address = reinterpret_cast<void*>( resImage.GetLocationAddress() );
         __dmpgl_deallocator( area, NN_GX_MEM_TEXTURE, texID, address );
         resImage.SetLocationAddress( static_cast<u32>(NULL) );
     }
 }
 
-static inline void SetTexImage2D( u32 texID, ResPixelBasedImage resImage, u32 loadFlag ){
+static inline void SetTexImage2D( u32 texID, ResPixelBasedImage resImage, u32 loadFlag )
+{
     NW_ASSERT(resImage.IsValid());
 
-    if (resImage.GetLocationAddress() != NULL){
-        resImage.ref().mMemoryArea = ResPixelBasedImageData::AREA_NO_MALLOC;
+    if (resImage.GetLocationAddress() != NULL)
+    {
+        resImage.ref().m_MemoryArea = ResPixelBasedImageData::AREA_NO_MALLOC;
         return;
     }
 
-    if (loadFlag == 0){
+    if (loadFlag == 0)
+    {
         loadFlag = NN_GX_MEM_FCRAM | GL_NO_COPY_FCRAM_DMP;
     }
 
@@ -178,12 +190,14 @@ static inline void SetTexImage2D( u32 texID, ResPixelBasedImage resImage, u32 lo
     TexImage2D(texID, resImage, loadFlag);
 }
 
-static void ResImageTexture_Setup(ResTexture resTex){
+static void ResImageTexture_Setup(ResTexture resTex)
+{
     ResImageTexture resImgTex = ResDynamicCast<ResImageTexture>( resTex );
     
     NW_ASSERT( resImgTex.IsValid() );
     
-    if (resImgTex.GetTextureObject() != 0){
+    if (resImgTex.GetTextureObject() != 0)
+    {
         return;
     }
     
@@ -197,12 +211,14 @@ static void ResImageTexture_Setup(ResTexture resTex){
     SetTexImage2D(texID, resImage, loadFlag);
 }
 
-static void ResShadowTexture_Setup(ResTexture resTex){
+static void ResShadowTexture_Setup(ResTexture resTex)
+{
     ResShadowTexture resSdwTex = ResDynamicCast<ResShadowTexture>( resTex );
     
     NW_ASSERT( resSdwTex.IsValid() );
     
-    if (resSdwTex.GetTextureObject() != 0){
+    if (resSdwTex.GetTextureObject() != 0)
+    {
         return;
     }
     
@@ -216,12 +232,14 @@ static void ResShadowTexture_Setup(ResTexture resTex){
     SetTexImage2D(texID, resImage, loadFlag);
 }
 
-static void ResCubeTexture_Setup(ResTexture resTex){
+static void ResCubeTexture_Setup(ResTexture resTex)
+{
     ResCubeTexture resCubeTex = ResDynamicCast<ResCubeTexture>( resTex );
     
     NW_ASSERT(resCubeTex.IsValid());
     
-    if (resCubeTex.GetTextureObject() != 0){
+    if (resCubeTex.GetTextureObject() != 0)
+    {
         return;
     }
     
@@ -230,19 +248,22 @@ static void ResCubeTexture_Setup(ResTexture resTex){
     
     u32 loadFlag = resCubeTex.GetLocationFlag();
 
-    for (int face = 0; face < ResCubeTexture::MAX_CUBE_FACE; ++face){
+    for (int face = 0; face < ResCubeTexture::MAX_CUBE_FACE; ++face)
+    {
         ResPixelBasedImage resImage = resCubeTex.GetImage(static_cast<ResCubeTexture::CubeFace>(face));
         
         SetTexImage2D(texID, resImage, loadFlag);
     }
 }
 
-static void ResReferenceTexture_Setup(ResTexture resTex){
+static void ResReferenceTexture_Setup(ResTexture resTex)
+{
     ResReferenceTexture resRefTex = ResStaticCast<ResReferenceTexture>( resTex );
     
     NW_ASSERT(resRefTex.GetTargetTexture().IsValid());
     
-    switch(resRefTex.GetTargetTexture().ref().typeInfo){
+    switch (resRefTex.GetTargetTexture().ref().typeInfo)
+    {
     case ResImageTexture::TYPE_INFO:{
             ResImageTexture_Setup(resRefTex.GetTargetTexture());
             break;
@@ -274,16 +295,19 @@ static void ResReferenceTexture_Setup(ResTexture resTex){
     }
 }
 
-static void ResProceduralTexture_Setup(ResTexture resTex){
+static void ResProceduralTexture_Setup(ResTexture resTex)
+{
     NW_UNUSED_VARIABLE(resTex);
 }
 
-static void ResImageTexture_Cleanup(ResTexture resTex){
+static void ResImageTexture_Cleanup(ResTexture resTex)
+{
     ResImageTexture resImgTex = ResDynamicCast<ResImageTexture>(resTex);
     NW_ASSERT(resImgTex.IsValid());
     
     GLuint texID = resImgTex.GetTextureObject();
-    if (texID == 0){
+    if (texID == 0)
+    {
         return;
     }
     
@@ -292,12 +316,14 @@ static void ResImageTexture_Cleanup(ResTexture resTex){
     resImgTex.SetTextureObject(0);
 }
 
-static void ResShadowTexture_Cleanup(ResTexture resTex){
+static void ResShadowTexture_Cleanup(ResTexture resTex)
+{
     ResShadowTexture resSdwTex = ResDynamicCast<ResShadowTexture>(resTex);
     NW_ASSERT(resSdwTex.IsValid());
     
     GLuint texID = resSdwTex.GetTextureObject();
-    if (texID == 0){
+    if (texID == 0)
+    {
         return;
     }
     
@@ -306,16 +332,19 @@ static void ResShadowTexture_Cleanup(ResTexture resTex){
     resSdwTex.SetTextureObject(0);
 }
 
-static void ResCubeTexture_Cleanup(ResTexture resTex){
+static void ResCubeTexture_Cleanup(ResTexture resTex)
+{
     ResCubeTexture resCubeTex = ResDynamicCast<ResCubeTexture>( resTex );
     NW_ASSERT(resCubeTex.IsValid());
     
     GLuint texID = resCubeTex.GetTextureObject();
-    if (texID == 0){
+    if (texID == 0)
+    {
         return;
     }
     
-    for (int face = 0; face < ResCubeTexture::MAX_CUBE_FACE; ++face){
+    for (int face = 0; face < ResCubeTexture::MAX_CUBE_FACE; ++face)
+    {
         ResPixelBasedImage resImage = resCubeTex.GetImage(static_cast<ResCubeTexture::CubeFace>(face));
         DeleteImage2D(texID, resImage);
     }
@@ -323,13 +352,15 @@ static void ResCubeTexture_Cleanup(ResTexture resTex){
     resCubeTex.SetTextureObject(0);
 }
 
-static void ResReferenceTexture_Cleanup(ResTexture resTex){
+static void ResReferenceTexture_Cleanup(ResTexture resTex)
+{
     ResReferenceTexture resRefTex = ResStaticCast<ResReferenceTexture>(resTex);
     
     resRefTex.ref().toTargetTexture.set_ptr(NULL);
 }
 
-static void ResProceduralTexture_Cleanup(ResTexture resTex){
+static void ResProceduralTexture_Cleanup(ResTexture resTex)
+{
     ResProceduralTexture resProcTex = ResDynamicCast<ResProceduralTexture>(resTex);
     NW_ASSERT(resProcTex.IsValid());
 
@@ -349,36 +380,38 @@ static void ResProceduralTexture_Cleanup(ResTexture resTex){
 }
 
 /* ResTexture */
-Result ResTexture::Setup(os::IAllocator* allocator, ResGraphicsFile graphicsFile){
+Result ResTexture::Setup(os::IAllocator* allocator, ResGraphicsFile graphicsFile)
+{
     NW_UNUSED_VARIABLE(allocator);
     NW_UNUSED_VARIABLE(graphicsFile);
 
     NW_ASSERT( internal::ResCheckRevision( *this ) );
     
     Result result = RESOURCE_RESULT_OK;
-    switch (this->ref().typeInfo){
+    switch (this->ref().typeInfo)
+    {
     case ResImageTexture::TYPE_INFO:{
-            sTextureSetupTable[0]( *this );
+            s_TextureSetupTable[0]( *this );
         }
         break;
 
     case ResCubeTexture::TYPE_INFO:{
-            sTextureSetupTable[1]( *this );
+            s_TextureSetupTable[1]( *this );
         }
         break;
 
     case ResReferenceTexture::TYPE_INFO:{
-            sTextureSetupTable[2]( *this );
+            s_TextureSetupTable[2]( *this );
         }
         break;
 
     case ResProceduralTexture::TYPE_INFO:{
-            sTextureSetupTable[3]( *this );
+            s_TextureSetupTable[3]( *this );
         }
         break;
 
     case ResShadowTexture::TYPE_INFO:{
-            sTextureSetupTable[4]( *this );
+            s_TextureSetupTable[4]( *this );
         }
         break;
 
@@ -390,34 +423,37 @@ Result ResTexture::Setup(os::IAllocator* allocator, ResGraphicsFile graphicsFile
     return result;
 }
 
-Result ResTexture::Setup(os::IAllocator* allocator){ 
+Result ResTexture::Setup(os::IAllocator* allocator)
+{ 
     return this->Setup(allocator, ResGraphicsFile(NULL)); 
 }
 
-void ResTexture::Cleanup(){
-    switch (this->ref().typeInfo){
+void ResTexture::Cleanup()
+{
+    switch (this->ref().typeInfo)
+    {
     case ResImageTexture::TYPE_INFO:{
-            sTextureCleanupTable[0]( *this );
+            s_TextureCleanupTable[0]( *this );
         }
         break;
 
     case ResCubeTexture::TYPE_INFO:{
-            sTextureCleanupTable[1]( *this );
+            s_TextureCleanupTable[1]( *this );
         }
         break;
 
     case ResReferenceTexture::TYPE_INFO:{
-            sTextureCleanupTable[2]( *this );
+            s_TextureCleanupTable[2]( *this );
         }
         break;
 
     case ResProceduralTexture::TYPE_INFO:{
-            sTextureCleanupTable[3]( *this );
+            s_TextureCleanupTable[3]( *this );
         }
         break;
 
     case ResShadowTexture::TYPE_INFO:{
-            sTextureCleanupTable[4]( *this );
+            s_TextureCleanupTable[4]( *this );
         }
         break;
 
@@ -429,17 +465,21 @@ void ResTexture::Cleanup(){
 
 /* ResImageTexture */
 
-void ResImageTexture::DynamicDestroy(){
-    os::IAllocator* allocator = this->GetImage().ref().mDynamicAllocator;
+void ResImageTexture::DynamicDestroy()
+{
+    os::IAllocator* allocator = this->GetImage().ref().m_DynamicAllocator;
 
     NW_NULL_ASSERT( allocator );
 
-    if (this->IsValid()){
+    if (this->IsValid())
+    {
         ResPixelBasedImage resPixelBasedImage = this->GetImage();
 
-        if (resPixelBasedImage.IsValid()){
+        if (resPixelBasedImage.IsValid())
+        {
 
-            if (resPixelBasedImage.ptr()->toImageDataTable.to_ptr() != NULL){
+            if (resPixelBasedImage.ptr()->toImageDataTable.to_ptr() != NULL)
+            {
                 allocator->Free(resPixelBasedImage.ptr()->toImageDataTable.to_ptr());
             }
 
@@ -453,17 +493,21 @@ void ResImageTexture::DynamicDestroy(){
 
 /* ResCubeTexture */
 
-void ResCubeTexture::DynamicDestroy(){
+void ResCubeTexture::DynamicDestroy()
+{
     ResPixelBasedImage firstFace = this->GetImage(static_cast<CubeFace>(0));
 
-    os::IAllocator* allocator = firstFace.ref().mDynamicAllocator;
+    os::IAllocator* allocator = firstFace.ref().m_DynamicAllocator;
 
     NW_NULL_ASSERT( allocator );
 
-    if (this->IsValid()){
+    if (this->IsValid())
+    {
 
-        if (firstFace.IsValid()){
-            if (firstFace.ptr()->toImageDataTable.to_ptr() != NULL){
+        if (firstFace.IsValid())
+        {
+            if (firstFace.ptr()->toImageDataTable.to_ptr() != NULL)
+            {
                 allocator->Free(firstFace.ptr()->toImageDataTable.to_ptr());
             }
 
@@ -477,15 +521,18 @@ void ResCubeTexture::DynamicDestroy(){
 
 /* ResShadowTexture */
 
-void ResShadowTexture::DynamicDestroy(){
-    os::IAllocator* allocator = this->GetImage().ref().mDynamicAllocator;
+void ResShadowTexture::DynamicDestroy()
+{
+    os::IAllocator* allocator = this->GetImage().ref().m_DynamicAllocator;
 
     NW_NULL_ASSERT(allocator);
 
     ResPixelBasedImage resPixelBasedImage = this->GetImage();
 
-    if(resPixelBasedImage.IsValid()){
-        if (resPixelBasedImage.ptr()->toImageDataTable.to_ptr() != NULL){
+    if (resPixelBasedImage.IsValid())
+    {
+        if (resPixelBasedImage.ptr()->toImageDataTable.to_ptr() != NULL)
+        {
             allocator->Free(resPixelBasedImage.ptr()->toImageDataTable.to_ptr());
         }
 
@@ -498,15 +545,18 @@ void ResShadowTexture::DynamicDestroy(){
 
 /* ResPixelBasedImage */
 
-bool ResPixelBasedImage::CheckMemoryLocation() const{
-    if (!nw::os::IsDeviceMemory(this->GetImageData())){
+bool ResPixelBasedImage::CheckMemoryLocation() const
+{
+    if (!nw::os::IsDeviceMemory(this->GetImageData()))
+    {
         return false;
     }
     
     u32 startAddress = reinterpret_cast<u32>( this->GetImageData() );
     u32 endAddress = reinterpret_cast<u32>( this->GetImageData() ) + static_cast<u32>(this->GetImageDataCount()) - 1;
 
-    if ((startAddress & 0x7F) != 0){
+    if ((startAddress & 0x7F) != 0)
+    {
         return false;
     }
     

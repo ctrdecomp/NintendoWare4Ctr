@@ -143,7 +143,7 @@ public:
     void SetDecay(int decay) { m_CurveAdshr.SetDecay(decay); }
     void SetSustain(int sustain) { m_CurveAdshr.SetSustain(sustain); }
     void SetRelease(int release) { m_CurveAdshr.SetRelease(release); }
-    void SetSilence(bool silenceFlag, int fadeTimes){ m_SilenceVolume.SetTarget(silenceFlag ? SILENCE_VOLUME_MIN : SILENCE_VOLUME_MAX, static_cast<u16>(fadeTimes)); }
+    void SetSilence(bool silenceFlag, int fadeTimes) { m_SilenceVolume.SetTarget(silenceFlag ? SILENCE_VOLUME_MIN : SILENCE_VOLUME_MAX, static_cast<u16>(fadeTimes)); }
 
     s32 GetLength() const { return m_Length; }
     void SetLength( s32 length ) { m_Length = length; }

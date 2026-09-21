@@ -25,7 +25,7 @@ public:
             m_Size(size), 
             m_Callback(callback), 
             m_pCallbackArg(callbackArg)
-        {
+            {
         }
 
         ~Block()

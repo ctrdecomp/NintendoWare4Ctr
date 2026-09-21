@@ -20,10 +20,12 @@ NW_UT_RUNTIME_TYPEINFO_DEFINITION(ParticleShape, SceneObject);
 
 static const int MAX_ATTRIBUTES_NUM = 12;
 
-static void SetupParticleVertexAttributeCommand(ParticleShape* shape,ParticleSet* particleSet,ParticleBuffer bufferSide){
+static void SetupParticleVertexAttributeCommand(ParticleShape* shape,ParticleSet* particleSet,ParticleBuffer bufferSide)
+{
     ParticleCollection* collection = particleSet->GetParticleCollection();
 
-    enum{
+    enum
+    {
         REG_VTX_SHADER_ATTR_NUM   = 0x2b9,
         REG_VTX_SHADER_ATTR_NUM_2 = 0x242,
         REG_VTX_MAP_0             = 0x2bb,
@@ -39,7 +41,7 @@ static void SetupParticleVertexAttributeCommand(ParticleShape* shape,ParticleSet
 
     s32 vtxAttrNum = shape->GetVertexAttributesCount();
 
-    u32* command = reinterpret_cast<u32*>(shape->mCommandCache[bufferSide]);
+    u32* command = reinterpret_cast<u32*>(shape->m_CommandCache[bufferSide]);
 
     const u32 HEADER_VTX_SHADER_ATTR_NUM   = internal::MakeCommandHeader(REG_VTX_SHADER_ATTR_NUM, 1, false, 0xb);
     const u32 HEADER_VTX_SHADER_ATTR_NUM_2 = internal::MakeCommandHeader(REG_VTX_SHADER_ATTR_NUM_2, 1, false, 0x1);
@@ -72,8 +74,10 @@ static void SetupParticleVertexAttributeCommand(ParticleShape* shape,ParticleSet
 
     u32 usedFlag = 0;
 
-    for (s32 i = 0; i < shape->GetVertexAttributesCount(); ++i){
-        if (shape->IsVertexStream(i)){
+    for (s32 i = 0; i < shape->GetVertexAttributesCount(); ++i)
+    {
+        if (shape->IsVertexStream(i))
+        {
             s32 usage = shape->GetVertexAttributeUsage(i);
             NW_ASSERT(0 <= usage && usage < 12);
             inputTable[ (inputIndex / 8) * 2 ] |= (usage & 0xF) << (4 * (inputIndex % 8));
@@ -99,18 +103,22 @@ static void SetupParticleVertexAttributeCommand(ParticleShape* shape,ParticleSet
         }
     }
 
-    for (s32 i = inputIndex; i < vtxAttrNum; ++i){
+    for (s32 i = inputIndex; i < vtxAttrNum; ++i)
+    {
         command[commandIndex++] = 0;
         command[commandIndex++] = 0;
         command[commandIndex++] = 0;
     }
 
-    if ((commandIndex & 1) == 1){
+    if ((commandIndex & 1) == 1)
+    {
         command[commandIndex++] = 0;
     }
 
-    for (s32 i = 0; i < shape->GetVertexAttributesCount(); ++i){
-        if (!shape->IsVertexStream(i)){
+    for (s32 i = 0; i < shape->GetVertexAttributesCount(); ++i)
+    {
+        if (!shape->IsVertexStream(i))
+        {
             s32 usage = shape->GetVertexAttributeUsage(i);
             NW_ASSERT(0 <= usage && usage < 12);
             inputTable[ (inputIndex / 8) * 2 ] |= (usage & 0xF) << (4 * (inputIndex % 8));
@@ -121,7 +129,8 @@ static void SetupParticleVertexAttributeCommand(ParticleShape* shape,ParticleSet
             int count = shape->GetVertexAttributeDimension(i);
             f32* fdata = shape->GetVertexParameter(i);
 
-            for (int j = 0; j < count; ++j){
+            for (int j = 0; j < count; ++j)
+            {
                 data[j] = ut::Float24::Float32ToBits24(fdata[j]);
             }
 
@@ -151,26 +160,30 @@ static void SetupParticleVertexAttributeCommand(ParticleShape* shape,ParticleSet
     command[commandIndex + 3] = 0;
     commandIndex += 4;
 
-    shape->mCommandCacheSize[bufferSide] = commandIndex * sizeof(u32);
+    shape->m_CommandCacheSize[bufferSide] = commandIndex * sizeof(u32);
 }
 
-static void SetupDeactivateParticleVertexAttributeCommand(ParticleShape* shape){
-    enum{
+static void SetupDeactivateParticleVertexAttributeCommand(ParticleShape* shape)
+{
+    enum
+    {
         REG_VTX_ARRAY_OFFSET      = 0x203,
         REG_VTX_PARAM_INDEX       = 0x232
     };
 
     s32 vtxAttrNum = shape->GetVertexAttributesCount();
 
-    u32* command = reinterpret_cast<u32*>(shape->mDeactivateVertexCommandCache);
+    u32* command = reinterpret_cast<u32*>(shape->m_DeactivateVertexCommandCache);
 
-    shape->mDeactivateVertexCommandCache = command;
+    shape->m_DeactivateVertexCommandCache = command;
 
     int inputIndex = 0;
     u32 commandIndex = 0;
 
-    for (s32 i = 0; i < vtxAttrNum; ++i){
-        if (shape->IsVertexStream(i)){
+    for (s32 i = 0; i < vtxAttrNum; ++i)
+    {
+        if (shape->IsVertexStream(i))
+        {
             command[commandIndex++] = 0;
             command[commandIndex++] = internal::MakeCommandHeader(REG_VTX_ARRAY_OFFSET + 2 + 3 * inputIndex, 1, false, 0xF);
 
@@ -180,7 +193,8 @@ static void SetupDeactivateParticleVertexAttributeCommand(ParticleShape* shape){
     
     const u32 HEADER_VTX_PARAM_INDEX = internal::MakeCommandHeader(REG_VTX_PARAM_INDEX, 4, true, 0xF);
 
-    for ( int i = 0; i < inputIndex; ++i ){
+    for ( int i = 0; i < inputIndex; ++i )
+    {
         command[commandIndex++] = i;
         command[commandIndex++] = HEADER_VTX_PARAM_INDEX;
         command[commandIndex++] = 0;
@@ -189,15 +203,17 @@ static void SetupDeactivateParticleVertexAttributeCommand(ParticleShape* shape){
         command[commandIndex++] = 0;
     }
     
-    shape->mDeactivateVertexCommandCacheSize = commandIndex * sizeof(u32);
+    shape->m_DeactivateVertexCommandCacheSize = commandIndex * sizeof(u32);
     
-    NW_ASSERT(shape->mDeactivateVertexCommandCacheSize <=  sizeof(u32) * (MAX_ATTRIBUTES_NUM * 8) );
+    NW_ASSERT(shape->m_DeactivateVertexCommandCacheSize <=  sizeof(u32) * (MAX_ATTRIBUTES_NUM * 8) );
 }
 
 static const int PrimitiveCommandSize = 26;
 
-static void CreatePrimitiveCommandCache(ParticleShape* shape,ResParticleSet resParticleSet){
-    enum{
+static void CreatePrimitiveCommandCache(ParticleShape* shape,ResParticleSet resParticleSet)
+{
+    enum
+    {
         REG_VERTEX_UNIFORM_BOOL     = 0x2b0,
 
         REG_ELEMENTS_MODE           = 0x229,
@@ -211,12 +227,13 @@ static void CreatePrimitiveCommandCache(ParticleShape* shape,ResParticleSet resP
         REG_COLOR_DEPTH_CACHE_FLUSH = 0x111
     };
 
-    u32* command = reinterpret_cast<u32*>(shape->mPrimitiveCommandCache);
+    u32* command = reinterpret_cast<u32*>(shape->m_PrimitiveCommandCache);
 
     u32 commandIndex = 0;
 
     s32 type;
-    switch (resParticleSet.GetParticleShapeBuilder().GetTypeInfo()){
+    switch (resParticleSet.GetParticleShapeBuilder().GetTypeInfo())
+    {
     case ResParticleBillboardShapeBuilder::TYPE_INFO:
         type = 0;
         break;
@@ -276,13 +293,15 @@ static void CreatePrimitiveCommandCache(ParticleShape* shape,ResParticleSet resP
 
     NW_ASSERT(commandIndex == PrimitiveCommandSize);
 
-    shape->mPrimitiveCommandCacheSize = commandIndex * sizeof(u32);
+    shape->m_PrimitiveCommandCacheSize = commandIndex * sizeof(u32);
 }
 
 
 /* ParticleShape */
-void ParticleShape::CreateCommandCache(ParticleSet* particleSet){
-    for (int side = 0; side < 2; ++side){
+void ParticleShape::CreateCommandCache(ParticleSet* particleSet)
+{
+    for (int side = 0; side < 2; ++side)
+    {
         SetupParticleVertexAttributeCommand(this,particleSet,(ParticleBuffer)side);
     }
     
@@ -291,7 +310,8 @@ void ParticleShape::CreateCommandCache(ParticleSet* particleSet){
     CreatePrimitiveCommandCache(this,particleSet->GetResParticleSet());
 }
 
-void ParticleShape::GetMemorySizeInternal(os::MemorySizeCalculator* pSize,int capacity){
+void ParticleShape::GetMemorySizeInternal(os::MemorySizeCalculator* pSize,int capacity)
+{
     os::MemorySizeCalculator& size = *pSize;
 
     const int streamSize = (capacity + internal::PARTICLE_SIMD_WIDTH_MAX) * sizeof(u16);
@@ -300,7 +320,8 @@ void ParticleShape::GetMemorySizeInternal(os::MemorySizeCalculator* pSize,int ca
     const int deactivateVertexCommandCacheSize = sizeof(u32) * (MAX_ATTRIBUTES_NUM * 8);
 
     int deviceMemorySize = 0;
-    if (size.GetAlignment() < 32){
+    if (size.GetAlignment() < 32)
+    {
         deviceMemorySize += 32 - size.GetAlignment();
     }
 
@@ -323,7 +344,8 @@ void ParticleShape::GetMemorySizeInternal(os::MemorySizeCalculator* pSize,int ca
     size.Add(nodeMemorySize, 32);
 }
 
-void ParticleShape::GetDeviceMemorySizeInternal(os::MemorySizeCalculator* pSize,int capacity){
+void ParticleShape::GetDeviceMemorySizeInternal(os::MemorySizeCalculator* pSize,int capacity)
+{
     os::MemorySizeCalculator& size = *pSize;
 
     const int streamSize = (capacity + internal::PARTICLE_SIMD_WIDTH_MAX) * sizeof(u16);
@@ -332,7 +354,8 @@ void ParticleShape::GetDeviceMemorySizeInternal(os::MemorySizeCalculator* pSize,
     const int deactivateVertexCommandCacheSize = sizeof(u32) * (MAX_ATTRIBUTES_NUM * 8);
 
     int deviceMemorySize = 0;
-    if (size.GetAlignment() < 32){
+    if (size.GetAlignment() < 32)
+    {
         deviceMemorySize += 32 - size.GetAlignment();
     }
 
@@ -344,7 +367,8 @@ void ParticleShape::GetDeviceMemorySizeInternal(os::MemorySizeCalculator* pSize,
     size.Add(deviceMemorySize, 32);
 }
 
-ParticleShape* ParticleShape::Create(ResSceneObject resource,int capacity,os::IAllocator* mainAllocator,os::IAllocator* deviceAllocator){
+ParticleShape* ParticleShape::Create(ResSceneObject resource,int capacity,os::IAllocator* mainAllocator,os::IAllocator* deviceAllocator)
+{
     NW_NULL_ASSERT(mainAllocator);
     NW_NULL_ASSERT(deviceAllocator);
 
@@ -374,12 +398,14 @@ ParticleShape* ParticleShape::Create(ResSceneObject resource,int capacity,os::IA
     nodeMemorySize = ut::RoundUp(nodeMemorySize, 32);
 
     u8* devicememory = reinterpret_cast<u8*>(deviceAllocator->Alloc(deviceMemorySize, 32));
-    if (devicememory == NULL){
+    if (devicememory == NULL)
+    {
         return NULL;
     }
 
     u8* nodememory = reinterpret_cast<u8*>(mainAllocator->Alloc(nodeMemorySize, 32));
-    if (nodememory == NULL){
+    if (nodememory == NULL)
+    {
         deviceAllocator->Free(devicememory);
         return NULL;
     }
@@ -392,39 +418,43 @@ ParticleShape* ParticleShape::Create(ResSceneObject resource,int capacity,os::IA
         resNode);
     nodememory += sizeof(ParticleShape);
 
-    for (int i = 0; i < 2; ++i){
+    for (int i = 0; i < 2; ++i)
+    {
         devicememory = reinterpret_cast<u8*>(ut::RoundUp(devicememory, 32));
-        node->mPrimitiveBuffer[i] = devicememory;
+        node->m_PrimitiveBuffer[i] = devicememory;
         devicememory += streamSize;
 
 
         u32 baseAddr = nngxGetPhysicalAddr(nn::gx::CTR::GetVramStartAddr(nn::gx::CTR::MEM_VRAMA));
-        u32 bufferAddr = nngxGetPhysicalAddr(reinterpret_cast<uptr>(node->mPrimitiveBuffer[i]));
+        u32 bufferAddr = nngxGetPhysicalAddr(reinterpret_cast<uptr>(node->m_PrimitiveBuffer[i]));
 
         NW_ASSERT((bufferAddr - baseAddr) < 0x10000000);
-        node->mPrimitiveBufferOffset[i] = bufferAddr - baseAddr;
+        node->m_PrimitiveBufferOffset[i] = bufferAddr - baseAddr;
     }
 
-    for (int side = 0; side < 2; ++side){
+    for (int side = 0; side < 2; ++side)
+    {
         nodememory = reinterpret_cast<u8*>(ut::RoundUp(nodememory, 32));
-        node->mCommandCache[side] = reinterpret_cast<u32*>(nodememory);
+        node->m_CommandCache[side] = reinterpret_cast<u32*>(nodememory);
         nodememory += drawCommandCacheSize;
     }
     
     nodememory = reinterpret_cast<u8*>(ut::RoundUp(nodememory, 32));
-    node->mDeactivateVertexCommandCache = reinterpret_cast<u32*>(nodememory);
+    node->m_DeactivateVertexCommandCache = reinterpret_cast<u32*>(nodememory);
     nodememory += deactivateVertexCommandCacheSize;
     
     nodememory = reinterpret_cast<u8*>(ut::RoundUp(nodememory, 32));
-    node->mPrimitiveCommandCache = reinterpret_cast<u32*>(nodememory);
+    node->m_PrimitiveCommandCache = reinterpret_cast<u32*>(nodememory);
     nodememory += primitiveCommandCacheSize;
 
     return node;
 }
 
-int ParticleShape::AddVertexStreamSize(u32 formatType,int dimension,int capacity,int prevSize){
+int ParticleShape::AddVertexStreamSize(u32 formatType,int dimension,int capacity,int prevSize)
+{
     int formatSize = 1;
-    switch (formatType){
+    switch (formatType)
+    {
     case GL_FLOAT:
         formatSize = 4;
         break;
@@ -442,9 +472,11 @@ int ParticleShape::AddVertexStreamSize(u32 formatType,int dimension,int capacity
     return prevSize + streamSize;
 }
 
-ParticleShape::VertexAttribute* ParticleShape::AddVertexStream(s32 usage,u32 formatType,int dimension,int capacity,u8** memory){
+ParticleShape::VertexAttribute* ParticleShape::AddVertexStream(s32 usage,u32 formatType,int dimension,int capacity,u8** memory)
+{
     int formatSize = 1;
-    switch (formatType){
+    switch (formatType)
+    {
     case GL_FLOAT:
         formatSize = 4;
         break;
@@ -467,9 +499,11 @@ ParticleShape::VertexAttribute* ParticleShape::AddVertexStream(s32 usage,u32 for
     return this->AddVertexAttribute(usage,formatType,dimension,true,reinterpret_cast<u8*>(stream0),reinterpret_cast<u8*>(stream1));
 }
 
-int ParticleShape::AddVertexParamSize(u32 formatType,int dimension,int prevSize){
+int ParticleShape::AddVertexParamSize(u32 formatType,int dimension,int prevSize)
+{
     int formatSize = 1;
-    switch (formatType){
+    switch (formatType)
+    {
     case GL_FLOAT:
         formatSize = 4;
         break;
@@ -484,11 +518,13 @@ int ParticleShape::AddVertexParamSize(u32 formatType,int dimension,int prevSize)
     return prevSize + streamSize;
 }
 
-ParticleShape::VertexAttribute* ParticleShape::AddVertexParam(s32 usage,u32 formatType,int dimension,f32* parameters,u8** memory){
+ParticleShape::VertexAttribute* ParticleShape::AddVertexParam(s32 usage,u32 formatType,int dimension,f32* parameters,u8** memory)
+{
     NW_UNUSED_VARIABLE(parameters);
 
     int formatSize = 1;
-    switch (formatType){
+    switch (formatType)
+    {
     case GL_FLOAT:
         formatSize = 4;
         break;
@@ -508,58 +544,70 @@ ParticleShape::VertexAttribute* ParticleShape::AddVertexParam(s32 usage,u32 form
 
 ParticleShape::ParticleShape(int capacity,os::IAllocator* allocator,os::IAllocator* deviceAllocator,void* deviceMemory,ResParticleShape resObj): 
     SceneObject(allocator, resObj),
-    mCapacity(capacity),
-    mBufferSide(false),
-    mResVertexAttributeDataCount(0),
-    mDeviceAllocator(deviceAllocator),
-    mDeviceMemory(deviceMemory){
-    mPrimitiveBuffer[0] = NULL;
-    mPrimitiveBuffer[1] = NULL;
-    mPrimitiveBufferOffset[0] = 0;
-    mPrimitiveBufferOffset[1] = 0;
+    m_Capacity(capacity),
+    m_BufferSide(false),
+    m_ResVertexAttributeDataCount(0),
+    m_DeviceAllocator(deviceAllocator),
+    m_DeviceMemory(deviceMemory)
+    {
+    m_PrimitiveBuffer[0] = NULL;
+    m_PrimitiveBuffer[1] = NULL;
+    m_PrimitiveBufferOffset[0] = 0;
+    m_PrimitiveBufferOffset[1] = 0;
 
-    for (int usage = 0; usage < PARTICLEUSAGE_COUNT; ++usage){
-        for (int side = 0; side < 2; ++side){
-            mVertexAttribute[usage].mStream[side] = NULL;
-            mVertexAttribute[usage].mCommandPtr[side] = NULL;
+    for (int usage = 0; usage < PARTICLEUSAGE_COUNT; ++usage)
+    {
+        for (int side = 0; side < 2; ++side)
+        {
+            m_VertexAttribute[usage].m_Stream[side] = NULL;
+            m_VertexAttribute[usage].m_CommandPtr[side] = NULL;
         }
     }
 
-    for (int i = 0; i < 2; ++i){
-        mCommandCache[i] = NULL;
-        mCommandCacheSize[i] = 0;
+    for (int i = 0; i < 2; ++i)
+    {
+        m_CommandCache[i] = NULL;
+        m_CommandCacheSize[i] = 0;
     }
 
-    mDeactivateVertexCommandCache = NULL;
-    mDeactivateVertexCommandCacheSize = 0;
-    mPrimitiveCommandCache = NULL;
-    mPrimitiveCommandCacheSize = 0;
+    m_DeactivateVertexCommandCache = NULL;
+    m_DeactivateVertexCommandCacheSize = 0;
+    m_PrimitiveCommandCache = NULL;
+    m_PrimitiveCommandCacheSize = 0;
 }
 
-ParticleShape::~ParticleShape(){
-    this->mDeviceAllocator->Free(this->mDeviceMemory);
+ParticleShape::~ParticleShape()
+{
+    this->m_DeviceAllocator->Free(this->m_DeviceMemory);
 
-    for (int i = 0; i < 2; ++ i){
-        if (this->mCommandCache[i] != NULL){
-            this->mCommandCache[i] = NULL;
-            this->mCommandCacheSize[i] = 0;
+    for (int i = 0; i < 2; ++ i)
+    {
+        if (this->m_CommandCache[i] != NULL)
+        {
+            this->m_CommandCache[i] = NULL;
+            this->m_CommandCacheSize[i] = 0;
         }
     }
 
-    if (this->mDeactivateVertexCommandCache != NULL){
-        this->mDeactivateVertexCommandCache = NULL;
-        this->mDeactivateVertexCommandCacheSize = 0;
+    if (this->m_DeactivateVertexCommandCache != NULL)
+    {
+        this->m_DeactivateVertexCommandCache = NULL;
+        this->m_DeactivateVertexCommandCacheSize = 0;
     }
     
-    if (this->mPrimitiveCommandCache != NULL){
-        this->mPrimitiveCommandCache = NULL;
-        this->mPrimitiveCommandCacheSize = 0;
+    if (this->m_PrimitiveCommandCache != NULL)
+    {
+        this->m_PrimitiveCommandCache = NULL;
+        this->m_PrimitiveCommandCacheSize = 0;
     }
 }
 
-void ParticleShape::FlushBuffer(){
-    for (s32 i = 0; i < this->GetVertexAttributesCount(); ++i){
-        if (this->IsVertexStream(i)){
+void ParticleShape::FlushBuffer()
+{
+    for (s32 i = 0; i < this->GetVertexAttributesCount(); ++i)
+    {
+        if (this->IsVertexStream(i))
+        {
             nngxUpdateBuffer(this->GetVertexStreamPtr(i, PARTICLE_BUFFER_FRONT), this->GetVertexCapacity() * this->GetVertexAttributeDimension(i) * sizeof(f32));
         }
     }

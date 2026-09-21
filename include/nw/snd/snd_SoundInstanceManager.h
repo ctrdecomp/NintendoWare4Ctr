@@ -18,7 +18,7 @@ public:
     SoundInstanceManager(): 
         m_pBuffer(NULL), 
         m_BufferSize(0)
-    {
+        {
     }
 
     ~SoundInstanceManager()

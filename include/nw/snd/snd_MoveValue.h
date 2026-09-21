@@ -14,7 +14,7 @@ public:
         m_Target(0), 
         m_Frame(0), 
         m_Counter(0)
-    {
+        {
     }
 
     void InitValue(ValueType value)

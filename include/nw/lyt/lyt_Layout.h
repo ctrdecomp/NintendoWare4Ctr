@@ -31,9 +31,10 @@ class Pane;
 class GroupContainer;
 class DrawInfo;
 
-typedef ut::LinkList<AnimTransform, offsetof(AnimTransform, mLink)> AnimTransformList;
+typedef ut::LinkList<AnimTransform, offsetof(AnimTransform, m_Link)> AnimTransformList;
 
-class Layout{
+class Layout
+{
 public:
 
     static nw::os::IAllocator* GetAllocator() { return s_pAllocator; }
@@ -50,16 +51,11 @@ public:
 
     virtual bool Build(const void* lytResBuf, ResourceAccessor* pResAcsr);
 
-#ifdef NW_LYT_DMPGL_ENABLED
-    static void SetLayoutDrawEnable(bool enable){ sLayoutDrawEnable = enable; }
-    static bool GetLayoutDrawEnable(){
-#ifdef NW_PLATFORM_CTR
-        return sLayoutDrawEnable;
-#else
-        return true;
-#endif
+    static void SetLayoutDrawEnable(bool enable) { s_LayoutDrawEnable = enable; }
+    static bool GetLayoutDrawEnable()
+    {
+        return s_LayoutDrawEnable;
     }
-#endif
 
     // AnimTransform
     virtual AnimTransform* CreateAnimTransform();
@@ -77,54 +73,60 @@ public:
     virtual void Draw(const DrawInfo& drawInfo);
 
     // Getters
-    Pane*           GetRootPane()       const { return mpRootPane; }
-    GroupContainer* GetGroupContainer() const { return mpGroupContainer; }
-    const Size&     GetLayoutSize()     const { return mLayoutSize; }
+    Pane*           GetRootPane()       const { return m_pRootPane; }
+    GroupContainer* GetGroupContainer() const { return m_pGroupContainer; }
+    const Size&     GetLayoutSize()     const { return m_LayoutSize; }
     const ut::Rect  GetLayoutRect()     const;
 
     virtual void SetTagProcessor(font::TagProcessorBase<wchar_t>* pTagProcessor);
 
-    const AnimTransformList& GetAnimTransformList() const { return mAnimTransList; }
-    AnimTransformList&       GetAnimTransformList()       { return mAnimTransList; }
+    const AnimTransformList& GetAnimTransformList() const { return m_AnimTransList; }
+    AnimTransformList&       GetAnimTransformList() { return m_AnimTransList; }
 
     // Object creation
     template<typename T>
-    static T* NewObj(){
+    static T* NewObj()
+    {
         if (void* pMem = Layout::AllocMemory(sizeof(T)))
             return new (pMem) T();
         return 0;
     }
 
     template<typename T, typename Param1>
-    static T* NewObj(Param1 param1){
+    static T* NewObj(Param1 param1)
+    {
         if (void* pMem = Layout::AllocMemory(sizeof(T)))
             return new (pMem) T(param1);
         return 0;
     }
 
     template<typename T, typename Param1, typename Param2>
-    static T* NewObj(Param1 param1, Param2 param2){
+    static T* NewObj(Param1 param1, Param2 param2)
+    {
         if (void* pMem = Layout::AllocMemory(sizeof(T)))
             return new (pMem) T(param1, param2);
         return 0;
     }
 
     template<typename T, typename Param1, typename Param2, typename Param3>
-    static T* NewObj(Param1 param1, Param2 param2, Param3 param3){
+    static T* NewObj(Param1 param1, Param2 param2, Param3 param3)
+    {
         if (void* pMem = Layout::AllocMemory(sizeof(T)))
             return new (pMem) T(param1, param2, param3);
         return 0;
     }
 
     template<typename T, typename Param1, typename Param2, typename Param3, typename Param4>
-    static T* NewObj(Param1 param1, Param2 param2, Param3 param3, Param4 param4){
+    static T* NewObj(Param1 param1, Param2 param2, Param3 param3, Param4 param4)
+    {
         if (void* pMem = Layout::AllocMemory(sizeof(T)))
             return new (pMem) T(param1, param2, param3, param4);
         return 0;
     }
 
     template<typename T>
-    static T* NewArray(u32 num){
+    static T* NewArray(u32 num)
+    {
         void* pMem = AllocMemory(sizeof(T) * num);
         if (!pMem) return 0;
         T* const objAry = static_cast<T*>(pMem);
@@ -134,16 +136,20 @@ public:
     }
 
     template<typename T>
-    static void DeleteObj(T* pObj){
-        if (pObj){
+    static void DeleteObj(T* pObj)
+    {
+        if (pObj)
+        {
             pObj->~T();
             FreeMemory(pObj);
         }
     }
 
     template<typename T>
-    static void DeleteArray(T objAry[], u32 num){
-        if (objAry){
+    static void DeleteArray(T objAry[], u32 num)
+    {
+        if (objAry)
+        {
             for (u32 i = 0; i < num; ++i)
                 objAry[i].~T();
             FreeMemory(objAry);
@@ -151,7 +157,8 @@ public:
     }
 
     template<typename T>
-    static void DeletePrimArray(T objAry[]){
+    static void DeletePrimArray(T objAry[])
+    {
         if (objAry)
             FreeMemory(objAry);
     }
@@ -159,19 +166,19 @@ public:
 protected:
     virtual Pane* BuildPaneObj(s32 kind, const void* pBlock, const ResBlockSet& resBlockSet);
 
-    void SetRootPane(Pane* pPane)                        { mpRootPane = pPane; }
-    void SetGroupContainer(GroupContainer* pGroupContainer) { mpGroupContainer = pGroupContainer; }
-    void SetLayoutSize(const Size& size)                 { mLayoutSize = size; }
+    void SetRootPane(Pane* pPane) { m_pRootPane = pPane; }
+    void SetGroupContainer(GroupContainer* pGroupContainer) { m_pGroupContainer = pGroupContainer; }
+    void SetLayoutSize(const Size& size) { m_LayoutSize = size; }
 
 protected:
     static nw::os::IAllocator* s_pAllocator;
     static nw::os::IAllocator* s_pDeviceMemoryAllocator;
     static bool                s_LayoutDrawEnable;
 
-    AnimTransformList mAnimTransList;
-    Pane*             mpRootPane;
-    GroupContainer*   mpGroupContainer;
-    Size              mLayoutSize;
+    AnimTransformList m_AnimTransList;
+    Pane*             m_pRootPane;
+    GroupContainer*   m_pGroupContainer;
+    Size              m_LayoutSize;
 
 private:
     Layout(const Layout& other);

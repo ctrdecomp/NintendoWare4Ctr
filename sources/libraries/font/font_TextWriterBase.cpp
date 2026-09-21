@@ -16,50 +16,53 @@ namespace nw {
 namespace font {
 namespace{
 
-inline f32 AdjustCenterValue(f32 value){
+inline f32 AdjustCenterValue(f32 value)
+{
     return math::FCeil(value * 0.5f);
 }
 
 }
 
 template <typename CharType>
-CharType* TextWriterBase<CharType>::sFormatBuffer = NULL;
+CharType* TextWriterBase<CharType>::s_FormatBuffer = NULL;
 
 template <typename CharType>
-std::size_t TextWriterBase<CharType>::sFormatBufferSize = DEFAULT_FORMAT_BUFFER_SIZE;
+std::size_t TextWriterBase<CharType>::s_FormatBufferSize = DEFAULT_FORMAT_BUFFER_SIZE;
 
 template <typename CharType>
-TagProcessorBase<CharType> TextWriterBase<CharType>::sDefaultTagProcessor;
+TagProcessorBase<CharType> TextWriterBase<CharType>::s_DefaultTagProcessor;
 
 
 template <typename CharType>
 TextWriterBase<CharType>::TextWriterBase(): CharWriter(),
-    mWidthLimit(FLT_MAX),
-    mCharSpace(0),
-    mLineSpace(0),
-    mTabWidth (4),
-    mDrawFlag(DEFAULT_DRAWFLAG),
-    mTagProcessor(&sDefaultTagProcessor)
-  {}
+    m_WidthLimit(FLT_MAX),
+    m_CharSpace(0),
+    m_LineSpace(0),
+    m_TabWidth (4),
+    m_DrawFlag(DEFAULT_DRAWFLAG),
+    m_TagProcessor(&s_DefaultTagProcessor) {}
 
 template <typename CharType>
-TextWriterBase<CharType>::~TextWriterBase(){ }
+TextWriterBase<CharType>::~TextWriterBase() { }
 
 template <typename CharType>
-f32 TextWriterBase<CharType>::CalcStringHeight(StreamType str,int length) const{
+f32 TextWriterBase<CharType>::CalcStringHeight(StreamType str,int length) const
+{
     ut::Rect rect;
     CalcStringRect(&rect, str, length);
     return rect.GetHeight();
 }
 
 template <typename CharType>
-void TextWriterBase<CharType>::CalcStringRect(ut::Rect* pRect,StreamType str,int length) const{
+void TextWriterBase<CharType>::CalcStringRect(ut::Rect* pRect,StreamType str,int length) const
+{
     TextWriterBase<CharType> self = *this;
     self.CalcStringRectImpl(pRect, str, length);
 }
 
 template <typename CharType>
-f32 TextWriterBase<CharType>::Print(StreamType  str,int length){
+f32 TextWriterBase<CharType>::Print(StreamType  str,int length)
+{
     TextWriterBase<CharType> myCopy = *this;
 
     f32 width = myCopy.PrintImpl(str, length);
@@ -70,7 +73,8 @@ f32 TextWriterBase<CharType>::Print(StreamType  str,int length){
 }
 
 template <typename CharType>
-f32 TextWriterBase<CharType>::CalcLineWidth(StreamType str,int length){
+f32 TextWriterBase<CharType>::CalcLineWidth(StreamType str,int length)
+{
     ut::Rect rect;
     TextWriterBase<CharType> myCopy = *this;
 
@@ -81,10 +85,11 @@ f32 TextWriterBase<CharType>::CalcLineWidth(StreamType str,int length){
 }
 
 template <typename CharType>
-bool TextWriterBase<CharType>::CalcLineRectImpl(ut::Rect*   pRect,StreamType* pStr,int         length){
+bool TextWriterBase<CharType>::CalcLineRectImpl(ut::Rect*   pRect,StreamType* pStr,int         length)
+{
     const StreamType str            = *pStr;
     const StreamType end            = str + length;
-    const bool bUseLimit            = mWidthLimit < FLT_MAX;
+    const bool bUseLimit            = m_WidthLimit < FLT_MAX;
     PrintContext<CharType> context(this, str, 0, 0, 0);
     f32 limitLeft                   = 0;
     f32 limitRight                  = 0;
@@ -107,8 +112,10 @@ bool TextWriterBase<CharType>::CalcLineRectImpl(ut::Rect*   pRect,StreamType* pS
     reader.Set(str);
     prevStreamPos = NULL;
 
-    for (CharCode code = reader.Next();reinterpret_cast<StreamType>(reader.GetCurrentPos()) <= end;){
-        if (code < ' '){
+    for (CharCode code = reader.Next();reinterpret_cast<StreamType>(reader.GetCurrentPos()) <= end;)
+    {
+        if (code < ' ')
+        {
 
             typename TagProcessor::Operation operation;
             ut::Rect rect(limitRight, 0, 0, 0);
@@ -118,22 +125,24 @@ bool TextWriterBase<CharType>::CalcLineRectImpl(ut::Rect*   pRect,StreamType* pS
             context.flags |= bCharSpace ? 0: CONTEXT_NO_CHAR_SPACE;
             SetCursorX(limitRight);
 
-            if (bUseLimit&& code != '\n' && prevStreamPos != NULL){
+            if (bUseLimit&& code != '\n' && prevStreamPos != NULL)
+            {
                 PrintContext<CharType> context2 = context;
                 TextWriterBase<CharType> myCopy = *this;
                 ut::Rect rect2;
 
                 context2.writer = &myCopy;
-                operation = mTagProcessor->CalcRect(&rect2, code, &context2);
+                operation = m_TagProcessor->CalcRect(&rect2, code, &context2);
 
-                if ( rect2.GetWidth() > 0.0f&& (myCopy.GetCursorX() - context.xOrigin > mWidthLimit)){
+                if ( rect2.GetWidth() > 0.0f&& (myCopy.GetCursorX() - context.xOrigin > m_WidthLimit))
+                {
                     bOverLimit = true;
                     code       = '\n';
                     reader.Set(prevStreamPos);
                     continue;
                 }
             }
-            operation = mTagProcessor->CalcRect(&rect, code, &context);
+            operation = m_TagProcessor->CalcRect(&rect, code, &context);
 
             NN_POINTER_ASSERT(context.str);
             reader.Set(context.str);
@@ -144,37 +153,45 @@ bool TextWriterBase<CharType>::CalcLineRectImpl(ut::Rect*   pRect,StreamType* pS
             pRect->bottom   = math::Max(pRect->bottom,    rect.bottom);
             limitRight = GetCursorX();
 
-            if (operation == TagProcessor::OPERATION_END_DRAW){
+            if (operation == TagProcessor::OPERATION_END_DRAW)
+            {
                 *pStr += length;
                 return false;
             }
-            else if (operation == TagProcessor::OPERATION_NO_CHAR_SPACE){
+            else if (operation == TagProcessor::OPERATION_NO_CHAR_SPACE)
+            {
                 bCharSpace = false;
             }
-            else if (operation == TagProcessor::OPERATION_CHAR_SPACE){
+            else if (operation == TagProcessor::OPERATION_CHAR_SPACE)
+            {
                 bCharSpace = true;
             }
-            else if (operation == TagProcessor::OPERATION_NEXT_LINE){
+            else if (operation == TagProcessor::OPERATION_NEXT_LINE)
+            {
                 break;
             }
         }
         else{
             f32 crntRight = limitRight;
 
-            if (bCharSpace){
+            if (bCharSpace)
+            {
                 crntRight += GetCharSpace();
             }
 
-            if (IsWidthFixed()){
+            if (IsWidthFixed())
+            {
                 crntRight += GetFixedWidth();
             }
             else{
                 crntRight += GetFont()->GetCharWidth(code) * GetScaleH();
             }
 
-            if (bUseLimit && prevStreamPos != NULL){
+            if (bUseLimit && prevStreamPos != NULL)
+            {
                 f32 width = crntRight - limitLeft;
-                if (width > this->mWidthLimit){
+                if (width > this->m_WidthLimit)
+                {
                     bOverLimit = true;
                     code       = '\n';
                     reader.Set(prevStreamPos);
@@ -188,7 +205,8 @@ bool TextWriterBase<CharType>::CalcLineRectImpl(ut::Rect*   pRect,StreamType* pS
             bCharSpace = true;
         }
 
-        if (bUseLimit){
+        if (bUseLimit)
+        {
             prevStreamPos = reinterpret_cast<StreamType>(reader.GetCurrentPos());
         }
 
@@ -201,7 +219,8 @@ bool TextWriterBase<CharType>::CalcLineRectImpl(ut::Rect*   pRect,StreamType* pS
 }
 
 template <typename CharType>
-void TextWriterBase<CharType>::CalcStringRectImpl(ut::Rect* pRect,StreamType str,int length){
+void TextWriterBase<CharType>::CalcStringRectImpl(ut::Rect* pRect,StreamType str,int length)
+{
     const StreamType end = str + length;
     int remain = length;
     StreamType pos = str;

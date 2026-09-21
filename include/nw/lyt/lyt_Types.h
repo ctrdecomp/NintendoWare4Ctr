@@ -27,7 +27,8 @@ using nw::ut::internal::TestBit;
 using nw::ut::internal::GetBits;
 
 template<typename T>
-__forceinline T SetBit(T bits, int pos, bool val){
+NW_FORCE_INLINE T SetBit(T bits, int pos, bool val)
+{
     const T mask = T(~(1 << pos));
     bits &= mask;
     bits |= (val ? 1 : 0) << pos;
@@ -35,14 +36,16 @@ __forceinline T SetBit(T bits, int pos, bool val){
 }
 
 template<typename T>
-__forceinline void SetBit(T* pBits, int pos, bool val){
+NW_FORCE_INLINE void SetBit(T* pBits, int pos, bool val)
+{
     const T mask = T(~(1 << pos));
     *pBits &= mask;
     *pBits |= (val ? 1 : 0) << pos;
 }
 
 template<typename T>
-__forceinline T SetBits(T bits, int pos, int len, T val){
+NW_FORCE_INLINE T SetBits(T bits, int pos, int len, T val)
+{
     NW_ASSERT(len <= 32);
     const u32 MaxValue = 0xFFFFFFFFU >> (32 - len);
     NW_ASSERT(val <= MaxValue);
@@ -53,7 +56,8 @@ __forceinline T SetBits(T bits, int pos, int len, T val){
 }
 
 template<typename T>
-__forceinline void SetBits(T* pBits, int pos, int len, T val){
+NW_FORCE_INLINE void SetBits(T* pBits, int pos, int len, T val)
+{
     NW_ASSERT(len <= 32);
     const u32 MaxValue = 0xFFFFFFFFU >> (32 - len);
     NW_ASSERT(val <= MaxValue);
@@ -63,12 +67,14 @@ __forceinline void SetBits(T* pBits, int pos, int len, T val){
 }
 
 template<typename T>
-__forceinline const T* ConvertOffsToPtr(const void* baseAddress, unsigned int offset){
+NW_FORCE_INLINE const T* ConvertOffsToPtr(const void* baseAddress, unsigned int offset)
+{
     return reinterpret_cast<const T*>(static_cast<const u8*>(baseAddress) + offset);
 }
 
 template<typename T>
-__forceinline T* ConvertOffsToPtr(void* baseAddress, unsigned int offset){
+NW_FORCE_INLINE T* ConvertOffsToPtr(void* baseAddress, unsigned int offset)
+{
     return reinterpret_cast<T*>(static_cast<u8*>(baseAddress) + offset);
 }
 
@@ -80,7 +86,8 @@ typedef f32 ResF32;
 
 } // namespace internal
 
-enum PaneType{
+enum PaneType
+{
     PANETYPE_OTHER,
     PANETYPE_NULL,
     PANETYPE_PICTURE,
@@ -90,7 +97,8 @@ enum PaneType{
     PANETYPE_MAX
 };
 
-enum PaneFlag{
+enum PaneFlag
+{
     PANEFLAG_VISIBLE,
     PANEFLAG_INFLUENCEDALPHA,
     PANEFLAG_LOCATIONADJUST,
@@ -103,28 +111,32 @@ enum PaneFlag{
     PANEFLAG_MTXCONDITION_LENGTH = 2
 };
 
-enum MtxCondition{
+enum MtxCondition
+{
     MTXCONDITION_DIRTY,
     MTXCONDITION_CLEAN,
     MTXCONDITION_CLEAN_LOCATION_ADJUST,
     MTXCONDITION_MAX
 };
 
-enum HorizontalPosition{
+enum HorizontalPosition
+{
     HORIZONTALPOSITION_LEFT,
     HORIZONTALPOSITION_CENTER,
     HORIZONTALPOSITION_RIGHT,
     HORIZONTALPOSITION_MAX
 };
 
-enum VerticalPosition{
+enum VerticalPosition
+{
     VERTICALPOSITION_TOP,
     VERTICALPOSITION_CENTER,
     VERTICALPOSITION_BOTTOM,
     VERTICALPOSITION_MAX
 };
 
-enum TexFormat{
+enum TexFormat
+{
     TEXFORMAT_L8,
     TEXFORMAT_A8,
     TEXFORMAT_LA4,
@@ -142,20 +154,23 @@ enum TexFormat{
     TEXFORMAT_MAX
 };
 
-enum TexWrap{
+enum TexWrap
+{
     TEXWRAP_CLAMP,
     TEXWRAP_REPEAT,
     TEXWRAP_MIRROR,
     TEXWRAP_MAX
 };
 
-enum TexFilter{
+enum TexFilter
+{
     TEXFILTER_NEAR,
     TEXFILTER_LINEAR,
     TEXFILTER_MAX
 };
 
-enum TevMode{
+enum TevMode
+{
     TEVMODE_REPLACE,
     TEVMODE_MODULATE,
     TEVMODE_ADD,
@@ -167,7 +182,8 @@ enum TevMode{
     TEVMODE_MAX
 };
 
-enum TevSrc{
+enum TevSrc
+{
     TEVSRC_TEXTURE0,
     TEVSRC_TEXTURE1,
     TEVSRC_TEXTURE2,
@@ -179,7 +195,8 @@ enum TevSrc{
     TEVSRC_MAX
 };
 
-enum TevOpRgb{
+enum TevOpRgb
+{
     TEVOPRGB_RGB,
     TEVOPRGB_INV_RGB,
     TEVOPRGB_ALPHA,
@@ -193,7 +210,8 @@ enum TevOpRgb{
     TEVOPRGB_MAX
 };
 
-enum TevOpAlp{
+enum TevOpAlp
+{
     TEVOPALP_ALPHA,
     TEVOPALP_INV_ALPHA,
     TEVOPALP_R,
@@ -205,14 +223,16 @@ enum TevOpAlp{
     TEVOPALP_MAX
 };
 
-enum TevScale{
+enum TevScale
+{
     TEVSCALE_1,
     TEVSCALE_2,
     TEVSCALE_4,
     TEVSCALE_MAX
 };
 
-enum TevKonstSel{
+enum TevKonstSel
+{
     TEVKONSTSEL_BUFFER,
     TEVKONSTSEL_K0,
     TEVKONSTSEL_K1,
@@ -223,7 +243,8 @@ enum TevKonstSel{
     TEVKONSTSEL_MAX
 };
 
-enum AlphaTest{
+enum AlphaTest
+{
     ALPHATEST_NEVER,
     ALPHATEST_LESS,
     ALPHATEST_LEQUAL,
@@ -235,7 +256,8 @@ enum AlphaTest{
     ALPHATEST_MAX
 };
 
-enum BlendFactorSrc{
+enum BlendFactorSrc
+{
     BLENDFACTORSRC_0,
     BLENDFACTORSRC_1,
     BLENDFACTORSRC_DST_COLOR,
@@ -247,7 +269,8 @@ enum BlendFactorSrc{
     BLENDFACTORSRC_MAX
 };
 
-enum BlendFactorDst{
+enum BlendFactorDst
+{
     BLENDFACTORDST_0,
     BLENDFACTORDST_1,
     BLENDFACTORDST_SRC_COLOR,
@@ -259,7 +282,8 @@ enum BlendFactorDst{
     BLENDFACTORDST_MAX
 };
 
-enum BlendOp{
+enum BlendOp
+{
     BLENDOP_DISABLE,
     BLENDOP_ADD,
     BLENDOP_SUBTRACT,
@@ -267,7 +291,8 @@ enum BlendOp{
     BLENDOP_MAX
 };
 
-enum LogicOp{
+enum LogicOp
+{
     LOGICOP_DISABLE,
     LOGICOP_NOOP,
     LOGICOP_CLEAR,
@@ -288,19 +313,22 @@ enum LogicOp{
     LOGICOP_MAX
 };
 
-enum TexGenType{
+enum TexGenType
+{
     TEXGENTYPE_MTX2x4,
     TEXGENTYPE_MAX
 };
 
-enum TexGenSrc{
+enum TexGenSrc
+{
     TEXGENSRC_TEX0,
     TEXGENSRC_TEX1,
     TEXGENSRC_TEX2,
     TEXGENSRC_MAX
 };
 
-enum TextureFlip{
+enum TextureFlip
+{
     TEXTUREFLIP_NONE,
     TEXTUREFLIP_FLIPH,
     TEXTUREFLIP_FLIPV,
@@ -310,13 +338,15 @@ enum TextureFlip{
     TEXTUREFLIP_MAX
 };
 
-enum ScreenOriginType{
+enum ScreenOriginType
+{
     SCREENORIGINTYPE_CLASSIC,
     SCREENORIGINTYPE_NORMAL,
     SCREENORIGINTYPE_MAX
 };
 
-enum TextAlignment{
+enum TextAlignment
+{
     TEXTALIGNMENT_SYNCHRONOUS,
     TEXTALIGNMENT_LEFT,
     TEXTALIGNMENT_CENTER,
@@ -324,7 +354,8 @@ enum TextAlignment{
     TEXTALIGNMENT_MAX
 };
 
-enum VertexAttr{
+enum VertexAttr
+{
     VERTEXATTR_POS,
     VERTEXATTR_COLOR,
     VERTEXATTR_TEXCOORD0,
@@ -334,7 +365,8 @@ enum VertexAttr{
     VERTEXATTR_MAX
 };
 
-enum VertexAttrSize{
+enum VertexAttrSize
+{
     VERTEXATTRSIZE_POS      = 4,
     VERTEXATTRSIZE_COLOR    = 4,
     VERTEXATTRSIZE_TEXCOORD = 2,
@@ -348,7 +380,8 @@ using nw::font::VERTEX_LB;
 using nw::font::VERTEX_RB;
 using nw::font::VERTEX_MAX;
 
-enum VertexColor{
+enum VertexColor
+{
     VERTEXCOLOR_LT,
     VERTEXCOLOR_RT,
     VERTEXCOLOR_LB,
@@ -356,7 +389,8 @@ enum VertexColor{
     VERTEXCOLOR_MAX
 };
 
-enum WindowFrame{
+enum WindowFrame
+{
     WINDOWFRAME_LT,
     WINDOWFRAME_RT,
     WINDOWFRAME_LB,
@@ -368,49 +402,57 @@ enum WindowFrame{
     WINDOWFRAME_MAX
 };
 
-enum TextColor{
+enum TextColor
+{
     TEXTCOLOR_TOP,
     TEXTCOLOR_BOTTOM,
     TEXTCOLOR_MAX
 };
 
-enum InterpolateColor{
+enum InterpolateColor
+{
     INTERPOLATECOLOR_BLACK = 0,
     INTERPOLATECOLOR_WHITE = 1,
     INTERPOLATECOLOR_MAX
 };
 
-enum MemArea{
+enum MemArea
+{
     MEMAREA_FCRAM = 0,
     MEMAREA_VRAMA = 1,
     MEMAREA_VRAMB = 2,
     MEMAREA_MAX
 };
 
-enum ImageFlag{
+enum ImageFlag
+{
     IMAGEFLAG_AREA_POS = 0,
     IMAGEFLAG_AREA_LEN = 2
 };
 
-enum ExtUserDataType{
+enum ExtUserDataType
+{
     EXTUSERDATATYPE_STRING,
     EXTUSERDATATYPE_INT,
     EXTUSERDATATYPE_FLOAT,
     EXTUSERDATATYPE_MAX
 };
 
-enum AnimContentType{
+enum AnimContentType
+{
     ANIMCONTENTTYPE_PANE,
     ANIMCONTENTTYPE_MATERIAL,
     ANIMCONTENTTYPE_MAX
 };
 
-enum AnimTagFlag{
+enum AnimTagFlag
+{
     ANIMTAGFLAG_DESCENDINGBIND,
     ANIMTAGFLAG_MAX
 };
 
-enum AnimTargetPane{
+enum AnimTargetPane
+{
     ANIMTARGET_PANE_TRANSLATEX = 0,
     ANIMTARGET_PANE_TRANSLATEY,
     ANIMTARGET_PANE_TRANSLATEZ,
@@ -424,12 +466,14 @@ enum AnimTargetPane{
     ANIMTARGET_PANE_MAX
 };
 
-enum AnimTargetVisibility{
+enum AnimTargetVisibility
+{
     ANIMTARGET_VISIBILITY_VISIBILITY = 0,
     ANIMTARGET_VISIBILITY_MAX
 };
 
-enum AnimTargetPaneColor{
+enum AnimTargetPaneColor
+{
     ANIMTARGET_VERTEXCOLOR_LT_R = 0,
     ANIMTARGET_VERTEXCOLOR_LT_G,
     ANIMTARGET_VERTEXCOLOR_LT_B,
@@ -451,7 +495,8 @@ enum AnimTargetPaneColor{
     ANIMTARGET_PANE_COLOR_MAX
 };
 
-enum AnimTargetMatColor{
+enum AnimTargetMatColor
+{
     ANIMTARGET_MATCOLOR_BUFFER_R = 0,
     ANIMTARGET_MATCOLOR_BUFFER_G,
     ANIMTARGET_MATCOLOR_BUFFER_B,
@@ -483,7 +528,8 @@ enum AnimTargetMatColor{
     ANIMTARGET_MATCOLOR_MAX
 };
 
-enum AnimTargetTexSRT{
+enum AnimTargetTexSRT
+{
     ANIMTARGET_TEXSRT_TRANSLATES = 0,
     ANIMTARGET_TEXSRT_TRANSLATET,
     ANIMTARGET_TEXSRT_ROTATE,
@@ -492,27 +538,31 @@ enum AnimTargetTexSRT{
     ANIMTARGET_TEXSRT_MAX
 };
 
-enum AnimTargetTexPattern{
+enum AnimTargetTexPattern
+{
     ANIMTARGET_TEXPATTURN_IMAGE = 0,
     ANIMTARGET_TEXPATTURN_MAX
 };
 
-enum AnimCurve{
+enum AnimCurve
+{
     ANIMCURVE_CONSTANT,
     ANIMCURVE_STEP,
     ANIMCURVE_HERMITE,
     ANIMCURVE_MAX
 };
 
-enum AnimateOpt{
+enum AnimateOpt
+{
     ANIMATEOPT_NOANIMATEINVISIBLE = 0x0001
 };
 
 namespace res {
 
-struct Vec2{
+struct Vec2
+{
     Vec2() {}
-    Vec2(f32 x, f32 y){ this->x = x; this->y = y; }
+    Vec2(f32 x, f32 y) { this->x = x; this->y = y; }
 
     operator const nn::math::VEC2() const { return nn::math::VEC2(x, y); }
 
@@ -520,9 +570,10 @@ struct Vec2{
     ut::ResF32 y;
 };
 
-struct Vec3{
+struct Vec3
+{
     Vec3() {}
-    Vec3(f32 x, f32 y, f32 z){ this->x = x; this->y = y; this->z = z; }
+    Vec3(f32 x, f32 y, f32 z) { this->x = x; this->y = y; this->z = z; }
 
     operator const math::VEC3() const { return math::VEC3(x, y, z); }
 
@@ -533,7 +584,8 @@ struct Vec3{
 
 } // namespace res
 
-struct Size{
+struct Size
+{
     Size(): width(0), height(0) {}
     Size(f32 aWidth, f32 aHeight): width(aWidth), height(aHeight) {}
     Size(const Size& other): width(other.width), height(other.height) {}
@@ -542,11 +594,13 @@ struct Size{
     ut::ResF32 height;
 };
 
-inline bool operator==(const Size& a, const Size& b){
+inline bool operator==(const Size& a, const Size& b)
+{
     return a.width == b.width && a.height == b.height;
 }
 
-struct TexSize{
+struct TexSize
+{
     TexSize(): width(0), height(0) {}
     TexSize(u16 aWidth, u16 aHeight): width(aWidth), height(aHeight) {}
     TexSize(const TexSize& other): width(other.width), height(other.height) {}
@@ -557,17 +611,20 @@ struct TexSize{
     u16 height;
 };
 
-struct TexSRT{
+struct TexSRT
+{
     res::Vec2  translate;
     ut::ResF32 rotate;
     res::Vec2  scale;
 };
 
-struct TexCoordGen{
-    TexCoordGen(){ Set(TEXGENTYPE_MTX2x4, TEXGENSRC_TEX0); }
-    TexCoordGen(TexGenType aTexGenType, TexGenSrc aTexGenSrc){ Set(aTexGenType, aTexGenSrc); }
+struct TexCoordGen
+{
+    TexCoordGen() { Set(TEXGENTYPE_MTX2x4, TEXGENSRC_TEX0); }
+    TexCoordGen(TexGenType aTexGenType, TexGenSrc aTexGenSrc) { Set(aTexGenType, aTexGenSrc); }
 
-    void Set(TexGenType aTexGenType, TexGenSrc aTexGenSrc){
+    void Set(TexGenType aTexGenType, TexGenSrc aTexGenSrc)
+    {
         texGenType = aTexGenType;
         texGenSrc  = aTexGenSrc;
     }
@@ -581,8 +638,10 @@ protected:
     ut::ResU8 reserve[2];
 };
 
-struct TevStage{
-    TevStage(){
+struct TevStage
+{
+    TevStage()
+    {
         Set(
             TEVMODE_REPLACE, TEVMODE_REPLACE,
             TEVSRC_PRIMARY, TEVSRC_PRIMARY, TEVSRC_PRIMARY,
@@ -601,7 +660,8 @@ struct TevStage{
              TevOpAlp operandAlpha0, TevOpAlp operandAlpha1, TevOpAlp operandAlpha2,
              TevScale scaleRgb, TevScale scaleAlpha,
              TevKonstSel konstSelRgb, TevKonstSel konstSelAlpha,
-             bool savePrevRgb, bool savePrevAlpha){
+             bool savePrevRgb, bool savePrevAlpha)
+    {
         SetCombineRgb(combineRgb);       SetCombineAlpha(combineAlpha);
         SetSrcRgb0(srcRgb0);             SetSrcRgb1(srcRgb1);           SetSrcRgb2(srcRgb2);
         SetSrcAlpha0(srcAlpha0);         SetSrcAlpha1(srcAlpha1);       SetSrcAlpha2(srcAlpha2);
@@ -612,26 +672,26 @@ struct TevStage{
         SetSavePrevRgb(savePrevRgb);     SetSavePrevAlpha(savePrevAlpha);
     }
 
-    void SetCombineRgb(TevMode value)       { bits0 = internal::SetBits(u32(bits0), POS0_COMBINERGB,    BITS_COMBINERGB,   u32(value)); }
-    void SetCombineAlpha(TevMode value)     { bits1 = internal::SetBits(u32(bits1), POS1_COMBINEALPHA,  BITS_COMBINEALPHA, u32(value)); }
-    void SetSrcRgb0(TevSrc value)           { bits0 = internal::SetBits(u32(bits0), POS0_SRCRGB0,       BITS_SRCRGB,       u32(value)); }
-    void SetSrcRgb1(TevSrc value)           { bits0 = internal::SetBits(u32(bits0), POS0_SRCRGB1,       BITS_SRCRGB,       u32(value)); }
-    void SetSrcRgb2(TevSrc value)           { bits0 = internal::SetBits(u32(bits0), POS0_SRCRGB2,       BITS_SRCRGB,       u32(value)); }
-    void SetSrcAlpha0(TevSrc value)         { bits1 = internal::SetBits(u32(bits1), POS1_SRCALPHA0,     BITS_SRCALPHA,     u32(value)); }
-    void SetSrcAlpha1(TevSrc value)         { bits1 = internal::SetBits(u32(bits1), POS1_SRCALPHA1,     BITS_SRCALPHA,     u32(value)); }
-    void SetSrcAlpha2(TevSrc value)         { bits1 = internal::SetBits(u32(bits1), POS1_SRCALPHA2,     BITS_SRCALPHA,     u32(value)); }
-    void SetOperandRgb0(TevOpRgb value)     { bits0 = internal::SetBits(u32(bits0), POS0_OPERANDRGB0,   BITS_OPERANDRGB,   u32(value)); }
-    void SetOperandRgb1(TevOpRgb value)     { bits0 = internal::SetBits(u32(bits0), POS0_OPERANDRGB1,   BITS_OPERANDRGB,   u32(value)); }
-    void SetOperandRgb2(TevOpRgb value)     { bits0 = internal::SetBits(u32(bits0), POS0_OPERANDRGB2,   BITS_OPERANDRGB,   u32(value)); }
-    void SetOperandAlpha0(TevOpAlp value)   { bits1 = internal::SetBits(u32(bits1), POS1_OPERANDALPHA0, BITS_OPERANDALPHA, u32(value)); }
-    void SetOperandAlpha1(TevOpAlp value)   { bits1 = internal::SetBits(u32(bits1), POS1_OPERANDALPHA1, BITS_OPERANDALPHA, u32(value)); }
-    void SetOperandAlpha2(TevOpAlp value)   { bits1 = internal::SetBits(u32(bits1), POS1_OPERANDALPHA2, BITS_OPERANDALPHA, u32(value)); }
-    void SetScaleRgb(TevScale value)        { bits0 = internal::SetBits(u32(bits0), POS0_SCALERGB,      BITS_SCALE,        u32(value)); }
-    void SetScaleAlpha(TevScale value)      { bits1 = internal::SetBits(u32(bits1), POS1_SCALEALPHA,    BITS_SCALE,        u32(value)); }
-    void SetKonstSelRgb(TevKonstSel value)  { bits2 = internal::SetBits(u32(bits2), POS2_KONSTSELRGB,   BITS_KONSTSEL,     u32(value)); }
-    void SetKonstSelAlpha(TevKonstSel value){ bits2 = internal::SetBits(u32(bits2), POS2_KONSTSELALPHA, BITS_KONSTSEL,     u32(value)); }
-    void SetSavePrevRgb(bool value)         { bits0 = internal::SetBit(u32(bits0), POS0_SAVEPREVRGB,   value); }
-    void SetSavePrevAlpha(bool value)       { bits1 = internal::SetBit(u32(bits1), POS1_SAVEPREVALPHA, value); }
+    void SetCombineRgb(TevMode value) { bits0 = internal::SetBits(u32(bits0), POS0_COMBINERGB,    BITS_COMBINERGB,   u32(value)); }
+    void SetCombineAlpha(TevMode value) { bits1 = internal::SetBits(u32(bits1), POS1_COMBINEALPHA,  BITS_COMBINEALPHA, u32(value)); }
+    void SetSrcRgb0(TevSrc value) { bits0 = internal::SetBits(u32(bits0), POS0_SRCRGB0,       BITS_SRCRGB,       u32(value)); }
+    void SetSrcRgb1(TevSrc value) { bits0 = internal::SetBits(u32(bits0), POS0_SRCRGB1,       BITS_SRCRGB,       u32(value)); }
+    void SetSrcRgb2(TevSrc value) { bits0 = internal::SetBits(u32(bits0), POS0_SRCRGB2,       BITS_SRCRGB,       u32(value)); }
+    void SetSrcAlpha0(TevSrc value) { bits1 = internal::SetBits(u32(bits1), POS1_SRCALPHA0,     BITS_SRCALPHA,     u32(value)); }
+    void SetSrcAlpha1(TevSrc value) { bits1 = internal::SetBits(u32(bits1), POS1_SRCALPHA1,     BITS_SRCALPHA,     u32(value)); }
+    void SetSrcAlpha2(TevSrc value) { bits1 = internal::SetBits(u32(bits1), POS1_SRCALPHA2,     BITS_SRCALPHA,     u32(value)); }
+    void SetOperandRgb0(TevOpRgb value) { bits0 = internal::SetBits(u32(bits0), POS0_OPERANDRGB0,   BITS_OPERANDRGB,   u32(value)); }
+    void SetOperandRgb1(TevOpRgb value) { bits0 = internal::SetBits(u32(bits0), POS0_OPERANDRGB1,   BITS_OPERANDRGB,   u32(value)); }
+    void SetOperandRgb2(TevOpRgb value) { bits0 = internal::SetBits(u32(bits0), POS0_OPERANDRGB2,   BITS_OPERANDRGB,   u32(value)); }
+    void SetOperandAlpha0(TevOpAlp value) { bits1 = internal::SetBits(u32(bits1), POS1_OPERANDALPHA0, BITS_OPERANDALPHA, u32(value)); }
+    void SetOperandAlpha1(TevOpAlp value) { bits1 = internal::SetBits(u32(bits1), POS1_OPERANDALPHA1, BITS_OPERANDALPHA, u32(value)); }
+    void SetOperandAlpha2(TevOpAlp value) { bits1 = internal::SetBits(u32(bits1), POS1_OPERANDALPHA2, BITS_OPERANDALPHA, u32(value)); }
+    void SetScaleRgb(TevScale value) { bits0 = internal::SetBits(u32(bits0), POS0_SCALERGB,      BITS_SCALE,        u32(value)); }
+    void SetScaleAlpha(TevScale value) { bits1 = internal::SetBits(u32(bits1), POS1_SCALEALPHA,    BITS_SCALE,        u32(value)); }
+    void SetKonstSelRgb(TevKonstSel value) { bits2 = internal::SetBits(u32(bits2), POS2_KONSTSELRGB,   BITS_KONSTSEL,     u32(value)); }
+    void SetKonstSelAlpha(TevKonstSel value) { bits2 = internal::SetBits(u32(bits2), POS2_KONSTSELALPHA, BITS_KONSTSEL,     u32(value)); }
+    void SetSavePrevRgb(bool value) { bits0 = internal::SetBit(u32(bits0), POS0_SAVEPREVRGB,   value); }
+    void SetSavePrevAlpha(bool value) { bits1 = internal::SetBit(u32(bits1), POS1_SAVEPREVALPHA, value); }
 
     TevMode     GetCombineRgb()    const { return TevMode(internal::GetBits(u32(bits0), POS0_COMBINERGB,    BITS_COMBINERGB)); }
     TevMode     GetCombineAlpha()  const { return TevMode(internal::GetBits(u32(bits1), POS1_COMBINEALPHA,  BITS_COMBINEALPHA)); }
@@ -659,7 +719,8 @@ protected:
     ut::ResU32 bits1;
     ut::ResU32 bits2;
 
-    enum Bits{
+    enum Bits
+    {
         BITS_COMBINERGB   = 4,
         BITS_COMBINEALPHA = 4,
         BITS_SRCRGB       = 4,
@@ -671,7 +732,8 @@ protected:
         BITS_SAVEPREV     = 1
     };
 
-    enum Pos0{
+    enum Pos0
+    {
         POS0_SRCRGB0     = 0,
         POS0_SRCRGB1     = 4,
         POS0_SRCRGB2     = 8,
@@ -684,7 +746,8 @@ protected:
         FIELD0_SIZE      = 31
     };
 
-    enum Pos1{
+    enum Pos1
+    {
         POS1_SRCALPHA0      = 0,
         POS1_SRCALPHA1      = 4,
         POS1_SRCALPHA2      = 8,
@@ -697,7 +760,8 @@ protected:
         FIELD1_SIZE         = 31
     };
 
-    enum Pos2{
+    enum Pos2
+    {
         POS2_KONSTSELRGB   = 0,
         POS2_KONSTSELALPHA = 4,
         FIELD2_SIZE        = 8
@@ -706,11 +770,13 @@ protected:
     static void CompileCheck();
 };
 
-struct AlphaCompare{
-    AlphaCompare(){ Set(ALPHATEST_ALWAYS, 0.f); }
-    AlphaCompare(AlphaTest aFunc, f32 aRef){ Set(aFunc, aRef); }
+struct AlphaCompare
+{
+    AlphaCompare() { Set(ALPHATEST_ALWAYS, 0.f); }
+    AlphaCompare(AlphaTest aFunc, f32 aRef) { Set(aFunc, aRef); }
 
-    void Set(AlphaTest aFunc, f32 aRef){
+    void Set(AlphaTest aFunc, f32 aRef)
+    {
         func = u8(aFunc);
         ref  = aRef;
     }
@@ -723,13 +789,16 @@ protected:
     ut::ResF32 ref;
 };
 
-struct BlendMode{
-    BlendMode(){ Set(BLENDOP_DISABLE, BLENDFACTORSRC_SRC_ALPHA, BLENDFACTORDST_INV_SRC_ALPHA, LOGICOP_DISABLE); }
-    BlendMode(BlendOp aBlendOp, BlendFactorSrc aSrcFactor, BlendFactorDst aDstFactor, LogicOp aLogicOp){
+struct BlendMode
+{
+    BlendMode() { Set(BLENDOP_DISABLE, BLENDFACTORSRC_SRC_ALPHA, BLENDFACTORDST_INV_SRC_ALPHA, LOGICOP_DISABLE); }
+    BlendMode(BlendOp aBlendOp, BlendFactorSrc aSrcFactor, BlendFactorDst aDstFactor, LogicOp aLogicOp)
+    {
         Set(aBlendOp, aSrcFactor, aDstFactor, aLogicOp);
     }
 
-    void Set(BlendOp aBlendOp, BlendFactorSrc aSrcFactor, BlendFactorDst aDstFactor, LogicOp aLogicOp){
+    void Set(BlendOp aBlendOp, BlendFactorSrc aSrcFactor, BlendFactorDst aDstFactor, LogicOp aLogicOp)
+    {
         blendOp   = u8(aBlendOp);
         srcFactor = u8(aSrcFactor);
         dstFactor = u8(aDstFactor);
@@ -748,56 +817,63 @@ protected:
     ut::ResU8 logicOp;
 };
 
-struct InflationLRTB{
+struct InflationLRTB
+{
     ut::ResF32 l;
     ut::ResF32 r;
     ut::ResF32 t;
     ut::ResF32 b;
 };
 
-struct WindowFrameSize{
+struct WindowFrameSize
+{
     ut::ResF32 l;
     ut::ResF32 r;
     ut::ResF32 t;
     ut::ResF32 b;
 };
 
-class ExtUserData{
+class ExtUserData
+{
 public:
     ExtUserData(u32 nameStrOffset, u32 dataOffset, u16 num, u8 type):
-        mNameStrOffset(nameStrOffset),
-        mDataOffset(dataOffset),
-        mNum(num),
-        mType(type),
-        mPadding(0)
-    {}
+        m_NameStrOffset(nameStrOffset),
+        m_DataOffset(dataOffset),
+        m_Num(num),
+        m_Type(type),
+        m_Padding(0) {}
 
-    const char*       GetName()       const { return mNameStrOffset ? internal::ConvertOffsToPtr<const char>(this, mNameStrOffset) : 0; }
-    ExtUserDataType   GetType()       const { return ExtUserDataType(mType); }
-    u16               GetNum()        const { return mNum; }
+    const char*       GetName()       const { return m_NameStrOffset ? internal::ConvertOffsToPtr<const char>(this, m_NameStrOffset) : 0; }
+    ExtUserDataType   GetType()       const { return ExtUserDataType(m_Type); }
+    u16               GetNum()        const { return m_Num; }
 
-    const char* GetString() const{
-        return internal::ConvertOffsToPtr<const char>(this, mDataOffset);
+    const char* GetString() const
+    {
+        return internal::ConvertOffsToPtr<const char>(this, m_DataOffset);
     }
 
-    const ut::ResS32* GetIntArray() const{
-        return internal::ConvertOffsToPtr<const ut::ResS32>(this, mDataOffset);
+    const ut::ResS32* GetIntArray() const
+    {
+        return internal::ConvertOffsToPtr<const ut::ResS32>(this, m_DataOffset);
     }
 
-    const ut::ResF32* GetFloatArray() const{
-        return internal::ConvertOffsToPtr<const ut::ResF32>(this, mDataOffset);
+    const ut::ResF32* GetFloatArray() const
+    {
+        return internal::ConvertOffsToPtr<const ut::ResF32>(this, m_DataOffset);
     }
 
 protected:
-    ut::ResU32 mNameStrOffset;
-    ut::ResU32 mDataOffset;
-    ut::ResU16 mNum;
-    ut::ResU8  mType;
-    ut::ResU8  mPadding;
+    ut::ResU32 m_NameStrOffset;
+    ut::ResU32 m_DataOffset;
+    ut::ResU16 m_Num;
+    ut::ResU8  m_Type;
+    ut::ResU8  m_Padding;
 };
 
-struct AnimationGroupRef{
-    AnimationGroupRef(): flag(0){
+struct AnimationGroupRef
+{
+    AnimationGroupRef(): flag(0)
+    {
         std::memset(name,    0, sizeof(name));
         std::memset(padding, 0, sizeof(padding));
     }
@@ -809,8 +885,10 @@ struct AnimationGroupRef{
     ut::ResU8 padding[2];
 };
 
-struct AnimationShareInfo{
-    AnimationShareInfo(){
+struct AnimationShareInfo
+{
+    AnimationShareInfo()
+    {
         std::memset(srcPaneName,     0, sizeof(srcPaneName));
         std::memset(targetGroupName, 0, sizeof(targetGroupName));
         std::memset(padding,         0, sizeof(padding));
@@ -826,82 +904,85 @@ struct AnimationShareInfo{
 
 class AnimTransform;
 
-class AnimationLink{
+class AnimationLink
+{
 public:
-    AnimationLink(){ Reset(); }
+    AnimationLink() { Reset(); }
 
-    void Reset(){ Set(0, 0, false); }
+    void Reset() { Set(0, 0, false); }
 
-    void Set(AnimTransform* animTrans, u16 idx, bool bDisable){
-        mAnimTrans = animTrans;
-        mIdx       = idx;
-        mDisable   = bDisable;
+    void Set(AnimTransform* animTrans, u16 idx, bool bDisable)
+    {
+        m_AnimTrans = animTrans;
+        m_Idx       = idx;
+        m_Disable   = bDisable;
     }
 
-    void SetAnimTransform(AnimTransform* animTrans, u16 idx){
-        mAnimTrans = animTrans;
-        mIdx       = idx;
+    void SetAnimTransform(AnimTransform* animTrans, u16 idx)
+    {
+        m_AnimTrans = animTrans;
+        m_Idx       = idx;
     }
 
-    AnimTransform* GetAnimTransform() const { return mAnimTrans; }
-    u16            GetIndex()         const { return mIdx; }
+    AnimTransform* GetAnimTransform() const { return m_AnimTrans; }
+    u16            GetIndex()         const { return m_Idx; }
 
-    bool IsEnable()          const { return !mDisable; }
-    void SetEnable(bool bEnable)   { mDisable = !bEnable; }
+    bool IsEnable()          const { return !m_Disable; }
+    void SetEnable(bool bEnable) { m_Disable = !bEnable; }
 
-    ut::LinkListNode mLink;
+    ut::LinkListNode m_Link;
 
 protected:
-    AnimTransform* mAnimTrans;
-    u16            mIdx;
-    bool           mDisable;
+    AnimTransform* m_AnimTrans;
+    u16            m_Idx;
+    bool           m_Disable;
 };
 
-typedef ut::LinkList<AnimationLink, offsetof(AnimationLink, mLink)> AnimationList;
+typedef ut::LinkList<AnimationLink, offsetof(AnimationLink, m_Link)> AnimationList;
 
-class TextureInfo{
+class TextureInfo
+{
 public:
     static const u32 INVALID = 0;
 
-    TextureInfo(): mTexObject(INVALID), mPhysicalAddress(NULL) {}
-    TextureInfo(const TextureInfo& src){ this->Set(src); }
-    TextureInfo(u32 texObject, uptr physicalAddress, const TexSize& size, const TexSize& realSize, TexFormat format){
+    TextureInfo(): m_TexObject(INVALID), m_PhysicalAddress(NULL) {}
+    TextureInfo(const TextureInfo& src) { this->Set(src); }
+    TextureInfo(u32 texObject, uptr physicalAddress, const TexSize& size, const TexSize& realSize, TexFormat format)
+    {
         this->Set(texObject, physicalAddress, size, realSize, format);
     }
 
-    void Set(const TextureInfo& src){ *this = src; }
+    void Set(const TextureInfo& src) { *this = src; }
 
-    void Set(u32 texObject, uptr physicalAddress, const TexSize& size, const TexSize& realSize, TexFormat format){
-        mTexObject       = texObject;
-        mPhysicalAddress = physicalAddress;
-        mSize            = size;
-        mRealSize        = realSize;
-        mFormat          = format;
+    void Set(u32 texObject, uptr physicalAddress, const TexSize& size, const TexSize& realSize, TexFormat format)
+    {
+        m_TexObject       = texObject;
+        m_PhysicalAddress = physicalAddress;
+        m_Size            = size;
+        m_RealSize        = realSize;
+        m_Format          = format;
     }
 
-    u32            GetTextureObject()   const { return mTexObject; }
-    const TexSize& GetSize()            const { return mSize; }
-    const TexSize& GetRealSize()        const { return mRealSize; }
-    uptr           GetPhysicalAddress() const { return mPhysicalAddress; }
-    TexFormat      GetFormat()          const { return TexFormat(mFormat); }
+    u32            GetTextureObject()   const { return m_TexObject; }
+    const TexSize& GetSize()            const { return m_Size; }
+    const TexSize& GetRealSize()        const { return m_RealSize; }
+    uptr           GetPhysicalAddress() const { return m_PhysicalAddress; }
+    TexFormat      GetFormat()          const { return TexFormat(m_Format); }
 
-    bool IsValid() const{
-#ifdef NW_PLATFORM_CTR
-        return mPhysicalAddress != 0;
-#else
-        return mTexObject != INVALID;
-#endif
+    bool IsValid() const
+    {
+        return m_PhysicalAddress != 0;
     }
 
 protected:
-    static bool IsPowerOfTwo(u32 value){ return (value & ~(value - 1)) == value; }
+    static bool IsPowerOfTwo(u32 value) { return (value & ~(value - 1)) == value; }
 
 protected:
-    u32     mTexObject;
-    uptr    mPhysicalAddress;
-    TexSize mSize;
-    TexSize mRealSize;
-    u8      mFormat;
+    u32     m_TexObject;
+    uptr    m_PhysicalAddress;
+    TexSize m_Size;
+    TexSize m_RealSize;
+    u8      m_Format;
 };
 
 typedef nn::math::VEC2 TexCoordQuad[VERTEX_MAX];

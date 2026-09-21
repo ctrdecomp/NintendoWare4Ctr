@@ -9,33 +9,39 @@
 namespace nw {
 namespace ut {
 
-struct ResMetaDataData{
+struct ResMetaDataData
+{
     nw::ut::ResTypeInfo typeInfo;
     nw::ut::BinString toKey;
-    nw::ut::ResS32 mDataType;
+    nw::ut::ResS32 m_DataType;
 };
 
-struct ResIntArrayMetaDataData : public ResMetaDataData{
-    nw::ut::ResS32  mValuesCount;
-    nw::ut::ResS32  mValues[1];
+struct ResIntArrayMetaDataData : public ResMetaDataData
+{
+    nw::ut::ResS32  m_ValuesCount;
+    nw::ut::ResS32  m_Values[1];
 };
 
-struct ResFloatArrayMetaDataData : public ResMetaDataData{
-    nw::ut::ResS32  mValuesCount;
-    nw::ut::ResF32  mValues[1];
+struct ResFloatArrayMetaDataData : public ResMetaDataData
+{
+    nw::ut::ResS32  m_ValuesCount;
+    nw::ut::ResF32  m_Values[1];
 };
 
-struct ResStringArrayMetaDataData : public ResMetaDataData{
-    nw::ut::ResU32  mEncoding;
-    nw::ut::ResS32  mValuesCount;
-    nw::ut::BinString  mValues[1];
+struct ResStringArrayMetaDataData : public ResMetaDataData
+{
+    nw::ut::ResU32  m_Encoding;
+    nw::ut::ResS32  m_ValuesCount;
+    nw::ut::BinString  m_Values[1];
 };
 
-class ResMetaData : public nw::ut::ResCommon< ResMetaDataData >{
+class ResMetaData : public nw::ut::ResCommon< ResMetaDataData >
+{
 public:
-    enum { TYPE_INFO = NW_UT_RES_TYPE_INFO(ResMetaData) };
+    enum{ TYPE_INFO = NW_UT_RES_TYPE_INFO(ResMetaData) };
     
-    enum DataType{
+    enum DataType
+    {
         DATATYPE_FLOAT_ARRAY = 0,
         DATATYPE_INT_ARRAY,
         DATATYPE_STRING_ARRAY,
@@ -47,44 +53,48 @@ public:
     nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
 };
 
-class ResIntArrayMetaData : public ResMetaData{
+class ResIntArrayMetaData : public ResMetaData
+{
 public:
-    enum { TYPE_INFO = NW_UT_RES_TYPE_INFO(ResIntArrayMetaData) };
+    enum{ TYPE_INFO = NW_UT_RES_TYPE_INFO(ResIntArrayMetaData) };
     
     NW_RES_CTOR_INHERIT( ResIntArrayMetaData, ResMetaData )
     
-    s32 GetValuesCount() const { return ref().mValuesCount; }
-    const s32* GetValues() const { return &(ref().mValues[0]); }
-    s32* GetValues() { return &(ref().mValues[0]); }
+    s32 GetValuesCount() const { return ref().m_ValuesCount; }
+    const s32* GetValues() const { return &(ref().m_Values[0]); }
+    s32* GetValues() { return &(ref().m_Values[0]); }
     
-    s32  GetValues(int idx) const { return ref().mValues[idx]; }
-    void SetValues(int idx, s32 value) { ref().mValues[idx] = value; }
+    s32  GetValues(int idx) const { return ref().m_Values[idx]; }
+    void SetValues(int idx, s32 value) { ref().m_Values[idx] = value; }
 
     nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
 };
 
-class ResFloatArrayMetaData : public ResMetaData{
+class ResFloatArrayMetaData : public ResMetaData
+{
 public:
-    enum { TYPE_INFO = NW_UT_RES_TYPE_INFO(ResFloatArrayMetaData) };
+    enum{ TYPE_INFO = NW_UT_RES_TYPE_INFO(ResFloatArrayMetaData) };
     
     NW_RES_CTOR_INHERIT( ResFloatArrayMetaData, ResMetaData )
 
-    s32 GetValuesCount() const { return ref().mValuesCount; }
+    s32 GetValuesCount() const { return ref().m_ValuesCount; }
     
-    const f32* GetValues() const { return &(ref().mValues[0]); }
-    f32* GetValues() { return &(ref().mValues[0]); }
+    const f32* GetValues() const { return &(ref().m_Values[0]); }
+    f32* GetValues() { return &(ref().m_Values[0]); }
     
-    f32  GetValues(int idx) const { return ref().mValues[idx]; }
-    void SetValues(int idx, f32 value) { ref().mValues[idx] = value; }
+    f32  GetValues(int idx) const { return ref().m_Values[idx]; }
+    void SetValues(int idx, f32 value) { ref().m_Values[idx] = value; }
 
     nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
 };
 
-class ResStringArrayMetaData : public ResMetaData{
+class ResStringArrayMetaData : public ResMetaData
+{
 public:
-    enum { TYPE_INFO = NW_UT_RES_TYPE_INFO(ResStringArrayMetaData) };
+    enum{ TYPE_INFO = NW_UT_RES_TYPE_INFO(ResStringArrayMetaData) };
     
-    enum Encoding{
+    enum Encoding
+    {
         ENCODING_ASCII   = 0,
         ENCODING_UTF8    = 1,
         ENCODING_UTF16LE = 2,
@@ -93,10 +103,10 @@ public:
     
     NW_RES_CTOR_INHERIT( ResStringArrayMetaData, ResMetaData )
     
-    s32 GetValuesCount() const { return ref().mValuesCount; }
+    s32 GetValuesCount() const { return ref().m_ValuesCount; }
     
-    const char* GetValues(int idx) const { return ref().mValues[idx].to_ptr(); }
-    const wchar_t* GetWValues(int idx) const { return reinterpret_cast<const wchar_t*>(ref().mValues[idx].to_ptr()); }
+    const char* GetValues(int idx) const { return ref().m_Values[idx].to_ptr(); }
+    const wchar_t* GetWValues(int idx) const { return reinterpret_cast<const wchar_t*>(ref().m_Values[idx].to_ptr()); }
 
     nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
 };

@@ -19,7 +19,7 @@ struct LoadItemInfo
     LoadItemInfo(): 
         itemId(nw::snd::SoundArchive::INVALID_ID), 
         address(NULL)
-    {
+        {
     }
 };
 
@@ -41,7 +41,7 @@ public:
             signature(SoundArchiveLoader::SIGNATURE_INDIVIDUAL_WAVE), 
             fileId(id), 
             waveIndex(index)
-        {
+            {
         }
     };
 

@@ -5,7 +5,8 @@
 namespace nw{
 namespace gfx{
 namespace internal{
-    struct MaterialKeyValue{
+    struct MaterialKeyValue
+    {
         u32 uniqueId;
         u32 key;
         u32 subKey;
@@ -14,7 +15,8 @@ namespace internal{
     };
 }
 
-class SortingMaterialIdGenerator : public IMaterialIdGenerator{
+class SortingMaterialIdGenerator : public IMaterialIdGenerator
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(SortingMaterialIdGenerator);
 
@@ -22,32 +24,35 @@ private:
 public:
     NW_UT_RUNTIME_TYPEINFO;
     
-    struct Description{        
+    struct Description
+{        
         bool isFixedSizeMemory;
         int  maxMaterials;
 
         Description(): 
             isFixedSizeMemory(true),
-            maxMaterials(128)
-        {}
+            maxMaterials(128) {}
     };
 
-    class Builder{
+    class Builder
+    {
     public:
-        Builder& IsFixedSizeMemory(bool isFixedSizeMemory){
-            mDescription.isFixedSizeMemory = isFixedSizeMemory;
+        Builder& IsFixedSizeMemory(bool isFixedSizeMemory)
+        {
+            m_Description.isFixedSizeMemory = isFixedSizeMemory;
             return *this;
         }
 
-        Builder& MaxMaterials(int maxMaterials){
-            mDescription.maxMaterials = maxMaterials;
+        Builder& MaxMaterials(int maxMaterials)
+        {
+            m_Description.maxMaterials = maxMaterials;
             return *this;
         }
 
         IMaterialIdGenerator* Create(nw::os::IAllocator* allocator);
 
     private:
-        Description mDescription;
+        Description m_Description;
     };
 
     virtual void Accept(Material* material);
@@ -58,12 +63,11 @@ private:
 
     SortingMaterialIdGenerator(nw::os::IAllocator* allocator,MaterialKeyValueArray materials,MaterialKeyValueArray materialsWorkSpace): 
         IMaterialIdGenerator(allocator),
-        mMaterials(materials),
-        mMaterialsWorkSpace(materialsWorkSpace)
-    {}
+        m_Materials(materials),
+        m_MaterialsWorkSpace(materialsWorkSpace) {}
 
-    MaterialKeyValueArray mMaterials;
-    MaterialKeyValueArray mMaterialsWorkSpace;
+    MaterialKeyValueArray m_Materials;
+    MaterialKeyValueArray m_MaterialsWorkSpace;
 };
 
 }

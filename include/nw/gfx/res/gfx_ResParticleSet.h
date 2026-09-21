@@ -22,24 +22,28 @@ typedef nw::ut::ResArrayClass<ResParticleUpdater>::type::iterator ResParticleUpd
 typedef nw::ut::ResArrayClass<const ResParticleUpdater>::type::const_iterator ResParticleUpdaterArrayConstIterator;
 typedef nw::ut::ResArrayClass<ResParticleUpdater>::type ResParticleUpdaterArray;
 typedef nw::ut::ResArrayClass<const ResParticleUpdater>::type ResParticleUpdaterArrayConst;
-struct ResParticleSetData : public ResSceneNodeData{
+struct ResParticleSetData : public ResSceneNodeData
+{
     nw::ut::Offset toParticleCollection;
-    nw::ut::ResS32 mParticleInitializersTableCount;
+    nw::ut::ResS32 m_ParticleInitializersTableCount;
     nw::ut::Offset toParticleInitializersTable;
-    nw::ut::ResS32 mParticleUpdatersTableCount;
+    nw::ut::ResS32 m_ParticleUpdatersTableCount;
     nw::ut::Offset toParticleUpdatersTable;
     nw::ut::Offset toParticleShapeBuilder;
-    nw::ut::ResS32 mParticleShapeIndex;
-    nw::ut::ResU32 mParticleSetPriority;
-    nw::ut::ResBool mIsForceWorld;
-    nw::ut::ResBool mIsBufferFlushEnabled;
-    nw::ut::ResBool mIsInheritParentVelocity;
+    nw::ut::ResS32 m_ParticleShapeIndex;
+    nw::ut::ResU32 m_ParticleSetPriority;
+    nw::ut::ResBool m_IsForceWorld;
+    nw::ut::ResBool m_IsBufferFlushEnabled;
+    nw::ut::ResBool m_IsInheritParentVelocity;
 };
 
-class ResParticleSet : public ResSceneNode{
+class ResParticleSet : public ResSceneNode
+{
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleSet) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('PSET') };
+    enum
+{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleSet) };
+    enum
+{ SIGNATURE = NW_RES_SIGNATURE32('PSET') };
 
     NW_RES_CTOR_INHERIT( ResParticleSet, ResSceneNode )
 

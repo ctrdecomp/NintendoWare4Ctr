@@ -6,7 +6,8 @@ namespace nw {
 namespace math {
 using namespace nn::math;
 
-inline MTX44* MTX44TextureMatrixForMaya(MTX44* pOut,float scaleS, float scaleT,float rotate,float translateS, float translateT){
+inline MTX44* MTX44TextureMatrixForMaya(MTX44* pOut,float scaleS, float scaleT,float rotate,float translateS, float translateT)
+{
     NW_NULL_ASSERT(pOut);
 
     float rotateSin;
@@ -29,7 +30,8 @@ inline MTX44* MTX44TextureMatrixForMaya(MTX44* pOut,float scaleS, float scaleT,f
     return pOut;
 }
 
-inline MTX44* MTX44TextureMatrixForSoftimage(MTX44* pOut,float scaleS, float scaleT,float rotate,float translateS, float translateT){
+inline MTX44* MTX44TextureMatrixForSoftimage(MTX44* pOut,float scaleS, float scaleT,float rotate,float translateS, float translateT)
+{
     NW_NULL_ASSERT(pOut);
 
     float rotateSin;
@@ -52,7 +54,8 @@ inline MTX44* MTX44TextureMatrixForSoftimage(MTX44* pOut,float scaleS, float sca
     return pOut;
 }
 
-inline MTX44* MTX44TextureMatrixForMax(MTX44* pOut,float scaleS, float scaleT,float rotate,float translateS, float translateT){
+inline MTX44* MTX44TextureMatrixForMax(MTX44* pOut,float scaleS, float scaleT,float rotate,float translateS, float translateT)
+{
     NW_NULL_ASSERT(pOut);
 
     float rotateSin;

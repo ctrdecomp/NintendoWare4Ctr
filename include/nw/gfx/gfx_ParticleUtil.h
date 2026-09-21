@@ -26,7 +26,8 @@ namespace res {
     struct ResParticleUpdaterData;
 } // namespace res
 
-class ParticleUtil{
+class ParticleUtil
+{
 public:
     static void SetupParticleObject(nw::ut::MoveArray<SceneNode*>* sceneNodeArray,ParticleContext* context);
 
@@ -41,35 +42,41 @@ public:
     static void GetMemorySizeForDuplicateResParticleUpdaterInternal(nw::os::MemorySizeCalculator* pSize,const ResParticleUpdater* src);
 };
 
-struct ParticleSetCompare : public std::binary_function<ParticleSet*, ParticleSet*, bool>{
+struct ParticleSetCompare : public std::binary_function<ParticleSet*, ParticleSet*, bool>
+{
     bool operator() (const ParticleSet* lhs,const ParticleSet* rhs);
 };
 
-class ParticleSetIsBufferFlushEnabledSetter{
+class ParticleSetIsBufferFlushEnabledSetter
+{
 public:
     ParticleSetIsBufferFlushEnabledSetter(bool flag): 
-        mFlag(flag) 
-    {}
+        m_Flag(flag) {}
 
-    void operator()(ResModel resModel) const{
+    void operator()(ResModel resModel) const
+    {
         ResParticleModel resParticleModel = ResDynamicCast<ResParticleModel>(resModel);
-        if (resParticleModel.IsValid()){
-            resParticleModel.ForeachParticleSet(ParticleSetIsBufferFlushEnabledSetter(mFlag));
+        if (resParticleModel.IsValid())
+        {
+            resParticleModel.ForeachParticleSet(ParticleSetIsBufferFlushEnabledSetter(m_Flag));
         }
     }
 
-    void operator()(ResParticleModel resParticleModel) const{
-        if (resParticleModel.IsValid()){
-            resParticleModel.ForeachParticleSet(ParticleSetIsBufferFlushEnabledSetter(mFlag));
+    void operator()(ResParticleModel resParticleModel) const
+    {
+        if (resParticleModel.IsValid())
+        {
+            resParticleModel.ForeachParticleSet(ParticleSetIsBufferFlushEnabledSetter(m_Flag));
         }
     }
 
-    void operator()(ResParticleSet resParticleSet) const{
-        resParticleSet.SetIsBufferFlushEnabled(mFlag);
+    void operator()(ResParticleSet resParticleSet) const
+    {
+        resParticleSet.SetIsBufferFlushEnabled(m_Flag);
     }
 
 private:
-    bool mFlag;
+    bool m_Flag;
 };
 
 }

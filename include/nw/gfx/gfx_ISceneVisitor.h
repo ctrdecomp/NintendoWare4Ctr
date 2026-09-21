@@ -22,7 +22,8 @@ class ParticleSet;
 class ParticleEmitter;
 class ParticleModel;
 
-class ISceneVisitor : public GfxObject{
+class ISceneVisitor : public GfxObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(ISceneVisitor);
 
@@ -46,7 +47,7 @@ public:
     virtual void VisitParticleModel(ParticleModel* particleModel) = 0;
 
 protected:
-    ISceneVisitor(os::IAllocator* allocator):GfxObject(allocator){}
+    ISceneVisitor(os::IAllocator* allocator):GfxObject(allocator) {}
 };
 
 }

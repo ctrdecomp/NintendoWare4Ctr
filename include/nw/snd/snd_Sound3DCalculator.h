@@ -27,7 +27,7 @@ public:
             surroundSpeakerFrontAngle(nn::math::PI / 6.0f),
             surroundSpeakerRearAngle(nn::math::PI * 2.0f / 3.0f),
             surroundPanOffset(0.0f)
-        {
+            {
         }
     };
 

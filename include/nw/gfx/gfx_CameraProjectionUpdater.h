@@ -10,7 +10,8 @@ namespace ut{
 
 namespace gfx{
 
-class CameraProjectionUpdater : public GfxObject{
+class CameraProjectionUpdater : public GfxObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(CameraProjectionUpdater);
 
@@ -19,23 +20,23 @@ public:
 
     virtual void Update(nw::math::MTX44* projectionMatrix, nw::math::MTX34* textureProjectionMatrix) = 0;
 
-    void SetPivotDirection(nw::math::PivotDirection pivot) { mPivot = pivot; }
+    void SetPivotDirection(nw::math::PivotDirection pivot) { m_Pivot = pivot; }
 
-    nw::math::PivotDirection GetPivotDirection() const { return mPivot; }
+    nw::math::PivotDirection GetPivotDirection() const { return m_Pivot; }
 
-    bool IsDynamic() {return IsDynamic;}
+    bool IsDynamic() { return m_IsDynamic; }
 
     virtual ResCameraProjectionUpdater GetResource() = 0;
 
     virtual const ResCameraProjectionUpdater GetResource() const = 0;
 
-    nw::math::VEC2& TextureScale() { return mTextureScale; }
+    nw::math::VEC2& TextureScale() { return m_TextureScale; }
 
-    const nw::math::VEC2& TextureScale() const { return mTextureScale; }
+    const nw::math::VEC2& TextureScale() const { return m_TextureScale; }
 
-    nw::math::VEC2& TextureTranslate() { return mTextureTranslate; }
+    nw::math::VEC2& TextureTranslate() { return m_TextureTranslate; }
 
-    const nw::math::VEC2& TextureTranslate() const { return mTextureTranslate; }
+    const nw::math::VEC2& TextureTranslate() const { return m_TextureTranslate; }
 
     virtual anim::ResCameraAnimData::ProjectionUpdaterKind Kind() const = 0;
 
@@ -43,19 +44,18 @@ protected:
 
     CameraProjectionUpdater(os::IAllocator* allocator, bool isDynamic): 
         GfxObject(allocator),
-        mPivot(math::PIVOT_NONE),
-        mIsDynamic(isDynamic),
-        mTextureScale(0.5f, 0.5f),
-        mTextureTranslate(0.5f, 0.5f)
-    {}
+        m_Pivot(math::PIVOT_NONE),
+        m_IsDynamic(isDynamic),
+        m_TextureScale(0.5f, 0.5f),
+        m_TextureTranslate(0.5f, 0.5f) {}
 
-    virtual ~CameraProjectionUpdater(){}
+    virtual ~CameraProjectionUpdater() {}
 
 private:
-    PivotDirection mPivot;
-    bool mIsDynamic;
-    VEC2 mTextureScale;
-    VEC2 mTextureTranslate;
+    PivotDirection m_Pivot;
+    bool m_IsDynamic;
+    VEC2 m_TextureScale;
+    VEC2 m_TextureTranslate;
 
 protected:
     static const float PROJECTION_NEAR_CLIP;

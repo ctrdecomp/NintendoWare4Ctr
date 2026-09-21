@@ -5,7 +5,8 @@
 namespace nw   {
 namespace anim {
 
-class AnimFrame{
+class AnimFrame
+{
 public:
     AnimFrame() { ResetFrame(0.0f); }
     AnimFrame(f32 frame) { ResetFrame(frame); }
@@ -13,104 +14,112 @@ public:
     AnimFrame(const AnimFrame& animFrame) { Set(animFrame); }
     virtual ~AnimFrame() {}
 
-    f32 GetFrame() const { return mFrame; }
+    f32 GetFrame() const { return m_Frame; }
 
-    void SetFrame(f32 frame){
-        mLastFrame = mFrame;
-        mFrame = frame;
+    void SetFrame(f32 frame)
+    {
+        m_LastFrame = m_Frame;
+        m_Frame = frame;
     }
 
-    f32 GetLastFrame() const { return mLastFrame; }
+    f32 GetLastFrame() const { return m_LastFrame; }
 
-    void SetLastFrame(f32 lastFrame) { mLastFrame = lastFrame; }
+    void SetLastFrame(f32 lastFrame) { m_LastFrame = lastFrame; }
 
-    void Set(const AnimFrame& animFrame){
-        mFrame = animFrame.GetFrame();
-        mLastFrame = animFrame.GetLastFrame();
+    void Set(const AnimFrame& animFrame)
+    {
+        m_Frame = animFrame.GetFrame();
+        m_LastFrame = animFrame.GetLastFrame();
     }
 
-    void Set(f32 frame, f32 lastFrame){
-        mFrame = frame;
-        mLastFrame = lastFrame;
+    void Set(f32 frame, f32 lastFrame)
+    {
+        m_Frame = frame;
+        m_LastFrame = lastFrame;
     }
 
-    void ResetFrame(f32 frame){
-        mFrame = mLastFrame = frame;
+    void ResetFrame(f32 frame)
+    {
+        m_Frame = m_LastFrame = frame;
     }
 
-    f32 GetDelta() const { return mFrame - mLastFrame; }
+    f32 GetDelta() const { return m_Frame - m_LastFrame; }
 
-    bool IsOrder() const { return mFrame >= mLastFrame; }
+    bool IsOrder() const { return m_Frame >= m_LastFrame; }
 
-    bool operator==(const AnimFrame& rhs) const{
-        return mFrame == rhs.mFrame && mLastFrame == rhs.mLastFrame;
+    bool operator==(const AnimFrame& rhs) const
+    {
+        return m_Frame == rhs.m_Frame && m_LastFrame == rhs.m_LastFrame;
     }
-    bool operator!=(const AnimFrame& rhs) const{
-        return mFrame != rhs.mFrame || mLastFrame != rhs.mLastFrame;
+    bool operator!=(const AnimFrame& rhs) const
+    {
+        return m_Frame != rhs.m_Frame || m_LastFrame != rhs.m_LastFrame;
     }
 
 private:
-    f32 mFrame;
-    f32 mLastFrame;
+    f32 m_Frame;
+    f32 m_LastFrame;
 };
 
 f32 PlayPolicy_Onetime(f32 startFrame, f32 endFrame, f32 inputFrame, void* pUserData);
 f32 PlayPolicy_Loop(f32 startFrame, f32 endFrame, f32 inputFrame, void* pUserData);
 
-class AnimFrameController{
+class AnimFrameController
+{
 public:
     typedef f32 (*PlayPolicy)(f32 startFrame, f32 endFrame, f32 inputFrame, void* pUserData);
 
     AnimFrameController(f32 startFrame = 0.0f,f32 endFrame = 1.0f,PlayPolicy playPolicy = PlayPolicy_Onetime,void* userData = NULL): 
-        mAnimFrame(startFrame),
-        mStepFrame(1.0f),
-        mStartFrame(startFrame),
-        mEndFrame(endFrame),
-        mPlayPolicy(playPolicy),
-        mUserData(userData)
-    {}
+        m_AnimFrame(startFrame),
+        m_StepFrame(1.0f),
+        m_StartFrame(startFrame),
+        m_EndFrame(endFrame),
+        m_PlayPolicy(playPolicy),
+        m_UserData(userData) {}
 
 
     virtual ~AnimFrameController() {}
 
 
-    const AnimFrame& GetAnimFrame() const { return mAnimFrame; }
-    AnimFrame& GetAnimFrame() { return mAnimFrame; }
-    void SetAnimFrame(const AnimFrame& animFrame) { mAnimFrame = animFrame; }
+    const AnimFrame& GetAnimFrame() const { return m_AnimFrame; }
+    AnimFrame& GetAnimFrame() { return m_AnimFrame; }
+    void SetAnimFrame(const AnimFrame& animFrame) { m_AnimFrame = animFrame; }
 
-    f32 GetFrame() const { return this->mAnimFrame.GetFrame(); }
-    void SetFrame(f32 frame){
-        this->mAnimFrame.SetFrame(mPlayPolicy(this->mStartFrame, this->mEndFrame, frame, this->mUserData));
+    f32 GetFrame() const { return this->m_AnimFrame.GetFrame(); }
+    void SetFrame(f32 frame)
+    {
+        this->m_AnimFrame.SetFrame(m_PlayPolicy(this->m_StartFrame, this->m_EndFrame, frame, this->m_UserData));
     }
 
-    f32 GetStepFrame() const { return mStepFrame; }
-    void SetStepFrame(f32 stepFrame) { mStepFrame = stepFrame; }
+    f32 GetStepFrame() const { return m_StepFrame; }
+    void SetStepFrame(f32 stepFrame) { m_StepFrame = stepFrame; }
 
-    f32 GetStartFrame() const { return mStartFrame; }
-    void SetStartFrame(f32 startFrame) { mStartFrame = startFrame; }
+    f32 GetStartFrame() const { return m_StartFrame; }
+    void SetStartFrame(f32 startFrame) { m_StartFrame = startFrame; }
 
-    f32 GetEndFrame() const { return mEndFrame; }
-    void SetEndFrame(f32 endFrame) { mEndFrame = endFrame; }
+    f32 GetEndFrame() const { return m_EndFrame; }
+    void SetEndFrame(f32 endFrame) { m_EndFrame = endFrame; }
 
-    PlayPolicy GetPlayPolicy() const { return mPlayPolicy; }
-    void SetPlayPolicy(PlayPolicy playPolicy) { mPlayPolicy = playPolicy; }
+    PlayPolicy GetPlayPolicy() const { return m_PlayPolicy; }
+    void SetPlayPolicy(PlayPolicy playPolicy) { m_PlayPolicy = playPolicy; }
 
-    const void* GetUserData() const { return mUserData; }
-    void* GetUserData() { return mUserData; }
-    void SetUserData(void* userData) { mUserData = userData; }
+    const void* GetUserData() const { return m_UserData; }
+    void* GetUserData() { return m_UserData; }
+    void SetUserData(void* userData) { m_UserData = userData; }
 
-    void UpdateFrame(){
-        SetFrame(GetFrame() + this->mStepFrame);
+    void UpdateFrame()
+    {
+        SetFrame(GetFrame() + this->m_StepFrame);
     }       
 
 
 private:
-    AnimFrame mAnimFrame;
-    f32 mStepFrame;
-    f32 mStartFrame;
-    f32 mEndFrame;
-    PlayPolicy mPlayPolicy;
-    void* mUserData;
+    AnimFrame m_AnimFrame;
+    f32 m_StepFrame;
+    f32 m_StartFrame;
+    f32 m_EndFrame;
+    PlayPolicy m_PlayPolicy;
+    void* m_UserData;
 };
 
 }

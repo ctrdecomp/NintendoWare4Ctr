@@ -9,137 +9,156 @@
 namespace nw{
 namespace gfx{
 
-class SkeletalModel  : public Model{
+class SkeletalModel  : public Model
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(SkeletalModel);
 
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    struct Description : public Model::Description{
+    struct Description : public Model::Description
+    {
         Skeleton* sharedSkeleton;
 
         Description(): 
-            sharedSkeleton(NULL)
-        {}
+            sharedSkeleton(NULL) {}
     };
 
-    class Builder{
+    class Builder
+    {
     public:
         Builder() {}
         ~Builder() {}
 
-        Builder& IsFixedSizeMemory(bool isFixedSizeMemory){
-            mDescription.isFixedSizeMemory = isFixedSizeMemory;
+        Builder& IsFixedSizeMemory(bool isFixedSizeMemory)
+        {
+            m_Description.isFixedSizeMemory = isFixedSizeMemory;
             return *this;
         }
 
-        Builder& MaxChildren(int maxChildren){
-            mDescription.maxChildren = maxChildren;
+        Builder& MaxChildren(int maxChildren)
+        {
+            m_Description.maxChildren = maxChildren;
             return *this;
         }
 
-        Builder& MaxCallbacks(int maxCallbacks){
-            mDescription.maxCallbacks = maxCallbacks;
+        Builder& MaxCallbacks(int maxCallbacks)
+        {
+            m_Description.maxCallbacks = maxCallbacks;
             return *this;
         }
 
-        Builder& BufferOption(bit32 bufferOption){
-            mDescription.bufferOption = bufferOption;
+        Builder& BufferOption(bit32 bufferOption)
+        {
+            m_Description.bufferOption = bufferOption;
             return *this;
         }
 
-        Builder& SharedMaterialModel(Model* model){
-            mDescription.sharedMaterialModel = model;
+        Builder& SharedMaterialModel(Model* model)
+        {
+            m_Description.sharedMaterialModel = model;
             return *this;
         }
 
-        Builder& SharedSkeleton(Skeleton* sharedSkeleton){
-            mDescription.sharedSkeleton = sharedSkeleton;
+        Builder& SharedSkeleton(Skeleton* sharedSkeleton)
+        {
+            m_Description.sharedSkeleton = sharedSkeleton;
             return *this;
         }
 
-        Builder& MaxAnimObjectsPerGroup(s32 maxAnimObjectCount){
-            mDescription.maxAnimObjectsPerGroup = maxAnimObjectCount;
+        Builder& MaxAnimObjectsPerGroup(s32 maxAnimObjectCount)
+        {
+            m_Description.maxAnimObjectsPerGroup = maxAnimObjectCount;
             return *this;
         }
 
-        Builder& IsAnimationEnabled(bool isAnimationEnabled){
-            mDescription.isAnimationEnabled = isAnimationEnabled;
+        Builder& IsAnimationEnabled(bool isAnimationEnabled)
+        {
+            m_Description.isAnimationEnabled = isAnimationEnabled;
             return *this;
         }
 
         SkeletalModel* Create(SceneNode* parent,ResSceneObject resource,nw::os::IAllocator* allocator);
 
-        void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize,ResSkeletalModel resModel) const{
+        void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize,ResSkeletalModel resModel) const
+        {
             os::MemorySizeCalculator& size = *pSize;
              
-            if (mDescription.sharedSkeleton == NULL){
+            if (m_Description.sharedSkeleton == NULL)
+            {
                 ResSkeleton resSkeleton = resModel.GetSkeleton();
                 size.Add(sizeof(Skeleton::TransformPose::Transform) * resSkeleton.GetBonesCount(), Skeleton::TransformPose::TransformArray::MEMORY_ALIGNMENT);
-                StandardSkeleton::GetMemorySizeInternal(pSize,resSkeleton,mDescription.maxCallbacks);
+                StandardSkeleton::GetMemorySizeInternal(pSize,resSkeleton,m_Description.maxCallbacks);
             }
         }
 
-        size_t GetDeviceMemorySize(ResSkeletalModel,size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT) const{
+        size_t GetDeviceMemorySize(ResSkeletalModel,size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT) const
+        {
             NW_UNUSED_VARIABLE(alignment);
 
             return 0;
         }
 
-        void GetDeviceMemorySizeInternal(nw::os::MemorySizeCalculator*,ResSkeletalModel) const
-        {}
+        void GetDeviceMemorySizeInternal(nw::os::MemorySizeCalculator*,ResSkeletalModel) const {}
 
     private:
-        SkeletalModel::Description mDescription;
+        SkeletalModel::Description m_Description;
     };
 
     virtual void Accept(ISceneVisitor* visitor);
 
-    ResSkeletalModel GetResSkeletalModel() {
+    ResSkeletalModel GetResSkeletalModel() 
+    {
         return ResDynamicCast<ResSkeletalModel>(this->GetResSceneObject());
     }
 
-    const ResSkeletalModel GetResSkeletalModel() const {
+    const ResSkeletalModel GetResSkeletalModel() const 
+    {
         return ResDynamicCast<ResSkeletalModel>(this->GetResSceneObject());
     }
 
-    Skeleton* GetSkeleton() { return this->mSkeleton.Get(); }
+    Skeleton* GetSkeleton() { return this->m_Skeleton.Get(); }
 
-    const Skeleton* GetSkeleton() const { return this->mSkeleton.Get(); }
+    const Skeleton* GetSkeleton() const { return this->m_Skeleton.Get(); }
 
-    bool IsSharingSkeleton() const { return this->mSharingSkeleton; }
+    bool IsSharingSkeleton() const { return this->m_SharingSkeleton; }
 
-    void SwapSkeleton( SkeletalModel* skeletalModel ){
-        this->mSkeleton.Swap(skeletalModel->mSkeleton);
-        bool sharingSkeleton = this->mSharingSkeleton;
-        this->mSharingSkeleton = skeletalModel->mSharingSkeleton;
-        skeletalModel->mSharingSkeleton = sharingSkeleton;
+    void SwapSkeleton( SkeletalModel* skeletalModel )
+    {
+        this->m_Skeleton.Swap(skeletalModel->m_Skeleton);
+        bool sharingSkeleton = this->m_SharingSkeleton;
+        this->m_SharingSkeleton = skeletalModel->m_SharingSkeleton;
+        skeletalModel->m_SharingSkeleton = sharingSkeleton;
     }
 
-    AnimGroup* GetSkeletalAnimGroup() { return mSkeletalAnimGroup; }
+    AnimGroup* GetSkeletalAnimGroup() { return m_SkeletalAnimGroup; }
 
-    const AnimGroup* GetSkeletalAnimGroup() const { return mSkeletalAnimGroup; }
+    const AnimGroup* GetSkeletalAnimGroup() const { return m_SkeletalAnimGroup; }
 
-    int GetSkeletalAnimBindingIndex() const { return mSkeletalAnimBindingIndex; }
+    int GetSkeletalAnimBindingIndex() const { return m_SkeletalAnimBindingIndex; }
 
-    const AnimObject* GetSkeletalAnimObject(int objectIndex = 0) const{
-        NW_NULL_ASSERT(this->mAnimBinding);
-        return this->mAnimBinding->GetAnimObject(this->mSkeletalAnimBindingIndex, objectIndex);
+    const AnimObject* GetSkeletalAnimObject(int objectIndex = 0) const
+    {
+        NW_NULL_ASSERT(m_AnimBinding);
+        return this->m_AnimBinding->GetAnimObject(this->m_SkeletalAnimBindingIndex, objectIndex);
     }
 
-    AnimObject* GetSkeletalAnimObject(int objectIndex = 0){
-        NW_NULL_ASSERT(this->mAnimBinding);
-        return this->mAnimBinding->GetAnimObject(this->mSkeletalAnimBindingIndex, objectIndex);
+    AnimObject* GetSkeletalAnimObject(int objectIndex = 0)
+    {
+        NW_NULL_ASSERT(m_AnimBinding);
+        return this->m_AnimBinding->GetAnimObject(this->m_SkeletalAnimBindingIndex, objectIndex);
     }
 
-    void SetSkeletalAnimObject(AnimObject* animObject, int objectIndex = 0){
-        NW_NULL_ASSERT(mAnimBinding);
-        this->mAnimBinding->SetAnimObject(this->mSkeletalAnimBindingIndex, animObject, objectIndex);
+    void SetSkeletalAnimObject(AnimObject* animObject, int objectIndex = 0)
+    {
+        NW_NULL_ASSERT(m_AnimBinding);
+        this->m_AnimBinding->SetAnimObject(this->m_SkeletalAnimBindingIndex, animObject, objectIndex);
     }
 
-    bool GetFullBakedAnimEnabled() const{
-        return mFullBakedAnimEnabled;
+    bool GetFullBakedAnimEnabled() const
+    {
+        return m_FullBakedAnimEnabled;
     }
 
     void SetFullBakedAnimEnabled(bool enable);
@@ -147,21 +166,25 @@ public:
 protected:
     virtual Result Initialize(os::IAllocator* allocator);
 
-    static void GetMemorySizeForInitialize(nw::os::MemorySizeCalculator* pSize,ResSkeletalModel resModel,Description description){
+    static void GetMemorySizeForInitialize(nw::os::MemorySizeCalculator* pSize,ResSkeletalModel resModel,Description description)
+    {
 
         os::MemorySizeCalculator& size = *pSize;
 
         Model::GetMemorySizeForInitialize(pSize, resModel, description);
 
-        if (description.isAnimationEnabled){
+        if (description.isAnimationEnabled)
+        {
             const int animGroupCount = resModel.GetAnimGroupsCount();
-            for (int animGroupIdx = 0; animGroupIdx < animGroupCount; ++animGroupIdx){
+            for (int animGroupIdx = 0; animGroupIdx < animGroupCount; ++animGroupIdx)
+            {
                 anim::ResAnimGroup resAnimGroup = resModel.GetAnimGroups(animGroupIdx);
                 const int targetType = resAnimGroup.GetTargetType();
                 const bool transformFlag = 
                     (resAnimGroup.GetFlags() & anim::ResAnimGroup::FLAG_IS_CALCULATED_TRANSFORM) != 0;
                 if (transformFlag &&
-                    targetType == anim::ResGraphicsAnimGroup::TARGET_TYPE_BONE){
+                    targetType == anim::ResGraphicsAnimGroup::TARGET_TYPE_BONE)
+                    {
                     AnimGroup::Builder()
                         .ResAnimGroup(resAnimGroup)
                         .UseOriginalValue(true)
@@ -174,18 +197,21 @@ protected:
 
     SkeletalModel(nw::os::IAllocator* allocator,ResSkeletalModel resource,GfxPtr<Skeleton>& skeleton,bool isSharingSkeleton,const SkeletalModel::Description& description): 
         Model(allocator,resource,description),
-        mSkeleton(skeleton),
-        mSkeletalAnimGroup(NULL),
-        mSkeletalAnimBindingIndex(-1),
-        mSharingSkeleton(isSharingSkeleton),
-        mFullBakedAnimEnabled(false){
-        if (!isSharingSkeleton){
-            this->mSkeleton->SetOwnerSkeletalModel(this);
+        m_Skeleton(skeleton),
+        m_SkeletalAnimGroup(NULL),
+        m_SkeletalAnimBindingIndex(-1),
+        m_SharingSkeleton(isSharingSkeleton),
+        m_FullBakedAnimEnabled(false)
+        {
+        if (!isSharingSkeleton)
+        {
+            this->m_Skeleton->SetOwnerSkeletalModel(this);
         }
     }
 
-    virtual ~SkeletalModel(){
-        nw::ut::SafeDestroy(mSkeletalAnimGroup);
+    virtual ~SkeletalModel()
+    {
+        nw::ut::SafeDestroy(m_SkeletalAnimGroup);
     }
 
     Result CreateSkeletalAnimGroup(nw::os::IAllocator* allocator);
@@ -195,11 +221,11 @@ protected:
 private:
     void SetupAnimGroup(AnimGroup* animGroup, bool fullBakedAnimEnabled) const;
 
-    GfxPtr<Skeleton> mSkeleton;
-    AnimGroup* mSkeletalAnimGroup;
-    int mSkeletalAnimBindingIndex;
-    bool mSharingSkeleton;
-    bool mFullBakedAnimEnabled;
+    GfxPtr<Skeleton> m_Skeleton;
+    AnimGroup* m_SkeletalAnimGroup;
+    int m_SkeletalAnimBindingIndex;
+    bool m_SharingSkeleton;
+    bool m_FullBakedAnimEnabled;
 };
 
 }

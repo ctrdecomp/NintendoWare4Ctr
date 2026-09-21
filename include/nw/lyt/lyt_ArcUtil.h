@@ -8,21 +8,26 @@
 namespace nw {
 namespace lyt {
 
-class ArcUtil{
+class ArcUtil
+{
 public:
-    static bool OpenTextureDir(ARCHandle* pArcHandle, const wchar_t* pRootName, ARCDir* pDir){
+    static bool OpenTextureDir(ARCHandle* pArcHandle, const wchar_t* pRootName, ARCDir* pDir)
+    {
         return OpenResourceDir(pArcHandle, pRootName, res::RESOURCETYPE_TEXTURE, pDir);
     }
 
-    static bool ReadTextureDir(ARCDir* pDir, ARCDirEntry* pDirEnt){
+    static bool ReadTextureDir(ARCDir* pDir, ARCDirEntry* pDirEnt)
+    {
         return ReadResourceDir(pDir, L".bclim", 6, pDirEnt);
     }
 
-    static bool OpenFontDir(ARCHandle* pArcHandle, const wchar_t* pRootName, ARCDir* pDir){
+    static bool OpenFontDir(ARCHandle* pArcHandle, const wchar_t* pRootName, ARCDir* pDir)
+    {
         return OpenResourceDir(pArcHandle, pRootName, res::RESOURCETYPE_FONT, pDir);
     }
 
-    static bool ReadFontDir(ARCDir* pDir, ARCDirEntry* pDirEnt){
+    static bool ReadFontDir(ARCDir* pDir, ARCDirEntry* pDirEnt)
+    {
         return ReadResourceDir(pDir, L".bcfnt", 6, pDirEnt);
     }
 

@@ -9,36 +9,41 @@
 namespace nw{
 namespace gfx{
 
-class SceneUpdateHelper{
+class SceneUpdateHelper
+{
 public:
     template<typename EnqueueModelMesh,typename EnqueueSkeletalModelMesh,typename IsVisibleModel>
-    class SubmitViewFunctor : public std::unary_function<Model*, void>{
+    class SubmitViewFunctor : public std::unary_function<Model*, void>
+{
     public:
         SubmitViewFunctor(SkeletonUpdater* skeletonUpdater,BillboardUpdater* billboardUpdater,
             RenderQueue* renderQueue,const Camera* camera,u8 layerId,
             u8 particleLayerId,IsVisibleModel* isVisibleModel): 
-            mSkeletonUpdater(skeletonUpdater),
-            mBillboardUpdater(billboardUpdater),
-            mRenderQueue(renderQueue),
-            mCamera(camera),
-            mLayerId(layerId),
-            mParticleLayerId(particleLayerId),
-            mIsVisibleModel(isVisibleModel) 
-        {}
+            m_SkeletonUpdater(skeletonUpdater),
+            m_BillboardUpdater(billboardUpdater),
+            m_RenderQueue(renderQueue),
+            m_Camera(camera),
+            m_LayerId(layerId),
+            m_ParticleLayerId(particleLayerId),
+            m_IsVisibleModel(isVisibleModel) {}
 
-        void operator() (Model* model){
+        void operator() (Model* model)
+        {
             SkeletalModel* skeletalModel = nw::ut::DynamicCast<SkeletalModel*>(model);
 
-            if (skeletalModel){
+            if (skeletalModel)
+            {
                 Skeleton* skeleton = skeletalModel->GetSkeleton();
                 skeleton->SetUpdated(false);
             }
 
-            if (!mIsVisibleModel->IsVisible(model)) { return; }
+            if (!m_IsVisibleModel->IsVisible(model)) { return; }
     
-            if (skeletalModel){
-                if (!skeletalModel->IsSharingSkeleton()){
-                    this->mSkeletonUpdater->UpdateView(skeletalModel->GetSkeleton(),*this->mBillboardUpdater,*this->mCamera);
+            if (skeletalModel)
+            {
+                if (!skeletalModel->IsSharingSkeleton())
+                {
+                    this->m_SkeletonUpdater->UpdateView(skeletalModel->GetSkeleton(),*this->m_BillboardUpdater,*this->m_Camera);
                 }
 
                 const Skeleton* skeleton = skeletalModel->GetSkeleton();
@@ -46,45 +51,47 @@ public:
                 
                 bool isModelCoordinate =
                     ut::CheckFlag(resSkeleton.GetFlags(), ResSkeletonData::FLAG_MODEL_COORDINATE);
-                model->UpdateNormalMatrix(this->mCamera->ViewMatrix(), isModelCoordinate);
+                model->UpdateNormalMatrix(this->m_Camera->ViewMatrix(), isModelCoordinate);
                 
-                u8 meshLayerId = mLayerId | model->GetLayerId();
+                u8 meshLayerId = m_LayerId | model->GetLayerId();
 
                 gfx::ResMeshArray meshs = skeletalModel->GetResMeshes();
                 std::for_each(
                     meshs.begin(),
                     meshs.end(),
-                    EnqueueSkeletalModelMesh(this->mRenderQueue, skeletalModel, meshLayerId, *this->mCamera));
+                    EnqueueSkeletalModelMesh(this->m_RenderQueue, skeletalModel, meshLayerId, *this->m_Camera));
             }
             else{
-                model->UpdateNormalMatrix(this->mCamera->ViewMatrix(), false);
+                model->UpdateNormalMatrix(this->m_Camera->ViewMatrix(), false);
                 
                 u8 meshLayerId =
-                    nw::ut::IsTypeOf<ParticleModel>(model)? this->mParticleLayerId : this->mLayerId;
+                    nw::ut::IsTypeOf<ParticleModel>(model)? this->m_ParticleLayerId : this->m_LayerId;
                 meshLayerId |= model->GetLayerId();
 
                 gfx::ResMeshArray meshs = model->GetResMeshes();
-                std::for_each(meshs.begin(),meshs.end(),EnqueueModelMesh(this->mRenderQueue, model, meshLayerId, *this->mCamera));
+                std::for_each(meshs.begin(),meshs.end(),EnqueueModelMesh(this->m_RenderQueue, model, meshLayerId, *this->m_Camera));
             }
         }
         
     private:
-        SkeletonUpdater* mSkeletonUpdater;
-        BillboardUpdater* mBillboardUpdater;
-        RenderQueue* mRenderQueue;
-        const Camera* mCamera;
-        u8 mLayerId;
-        u8 mParticleLayerId;
-        IsVisibleModel* mIsVisibleModel;
+        SkeletonUpdater* m_SkeletonUpdater;
+        BillboardUpdater* m_BillboardUpdater;
+        RenderQueue* m_RenderQueue;
+        const Camera* m_Camera;
+        u8 m_LayerId;
+        u8 m_ParticleLayerId;
+        IsVisibleModel* m_IsVisibleModel;
     };
 
     template<typename IsVisibleModelFunctor>
     static void SubmitView(SkeletonUpdater* skeletonUpdater,BillboardUpdater* billboardUpdater,RenderQueue* renderQueue,SceneContext* sceneContext,
         const Camera& camera,u8 layerId,u8 particleLayerId,ISceneUpdater::RenderSortMode renderSortMode,
-        ISceneUpdater::DepthSortMode depthSortMode,IsVisibleModelFunctor* isVisibleModel){
+        ISceneUpdater::DepthSortMode depthSortMode,IsVisibleModelFunctor* isVisibleModel)
+    {
         NW_NULL_ASSERT(sceneContext);
         
-        if (depthSortMode == ISceneUpdater::SORT_DEPTH_OF_TRANSLUCENT_MESH){
+        if (depthSortMode == ISceneUpdater::SORT_DEPTH_OF_TRANSLUCENT_MESH)
+        {
             
             typedef SubmitViewFunctor<
                 RenderQueue::FastEnqueueModelFunctor,
@@ -96,7 +103,8 @@ public:
                 RenderQueue::EnqueueSkeletalModelTranslucentModelBaseFunctor,
                 IsVisibleModelFunctor> FastTranslucentModelBaseSubmitViewFunctor;
             
-            if (renderSortMode == ISceneUpdater::OPAQUE_MESH_BASE_AND_TRANSLUCENT_MODEL_BASE_SORT){
+            if (renderSortMode == ISceneUpdater::OPAQUE_MESH_BASE_AND_TRANSLUCENT_MODEL_BASE_SORT)
+            {
                 std::for_each(
                     sceneContext->GetModelsBegin(),
                     sceneContext->GetModelsEnd(),
@@ -125,7 +133,8 @@ public:
                 RenderQueue::EnqueueSkeletalModelTranslucentModelBaseFunctor,
                 IsVisibleModelFunctor> TranslucentModelBaseSubmitViewFunctor;
             
-            if (renderSortMode == ISceneUpdater::OPAQUE_MESH_BASE_AND_TRANSLUCENT_MODEL_BASE_SORT){
+            if (renderSortMode == ISceneUpdater::OPAQUE_MESH_BASE_AND_TRANSLUCENT_MODEL_BASE_SORT)
+            {
                 std::for_each(
                     sceneContext->GetModelsBegin(),
                     sceneContext->GetModelsEnd(),

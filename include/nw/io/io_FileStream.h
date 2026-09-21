@@ -5,13 +5,15 @@
 namespace nw   {
 namespace io     {
 
-enum{
+enum
+{
     FILE_STREAM_SEEK_BEGIN,
     FILE_STREAM_SEEK_CURRENT,
     FILE_STREAM_SEEK_END
 };
 
-class FileStream : public IOStream{
+class FileStream : public IOStream
+{
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
@@ -27,9 +29,10 @@ public:
 
 protected:
     FileStream(): 
-        IOStream() 
-    {}
-    class FilePosition{
+        IOStream() {}
+        
+    class FilePosition
+    {
     public:
         FilePosition() : m_FileSize(0), m_Position(0) {}
         void SetFileSize(u32 fileSize) { m_FileSize = fileSize; }

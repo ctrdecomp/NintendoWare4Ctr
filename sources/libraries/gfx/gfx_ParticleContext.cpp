@@ -3,7 +3,8 @@
 namespace nw{
 namespace gfx{
 
-ParticleContext* ParticleContext::Builder::Create(nw::os::IAllocator* allocator){
+ParticleContext* ParticleContext::Builder::Create(nw::os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
 
     VEC3Array emissionPositions(allocator);
@@ -11,12 +12,14 @@ ParticleContext* ParticleContext::Builder::Create(nw::os::IAllocator* allocator)
     F32Array particleWorkF32(allocator);
     VEC3Array prevTranslate(allocator);
 
-    if (mIsFixedSizeMemory){
-        emissionPositions = VEC3Array(this->mMaxEmission, allocator);
-        emissionParents = U16Array(this->mMaxEmission, allocator);
-        particleWorkF32 = F32Array(this->mMaxStreamLength, allocator);
-        if (this->mUseDoubleBuffer){
-            prevTranslate = VEC3Array(this->mMaxStreamLength, allocator);
+    if (m_IsFixedSizeMemory)
+    {
+        emissionPositions = VEC3Array(this->m_MaxEmission, allocator);
+        emissionParents = U16Array(this->m_MaxEmission, allocator);
+        particleWorkF32 = F32Array(this->m_MaxStreamLength, allocator);
+        if (this->m_UseDoubleBuffer)
+        {
+            prevTranslate = VEC3Array(this->m_MaxStreamLength, allocator);
         }
     }
     else

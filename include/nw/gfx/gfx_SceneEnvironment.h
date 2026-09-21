@@ -15,9 +15,11 @@ class Fog;
 class HemiSphereLight;
 class Camera;
 
-class SceneEnvironment{
+class SceneEnvironment
+{
 public:
-    struct Description{
+    struct Description
+    {
         CameraArray cameras;
         FogArray fogs;
         LightSetArray lightSets;
@@ -25,194 +27,230 @@ public:
     };
 
     SceneEnvironment(const Description& description):
-        mAmbientLight(NULL),
-        mHemiSphereLight(NULL),
-        mVertexLights(description.vertexLights),
-        mFog(NULL),
-        mCamera(NULL),
-        mCameras(description.cameras),
-        mCameraIndex(-1),
-        mFogs(description.fogs),
-        mLightSets(description.lightSets),
-        mLightSetIndex(-1),
-        mActiveVertexLightCount(0),
-        mActiveFragmentLightCount(0),
-        mFragmentLightsDirty(true),
-        mAmbientLightDirty(true),
-        mVertexLightsDirty(true),
-        mHemiSphereLightDirty(true),
-        mFogDirty(true){
-        this->mFragmentLights.resize(this->mFragmentLights.capacity());
-        this->mVertexLights.resize(this->mVertexLights.capacity());
+        m_AmbientLight(NULL),
+        m_HemiSphereLight(NULL),
+        m_VertexLights(description.vertexLights),
+        m_Fog(NULL),
+        m_Camera(NULL),
+        m_Cameras(description.cameras),
+        m_CameraIndex(-1),
+        m_Fogs(description.fogs),
+        m_LightSets(description.lightSets),
+        m_LightSetIndex(-1),
+        m_ActiveVertexLightCount(0),
+        m_ActiveFragmentLightCount(0),
+        m_FragmentLightsDirty(true),
+        m_AmbientLightDirty(true),
+        m_VertexLightsDirty(true),
+        m_HemiSphereLightDirty(true),
+        m_FogDirty(true)
+        {
+        this->m_FragmentLights.resize(this->m_FragmentLights.capacity());
+        this->m_VertexLights.resize(this->m_VertexLights.capacity());
 
-        this->mCameras.resize(this->mCameras.capacity());
-        std::fill(this->mCameras.begin(), this->mCameras.end(), static_cast<Camera*>(NULL));
+        this->m_Cameras.resize(this->m_Cameras.capacity());
+        std::fill(this->m_Cameras.begin(), this->m_Cameras.end(), static_cast<Camera*>(NULL));
 
-        this->mFogs.resize(this->mFogs.capacity());
-        std::fill(this->mFogs.begin(), this->mFogs.end(), static_cast<Fog*>(NULL));
+        this->m_Fogs.resize(this->m_Fogs.capacity());
+        std::fill(this->m_Fogs.begin(), this->m_Fogs.end(), static_cast<Fog*>(NULL));
 
-        this->mLightSets.resize(this->mLightSets.capacity());
-        std::fill(this->mLightSets.begin(), this->mLightSets.end(), static_cast<LightSet*>(NULL));
+        this->m_LightSets.resize(this->m_LightSets.capacity());
+        std::fill(this->m_LightSets.begin(), this->m_LightSets.end(), static_cast<LightSet*>(NULL));
     }
 
     void ApplyFrom(const SceneEnvironmentSetting& setting);
 
     void ClearSettings();
 
-    void SetFog(s32 index, Fog* fog){
-        mFogs[index] = fog;
+    void SetFog(s32 index, Fog* fog)
+    {
+        m_Fogs[index] = fog;
     }
 
-    Fog* GetFog(s32 index){
-        return mFogs[index];
+    Fog* GetFog(s32 index)
+    {
+        return m_Fogs[index];
     }
 
-    const Fog* GetFog(s32 index) const{
-        return mFogs[index];
+    const Fog* GetFog(s32 index) const
+    {
+        return m_Fogs[index];
     }
 
-    void SetCamera(int index, Camera* camera){
-        mCameras[index] = camera;
+    void SetCamera(int index, Camera* camera)
+    {
+        m_Cameras[index] = camera;
     }
 
-    Camera* GetCamera(int index){
-        return mCameras[index];
+    Camera* GetCamera(int index)
+    {
+        return m_Cameras[index];
     }
 
-    const Camera* GetCamera(int index) const{
-        return mCameras[index];
+    const Camera* GetCamera(int index) const
+    {
+        return m_Cameras[index];
     }
 
-    void SetLightSet(int index, LightSet* lightSet){
-        mLightSets[index] = lightSet;
+    void SetLightSet(int index, LightSet* lightSet)
+    {
+        m_LightSets[index] = lightSet;
     }
 
-    LightSet* GetLightSet(int index){
-        return mLightSets[index];
+    LightSet* GetLightSet(int index)
+    {
+        return m_LightSets[index];
     }
 
-    const LightSet* GetLightSet(int index) const{
-        return mLightSets[index];
+    const LightSet* GetLightSet(int index) const
+    {
+        return m_LightSets[index];
     }
 
-    void SetFragmentLight(FragmentLight* light){
-        if (mActiveFragmentLightCount == LIGHT_COUNT){
+    void SetFragmentLight(FragmentLight* light)
+    {
+        if (m_ActiveFragmentLightCount == LIGHT_COUNT)
+        {
             return;
         }
 
-        mFragmentLights[mActiveFragmentLightCount] = light;
-        ++this->mActiveFragmentLightCount;
+        m_FragmentLights[m_ActiveFragmentLightCount] = light;
+        ++this->m_ActiveFragmentLightCount;
     }
 
-    s32 GetFragmentLightCount() const{
-        return mActiveFragmentLightCount;
+    s32 GetFragmentLightCount() const
+    {
+        return m_ActiveFragmentLightCount;
     }
 
-    const FragmentLight* GetFragmentLight(int index) const{
-        return mFragmentLights[index];
+    const FragmentLight* GetFragmentLight(int index) const
+    {
+        return m_FragmentLights[index];
     }
 
-    void SetVertexLight(VertexLight* light){
-        if (mActiveVertexLightCount == mVertexLights.capacity()){
+    void SetVertexLight(VertexLight* light)
+    {
+        if (m_ActiveVertexLightCount == m_VertexLights.capacity())
+        {
             return;
         }
 
-        mVertexLights[mActiveVertexLightCount] = light;
-        ++this->mActiveVertexLightCount;
+        m_VertexLights[m_ActiveVertexLightCount] = light;
+        ++this->m_ActiveVertexLightCount;
     }
 
-    const VertexLight* GetVertexLight(int index) const{
-        return mVertexLights[index];
+    const VertexLight* GetVertexLight(int index) const
+    {
+        return m_VertexLights[index];
     }
 
-    s32 GetVertexLightCount() const{
-        return mActiveVertexLightCount;
+    s32 GetVertexLightCount() const
+    {
+        return m_ActiveVertexLightCount;
     }
 
-    void SetAmbientLight(AmbientLight* ambientLight){
-        mAmbientLight = ambientLight;
+    void SetAmbientLight(AmbientLight* ambientLight)
+    {
+        m_AmbientLight = ambientLight;
     }
 
-    const AmbientLight* GetAmbientLight() const{
-        return mAmbientLight;
+    const AmbientLight* GetAmbientLight() const
+    {
+        return m_AmbientLight;
     }
 
-    void SetHemiSphereLight(HemiSphereLight* hemiSphereLight){
-        mHemiSphereLight = hemiSphereLight;
+    void SetHemiSphereLight(HemiSphereLight* hemiSphereLight)
+    {
+        m_HemiSphereLight = hemiSphereLight;
     }
 
-    const HemiSphereLight* GetHemiSphereLight() const{
-        return mHemiSphereLight;
+    const HemiSphereLight* GetHemiSphereLight() const
+    {
+        return m_HemiSphereLight;
     }
 
     void SetActiveLightSet(int index);
 
-    void SetActiveFog(int index){
+    void SetActiveFog(int index)
+    {
 
-        Fog* fog = mFogs[index];
+        Fog* fog = m_Fogs[index];
 
-        if (mFog != fog)
+        if (m_Fog != fog)
         {
-            mFog = fog;
-            mFogDirty = true;
+            m_Fog = fog;
+            m_FogDirty = true;
         }
     }
 
-    Fog* GetActiveFog(){
-        return mFog;
+    Fog* GetActiveFog()
+    {
+        return m_Fog;
     }
 
-    const Fog* GetActiveFog() const{
-        return mFog;
+    const Fog* GetActiveFog() const
+    {
+        return m_Fog;
     }
 
-    bool IsFragmentLightsDirty() const{
-        return mFragmentLightsDirty;
+    bool IsFragmentLightsDirty() const
+    {
+        return m_FragmentLightsDirty;
     }
 
-    void SetFragmentLightsDirty(bool fragmentLightsDirty){
-        mFragmentLightsDirty = fragmentLightsDirty;
+    void SetFragmentLightsDirty(bool fragmentLightsDirty)
+    {
+        m_FragmentLightsDirty = fragmentLightsDirty;
     }
 
-    bool IsAmbientLightDirty() const{
-        return mAmbientLightDirty;
+    bool IsAmbientLightDirty() const
+    {
+        return m_AmbientLightDirty;
     }
 
-    void SetAmbientLightDirty(bool ambientLightDirty){
-        mAmbientLightDirty = ambientLightDirty;
+    void SetAmbientLightDirty(bool ambientLightDirty)
+    {
+        m_AmbientLightDirty = ambientLightDirty;
     }
 
-    bool IsVertexLightsDirty() const{
-        return mVertexLightsDirty;
+    bool IsVertexLightsDirty() const
+    {
+        return m_VertexLightsDirty;
     }
 
-    void SetVertexLightsDirty(bool vertexLightsDirty){
-        mVertexLightsDirty = vertexLightsDirty;
+    void SetVertexLightsDirty(bool vertexLightsDirty)
+    {
+        m_VertexLightsDirty = vertexLightsDirty;
     }
 
-    bool IsHemiSphereLightDirty() const{
-        return mHemiSphereLightDirty;
+    bool IsHemiSphereLightDirty() const
+    {
+        return m_HemiSphereLightDirty;
     }
 
-    void SetHemiSphereLightDirty(bool hemiSphereLightDirty){
-        mHemiSphereLightDirty = hemiSphereLightDirty;
+    void SetHemiSphereLightDirty(bool hemiSphereLightDirty)
+    {
+        m_HemiSphereLightDirty = hemiSphereLightDirty;
     }
 
-    bool IsFogDirty() const{
-        return mFogDirty;
+    bool IsFogDirty() const
+    {
+        return m_FogDirty;
     }
 
-    void SetFogDirty(bool fogDirty){
-        mFogDirty = fogDirty;
+    void SetFogDirty(bool fogDirty)
+    {
+        m_FogDirty = fogDirty;
     }
 
-    void SetAllFlagsDirty(bool flagsDirty){
-        mFogDirty = flagsDirty;
-        mAmbientLightDirty = flagsDirty;
-        mFragmentLightsDirty = flagsDirty;
+    void SetAllFlagsDirty(bool flagsDirty)
+    {
+        m_FogDirty = flagsDirty;
+        m_AmbientLightDirty = flagsDirty;
+        m_FragmentLightsDirty = flagsDirty;
 
-        mVertexLightsDirty = flagsDirty;
-        mHemiSphereLightDirty = flagsDirty;
+        m_VertexLightsDirty = flagsDirty;
+        m_HemiSphereLightDirty = flagsDirty;
     }
 
     void Reset();
@@ -230,26 +268,26 @@ public:
     void ResetLightSet();
 
 private:
-    AmbientLight* mAmbientLight;
-    HemiSphereLight* mHemiSphereLight;
-    VertexLightArray mVertexLights;
-    FixedFragmentLightArray mFragmentLights;
-    Fog* mFog;
-    Camera* mCamera;
-    CameraArray mCameras;
-    s32 mCameraIndex;
-    FogArray mFogs;
-    LightSetArray mLightSets;
+    AmbientLight* m_AmbientLight;
+    HemiSphereLight* m_HemiSphereLight;
+    VertexLightArray m_VertexLights;
+    FixedFragmentLightArray m_FragmentLights;
+    Fog* m_Fog;
+    Camera* m_Camera;
+    CameraArray m_Cameras;
+    s32 m_CameraIndex;
+    FogArray m_Fogs;
+    LightSetArray m_LightSets;
 
-    s32 mLightSetIndex;
-    s32 mActiveVertexLightCount;
-    s32 mActiveFragmentLightCount;
+    s32 m_LightSetIndex;
+    s32 m_ActiveVertexLightCount;
+    s32 m_ActiveFragmentLightCount;
 
-    bool mFragmentLightsDirty;
-    bool mAmbientLightDirty;
-    bool mVertexLightsDirty;
-    bool mHemiSphereLightDirty;
-    bool mFogDirty;
+    bool m_FragmentLightsDirty;
+    bool m_AmbientLightDirty;
+    bool m_VertexLightsDirty;
+    bool m_HemiSphereLightDirty;
+    bool m_FogDirty;
 
     friend class RenderContext;
 };

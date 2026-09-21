@@ -12,7 +12,8 @@
 namespace nw{
 namespace gfx{
 
-SkeletonUpdater* SkeletonUpdater::Builder::Create(os::IAllocator* allocator){
+SkeletonUpdater* SkeletonUpdater::Builder::Create(os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
     
     void* updaterMemory = allocator->Alloc(sizeof(SkeletonUpdater));
@@ -22,12 +23,12 @@ SkeletonUpdater* SkeletonUpdater::Builder::Create(os::IAllocator* allocator){
 }
 
 SkeletonUpdater::SkeletonUpdater(os::IAllocator* allocator): 
-    GfxObject(allocator)
-{}
+    GfxObject(allocator) {}
 
-SkeletonUpdater::~SkeletonUpdater(){ }
+SkeletonUpdater::~SkeletonUpdater() { }
 
-void SkeletonUpdater::UpdateWorld(Skeleton* skeleton,const WorldMatrixUpdater& worldMatrixUpdater) const{
+void SkeletonUpdater::UpdateWorld(Skeleton* skeleton,const WorldMatrixUpdater& worldMatrixUpdater) const
+{
     NW_NULL_ASSERT(skeleton);
 
     ResSkeleton resSkeleton = skeleton->GetResSkeleton();
@@ -40,19 +41,24 @@ void SkeletonUpdater::UpdateWorld(Skeleton* skeleton,const WorldMatrixUpdater& w
     Skeleton::MatrixPose::MatrixRange range = skeleton->WorldMatrixPose().GetAllMatrices();
     WorldMatrixUpdater::ScalingRule scalingRule = static_cast<WorldMatrixUpdater::ScalingRule>(resSkeleton.GetScalingRule());
 
-    if (scalingRule == WorldMatrixUpdater::SCALING_RULE_MAYA){
-        for (Skeleton::MatrixPose::MatrixArray::iterator matrix = range.first; matrix != range.second; ++matrix, ++index){
+    if (scalingRule == WorldMatrixUpdater::SCALING_RULE_MAYA)
+    {
+        for (Skeleton::MatrixPose::MatrixArray::iterator matrix = range.first; matrix != range.second; ++matrix, ++index)
+    {
             skeleton->PreCalculateMatrixSignal()(skeleton, index);
 
-            if (pose.GetTransform(index)->IsEnabledFlags(CalculatedTransform::FLAG_IS_WORLDMATRIX_CALCULATION_ENABLED) ){
+            if (pose.GetTransform(index)->IsEnabledFlags(CalculatedTransform::FLAG_IS_WORLDMATRIX_CALCULATION_ENABLED) )
+            {
 
                 ResBone bone = resSkeleton.GetBones(index);
                 int parentBoneIndex = bone.GetParentBoneIndex();
                 const CalculatedTransform* parentWorldTransform;
                 const CalculatedTransform* parentLocalTransform;
                 
-                if (parentBoneIndex == -1){
-                    if (isModelCoordinate){
+                if (parentBoneIndex == -1)
+                {
+                    if (isModelCoordinate)
+                    {
                         parentWorldTransform = &CalculatedTransform::Identity();
                         parentLocalTransform = &CalculatedTransform::Identity();
                     }
@@ -73,18 +79,23 @@ void SkeletonUpdater::UpdateWorld(Skeleton* skeleton,const WorldMatrixUpdater& w
             skeleton->PostCalculateMatrixSignal()(skeleton, index);
         }
     }
-    else if(scalingRule == WorldMatrixUpdater::SCALING_RULE_STANDARD){
-        for (Skeleton::MatrixPose::MatrixArray::iterator matrix = range.first; matrix != range.second; ++matrix, ++index){
+    else if (scalingRule == WorldMatrixUpdater::SCALING_RULE_STANDARD)
+    {
+        for (Skeleton::MatrixPose::MatrixArray::iterator matrix = range.first; matrix != range.second; ++matrix, ++index)
+    {
             skeleton->PreCalculateMatrixSignal()(skeleton, index);
 
-            if (pose.GetTransform(index)->IsEnabledFlags(CalculatedTransform::FLAG_IS_WORLDMATRIX_CALCULATION_ENABLED)){
+            if (pose.GetTransform(index)->IsEnabledFlags(CalculatedTransform::FLAG_IS_WORLDMATRIX_CALCULATION_ENABLED))
+            {
                 ResBone bone = resSkeleton.GetBones(index);
                 int parentBoneIndex = bone.GetParentBoneIndex();
                 const CalculatedTransform* parentWorldTransform;
                 const CalculatedTransform* parentLocalTransform;
                 
-                if (parentBoneIndex == -1){
-                    if (isModelCoordinate){
+                if (parentBoneIndex == -1)
+                {
+                    if (isModelCoordinate)
+                    {
                         parentWorldTransform = &CalculatedTransform::Identity();
                         parentLocalTransform = &CalculatedTransform::Identity();
                     }
@@ -109,17 +120,21 @@ void SkeletonUpdater::UpdateWorld(Skeleton* skeleton,const WorldMatrixUpdater& w
         }
     }
     else{
-        for (Skeleton::MatrixPose::MatrixArray::iterator matrix = range.first; matrix != range.second; ++matrix, ++index){
+        for (Skeleton::MatrixPose::MatrixArray::iterator matrix = range.first; matrix != range.second; ++matrix, ++index)
+    {
             skeleton->PreCalculateMatrixSignal()(skeleton, index);
 
-            if ( pose.GetTransform(index)->IsEnabledFlags(CalculatedTransform::FLAG_IS_WORLDMATRIX_CALCULATION_ENABLED) ){
+            if ( pose.GetTransform(index)->IsEnabledFlags(CalculatedTransform::FLAG_IS_WORLDMATRIX_CALCULATION_ENABLED) )
+            {
                 ResBone bone = resSkeleton.GetBones(index);
                 int parentBoneIndex = bone.GetParentBoneIndex();
                 const CalculatedTransform* parentWorldTransform;
                 const CalculatedTransform* parentLocalTransform;
                 
-                if (parentBoneIndex == -1){
-                    if (isModelCoordinate){
+                if (parentBoneIndex == -1)
+                {
+                    if (isModelCoordinate)
+                    {
                         parentWorldTransform = &CalculatedTransform::Identity();
                         parentLocalTransform = &CalculatedTransform::Identity();
                     }
@@ -144,7 +159,8 @@ void SkeletonUpdater::UpdateWorld(Skeleton* skeleton,const WorldMatrixUpdater& w
     }
 }
 
-void SkeletonUpdater::UpdateView(Skeleton* skeleton,const BillboardUpdater& billboardUpdater,const Camera& camera) const{
+void SkeletonUpdater::UpdateView(Skeleton* skeleton,const BillboardUpdater& billboardUpdater,const Camera& camera) const
+{
     NW_NULL_ASSERT(skeleton);
 
     ResSkeleton resSkeleton = skeleton->GetResSkeleton();
@@ -157,17 +173,20 @@ void SkeletonUpdater::UpdateView(Skeleton* skeleton,const BillboardUpdater& bill
 
     int index = 0;
     Skeleton::MatrixPose::MatrixRange range = skeleton->WorldMatrixPose().GetAllMatrices();
-    for (Skeleton::MatrixPose::MatrixArray::iterator matrix = range.first; matrix != range.second; ++matrix, ++index){
+    for (Skeleton::MatrixPose::MatrixArray::iterator matrix = range.first; matrix != range.second; ++matrix, ++index)
+    {
         if ( !pose.GetTransform(index)->IsEnabledFlagsOr(
             CalculatedTransform::FLAG_IS_WORLDMATRIX_CALCULATION_ENABLED |
-            CalculatedTransform::FLAG_FORCE_VIEW_CALCULATION_ENABLED)){
+            CalculatedTransform::FLAG_FORCE_VIEW_CALCULATION_ENABLED))
+            {
             continue;
         }
 
         ResBone bone = resSkeleton.GetBones(index);
 
         ResBone::BillboardMode billboardMode = bone.GetBillboardMode();
-        if (billboardMode != ResBone::BILLBOARD_MODE_OFF){
+        if (billboardMode != ResBone::BILLBOARD_MODE_OFF)
+        {
             NW_ASSERTMSG(!ut::CheckFlag(resSkeleton.GetFlags(), ResSkeletonData::FLAG_MODEL_COORDINATE),"The bone for billboard needs to be world-coordinate.");
 
             CalculatedTransform* worldTransform = worldPose.GetTransform(index);
@@ -181,7 +200,8 @@ void SkeletonUpdater::UpdateView(Skeleton* skeleton,const BillboardUpdater& bill
 
             bool isScaleOne = worldTransform->IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE);
 
-            if (!isScaleOne){
+            if (!isScaleOne)
+            {
                 math::MTX34 worldMatrix;
                 math::VEC3 rotateScale;
                 math::MTX34MultScale(&worldMatrix, &worldTransform->TransformMatrix(), &localTransform->Scale());
@@ -192,7 +212,8 @@ void SkeletonUpdater::UpdateView(Skeleton* skeleton,const BillboardUpdater& bill
 
         bool isCalcSkiningMatrix = ut::CheckFlag(bone.GetFlags(), ResBoneData::FLAG_HAS_SKINNING_MATRIX | ResBoneData::FLAG_IS_NEED_RENDERING);
 
-        if (isCalcSkiningMatrix){
+        if (isCalcSkiningMatrix)
+        {
             math::MTX34Mult(skeleton->SkiningMatrixPose().GetMatrix(index),matrix,&bone.GetInverseBaseMatrix());
         }
     }

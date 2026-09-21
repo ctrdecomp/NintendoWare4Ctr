@@ -6,7 +6,8 @@
 namespace nw {
 namespace io {
 
-class RomFileStream : public FileStream{
+class RomFileStream : public FileStream
+{
 public:
     NW_UT_RUNTIME_TYPEINFO;
 

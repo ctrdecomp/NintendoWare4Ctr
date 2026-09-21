@@ -8,157 +8,180 @@ namespace anim {
 namespace res {
 
 namespace internal {
-    inline f32 Round( f32 value ){
+    inline f32 Round( f32 value )
+    {
         return nn::math::FFloor(value + 0.5f);
     }
 
-    inline f32 CastS9_10ToF32( s32 value ){
+    inline f32 CastS9_10ToF32( s32 value )
+    {
         return f32(value) * (1.f / 1024.f);
     }
 
-    inline s32 CastF32ToS9_10( f32 value ){
+    inline s32 CastF32ToS9_10( f32 value )
+    {
         return s32(Round(value * 1024.f));
     }
 
-    inline f32 CastS7_8ToF32( s32 value ){
+    inline f32 CastS7_8ToF32( s32 value )
+    {
         return f32(value) * (1.f / 256.f);
     }
 
-    inline s32 CastF32ToS7_8( f32 value ){
+    inline s32 CastF32ToS7_8( f32 value )
+    {
         return s32(Round(value * 256.f));
     }
 
-    inline f32 CastS10_5ToF32( s32 value ){
+    inline f32 CastS10_5ToF32( s32 value )
+    {
         return f32(value) * (1.f / 32.f);
     }
 
-    inline s32 CastF32ToS10_5( f32 value ){
+    inline s32 CastF32ToS10_5( f32 value )
+    {
         return s32(Round(value * 32.f));
     }
 
-    inline f32 CastS6_5ToF32( s32 value ){
+    inline f32 CastS6_5ToF32( s32 value )
+    {
         return f32(value) * (1.f / 32.f);
     }
 
-    inline s32 CastF32ToS6_5(f32 value){
+    inline s32 CastF32ToS6_5(f32 value)
+    {
         return s32(Round(value * 32.f));
     }
 }
 
-struct ResFloatKeyFV64Data{
-    nw::ut::ResF32  mFrame;
-    nw::ut::ResF32  mValue;
+struct ResFloatKeyFV64Data
+{
+    nw::ut::ResF32  m_Frame;
+    nw::ut::ResF32  m_Value;
     
-    f32 GetFrame()    const { return mFrame; }
-    f32 GetFrameF32() const { return mFrame; }
-    f32 GetValue()    const { return mValue; }
+    f32 GetFrame()    const { return m_Frame; }
+    f32 GetFrameF32() const { return m_Frame; }
+    f32 GetValue()    const { return m_Value; }
 };
 
-struct ResFloatKeyFV32Data{
-    nw::ut::ResU32  mFrameValue;
+struct ResFloatKeyFV32Data
+{
+    nw::ut::ResU32  m_FrameValue;
 
-    u32 GetFrame()    const { return mFrameValue & 0x00000FFF; }
+    u32 GetFrame()    const { return m_FrameValue & 0x00000FFF; }
     f32 GetFrameF32() const { return static_cast<f32>(this->GetFrame()); }
-    f32 GetValue()    const { return static_cast<f32>(mFrameValue >> 12); }
+    f32 GetValue()    const { return static_cast<f32>(m_FrameValue >> 12); }
 };
 
-struct ResFloatKeyFVSS128Data{
-    nw::ut::ResF32 mFrame;
-    nw::ut::ResF32 mValue;
-    nw::ut::ResF32 mInSlope;
-    nw::ut::ResF32 mOutSlope;
+struct ResFloatKeyFVSS128Data
+{
+    nw::ut::ResF32 m_Frame;
+    nw::ut::ResF32 m_Value;
+    nw::ut::ResF32 m_InSlope;
+    nw::ut::ResF32 m_OutSlope;
     
-    f32 GetFrame()    const { return mFrame; }
-    f32 GetFrameF32() const { return mFrame; }
-    f32 GetValue()    const { return mValue; }
-    f32 GetInSlope()  const { return mInSlope; }
-    f32 GetOutSlope() const { return mOutSlope; }
+    f32 GetFrame()    const { return m_Frame; }
+    f32 GetFrameF32() const { return m_Frame; }
+    f32 GetValue()    const { return m_Value; }
+    f32 GetInSlope()  const { return m_InSlope; }
+    f32 GetOutSlope() const { return m_OutSlope; }
 };
 
-struct ResFloatKeyFVSS64Data{
-    nw::ut::ResU32 mFrameValue;
-    nw::ut::ResS16 mInSlope;
-    nw::ut::ResS16 mOutSlope;
+struct ResFloatKeyFVSS64Data
+{
+    nw::ut::ResU32 m_FrameValue;
+    nw::ut::ResS16 m_InSlope;
+    nw::ut::ResS16 m_OutSlope;
 
-    u32 GetFrame()    const { return mFrameValue & 0x00000FFF; }
+    u32 GetFrame()    const { return m_FrameValue & 0x00000FFF; }
     f32 GetFrameF32() const { return static_cast<f32>( this->GetFrame() ); }
-    f32 GetValue()    const { return static_cast<f32>( mFrameValue >> 12 ); }
-    f32 GetInSlope()  const { return internal::CastS7_8ToF32(mInSlope); }
-    f32 GetOutSlope() const { return internal::CastS7_8ToF32(mOutSlope); }
+    f32 GetValue()    const { return static_cast<f32>( m_FrameValue >> 12 ); }
+    f32 GetInSlope()  const { return internal::CastS7_8ToF32(m_InSlope); }
+    f32 GetOutSlope() const { return internal::CastS7_8ToF32(m_OutSlope); }
 };
 
-struct ResFloatKeyFVSS48Data{
-    nw::ut::ResU8  mFrameValue[3];
-    nw::ut::ResU8  mInOutSlope[3];
+struct ResFloatKeyFVSS48Data
+{
+    nw::ut::ResU8  m_FrameValue[3];
+    nw::ut::ResU8  m_InOutSlope[3];
 
-    u32 GetFrame()    const { return mFrameValue[0]; }
+    u32 GetFrame()    const { return m_FrameValue[0]; }
     f32 GetFrameF32() const { return static_cast<f32>( this->GetFrame() ); }
-    f32 GetValue()    const { return static_cast<f32>( u16(mFrameValue[1]) + (u16(mFrameValue[2]) << 8) ); }
-    f32 GetInSlope()  const { return internal::CastS6_5ToF32( s16(mInOutSlope[0] + (s8(mInOutSlope[1] << 4) << 4)) ); }
-    f32 GetOutSlope() const { return internal::CastS6_5ToF32( s16((s8(mInOutSlope[2]) << 4) + (mInOutSlope[1] >> 4)) ); }
+    f32 GetValue()    const { return static_cast<f32>( u16(m_FrameValue[1]) + (u16(m_FrameValue[2]) << 8) ); }
+    f32 GetInSlope()  const { return internal::CastS6_5ToF32( s16(m_InOutSlope[0] + (s8(m_InOutSlope[1] << 4) << 4)) ); }
+    f32 GetOutSlope() const { return internal::CastS6_5ToF32( s16((s8(m_InOutSlope[2]) << 4) + (m_InOutSlope[1] >> 4)) ); }
 };
 
-struct ResFloatKeyFVS96Data{
-    nw::ut::ResF32 mFrame;
-    nw::ut::ResF32 mValue;
-    nw::ut::ResF32 mSlope;
+struct ResFloatKeyFVS96Data
+{
+    nw::ut::ResF32 m_Frame;
+    nw::ut::ResF32 m_Value;
+    nw::ut::ResF32 m_Slope;
 
-    f32 GetFrame()    const { return mFrame; }
+    f32 GetFrame()    const { return m_Frame; }
     f32 GetFrameF32() const { return static_cast<f32>( this->GetFrame() ); }
-    f32 GetValue()    const { return mValue; }
-    f32 GetSlope()    const { return mSlope; }
+    f32 GetValue()    const { return m_Value; }
+    f32 GetSlope()    const { return m_Slope; }
 };
 
-struct ResFloatKeyFVS48Data{
-    nw::ut::ResU16 mFrame;
-    nw::ut::ResU16 mValue;
-    nw::ut::ResS16 mSlope;
+struct ResFloatKeyFVS48Data
+{
+    nw::ut::ResU16 m_Frame;
+    nw::ut::ResU16 m_Value;
+    nw::ut::ResS16 m_Slope;
 
-    u32 GetFrame()    const { return mFrame; }
-    f32 GetFrameF32() const { return internal::CastS10_5ToF32( mFrame ); }
-    f32 GetValue()    const { return static_cast<f32>( mValue ); }
-    f32 GetSlope()    const { return internal::CastS7_8ToF32(mSlope); }
+    u32 GetFrame()    const { return m_Frame; }
+    f32 GetFrameF32() const { return internal::CastS10_5ToF32( m_Frame ); }
+    f32 GetValue()    const { return static_cast<f32>( m_Value ); }
+    f32 GetSlope()    const { return internal::CastS7_8ToF32(m_Slope); }
 };
 
-struct ResFloatKeyFVS32Data{
-    nw::ut::ResU8  mFrame;
-    nw::ut::ResU8  mValueSlope[3];
+struct ResFloatKeyFVS32Data
+{
+    nw::ut::ResU8  m_Frame;
+    nw::ut::ResU8  m_ValueSlope[3];
 
-    u32 GetFrame()    const { return mFrame; }
+    u32 GetFrame()    const { return m_Frame; }
     f32 GetFrameF32() const { return static_cast<f32>( this->GetFrame() ); }
-    f32 GetValue()    const { return static_cast<f32>( u16(mValueSlope[0]) + (u16(mValueSlope[1] << 4) << 4) ); }
-    f32 GetSlope()    const { return internal::CastS6_5ToF32((s8(mValueSlope[2]) << 4) + (mValueSlope[1] >> 4)); }
+    f32 GetValue()    const { return static_cast<f32>( u16(m_ValueSlope[0]) + (u16(m_ValueSlope[1] << 4) << 4) ); }
+    f32 GetSlope()    const { return internal::CastS6_5ToF32((s8(m_ValueSlope[2]) << 4) + (m_ValueSlope[1] >> 4)); }
 };
 
 template <typename TKey>
-struct ResKeysData{
-    TKey mKeyValue[1];
+struct ResKeysData
+{
+    TKey m_KeyValue[1];
 };
 
 template <typename TKey>
-struct ResQuantizedKeysData{
-    nw::ut::ResF32  mScale;
-    nw::ut::ResF32  mOffset;
-    nw::ut::ResF32  mFrameScale;
+struct ResQuantizedKeysData
+{
+    nw::ut::ResF32  m_Scale;
+    nw::ut::ResF32  m_Offset;
+    nw::ut::ResF32  m_FrameScale;
     
-    TKey    mKeyValue[1];
+    TKey    m_KeyValue[1];
 };
 
-struct ResFloatSegmentCVData{
-    union{
+struct ResFloatSegmentCVData
+{
+    union
+    {
         ResKeysData<f32>          cv32;
         ResQuantizedKeysData<u16> cv16;
         ResQuantizedKeysData<u8>  cv8;
     };
 };
 
-struct ResFloatSegmentFVData{
+struct ResFloatSegmentFVData
+{
     nw::ut::ResU16 m_NumFrameValues;
-    u8     mPadding_[2];
+    u8     m_Padding_[2];
     
-    nw::ut::ResF32 mInvDuration;
+    nw::ut::ResF32 m_InvDuration;
     
-    union{
+    union
+    {
         ResKeysData<ResFloatKeyFVSS128Data>         fvss128;
         ResQuantizedKeysData<ResFloatKeyFVSS64Data> fvss64;
         ResQuantizedKeysData<ResFloatKeyFVSS48Data> fvss48;
@@ -170,8 +193,10 @@ struct ResFloatSegmentFVData{
     };
 };
 
-struct ResFloatSegmentData{
-    enum Flag{
+struct ResFloatSegmentData
+{
+    enum Flag
+    {
         FLAG_CONSTANT               = (0x1 << 0),
         FLAG_BAKED                  = (0x1 << 1),
         
@@ -182,14 +207,16 @@ struct ResFloatSegmentData{
         FLAG_QUANTIZATION_TYPE_MASK = (0x7 << FLAG_QUANTIZATION_TYPE_SHIFT)
     };
     
-    enum InterporateMode{
+    enum InterporateMode
+    {
         INTERPORATE_MODE_STEP    = 0,
         INTERPORATE_MODE_LINEAR  = 1,
         INTERPORATE_MODE_UNIFIED_HERMITE = 2,
         INTERPORATE_MODE_HERMITE = 3
     };
     
-    enum QuantizeType{
+    enum QuantizeType
+    {
         QUANTIZATION_TYPE_FVSS128 = 0,
         QUANTIZATION_TYPE_FVSS64  = 1,
         QUANTIZATION_TYPE_FVSS48  = 2,
@@ -206,115 +233,127 @@ struct ResFloatSegmentData{
         QUANTIZATION_TYPE_CV8    = 2
     };
     
-    nw::ut::ResF32  mStartFrame;
-    nw::ut::ResF32  mEndFrame;
-    nw::ut::ResU32  mFlags;
+    nw::ut::ResF32  m_StartFrame;
+    nw::ut::ResF32  m_EndFrame;
+    nw::ut::ResU32  m_Flags;
     
-    union{
+    union
+    {
         nw::ut::ResF32            constantValue;
         ResFloatSegmentFVData fv;
         ResFloatSegmentCVData cv;
     };
 };
 
-struct ResAnimCurveData{
-    enum RepeatMethod{
+struct ResAnimCurveData
+{
+    enum RepeatMethod
+    {
         METHOD_NONE,
         METHOD_REPEAT,
         METHOD_MIRROR,
         METHOD_NUM
     };
     
-    nw::ut::ResF32   mStartFrame;
-    nw::ut::ResF32   mEndFrame;
-    nw::ut::ResU8    mInRepeatMethod;
-    nw::ut::ResU8    mOutRepeatMethod;
-    u8           mPadding[2];
+    nw::ut::ResF32   m_StartFrame;
+    nw::ut::ResF32   m_EndFrame;
+    nw::ut::ResU8    m_InRepeatMethod;
+    nw::ut::ResU8    m_OutRepeatMethod;
+    u8           m_Padding[2];
 };
 
-struct ResFloatCurveData : public ResAnimCurveData{                     
-    enum Flag{
+struct ResFloatCurveData : public ResAnimCurveData
+{                     
+    enum Flag
+    {
         FLAG_COMPOSITE_CURVE         = (0x1 << 0),
         FLAG_SHIFT_MAX = 1
     };
     
-    nw::ut::ResU32 mFlags;
+    nw::ut::ResU32 m_Flags;
 };
 
-struct ResSegmentFloatCurveData : public ResFloatCurveData{
-    enum Flag{
+struct ResSegmentFloatCurveData : public ResFloatCurveData
+{
+    enum Flag
+    {
         FLAG_CONSTANT       = (0x1 << (ResFloatCurveData::FLAG_SHIFT_MAX + 0)),
         FLAG_MONO_SEGMENT   = (0x1 << (ResFloatCurveData::FLAG_SHIFT_MAX + 1))
     };
-
-    union{
-        nw::ut::ResF32 mConstantValue;
-        struct{
-            s32 mNumSegments;
-            nw::ut::Offset toSegments[1];
-        } segmentsTable;
-    };
+    nw::ut::ResF32 m_ConstantValue;
+    s32 m_NumSegments;
+    nw::ut::Offset toSegments[1];
 };
 
-struct ResCompositeFloatCurveData : public ResFloatCurveData{
+struct ResCompositeFloatCurveData : public ResFloatCurveData
+{
     nw::ut::Offset   toLeftCurve;
     nw::ut::Offset   toRightCurve;
     nw::ut::Offset   toLeftBoolCurve;
     nw::ut::Offset   toRightBoolCurve;
-    nw::ut::ResU8    mCompositeMode;
+    nw::ut::ResU8    m_CompositeMode;
     u8           padding[3];
 };
 
-struct ResIntKeyFV64Data{
-    nw::ut::ResF32 mFrame;
-    nw::ut::ResS32 mValue;
+struct ResIntKeyFV64Data
+{
+    nw::ut::ResF32 m_Frame;
+    nw::ut::ResS32 m_Value;
 
-    f32 GetFrame()    const { return mFrame; }
+    f32 GetFrame()    const { return m_Frame; }
     f32 GetFrameF32() const { return static_cast<f32>( this->GetFrame() ); }
-    s32 GetValue()    const { return mValue; }
+    s32 GetValue()    const { return m_Value; }
 };
 
-struct ResIntKeyFV32Data{
-    nw::ut::ResU16 mFrame;
-    nw::ut::ResS16 mValue;
+struct ResIntKeyFV32Data
+{
+    nw::ut::ResU16 m_Frame;
+    nw::ut::ResS16 m_Value;
 
-    u32 GetFrame()    const { return mFrame; }
+    u32 GetFrame()    const { return m_Frame; }
     f32 GetFrameF32() const { return static_cast<f32>( this->GetFrame() ); }
-    s16 GetValue()    const { return mValue; }
+    s16 GetValue()    const { return m_Value; }
 };
 
-struct ResIntKeyFV16Data{
-    nw::ut::ResU8 mFrame;
-    nw::ut::ResS8 mValue;
+struct ResIntKeyFV16Data
+{
+    nw::ut::ResU8 m_Frame;
+    nw::ut::ResS8 m_Value;
 
-    u32 GetFrame()    const { return mFrame; }
+    u32 GetFrame()    const { return m_Frame; }
     f32 GetFrameF32() const { return static_cast<f32>( this->GetFrame() ); }
-    s8  GetValue()    const { return mValue; }
+    s8  GetValue()    const { return m_Value; }
 };
 
-struct ResIntCurveFVData{
-    nw::ut::ResU16 mNumFrameValues;
-    u8     mPadding_[2];
+struct ResIntCurveFVData
+{
+    nw::ut::ResU16 m_NumFrameValues;
+    u8     m_Padding_[2];
     
-    nw::ut::ResF32 mInvDuration;
+    nw::ut::ResF32 m_InvDuration;
     
-    union{
+    union
+    {
         ResKeysData<ResIntKeyFV64Data> fv64;
         ResKeysData<ResIntKeyFV32Data> fv32;
         ResKeysData<ResIntKeyFV16Data> fv16;
     };
 };
 
-struct ResIntCurveCVData{
-    union{
+struct ResIntCurveCVData
+{
+    union
+    {
         ResKeysData<nw::ut::ResS32>     cv32;
         ResKeysData<nw::ut::ResS16>     cv16;
         ResKeysData<nw::ut::ResS8>      cv8;
     };
 };
 
-struct ResIntCurveData : public ResAnimCurveData{
-    enum Flag{
+struct ResIntCurveData : public ResAnimCurveData
+{
+    enum Flag
+    {
         FLAG_CONSTANT       = (0x1 << 0),
         FLAG_BAKED          = (0x1 << 2),
 
@@ -322,7 +361,8 @@ struct ResIntCurveData : public ResAnimCurveData{
         FLAG_QUANTIZATION_TYPE_MASK = (0x7 << FLAG_QUANTIZATION_TYPE_SHIFT)
     };
     
-    enum QuantizeType{
+    enum QuantizeType
+    {
         FLAG_QUANTIZATION_TYPE_FV64   = 0,
         FLAG_QUANTIZATION_TYPE_FV32   = 1,
         FLAG_QUANTIZATION_TYPE_FV16   = 2,
@@ -332,17 +372,20 @@ struct ResIntCurveData : public ResAnimCurveData{
         FLAG_QUANTIZATION_TYPE_CV8    = 2
     };
     
-    nw::ut::ResU32 mFlags;
+    nw::ut::ResU32 m_Flags;
     
-    union{
+    union
+    {
         nw::ut::ResS32                  constantValue;
         ResIntCurveFVData               fv;
         ResIntCurveCVData               cv;
     };
 };
 
-struct ResBoolCurveData : public ResAnimCurveData{
-    enum Flag{
+struct ResBoolCurveData : public ResAnimCurveData
+{
+    enum Flag
+    {
         FLAG_CONSTANT       = (0x1 << 0),
         FLAG_CONSTANT_VALUE = (0x1 << 1),
         FLAG_BAKED          = (0x1 << 2),
@@ -351,36 +394,42 @@ struct ResBoolCurveData : public ResAnimCurveData{
         FLAG_QUANTIZATION_TYPE_MASK = (0x7 << FLAG_QUANTIZATION_TYPE_SHIFT)
     };
     
-    enum QuantizeType{
+    enum QuantizeType
+    {
         FLAG_QUANTIZATION_TYPE_FV64   = 0,
         FLAG_QUANTIZATION_TYPE_FV32   = 1,
         FLAG_QUANTIZATION_TYPE_FV16   = 2
     };
     
-    nw::ut::ResU32 mFlags;
+    nw::ut::ResU32 m_Flags;
     
-    union{
+    union
+    {
         ResKeysData<nw::ut::ResU8>      cv;
         ResIntCurveFVData               fv;
     };
 };
 
 template <typename Type>
-struct ResBakedCurveData : public ResAnimCurveData{
-    enum Flag{
+struct ResBakedCurveData : public ResAnimCurveData
+{
+    enum Flag
+    {
         FLAG_CONSTANT = (0x1 << 0)
     };
 
-    nw::ut::ResU32 mFlags;
+    nw::ut::ResU32 m_Flags;
 
-    struct FrameValue{
+    struct FrameValue
+    {
         Type cv;
         nw::ut::ResU32 flag;
     };
     ResKeysData<FrameValue> frames;
 };
 
-struct ResFullBakedCurveData : public ResAnimCurveData{
+struct ResFullBakedCurveData : public ResAnimCurveData
+{
     ResKeysData<nw::ut::ResMtx34> frames;
 };
 

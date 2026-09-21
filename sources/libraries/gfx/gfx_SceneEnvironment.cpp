@@ -6,39 +6,45 @@
 namespace nw{
 namespace gfx{
 
-void SceneEnvironment::ApplyFrom(const SceneEnvironmentSetting& setting){
+void SceneEnvironment::ApplyFrom(const SceneEnvironmentSetting& setting)
+{
     SceneEnvironmentSetting::CameraBinderArray::const_iterator cameraBinderEnd = setting.GetCameraEnd();
-    for (SceneEnvironmentSetting::CameraBinderArray::const_iterator cameraBinder = setting.GetCameraBegin(); cameraBinder != cameraBinderEnd; ++cameraBinder){
+    for (SceneEnvironmentSetting::CameraBinderArray::const_iterator cameraBinder = setting.GetCameraBegin(); cameraBinder != cameraBinderEnd; ++cameraBinder)
+    {
         int cameraIndex = (*cameraBinder).index;
         Camera* camera = (*cameraBinder).camera;
 
-        mCameras[cameraIndex] = camera;
+        m_Cameras[cameraIndex] = camera;
     }
 
     SceneEnvironmentSetting::FogBinderArray::const_iterator fogBinderEnd = setting.GetFogEnd();
-    for (SceneEnvironmentSetting::FogBinderArray::const_iterator fogBinder = setting.GetFogBegin(); fogBinder != fogBinderEnd; ++fogBinder){
+    for (SceneEnvironmentSetting::FogBinderArray::const_iterator fogBinder = setting.GetFogBegin(); fogBinder != fogBinderEnd; ++fogBinder)
+    {
         int fogIndex = (*fogBinder).index;
         Fog* fog = (*fogBinder).fog;
 
-        mFogs[fogIndex] = fog;
+        m_Fogs[fogIndex] = fog;
     }
 
     SceneEnvironmentSetting::LightSetBinderArray::const_iterator lightSetBinderEnd = setting.GetLightSetEnd();
-    for (SceneEnvironmentSetting::LightSetBinderArray::const_iterator lightSetBinder = setting.GetLightSetBegin(); lightSetBinder != lightSetBinderEnd; ++lightSetBinder){
+    for (SceneEnvironmentSetting::LightSetBinderArray::const_iterator lightSetBinder = setting.GetLightSetBegin(); lightSetBinder != lightSetBinderEnd; ++lightSetBinder)
+    {
         int lightSetIndex = (*lightSetBinder).index;
         LightSet* lightSet = (*lightSetBinder).lightSet.Get();
 
-        mLightSets[lightSetIndex] = lightSet;
+        m_LightSets[lightSetIndex] = lightSet;
     }
 }
 
-void SceneEnvironment::ClearSettings(){
-    std::fill(this->mCameras.begin(), this->mCameras.end(), static_cast<gfx::Camera*>(NULL));
-    std::fill(this->mFogs.begin(), this->mFogs.end(), static_cast<gfx::Fog*>(NULL));
-    std::fill(this->mLightSets.begin(), this->mLightSets.end(), static_cast<gfx::LightSet*>(NULL));
+void SceneEnvironment::ClearSettings()
+{
+    std::fill(this->m_Cameras.begin(), this->m_Cameras.end(), static_cast<gfx::Camera*>(NULL));
+    std::fill(this->m_Fogs.begin(), this->m_Fogs.end(), static_cast<gfx::Fog*>(NULL));
+    std::fill(this->m_LightSets.begin(), this->m_LightSets.end(), static_cast<gfx::LightSet*>(NULL));
 }
 
-void SceneEnvironment::Reset(){
+void SceneEnvironment::Reset()
+{
     this->ResetLightSet();
     this->ResetAmbientLight();
     this->ResetHemiSphereLight();
@@ -46,90 +52,108 @@ void SceneEnvironment::Reset(){
     this->ResetVertexLights();
     this->ResetFog();
 
-    mCamera = NULL;
-    mCameraIndex = -1;
+    m_Camera = NULL;
+    m_CameraIndex = -1;
 }
 
-void SceneEnvironment::ResetFragmentLights(){
-    for (int i = 0; i < mActiveFragmentLightCount; ++i){
-        mFragmentLights[i] = NULL;
+void SceneEnvironment::ResetFragmentLights()
+{
+    for (int i = 0; i < m_ActiveFragmentLightCount; ++i)
+    {
+        m_FragmentLights[i] = NULL;
     }
-    mActiveFragmentLightCount = 0;
-    mFragmentLightsDirty = true;
+    m_ActiveFragmentLightCount = 0;
+    m_FragmentLightsDirty = true;
 }
 
-void SceneEnvironment::ResetVertexLights(){
-    for (int i = 0; i < mActiveVertexLightCount; ++i){
-        mVertexLights[i] = NULL;
+void SceneEnvironment::ResetVertexLights()
+{
+    for (int i = 0; i < m_ActiveVertexLightCount; ++i)
+    {
+        m_VertexLights[i] = NULL;
     }
-    mActiveVertexLightCount = 0;;
-    mVertexLightsDirty = true;
+    m_ActiveVertexLightCount = 0;;
+    m_VertexLightsDirty = true;
 }
 
-void SceneEnvironment::ResetHemiSphereLight(){
-    mHemiSphereLight = NULL;
-    mHemiSphereLightDirty = true;
+void SceneEnvironment::ResetHemiSphereLight()
+{
+    m_HemiSphereLight = NULL;
+    m_HemiSphereLightDirty = true;
 }
 
-void SceneEnvironment::ResetAmbientLight(){
-    mAmbientLight = NULL;
-    mAmbientLightDirty = true;
+void SceneEnvironment::ResetAmbientLight()
+{
+    m_AmbientLight = NULL;
+    m_AmbientLightDirty = true;
 }
 
-void SceneEnvironment::ResetFog(){
-    mFog = NULL;
-    mFogDirty =true;
+void SceneEnvironment::ResetFog()
+{
+    m_Fog = NULL;
+    m_FogDirty =true;
 }
 
-void SceneEnvironment::ResetLightSet(){
-    mLightSetIndex = -1;
+void SceneEnvironment::ResetLightSet()
+{
+    m_LightSetIndex = -1;
 }
 
-void SceneEnvironment::SetActiveLightSet(int index){
-    NW_MINMAX_ASSERT(index, 0, this->mLightSets.size());
-    LightSet* lightSet = this->mLightSets[index];
+void SceneEnvironment::SetActiveLightSet(int index)
+{
+    NW_MINMAX_ASSERT(index, 0, this->m_LightSets.size());
+    LightSet* lightSet = this->m_LightSets[index];
 
-    if ((lightSet != NULL) && (mLightSetIndex != index)){
-        mLightSetIndex = index;
+    if ((lightSet != NULL) && (m_LightSetIndex != index))
+    {
+        m_LightSetIndex = index;
 
         AmbientLight* ambientLight = lightSet->GetAmbientLight();
-        if (mAmbientLight != ambientLight){
-            mAmbientLightDirty = true;
-            mAmbientLight = (ambientLight != NULL && ambientLight->GetResAmbientLight().IsLightEnabled()) ? ambientLight : NULL;
+        if (m_AmbientLight != ambientLight)
+        {
+            m_AmbientLightDirty = true;
+            m_AmbientLight = (ambientLight != NULL && ambientLight->GetResAmbientLight().IsLightEnabled()) ? ambientLight : NULL;
         }
 
         HemiSphereLight* hemiSphereLight = lightSet->GetHemiSphereLight();
-        if (mHemiSphereLight != hemiSphereLight){
-            mHemiSphereLightDirty = true;
-            mHemiSphereLight = (hemiSphereLight != NULL && hemiSphereLight->GetResHemiSphereLight().IsLightEnabled()) ? hemiSphereLight : NULL;
+        if (m_HemiSphereLight != hemiSphereLight)
+        {
+            m_HemiSphereLightDirty = true;
+            m_HemiSphereLight = (hemiSphereLight != NULL && hemiSphereLight->GetResHemiSphereLight().IsLightEnabled()) ? hemiSphereLight : NULL;
         }
 
-        mActiveVertexLightCount = 0;
-        int vertexLightMaxCount = this->mVertexLights.capacity();
+        m_ActiveVertexLightCount = 0;
+        int vertexLightMaxCount = this->m_VertexLights.capacity();
         VertexLightArray::iterator vertexLightEnd = lightSet->GetVertexLightEnd();
-        for (VertexLightArray::iterator iter = lightSet->GetVertexLightBegin(); iter != vertexLightEnd; ++iter){
-            mVertexLightsDirty = true;
-            if (mActiveVertexLightCount == vertexLightMaxCount){
+        for (VertexLightArray::iterator iter = lightSet->GetVertexLightBegin(); iter != vertexLightEnd; ++iter)
+        {
+            m_VertexLightsDirty = true;
+            if (m_ActiveVertexLightCount == vertexLightMaxCount)
+            {
                 break;
             }
 
-            if ((*iter)->GetResVertexLight().IsLightEnabled()){
-                mVertexLights[mActiveVertexLightCount] = (*iter);
-                ++mActiveVertexLightCount;
+            if ((*iter)->GetResVertexLight().IsLightEnabled())
+            {
+                m_VertexLights[m_ActiveVertexLightCount] = (*iter);
+                ++m_ActiveVertexLightCount;
             }
         }
 
-        mActiveFragmentLightCount = 0;
+        m_ActiveFragmentLightCount = 0;
         FixedFragmentLightArray::iterator fragmentLightEnd = lightSet->GetFragmentLightEnd();
-        for (FixedFragmentLightArray::iterator iter = lightSet->GetFragmentLightBegin(); iter != fragmentLightEnd; ++iter){
-            mFragmentLightsDirty = true;
-            if (mActiveFragmentLightCount == LIGHT_COUNT){
+        for (FixedFragmentLightArray::iterator iter = lightSet->GetFragmentLightBegin(); iter != fragmentLightEnd; ++iter)
+        {
+            m_FragmentLightsDirty = true;
+            if (m_ActiveFragmentLightCount == LIGHT_COUNT)
+            {
                 break;
             }
 
-            if ((*iter)->GetResFragmentLight().IsLightEnabled()){
-                mFragmentLights[mActiveFragmentLightCount] = (*iter);
-                ++mActiveFragmentLightCount;
+            if ((*iter)->GetResFragmentLight().IsLightEnabled())
+            {
+                m_FragmentLights[m_ActiveFragmentLightCount] = (*iter);
+                ++m_ActiveFragmentLightCount;
             }
         }
     }

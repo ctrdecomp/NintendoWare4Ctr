@@ -5,16 +5,20 @@ namespace nw {
 namespace gfx {
 namespace res {
 
-Result SetupReferenceLut(ResReferenceLookupTable resReferenceLut, ResGraphicsFile graphicsFile){
+Result SetupReferenceLut(ResReferenceLookupTable resReferenceLut, ResGraphicsFile graphicsFile)
+{
     Result result = RESOURCE_RESULT_OK;
 
-    if (resReferenceLut.IsValid()){
+    if (resReferenceLut.IsValid())
+    {
         ResImageLookupTable resImageLut = ResDynamicCast<ResImageLookupTable>(resReferenceLut.GetTargetLut());
-        if (!resImageLut.IsValid()){
+        if (!resImageLut.IsValid())
+        {
             ::std::pair<ResLookupTable, bool> referenceResult;
             referenceResult = GetReferenceLutTarget(resReferenceLut, graphicsFile);
 
-            if (!referenceResult.second){
+            if (!referenceResult.second)
+            {
                 result |= Result::MASK_FAIL_BIT;
                 result |= RESOURCE_RESULT_NOT_FOUND_LUT;
             }
@@ -25,7 +29,8 @@ Result SetupReferenceLut(ResReferenceLookupTable resReferenceLut, ResGraphicsFil
 }
 
 ::std::pair<ResLookupTable, bool> 
-GetReferenceLutTarget(ResReferenceLookupTable referenceLut, ResGraphicsFile graphicsFile){
+GetReferenceLutTarget(ResReferenceLookupTable referenceLut, ResGraphicsFile graphicsFile)
+{
     bool isExisted = false;
     const char* path = referenceLut.GetPath();
     const char* tableName = referenceLut.GetTableName();
@@ -33,10 +38,12 @@ GetReferenceLutTarget(ResReferenceLookupTable referenceLut, ResGraphicsFile grap
     
     ResLookupTableSet resLutSet = graphicsFile.GetLutSets(path);
 
-    if (resLutSet.IsValid()){
+    if (resLutSet.IsValid())
+    {
         ResImageLookupTable resLut = ResDynamicCast<ResImageLookupTable>(resLutSet.GetSamplers(tableName));
 
-        if (resLut.IsValid()){
+        if (resLut.IsValid())
+        {
             referenceLut.ref().toTargetLut.set_ptr(reinterpret_cast<const void*>(resLut.ptr()));
             isExisted = true;
         }
@@ -46,18 +53,22 @@ GetReferenceLutTarget(ResReferenceLookupTable referenceLut, ResGraphicsFile grap
 }
 
 ::std::pair<ResTexture, bool>
-GetReferenceTextureTarget(ResReferenceTexture referenceTexture, ResGraphicsFile graphicsFile){
+GetReferenceTextureTarget(ResReferenceTexture referenceTexture, ResGraphicsFile graphicsFile)
+{
     bool isExisted = false;
     const char* path = referenceTexture.GetPath();
     ResTexture resTexture = graphicsFile.GetTextures(path);
     
-    if (resTexture.IsValid()){
+    if (resTexture.IsValid())
+    {
         ResReferenceTexture refer = ResDynamicCast<ResReferenceTexture>(resTexture);
 
-        if (refer.IsValid()){
+        if (refer.IsValid())
+        {
             ::std::pair<ResTexture, bool> referenceResult;
             referenceResult = GetReferenceTextureTarget(refer, graphicsFile);
-            if (referenceResult.second){
+            if (referenceResult.second)
+            {
                 referenceTexture.ref().toTargetTexture.set_ptr(reinterpret_cast<const void*>(referenceResult.first.ptr()));
                 isExisted = true;
             }
@@ -72,18 +83,22 @@ GetReferenceTextureTarget(ResReferenceTexture referenceTexture, ResGraphicsFile 
 }
 
 ::std::pair<ResShader, bool>
-GetReferenceShaderTarget(ResReferenceShader referenceShader, ResGraphicsFile graphicsFile){
+GetReferenceShaderTarget(ResReferenceShader referenceShader, ResGraphicsFile graphicsFile)
+{
     bool isExisted = false;
     const char* path = referenceShader.GetPath();
     ResShader resShader = graphicsFile.GetShaders(path);
 
-    if (resShader.IsValid()){
+    if (resShader.IsValid())
+    {
         ResReferenceShader refer = ResDynamicCast<ResReferenceShader>(resShader);
 
-        if (refer.IsValid()){
+        if (refer.IsValid())
+        {
             ::std::pair<ResShader, bool> referenceResult;
             referenceResult = GetReferenceShaderTarget(refer, graphicsFile);
-            if (referenceResult.second){
+            if (referenceResult.second)
+            {
                 referenceShader.ref().toTargetShader.set_ptr(reinterpret_cast<const void*>(referenceResult.first.ptr()));
                 isExisted = true;
             }

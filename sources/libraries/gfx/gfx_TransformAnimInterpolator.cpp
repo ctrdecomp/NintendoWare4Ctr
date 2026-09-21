@@ -7,8 +7,9 @@ namespace gfx{
 
 NW_UT_RUNTIME_TYPEINFO_DEFINITION(TransformAnimInterpolator, AnimInterpolator);
 
-const anim::AnimResult* TransformAnimInterpolator::GetResult(void* target,int memberIdx) const{
-    const anim::AnimBlendOp* blendOp = this->mAnimGroup->GetBlendOperation(memberIdx);
+const anim::AnimResult* TransformAnimInterpolator::GetResult(void* target,int memberIdx) const
+{
+    const anim::AnimBlendOp* blendOp = this->m_AnimGroup->GetBlendOperation(memberIdx);
 
     const bit32 TRANSFORM_FLAG_MASK = 
         CalculatedTransform::FLAG_IS_IDENTITY |
@@ -18,26 +19,35 @@ const anim::AnimResult* TransformAnimInterpolator::GetResult(void* target,int me
         CalculatedTransform::FLAG_IS_SCALE_ONE |
         CalculatedTransform::FLAG_IS_UNIFORM_SCALE;
 
-    if (mIsOldMethod){
+    if (m_IsOldMethod)
+    {
         float weightSums[3] = { 0.0f, 0.0f, 0.0f };
-        for (int animIdx = 0; animIdx < this->mAnimObjects.Size(); ++animIdx){
-            if (mAnimObjects[animIdx] == NULL){
+        for (int animIdx = 0; animIdx < this->m_AnimObjects.Size(); ++animIdx)
+        {
+            if (m_AnimObjects[animIdx] == NULL)
+            {
                 continue;
             }
-            const float weight = mWeights[animIdx];
-            if (!AnimWeightNearlyEqualZero(weight)){
-                const AnimObject* animObj = mAnimObjects[animIdx];
-                if (animObj->HasMemberAnim(memberIdx)){
+            const float weight = m_Weights[animIdx];
+            if (!AnimWeightNearlyEqualZero(weight))
+            {
+                const AnimObject* animObj = m_AnimObjects[animIdx];
+                if (animObj->HasMemberAnim(memberIdx))
+                {
                     const TransformAnimEvaluator* evaluator = nw::ut::DynamicCast<const TransformAnimEvaluator*>(animObj);
-                    if (evaluator != NULL){
+                    if (evaluator != NULL)
+                    {
 
-                        if (!evaluator->GetIsScaleDisabled()){
+                        if (!evaluator->GetIsScaleDisabled())
+                        {
                             weightSums[0] += weight;
                         }
-                        if (!evaluator->GetIsRotateDisabled()){
+                        if (!evaluator->GetIsRotateDisabled())
+                        {
                             weightSums[1] += weight;
                         }
-                        if (!evaluator->GetIsTranslateDisabled()){
+                        if (!evaluator->GetIsTranslateDisabled())
+                        {
                             weightSums[2] += weight;
                         }
                     }
@@ -50,7 +60,8 @@ const anim::AnimResult* TransformAnimInterpolator::GetResult(void* target,int me
             }
         }
 
-        if (TransformAnimEvaluator::CheckWeightsNearlyZero(weightSums)){
+        if (TransformAnimEvaluator::CheckWeightsNearlyZero(weightSums))
+        {
             return NULL;
         }
 
@@ -73,14 +84,16 @@ const anim::AnimResult* TransformAnimInterpolator::GetResult(void* target,int me
         math::MTX34 firstRotateMtx;
         bit32 transformFlag = TRANSFORM_FLAG_MASK;
 
-        for (int animIdx = this->mAnimObjects.Size() - 1; animIdx >= 0; --animIdx){
+        for (int animIdx = this->m_AnimObjects.Size() - 1; animIdx >= 0; --animIdx)
+        {
 
-            const AnimObject* animObj = mAnimObjects[animIdx];
-            if (animObj == NULL){
+            const AnimObject* animObj = m_AnimObjects[animIdx];
+            if (animObj == NULL)
+            {
                 continue;
             }
 
-            const float childWeight = mWeights[animIdx];
+            const float childWeight = m_Weights[animIdx];
             NW_ASSERT(childWeight >= 0.0f);
             float srcWeights[3] ={
                 childWeight * weightNormalizeScale[0],
@@ -89,24 +102,28 @@ const anim::AnimResult* TransformAnimInterpolator::GetResult(void* target,int me
             };
             TransformAnimEvaluator::DisableSRTWeightsIfNeeded(srcWeights, animObj);
 
-            if (!TransformAnimEvaluator::CheckWeightsNearlyZero(srcWeights)){
+            if (!TransformAnimEvaluator::CheckWeightsNearlyZero(srcWeights))
+            {
 
                 workResult.EnableFlags(CalculatedTransform::FLAG_CONVERTED_FOR_BLEND, convertedBak);
 
                 const anim::AnimResult* childResult = animObj->GetResult(&workResult, memberIdx);
 
-                if (childResult != NULL){
+                if (childResult != NULL)
+                {
                     written = true;
                     const bool evaluatorFlag = nw::ut::DynamicCast<const TransformAnimEvaluator*>(animObj) != NULL;
 
                     if (evaluatorFlag && firstRotateFlag &&
-                        !workResult.IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE)){
+                        !workResult.IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE))
+                        {
                         firstRotateFlag = false;
                         firstRotateMtx = workResult.TransformMatrix();
                     }
 
                     if (!blendOp->Blend(reinterpret_cast<anim::AnimResult*>(transform),
-                        NULL, childResult, srcWeights)){
+                        NULL, childResult, srcWeights))
+                    {
                         break;
                     }
 
@@ -116,17 +133,21 @@ const anim::AnimResult* TransformAnimInterpolator::GetResult(void* target,int me
         }
 
 
-        if (!convertedBak){
+        if (!convertedBak)
+        {
             transform->DisableFlags(CalculatedTransform::FLAG_CONVERTED_FOR_BLEND);   
         }
 
-        if (!written){
+        if (!written)
+        {
             transform->RestoreFlags(CalculatedTransform::FLAG_IS_IGNORE_ALL, flagsBak);
             return NULL;
         }
 
-        if (!convertedBak && blendOp->HasPostBlend()){
-            if (!blendOp->PostBlend(reinterpret_cast<anim::AnimResult*>(transform), NULL)){
+        if (!convertedBak && blendOp->HasPostBlend())
+        {
+            if (!blendOp->PostBlend(reinterpret_cast<anim::AnimResult*>(transform), NULL))
+        {
                 transform->AdjustZeroRotateMatrix(!firstRotateFlag, firstRotateMtx);
             }
         }
@@ -135,18 +156,22 @@ const anim::AnimResult* TransformAnimInterpolator::GetResult(void* target,int me
     }
     else{
         bool isValidAnim = false;
-        for (int animIdx = 0; animIdx < this->mAnimObjects.Size(); ++animIdx){
-            if (mAnimObjects[animIdx] && mAnimObjects[animIdx]->HasMemberAnim(memberIdx)){
+        for (int animIdx = 0; animIdx < this->m_AnimObjects.Size(); ++animIdx)
+        {
+            if (m_AnimObjects[animIdx] && m_AnimObjects[animIdx]->HasMemberAnim(memberIdx))
+            {
                 isValidAnim = true;
                 break;
             }
         }
 
-        if (!isValidAnim){
+        if (!isValidAnim)
+        {
             return NULL;
         }
 
-        if (mIsWeightDirty && mIsWeightNormalizationEnabled){
+        if (m_IsWeightDirty && m_IsWeightNormalizationEnabled)
+        {
             NormalizeWeight();
         }
 
@@ -161,10 +186,11 @@ const anim::AnimResult* TransformAnimInterpolator::GetResult(void* target,int me
         bool firstRotateFlag = true;
         math::MTX34 firstRotateMtx;
         bit32 transformFlag = TRANSFORM_FLAG_MASK;
-        for (int animIdx = this->mAnimObjects.Size() - 1; animIdx >= 0; --animIdx){
-            const AnimObject* animObj = mAnimObjects[animIdx];
+        for (int animIdx = this->m_AnimObjects.Size() - 1; animIdx >= 0; --animIdx)
+        {
+            const AnimObject* animObj = m_AnimObjects[animIdx];
 
-            const float childWeight = mNormalizedWeights[animIdx];
+            const float childWeight = m_NormalizedWeights[animIdx];
             NW_ASSERT(childWeight >= 0.0f);
             const float srcWeights[3] ={
                 childWeight,
@@ -172,16 +198,19 @@ const anim::AnimResult* TransformAnimInterpolator::GetResult(void* target,int me
                 childWeight
             };
 
-            if (!TransformAnimEvaluator::CheckWeightsNearlyZero(srcWeights)){
+            if (!TransformAnimEvaluator::CheckWeightsNearlyZero(srcWeights))
+            {
 
                 workResult.EnableFlags(CalculatedTransform::FLAG_CONVERTED_FOR_BLEND, convertedBak);
 
                 const anim::AnimResult* childResult = NULL;
-                if (animObj != NULL){
+                if (animObj != NULL)
+                {
                     childResult = animObj->GetResult(&workResult, memberIdx);
                 }
 
-                if (childResult == NULL){
+                if (childResult == NULL)
+                {
                     const math::Transform3* originalValue = static_cast<const math::Transform3*>(GetAnimGroup()->GetOriginalValue(memberIdx));
                     workResult.SetTransform(*originalValue);
                     workResult.UpdateScaleFlags();
@@ -194,13 +223,15 @@ const anim::AnimResult* TransformAnimInterpolator::GetResult(void* target,int me
                 const bool evaluatorFlag = nw::ut::DynamicCast<const TransformAnimEvaluator*>(animObj) != NULL;
 
                 if (evaluatorFlag && firstRotateFlag &&
-                    !workResult.IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE)){
+                    !workResult.IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE))
+                    {
                     firstRotateFlag = false;
                     firstRotateMtx = workResult.TransformMatrix();
                 }
 
                 if (!blendOp->Blend(reinterpret_cast<anim::AnimResult*>(transform),
-                    NULL, childResult, srcWeights)){
+                    NULL, childResult, srcWeights))
+                {
                     break;
                 }
 
@@ -208,12 +239,15 @@ const anim::AnimResult* TransformAnimInterpolator::GetResult(void* target,int me
             }
         }
 
-        if (!convertedBak){
+        if (!convertedBak)
+        {
             transform->DisableFlags(CalculatedTransform::FLAG_CONVERTED_FOR_BLEND);   
         }
 
-        if (!convertedBak && blendOp->HasPostBlend()){
-            if (!blendOp->PostBlend(reinterpret_cast<anim::AnimResult*>(transform), NULL)){
+        if (!convertedBak && blendOp->HasPostBlend())
+        {
+            if (!blendOp->PostBlend(reinterpret_cast<anim::AnimResult*>(transform), NULL))
+        {
                 transform->AdjustZeroRotateMatrix(!firstRotateFlag, firstRotateMtx);
             }
         }

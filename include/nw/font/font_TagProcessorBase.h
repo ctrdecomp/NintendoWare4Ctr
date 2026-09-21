@@ -10,7 +10,8 @@ template <typename CharType>
 class TextWriterBase;
 
 template <typename CharType>
-struct PrintContext{
+struct PrintContext
+{
     TextWriterBase<CharType>* writer;
     const CharType* str;
     const f32 xOrigin;
@@ -22,14 +23,15 @@ struct PrintContext{
         str(aStr),
         xOrigin(aXOrigin),
         yOrigin(aYOrigin),
-        flags(aFlags)
-    {}
+        flags(aFlags) {}
 };
 
 template <typename CharType>
-class TagProcessorBase{
+class TagProcessorBase
+{
 public:
-    enum Operation{
+    enum Operation
+    {
         OPERATION_DEFAULT,
         OPERATION_NO_CHAR_SPACE,
         OPERATION_CHAR_SPACE,

@@ -79,9 +79,9 @@ public:
     void Calc();
     void Update();
 
-    bool IsActive() const   { return m_pHardwareChannel[0] != NULL; }
+    bool IsActive() const { return m_pHardwareChannel[0] != NULL; }
     bool IsRun()    const;
-    bool IsPause()  const   { return m_IsPause == true; }
+    bool IsPause()  const { return m_IsPause == true; }
     bool IsPlayFinished() const;
 
     f32 GetVolume() const { return m_Volume; }

@@ -8,17 +8,18 @@ namespace nw {
 namespace font {
 
 Glyph::Glyph():   
-    isSheetUpdated(false)
-{}
+    isSheetUpdated(false) {}
 
 /* Font */
 
-Font::~Font(){}
+Font::~Font() {}
 
-const CharStrmReader Font::GetCharStrmReader(wchar_t /* dummy */) const{
+const CharStrmReader Font::GetCharStrmReader(wchar_t /* dummy */) const
+{
     CharStrmReader::ReadNextCharFunc func = NULL;
 
-    switch (GetCharacterCode()){
+    switch (GetCharacterCode())
+    {
     case CHARACTER_CODE_UNICODE: 
         func = &CharStrmReader::ReadNextCharUTF16;  
         break;

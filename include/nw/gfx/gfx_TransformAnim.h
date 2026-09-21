@@ -6,7 +6,8 @@
 namespace nw {
 namespace gfx {
 
-class TransformAnimBlendOp : public anim::AnimBlendOp{
+class TransformAnimBlendOp : public anim::AnimBlendOp
+{
 public:
     static const float WeightDiscard;
 
@@ -17,7 +18,8 @@ public:
     virtual void ConvertToAnimResult(anim::AnimResult* result, const void* source) const;
 
 protected:
-    enum BasicBlendFlags{
+    enum BasicBlendFlags
+    {
         FLAG_ACCURATE_SCALE_SHIFT    = 0,
         FLAG_QUATERNION_ROTATE_SHIFT = 1,
         FLAG_ACCURATE_SCALE          = 0x1 << FLAG_ACCURATE_SCALE_SHIFT,
@@ -33,12 +35,14 @@ protected:
     bool OverrideTransform(CalculatedTransform* dst, const CalculatedTransform* src, const bit32 blendFlags) const;
 };
 
-class TransformAnimBlendOpStandard : public TransformAnimBlendOp{
+class TransformAnimBlendOpStandard : public TransformAnimBlendOp
+{
 public:
     TransformAnimBlendOpStandard(): TransformAnimBlendOp(true, true) {}
     virtual ~TransformAnimBlendOpStandard() {}
 
-    virtual bool Blend(anim::AnimResult* dst, float* dstWeights, const anim::AnimResult* src, const float* srcWeights) const{
+    virtual bool Blend(anim::AnimResult* dst, float* dstWeights, const anim::AnimResult* src, const float* srcWeights) const
+    {
         (void)dstWeights;
         CalculatedTransform* dstX       = reinterpret_cast<CalculatedTransform*>(dst);
         const CalculatedTransform* srcX = reinterpret_cast<const CalculatedTransform*>(src);
@@ -48,25 +52,29 @@ public:
         return true;
     }
 
-    virtual bool PostBlend(anim::AnimResult* result, const float* weights) const{
+    virtual bool PostBlend(anim::AnimResult* result, const float* weights) const
+    {
         (void)weights;
         CalculatedTransform* dstX = reinterpret_cast<CalculatedTransform*>(result);
         return dstX->NormalizeRotateMatrix();
     }
 
-    virtual bool Override(anim::AnimResult* dst, const anim::AnimResult* src) const{
+    virtual bool Override(anim::AnimResult* dst, const anim::AnimResult* src) const
+    {
         CalculatedTransform* dstX       = reinterpret_cast<CalculatedTransform*>(dst);
         const CalculatedTransform* srcX = reinterpret_cast<const CalculatedTransform*>(src);
         return OverrideTransform(dstX, srcX, 0);
     }
 };
 
-class TransformAnimBlendOpAccScale : public TransformAnimBlendOp{
+class TransformAnimBlendOpAccScale : public TransformAnimBlendOp
+{
 public:
     TransformAnimBlendOpAccScale(): TransformAnimBlendOp(true, true) {}
     virtual ~TransformAnimBlendOpAccScale() {}
 
-    virtual bool Blend(anim::AnimResult* dst, float* dstWeights, const anim::AnimResult* src, const float* srcWeights) const{
+    virtual bool Blend(anim::AnimResult* dst, float* dstWeights, const anim::AnimResult* src, const float* srcWeights) const
+    {
         (void)dstWeights;
         CalculatedTransform* dstX       = reinterpret_cast<CalculatedTransform*>(dst);
         const CalculatedTransform* srcX = reinterpret_cast<const CalculatedTransform*>(src);
@@ -76,26 +84,30 @@ public:
         return true;
     }
 
-    virtual bool PostBlend(anim::AnimResult* result, const float* weights) const{
+    virtual bool PostBlend(anim::AnimResult* result, const float* weights) const
+    {
         (void)weights;
         CalculatedTransform* dstX = reinterpret_cast<CalculatedTransform*>(result);
         const bool scaleRet = PostBlendAccurateScale(dstX);
         return dstX->NormalizeRotateMatrix() && scaleRet;
     }
 
-    virtual bool Override(anim::AnimResult* dst, const anim::AnimResult* src) const{
+    virtual bool Override(anim::AnimResult* dst, const anim::AnimResult* src) const
+    {
         CalculatedTransform* dstX       = reinterpret_cast<CalculatedTransform*>(dst);
         const CalculatedTransform* srcX = reinterpret_cast<const CalculatedTransform*>(src);
         return OverrideTransform(dstX, srcX, FLAG_ACCURATE_SCALE);
     }
 };
 
-class TransformAnimBlendOpQuat : public TransformAnimBlendOp{
+class TransformAnimBlendOpQuat : public TransformAnimBlendOp
+{
 public:
     TransformAnimBlendOpQuat(): TransformAnimBlendOp(true, true) {}
     virtual ~TransformAnimBlendOpQuat() {}
 
-    virtual bool Blend(anim::AnimResult* dst, float* dstWeights, const anim::AnimResult* src, const float* srcWeights) const{
+    virtual bool Blend(anim::AnimResult* dst, float* dstWeights, const anim::AnimResult* src, const float* srcWeights) const
+    {
         (void)dstWeights;
         CalculatedTransform* dstX       = reinterpret_cast<CalculatedTransform*>(dst);
         const CalculatedTransform* srcX = reinterpret_cast<const CalculatedTransform*>(src);
@@ -105,25 +117,29 @@ public:
         return true;
     }
 
-    virtual bool PostBlend(anim::AnimResult* result, const float* weights) const{
+    virtual bool PostBlend(anim::AnimResult* result, const float* weights) const
+    {
         (void)weights;
         CalculatedTransform* dstX = reinterpret_cast<CalculatedTransform*>(result);
         return dstX->QuaternionToRotateMatrix();
     }
 
-    virtual bool Override(anim::AnimResult* dst, const anim::AnimResult* src) const{
+    virtual bool Override(anim::AnimResult* dst, const anim::AnimResult* src) const
+    {
         CalculatedTransform* dstX       = reinterpret_cast<CalculatedTransform*>(dst);
         const CalculatedTransform* srcX = reinterpret_cast<const CalculatedTransform*>(src);
         return OverrideTransform(dstX, srcX, FLAG_QUATERNION_ROTATE);
     }
 };
 
-class TransformAnimBlendOpAccScaleQuat : public TransformAnimBlendOp{
+class TransformAnimBlendOpAccScaleQuat : public TransformAnimBlendOp
+{
 public:
     TransformAnimBlendOpAccScaleQuat(): TransformAnimBlendOp(true, true) {}
     virtual ~TransformAnimBlendOpAccScaleQuat() {}
 
-    virtual bool Blend(anim::AnimResult* dst, float* dstWeights, const anim::AnimResult* src, const float* srcWeights) const{
+    virtual bool Blend(anim::AnimResult* dst, float* dstWeights, const anim::AnimResult* src, const float* srcWeights) const
+    {
         (void)dstWeights;
         CalculatedTransform* dstX       = reinterpret_cast<CalculatedTransform*>(dst);
         const CalculatedTransform* srcX = reinterpret_cast<const CalculatedTransform*>(src);
@@ -133,151 +149,175 @@ public:
         return true;
     }
 
-    virtual bool PostBlend(anim::AnimResult* result, const float* weights) const{
+    virtual bool PostBlend(anim::AnimResult* result, const float* weights) const
+    {
         (void)weights;
         CalculatedTransform* dstX = reinterpret_cast<CalculatedTransform*>(result);
         const bool scaleRet = PostBlendAccurateScale(dstX);
         return dstX->QuaternionToRotateMatrix() && scaleRet;
     }
 
-    virtual bool Override(anim::AnimResult* dst, const anim::AnimResult* src) const{
+    virtual bool Override(anim::AnimResult* dst, const anim::AnimResult* src) const
+    {
         CalculatedTransform* dstX       = reinterpret_cast<CalculatedTransform*>(dst);
         const CalculatedTransform* srcX = reinterpret_cast<const CalculatedTransform*>(src);
         return OverrideTransform(dstX, srcX, FLAG_ACCURATE_SCALE | FLAG_QUATERNION_ROTATE);
     }
 };
 
-class TransformAnimEvaluator : public BaseAnimEvaluator{
+class TransformAnimEvaluator : public BaseAnimEvaluator
+{
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    class Builder{
+    class Builder
+    {
     public:
-        Builder(): mAnimData(NULL), mMaxMembers(64), mMaxAnimMembers(64), mAllocCache(false) {}
+        Builder(): m_AnimData(NULL), m_MaxMembers(64), m_MaxAnimMembers(64), m_AllocCache(false) {}
 
-        Builder& AnimData(const anim::ResAnim& animData) { mAnimData = animData; return *this; }
+        Builder& AnimData(const anim::ResAnim& animData) { m_AnimData = animData; return *this; }
 
-        Builder& MaxMembers(int maxMembers){
+        Builder& MaxMembers(int maxMembers)
+        {
             NW_ASSERT(maxMembers > 0);
-            mMaxMembers = maxMembers;
+            m_MaxMembers = maxMembers;
             return *this;
         }
 
-        Builder& MaxAnimMembers(int maxAnimMembers){
+        Builder& MaxAnimMembers(int maxAnimMembers)
+        {
             NW_ASSERT(maxAnimMembers > 0);
-            mMaxAnimMembers = maxAnimMembers;
+            m_MaxAnimMembers = maxAnimMembers;
             return *this;
         }
 
-        Builder& AllocCache(bool allocCache) { mAllocCache = allocCache; return *this; }
+        Builder& AllocCache(bool allocCache) { m_AllocCache = allocCache; return *this; }
 
-        size_t GetMemorySize(size_t alignment = os::IAllocator::DEFAULT_ALIGNMENT) const{
+        size_t GetMemorySize(size_t alignment = os::IAllocator::DEFAULT_ALIGNMENT) const
+        {
             os::MemorySizeCalculator size(alignment);
             GetMemorySizeInternal(&size);
             return size.GetSizeWithPadding(alignment);
         }
 
-        void GetMemorySizeInternal(os::MemorySizeCalculator* pSize) const{
+        void GetMemorySizeInternal(os::MemorySizeCalculator* pSize) const
+        {
             os::MemorySizeCalculator& size = *pSize;
             size += sizeof(TransformAnimEvaluator);
-            BaseAnimEvaluator::GetMemorySizeForInitialize(pSize, mMaxMembers, mMaxAnimMembers);
-            if (mAllocCache)
-                size += sizeof(CalculatedTransform) * mMaxAnimMembers;
+            BaseAnimEvaluator::GetMemorySizeForInitialize(pSize, m_MaxMembers, m_MaxAnimMembers);
+            if (m_AllocCache)
+                size += sizeof(CalculatedTransform) * m_MaxAnimMembers;
         }
 
-        TransformAnimEvaluator* Create(os::IAllocator* allocator){
+        TransformAnimEvaluator* Create(os::IAllocator* allocator)
+        {
             void* buf = allocator->Alloc(sizeof(TransformAnimEvaluator));
             if (buf == NULL) return NULL;
             TransformAnimEvaluator* evaluator = new(buf) TransformAnimEvaluator(allocator);
-            Result result = evaluator->Initialize(mAnimData, mMaxMembers, mMaxAnimMembers, mAllocCache);
+            Result result = evaluator->Initialize(m_AnimData, m_MaxMembers, m_MaxAnimMembers, m_AllocCache);
             NW_ASSERT(result.IsSuccess());
             return evaluator;
         }
 
     private:
-        anim::ResAnim mAnimData;
-        int  mMaxMembers;
-        int  mMaxAnimMembers;
-        bool mAllocCache;
+        anim::ResAnim m_AnimData;
+        int  m_MaxMembers;
+        int  m_MaxAnimMembers;
+        bool m_AllocCache;
     };
 
     virtual Result TryBind(AnimGroup* animGroup);
 
-    virtual void ChangeAnim(const anim::ResAnim animData){
-        if (!mIsCacheExternal && !mCacheTransforms.Empty())
-            mCacheTransforms.Resize(animData.GetMemberAnimSetCount());
+    virtual void ChangeAnim(const anim::ResAnim animData)
+    {
+        if (!m_IsCacheExternal && !m_CacheTransforms.Empty())
+            m_CacheTransforms.Resize(animData.GetMemberAnimSetCount());
         BaseAnimEvaluator::ChangeAnim(animData);
     }
 
     virtual const anim::AnimResult* GetResult(void* target, int memberIdx) const;
 
-    bool GetIsScaleDisabled()     const { return mIsScaleDisabled; }
-    void SetIsScaleDisabled(bool v)     { mIsScaleDisabled = v; }
-    bool GetIsRotateDisabled()    const { return mIsRotateDisabled; }
-    void SetIsRotateDisabled(bool v)    { mIsRotateDisabled = v; }
-    bool GetIsTranslateDisabled() const { return mIsTranslateDisabled; }
-    void SetIsTranslateDisabled(bool v) { mIsTranslateDisabled = v; }
+    bool GetIsScaleDisabled()     const { return m_IsScaleDisabled; }
+    void SetIsScaleDisabled(bool v) { m_IsScaleDisabled = v; }
+    bool GetIsRotateDisabled()    const { return m_IsRotateDisabled; }
+    void SetIsRotateDisabled(bool v) { m_IsRotateDisabled = v; }
+    bool GetIsTranslateDisabled() const { return m_IsTranslateDisabled; }
+    void SetIsTranslateDisabled(bool v) { m_IsTranslateDisabled = v; }
 
-    virtual bool HasMemberAnim(int memberIdx) const{
-        if (mAnimData.ptr() == NULL)
-            return (0 <= memberIdx && memberIdx < mAnimGroup->GetMemberCount());
+    virtual bool HasMemberAnim(int memberIdx) const
+    {
+        if (m_AnimData.ptr() == NULL)
+            return (0 <= memberIdx && memberIdx < m_AnimGroup->GetMemberCount());
         else
-            return mBindIndexTable[memberIdx] != NotFoundIndex;
+            return m_BindIndexTable[memberIdx] != NotFoundIndex;
     }
 
-    void UpdateCacheNonVirtual(){
-        if (!mCacheTransforms.Empty() && mIsCacheDirty){
-            if (mAnimData.ptr() != NULL){
-                for (int memberIdx = 0; memberIdx < mAnimGroup->GetMemberCount(); ++memberIdx){
-                    const int animIdx = mBindIndexTable[memberIdx];
+    void UpdateCacheNonVirtual()
+    {
+        if (!m_CacheTransforms.Empty() && m_IsCacheDirty)
+        {
+            if (m_AnimData.ptr() != NULL)
+            {
+                for (int memberIdx = 0; memberIdx < m_AnimGroup->GetMemberCount(); ++memberIdx)
+                {
+                    const int animIdx = m_BindIndexTable[memberIdx];
                     if (animIdx != NotFoundIndex)
-                        GetResult(&mCacheTransforms[animIdx], memberIdx);
+                        GetResult(&m_CacheTransforms[animIdx], memberIdx);
                 }
             }
-            mIsCacheDirty = false;
+            m_IsCacheDirty = false;
         }
     }
 
     virtual void UpdateCache() { this->UpdateCacheNonVirtual(); }
 
-    virtual int GetCacheBufferSizeNeeded() const{
-        return mAnimData.GetMemberAnimSetCount() * sizeof(CalculatedTransform);
+    virtual int GetCacheBufferSizeNeeded() const
+    {
+        return m_AnimData.GetMemberAnimSetCount() * sizeof(CalculatedTransform);
     }
 
-    virtual const void* GetCacheBuffer() const { return mCacheTransforms.Elements(); }
+    virtual const void* GetCacheBuffer() const { return m_CacheTransforms.Elements(); }
 
-    virtual void SetCacheBuffer(void* buf, int size){
-        if (buf != NULL){
+    virtual void SetCacheBuffer(void* buf, int size)
+    {
+        if (buf != NULL)
+        {
             NW_ASSERT(size >= GetCacheBufferSizeNeeded());
             const int maxCalculatedTransforms = size / sizeof(CalculatedTransform);
-            mCacheTransforms = nw::ut::MoveArray<CalculatedTransform>(buf, maxCalculatedTransforms);
-            mCacheTransforms.Resize(maxCalculatedTransforms);
-            mIsCacheDirty    = true;
-            mIsCacheExternal = true;
+            m_CacheTransforms = nw::ut::MoveArray<CalculatedTransform>(buf, maxCalculatedTransforms);
+            m_CacheTransforms.Resize(maxCalculatedTransforms);
+            m_IsCacheDirty    = true;
+            m_IsCacheExternal = true;
         }
         else{
-            mCacheTransforms = nw::ut::MoveArray<CalculatedTransform>();
+            m_CacheTransforms = nw::ut::MoveArray<CalculatedTransform>();
         }
     }
 
-    static void DisableSRTWeightsIfNeeded(float* weights, const AnimObject* animObj){
+    static void DisableSRTWeightsIfNeeded(float* weights, const AnimObject* animObj)
+    {
         const TransformAnimEvaluator* evaluator = nw::ut::DynamicCast<const TransformAnimEvaluator*>(animObj);
-        if (evaluator != NULL){
-            if (evaluator->GetIsScaleDisabled()){
+        if (evaluator != NULL)
+        {
+            if (evaluator->GetIsScaleDisabled())
+            {
                 weights[0] = TransformAnimBlendOp::WeightDiscard;
             }
             
-            if (evaluator->GetIsRotateDisabled()){
+            if (evaluator->GetIsRotateDisabled())
+            {
                 weights[1] = TransformAnimBlendOp::WeightDiscard;
             }
 
-            if (evaluator->GetIsTranslateDisabled()){
+            if (evaluator->GetIsTranslateDisabled())
+            {
                 weights[2] = TransformAnimBlendOp::WeightDiscard;
             }
         }
     }
 
-    static bool CheckWeightsNearlyZero(const float* weights){
+    static bool CheckWeightsNearlyZero(const float* weights)
+    {
         NW_NULL_ASSERT(weights);
 
         return AnimWeightNearlyEqualZero(weights[0]) &&AnimWeightNearlyEqualZero(weights[1]) &&AnimWeightNearlyEqualZero(weights[2]);
@@ -286,32 +326,33 @@ public:
 protected:
     TransformAnimEvaluator(nw::os::IAllocator* allocator):
         BaseAnimEvaluator(allocator, ANIMTYPE_TRANSFORM_SIMPLE),
-        mIsScaleDisabled(false),
-        mIsRotateDisabled(false),
-        mIsTranslateDisabled(false)
-    {}
+        m_IsScaleDisabled(false),
+        m_IsRotateDisabled(false),
+        m_IsTranslateDisabled(false) {}
 
     virtual ~TransformAnimEvaluator() {}
 
-    virtual Result Initialize(const anim::ResAnim& animData, const int maxMembers, const int maxAnimMembers, bool allocCache){
+    virtual Result Initialize(const anim::ResAnim& animData, const int maxMembers, const int maxAnimMembers, bool allocCache)
+    {
         Result result = BaseAnimEvaluator::Initialize(animData, maxMembers, maxAnimMembers);
         NW_ENSURE_AND_RETURN(result);
 
-        if (allocCache){
+        if (allocCache)
+        {
             void* memory = GetAllocator().Alloc(sizeof(CalculatedTransform) * maxAnimMembers);
             if (memory == NULL) result |= Result::MASK_FAIL_BIT;
             NW_ENSURE_AND_RETURN(result);
-            mCacheTransforms = ut::MoveArray<CalculatedTransform>(memory, maxAnimMembers, &GetAllocator());
-            mCacheTransforms.Resize(animData.GetMemberAnimSetCount());
+            m_CacheTransforms = ut::MoveArray<CalculatedTransform>(memory, maxAnimMembers, &GetAllocator());
+            m_CacheTransforms.Resize(animData.GetMemberAnimSetCount());
         }
 
         return result;
     }
 
-    bool mIsScaleDisabled;
-    bool mIsRotateDisabled;
-    bool mIsTranslateDisabled;
-    ut::MoveArray<CalculatedTransform> mCacheTransforms;
+    bool m_IsScaleDisabled;
+    bool m_IsRotateDisabled;
+    bool m_IsTranslateDisabled;
+    ut::MoveArray<CalculatedTransform> m_CacheTransforms;
 
 private:
     void ResetNoAnimMember(AnimGroup* animGroup, anim::ResAnim animData);
@@ -326,46 +367,52 @@ private:
     friend class AnimBinding;
 };
 
-class TransformAnimInterpolator : public AnimInterpolator{
+class TransformAnimInterpolator : public AnimInterpolator
+{
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    class Builder{
+    class Builder
+    {
     public:
-        Builder(): mMaxAnimObjects(2), mIgnoreNoAnimMember(false) {}
+        Builder(): m_MaxAnimObjects(2), m_IgnoreNoAnimMember(false) {}
 
-        Builder& MaxAnimObjects(int maxAnimObjects){
+        Builder& MaxAnimObjects(int maxAnimObjects)
+        {
             NW_ASSERT(maxAnimObjects > 0);
-            mMaxAnimObjects = maxAnimObjects;
+            m_MaxAnimObjects = maxAnimObjects;
             return *this;
         }
 
-        Builder& IgnoreNoAnimMember(bool v) { mIgnoreNoAnimMember = v; return *this; }
+        Builder& IgnoreNoAnimMember(bool v) { m_IgnoreNoAnimMember = v; return *this; }
 
-        size_t GetMemorySize(size_t alignment = os::IAllocator::DEFAULT_ALIGNMENT) const{
+        size_t GetMemorySize(size_t alignment = os::IAllocator::DEFAULT_ALIGNMENT) const
+        {
             nw::os::MemorySizeCalculator size(alignment);
             GetMemorySizeInternal(&size);
             return size.GetSizeWithPadding(alignment);
         }
 
-        void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize) const{
+        void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize) const
+        {
             nw::os::MemorySizeCalculator& size = *pSize;
             size += sizeof(TransformAnimInterpolator);
-            TransformAnimInterpolator::GetMemorySizeForInitialize(pSize, mMaxAnimObjects);
+            TransformAnimInterpolator::GetMemorySizeForInitialize(pSize, m_MaxAnimObjects);
         }
 
-        TransformAnimInterpolator* Create(os::IAllocator* allocator){
+        TransformAnimInterpolator* Create(os::IAllocator* allocator)
+        {
             void* buf = allocator->Alloc(sizeof(TransformAnimInterpolator));
             if (buf == NULL) return NULL;
             TransformAnimInterpolator* interpolator = new(buf) TransformAnimInterpolator(allocator);
-            Result result = interpolator->Initialize(mMaxAnimObjects, mIgnoreNoAnimMember);
+            Result result = interpolator->Initialize(m_MaxAnimObjects, m_IgnoreNoAnimMember);
             NW_ASSERT(result.IsSuccess());
             return interpolator;
         }
 
     private:
-        int  mMaxAnimObjects;
-        bool mIgnoreNoAnimMember;
+        int  m_MaxAnimObjects;
+        bool m_IgnoreNoAnimMember;
     };
 
     virtual const anim::AnimResult* GetResult(void* target, int memberIdx) const;
@@ -375,43 +422,49 @@ protected:
     virtual ~TransformAnimInterpolator() {}
 };
 
-class TransformAnimAdder : public AnimAdder{
+class TransformAnimAdder : public AnimAdder
+{
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    class Builder{
+    class Builder
+    {
     public:
-        Builder(): mMaxAnimObjects(2) {}
+        Builder(): m_MaxAnimObjects(2) {}
 
-        Builder& MaxAnimObjects(int maxAnimObjects){
+        Builder& MaxAnimObjects(int maxAnimObjects)
+        {
             NW_ASSERT(maxAnimObjects > 0);
-            mMaxAnimObjects = maxAnimObjects;
+            m_MaxAnimObjects = maxAnimObjects;
             return *this;
         }
 
-        size_t GetMemorySize(size_t alignment = os::IAllocator::DEFAULT_ALIGNMENT) const{
+        size_t GetMemorySize(size_t alignment = os::IAllocator::DEFAULT_ALIGNMENT) const
+        {
             os::MemorySizeCalculator size(alignment);
             GetMemorySizeInternal(&size);
             return size.GetSizeWithPadding(alignment);
         }
 
-        void GetMemorySizeInternal(os::MemorySizeCalculator* pSize) const{
+        void GetMemorySizeInternal(os::MemorySizeCalculator* pSize) const
+        {
             os::MemorySizeCalculator& size = *pSize;
             size += sizeof(TransformAnimAdder);
-            TransformAnimAdder::GetMemorySizeForInitialize(pSize, mMaxAnimObjects);
+            TransformAnimAdder::GetMemorySizeForInitialize(pSize, m_MaxAnimObjects);
         }
 
-        TransformAnimAdder* Create(os::IAllocator* allocator){
+        TransformAnimAdder* Create(os::IAllocator* allocator)
+        {
             void* buf = allocator->Alloc(sizeof(TransformAnimAdder));
             if (buf == NULL) return NULL;
             TransformAnimAdder* adder = new(buf) TransformAnimAdder(allocator);
-            Result result = adder->Initialize(mMaxAnimObjects);
+            Result result = adder->Initialize(m_MaxAnimObjects);
             NW_ASSERT(result.IsSuccess());
             return adder;
         }
 
     private:
-        int mMaxAnimObjects;
+        int m_MaxAnimObjects;
     };
 
     virtual const anim::AnimResult* GetResult(void* target, int memberIdx) const;
@@ -421,43 +474,49 @@ protected:
     virtual ~TransformAnimAdder() {}
 };
 
-class TransformAnimOverrider : public AnimOverrider{
+class TransformAnimOverrider : public AnimOverrider
+{
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    class Builder{
+    class Builder
+    {
     public:
-        Builder(): mMaxAnimObjects(2) {}
+        Builder(): m_MaxAnimObjects(2) {}
 
-        Builder& MaxAnimObjects(int maxAnimObjects){
+        Builder& MaxAnimObjects(int maxAnimObjects)
+        {
             NW_ASSERT(maxAnimObjects > 0);
-            mMaxAnimObjects = maxAnimObjects;
+            m_MaxAnimObjects = maxAnimObjects;
             return *this;
         }
 
-        size_t GetMemorySize(size_t alignment = os::IAllocator::DEFAULT_ALIGNMENT) const{
+        size_t GetMemorySize(size_t alignment = os::IAllocator::DEFAULT_ALIGNMENT) const
+        {
             os::MemorySizeCalculator size(alignment);
             GetMemorySizeInternal(&size);
             return size.GetSizeWithPadding(alignment);
         }
 
-        void GetMemorySizeInternal(os::MemorySizeCalculator* pSize) const{
+        void GetMemorySizeInternal(os::MemorySizeCalculator* pSize) const
+        {
             os::MemorySizeCalculator& size = *pSize;
             size += sizeof(TransformAnimOverrider);
-            TransformAnimOverrider::GetMemorySizeForInitialize(pSize, mMaxAnimObjects);
+            TransformAnimOverrider::GetMemorySizeForInitialize(pSize, m_MaxAnimObjects);
         }
 
-        TransformAnimOverrider* Create(os::IAllocator* allocator){
+        TransformAnimOverrider* Create(os::IAllocator* allocator)
+        {
             void* buf = allocator->Alloc(sizeof(TransformAnimOverrider));
             if (buf == NULL) return NULL;
             TransformAnimOverrider* overrider = new(buf) TransformAnimOverrider(allocator);
-            Result result = overrider->Initialize(mMaxAnimObjects);
+            Result result = overrider->Initialize(m_MaxAnimObjects);
             NW_ASSERT(result.IsSuccess());
             return overrider;
         }
 
     private:
-        int mMaxAnimObjects;
+        int m_MaxAnimObjects;
     };
 
     virtual const anim::AnimResult* GetResult(void* target, int memberIdx) const;
@@ -467,21 +526,23 @@ protected:
     virtual ~TransformAnimOverrider() {}
 };
 
-class AnimBlendOpTransform : public TransformAnimBlendOp{
+class AnimBlendOpTransform : public TransformAnimBlendOp
+{
 public:
 
     AnimBlendOpTransform(): 
-        TransformAnimBlendOp(true, true)
-    {}
+        TransformAnimBlendOp(true, true) {}
 
     virtual ~AnimBlendOpTransform() {}
 
-    virtual bool Blend(anim::AnimResult* dst,float* dstWeights,const anim::AnimResult* src,const float* srcWeight) const{
+    virtual bool Blend(anim::AnimResult* dst,float* dstWeights,const anim::AnimResult* src,const float* srcWeight) const
+    {
         NW_NULL_ASSERT(dst);
         NW_NULL_ASSERT(src);
         NW_NULL_ASSERT(srcWeight);
 
-        if (!dst->IsEnabledFlags(VALID_SINGLE)){
+        if (!dst->IsEnabledFlags(VALID_SINGLE))
+        {
             CalculatedTransform* transform = 
                 reinterpret_cast<CalculatedTransform*>(dst->GetValueBuffer());
             transform->EnableFlags(CalculatedTransform::FLAG_IS_IGNORE_ALL);
@@ -494,20 +555,22 @@ public:
         return blendOp.Blend(reinterpret_cast<anim::AnimResult*>(dst->GetValueBuffer()), dstWeights, reinterpret_cast<const anim::AnimResult*>(src->GetValueBuffer()), srcWeights);
     }
 
-    virtual bool PostBlend(anim::AnimResult* result, const float* weight) const{
+    virtual bool PostBlend(anim::AnimResult* result, const float* weight) const
+    {
         NW_NULL_ASSERT(result);
 
         CalculatedTransform* transform = reinterpret_cast<CalculatedTransform*>(result->GetValueBuffer());
         
         bool resultBlend;
 #if 0
-        if (weight){
+        if (weight)
+        {
             float weights[3] = { *weight, *weight, *weight };
             resultBlend= blendOp.PostBlend(reinterpret_cast<anim::AnimResult*>(transform), weights);
         }
         else
 #endif
-        {
+{
             NW_UNUSED_VARIABLE(weight);
             resultBlend= blendOp.PostBlend(
                 reinterpret_cast<anim::AnimResult*>(transform), 
@@ -526,10 +589,12 @@ public:
         return resultBlend;
     }
 
-    virtual bool Override(anim::AnimResult* dst, const anim::AnimResult* src) const{
+    virtual bool Override(anim::AnimResult* dst, const anim::AnimResult* src) const
+    {
         CalculatedTransform* transform =  reinterpret_cast<CalculatedTransform*>(dst->GetValueBuffer());
 
-        if (!dst->IsEnabledFlags(VALID_SINGLE)){
+        if (!dst->IsEnabledFlags(VALID_SINGLE))
+        {
             transform->EnableFlags(CalculatedTransform::FLAG_IS_IGNORE_ALL);
 
             dst->EnableFlags(VALID_SINGLE);

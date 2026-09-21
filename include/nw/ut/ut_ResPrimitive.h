@@ -11,33 +11,38 @@
 namespace nw {
 namespace ut {
 
-struct ResBoundingVolumeData{
+struct ResBoundingVolumeData
+{
     nw::ut::ResTypeInfo typeInfo;
 };
 
-struct ResOrientedBoundingBoxData : public ResBoundingVolumeData{
-    ResVec3   mCenterPosition;
-    ResMtx33  mOrientationMatrix;
-    ResVec3   mSize;
+struct ResOrientedBoundingBoxData : public ResBoundingVolumeData
+{
+    ResVec3   m_CenterPosition;
+    ResMtx33  m_OrientationMatrix;
+    ResVec3   m_Size;
 };
 
-struct ResAxisAlignedBoundingBoxData : public ResBoundingVolumeData{
-    ResVec3   mCenterPosition;
-    ResVec3   mSize;
+struct ResAxisAlignedBoundingBoxData : public ResBoundingVolumeData
+{
+    ResVec3   m_CenterPosition;
+    ResVec3   m_Size;
 };
 
-class ResBoundingVolume : public nw::ut::ResCommon<ResBoundingVolumeData>{
+class ResBoundingVolume : public nw::ut::ResCommon<ResBoundingVolumeData>
+{
 public:
-    enum { TYPE_INFO = NW_UT_RES_TYPE_INFO(ResBoundingVolume) };
+    enum{ TYPE_INFO = NW_UT_RES_TYPE_INFO(ResBoundingVolume) };
     
     NW_RES_CTOR( ResBoundingVolume )
 
     nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
 };
 
-class ResOrientedBoundingBox : public ResBoundingVolume{
+class ResOrientedBoundingBox : public ResBoundingVolume
+{
 public:
-    enum { TYPE_INFO = NW_UT_RES_TYPE_INFO(ResOrientedBoundingBox) };
+    enum{ TYPE_INFO = NW_UT_RES_TYPE_INFO(ResOrientedBoundingBox) };
     
     NW_RES_CTOR_INHERIT(ResOrientedBoundingBox, ResBoundingVolume )
 
@@ -48,9 +53,11 @@ public:
     NW_RES_FIELD_VECTOR3_DECL(nw::math::VEC3, Size)
 };
 
-class ResAxisAlignedBoundingBox : public ResBoundingVolume{
+class ResAxisAlignedBoundingBox : public ResBoundingVolume
+{
 public:
-    enum { TYPE_INFO = NW_UT_RES_TYPE_INFO(ResAxisAlignedBoundingBox) };
+    enum
+{ TYPE_INFO = NW_UT_RES_TYPE_INFO(ResAxisAlignedBoundingBox) };
     
     NW_RES_CTOR_INHERIT(ResAxisAlignedBoundingBox, ResBoundingVolume)
 

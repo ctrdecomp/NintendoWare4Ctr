@@ -21,7 +21,7 @@ public:
 
     SoundHandle()
         : m_pSound(NULL)
-    {
+        {
     }
 
     ~SoundHandle()

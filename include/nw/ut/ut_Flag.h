@@ -14,32 +14,38 @@ namespace nw {
 namespace ut {
 
 template<typename TFlags, typename TMask>
-inline bool CheckFlag(const TFlags& flags, const TMask& mask){
+inline bool CheckFlag(const TFlags& flags, const TMask& mask)
+{
     return (flags & static_cast<TFlags>(mask)) == static_cast<TFlags>(mask);
 }
 
 template<typename TFlags, typename TMask>
-inline bool CheckFlagOr(const TFlags& flags, const TMask& mask){
+inline bool CheckFlagOr(const TFlags& flags, const TMask& mask)
+{
     return (flags & static_cast<TFlags>(mask)) != 0;
 }
 
 template<typename TFlags, typename TValue>
-inline TFlags EnableFlag(const TFlags& flags, const TValue& value){
+inline TFlags EnableFlag(const TFlags& flags, const TValue& value)
+{
     return flags | static_cast<TFlags>(value);
 }
 
 template<typename TFlags, typename TValue>
-inline TFlags DisableFlag(const TFlags& flags, const TValue& value){
+inline TFlags DisableFlag(const TFlags& flags, const TValue& value)
+{
     return flags & ~(static_cast<TFlags>(value));
 }
 
 template<typename TResult, typename TFlags, typename TMask>
-inline TResult GetFlagValue(const TFlags& flags, int shift, const TMask& mask){
+inline TResult GetFlagValue(const TFlags& flags, int shift, const TMask& mask)
+{
     return static_cast<TResult>((flags & static_cast<TFlags>(mask)) >> shift);
 }
 
 template<typename TFlags, typename TMask, typename TValue>
-inline TFlags SetFlagValue(const TFlags& flags, int shift, const TMask& mask, const TValue& value){
+inline TFlags SetFlagValue(const TFlags& flags, int shift, const TMask& mask, const TValue& value)
+{
     return (flags & ~(static_cast<TFlags>(mask))) | ((value << shift) & static_cast<TFlags>(mask));
 }
 

@@ -7,20 +7,25 @@
 namespace nw{
 namespace gfx{
 
-ParticleSet* FindParticleSet(const char* name, ut::MoveArray<SceneNode*>* sceneNodeArray){
-    for (ut::MoveArray<SceneNode*>::iterator i = sceneNodeArray->Begin(); i != sceneNodeArray->End(); ++i){
+ParticleSet* FindParticleSet(const char* name, ut::MoveArray<SceneNode*>* sceneNodeArray)
+{
+    for (ut::MoveArray<SceneNode*>::iterator i = sceneNodeArray->Begin(); i != sceneNodeArray->End(); ++i)
+    {
         ParticleModel* particleModel = ut::DynamicCast<ParticleModel*>(*i);
-        if (!particleModel){
+        if (!particleModel)
+        {
             continue;
         }
 
-        for (int j = 0; j < (int)particleModel->GetParticleSetsCount(); ++j){
+        for (int j = 0; j < (int)particleModel->GetParticleSetsCount(); ++j)
+        {
             ParticleSet* itParticleSet = particleModel->GetParticleSets(j);
             NW_NULL_ASSERT(itParticleSet);
 
             const char* itParticleSetName = itParticleSet->GetResParticleSet().GetName();
 
-            if (std::strcmp(itParticleSetName, name) == 0){
+            if (std::strcmp(itParticleSetName, name) == 0)
+            {
                 return itParticleSet;
             }
         }
@@ -29,22 +34,26 @@ ParticleSet* FindParticleSet(const char* name, ut::MoveArray<SceneNode*>* sceneN
     return NULL;
 }
 
-void ParticleUtil::SetupParticleObject(ut::MoveArray<SceneNode*>* sceneNodeArray, ParticleContext* particleContext){
+void ParticleUtil::SetupParticleObject(ut::MoveArray<SceneNode*>* sceneNodeArray, ParticleContext* particleContext)
+{
     NW_NULL_ASSERT(sceneNodeArray);
     NW_NULL_ASSERT(particleContext);
 
     ResolveParticleObject(sceneNodeArray);
 
-    NW_FOREACH(SceneNode* node, *sceneNodeArray){
+    NW_FOREACH(SceneNode* node, *sceneNodeArray)
+    {
         ResSceneNode resSceneNode = node->GetResSceneNode();
         NW_ASSERT(resSceneNode.IsValid());
 
-        switch (resSceneNode.ptr()->typeInfo){
+        switch (resSceneNode.ptr()->typeInfo)
+        {
         case ResParticleModel::TYPE_INFO:{
                 ParticleModel* model = static_cast<ParticleModel*>(node);
                 NW_NULL_ASSERT(model);
 
-                for (u32 i = 0; i < model->GetParticleSetsCount(); ++i){
+                for (u32 i = 0; i < model->GetParticleSetsCount(); ++i)
+                {
                     ParticleSet* particleSet = model->GetParticleSets(i);
                     NW_NULL_ASSERT(particleSet);
 
@@ -62,20 +71,24 @@ void ParticleUtil::SetupParticleObject(ut::MoveArray<SceneNode*>* sceneNodeArray
     }
 }
 
-void ParticleUtil::ResolveParticleObject(ut::MoveArray<SceneNode*>* sceneNodeArray){
+void ParticleUtil::ResolveParticleObject(ut::MoveArray<SceneNode*>* sceneNodeArray)
+{
     NW_NULL_ASSERT(sceneNodeArray);
 
-    NW_FOREACH(SceneNode* node, *sceneNodeArray){
+    NW_FOREACH(SceneNode* node, *sceneNodeArray)
+    {
         ResSceneNode resSceneNode = node->GetResSceneNode();
         NW_ASSERT(resSceneNode.IsValid());
 
-        switch (resSceneNode.ptr()->typeInfo){
+        switch (resSceneNode.ptr()->typeInfo)
+        {
         case ResParticleModel::TYPE_INFO:{
 
                 ParticleModel* model = static_cast<ParticleModel*>(node);
                 NW_NULL_ASSERT(model);
 
-                for (u32 i = 0; i < model->GetParticleSetsCount(); ++i){
+                for (u32 i = 0; i < model->GetParticleSetsCount(); ++i)
+                {
                     ParticleSet* particleSet = model->GetParticleSets(i);
                     NW_NULL_ASSERT(particleSet);
 
@@ -83,19 +96,22 @@ void ParticleUtil::ResolveParticleObject(ut::MoveArray<SceneNode*>* sceneNodeArr
                     NW_NULL_ASSERT(updaters);
 
                     ut::MoveArray<ParticleSet::Updater>::iterator endIter = updaters->end();
-                    for (ut::MoveArray<ParticleSet::Updater>::iterator iter = updaters->begin(); iter != endIter;){
+                    for (ut::MoveArray<ParticleSet::Updater>::iterator iter = updaters->begin(); iter != endIter;)
+                    {
                         ParticleSet::Updater& updater = *iter++;
 
                         ResParticleUpdater resUpdater(updater.resource);
                         NW_ASSERT(resUpdater.IsValid());
 
-                        if (resUpdater.GetTypeInfo() == ResParticleChildUpdater::TYPE_INFO){
+                        if (resUpdater.GetTypeInfo() == ResParticleChildUpdater::TYPE_INFO)
+                        {
                             ResParticleChildUpdater childUpdater = ResDynamicCast<ResParticleChildUpdater>(resUpdater);
 
                             const char* particleSetPath = childUpdater.GetParticleSetPath();
 
                             ParticleSet* childParticleSet = FindParticleSet(particleSetPath, sceneNodeArray);
-                            if (childParticleSet != NULL){
+                            if (childParticleSet != NULL)
+                            {
                                 updater.work = (u32)childParticleSet;
                             }
                         }
@@ -109,7 +125,8 @@ void ParticleUtil::ResolveParticleObject(ut::MoveArray<SceneNode*>* sceneNodeArr
                 NW_NULL_ASSERT(emitter);
 
                 ResParticleEmitter resource = emitter->GetResParticleEmitter();
-                if (resource.IsValid()){
+                if (resource.IsValid())
+                {
                     ParticleSet* particleSet = FindParticleSet(resource.GetParticleSetPath(), sceneNodeArray);
 
                     emitter->SetParticleSet(particleSet);
@@ -120,12 +137,15 @@ void ParticleUtil::ResolveParticleObject(ut::MoveArray<SceneNode*>* sceneNodeArr
     }
 }
 
-bool ParticleSetCompare::operator()(const ParticleSet* lhs, const ParticleSet* rhs){
-    if (rhs == NULL){
+bool ParticleSetCompare::operator()(const ParticleSet* lhs, const ParticleSet* rhs)
+{
+    if (rhs == NULL)
+    {
         return true;
     }
 
-    if (lhs == NULL){
+    if (lhs == NULL)
+    {
         return false;
     }
 
@@ -134,12 +154,14 @@ bool ParticleSetCompare::operator()(const ParticleSet* lhs, const ParticleSet* r
     return lhsResource.GetParticleSetPriority() < rhsResource.GetParticleSetPriority();
 }
 
-void ParticleUtil::GetMemorySizeForDuplicateResParticleInitializerInternal(nw::os::MemorySizeCalculator* pSize, const ResParticleInitializer* src){
+void ParticleUtil::GetMemorySizeForDuplicateResParticleInitializerInternal(nw::os::MemorySizeCalculator* pSize, const ResParticleInitializer* src)
+{
     nw::os::MemorySizeCalculator& size = *pSize;
 
     int baseSize = 0;
 
-    switch (src->GetTypeInfo()){
+    switch (src->GetTypeInfo())
+    {
     case ResParticleInitializer::TYPE_INFO:
         baseSize += sizeof(ResParticleInitializerData);
         break;
@@ -189,14 +211,16 @@ void ParticleUtil::GetMemorySizeForDuplicateResParticleInitializerInternal(nw::o
     size.Add(baseSize, 4);
 }
 
-ResParticleInitializerData* ParticleUtil::DuplicateResParticleInitializer(const ResParticleInitializer* src, nw::os::IAllocator* allocator){
+ResParticleInitializerData* ParticleUtil::DuplicateResParticleInitializer(const ResParticleInitializer* src, nw::os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(src);
     NW_NULL_ASSERT(allocator);
 
     int baseSize = 0;
     int size = 0;
 
-    switch (src->GetTypeInfo()){
+    switch (src->GetTypeInfo())
+    {
     case ResParticleInitializer::TYPE_INFO:
         baseSize += sizeof(ResParticleInitializerData);
         break;
@@ -246,7 +270,8 @@ ResParticleInitializerData* ParticleUtil::DuplicateResParticleInitializer(const 
     size += ut::RoundUp(baseSize, 4);
 
     void* memory = allocator->Alloc(size, 4);
-    if (memory == NULL){
+    if (memory == NULL)
+    {
         return NULL;
     }
 
@@ -260,7 +285,8 @@ ResParticleInitializerData* ParticleUtil::DuplicateResParticleInitializer(const 
         dstPtr += ut::RoundUp(baseSize, 4);
     }
 
-    switch (src->GetTypeInfo()){
+    switch (src->GetTypeInfo())
+    {
     case ResParticleInitializer::TYPE_INFO:
     case ResParticleDirectionalVelocityInitializer::TYPE_INFO:
     case ResParticleRandomDirectionalVelocityInitializer::TYPE_INFO:
@@ -283,14 +309,16 @@ ResParticleInitializerData* ParticleUtil::DuplicateResParticleInitializer(const 
     return reinterpret_cast<ResParticleInitializerData*>(memory);
 }
 
-void ParticleUtil::GetMemorySizeForDuplicateResParticleUpdaterInternal(nw::os::MemorySizeCalculator* pSize, const ResParticleUpdater* src){
+void ParticleUtil::GetMemorySizeForDuplicateResParticleUpdaterInternal(nw::os::MemorySizeCalculator* pSize, const ResParticleUpdater* src)
+{
     int baseSize = 0;
     nw::os::MemorySizeCalculator& size = *pSize;
     int childStrSize = 0;
     int childFormSize = 0;
     int childOptionSize = 0;
 
-    switch (src->GetTypeInfo()){
+    switch (src->GetTypeInfo())
+    {
     case ResParticleUpdater::TYPE_INFO:
         baseSize = sizeof(ResParticleUpdaterData);
         break;
@@ -310,7 +338,8 @@ void ParticleUtil::GetMemorySizeForDuplicateResParticleUpdaterInternal(nw::os::M
         baseSize = sizeof(ResParticleRandomUpdaterData);
         break;
     case ResParticleChildUpdater::TYPE_INFO:
-        baseSize = sizeof(ResParticleChildUpdaterData);{
+        baseSize = sizeof(ResParticleChildUpdaterData);
+        {
             const ResParticleChildUpdater& child = ResDynamicCast<ResParticleChildUpdater>(*src);
             NW_ASSERT(child.IsValid());
 
@@ -319,9 +348,11 @@ void ParticleUtil::GetMemorySizeForDuplicateResParticleUpdaterInternal(nw::os::M
             const ResParticleForm& form = child.GetParticleForm();
             const ResParticleChildUpdaterOption& option = child.GetTiming();
 
-            if (form.IsValid()){
+            if (form.IsValid())
+            {
 
-                switch (form.GetTypeInfo()){
+                switch (form.GetTypeInfo())
+                {
                 case ResParticleForm::TYPE_INFO:
                     childFormSize = sizeof(ResParticleFormData);
                     break;
@@ -348,8 +379,10 @@ void ParticleUtil::GetMemorySizeForDuplicateResParticleUpdaterInternal(nw::os::M
                 }
             }
 
-            if (option.IsValid()){
-                switch (option.GetTypeInfo()){
+            if (option.IsValid())
+            {
+                switch (option.GetTypeInfo())
+                {
                 case ResParticleChildUpdaterFinalUpdateOption::TYPE_INFO:
                     childOptionSize = sizeof(ResParticleChildUpdaterFinalUpdateOptionData);
                     break;
@@ -406,15 +439,18 @@ void ParticleUtil::GetMemorySizeForDuplicateResParticleUpdaterInternal(nw::os::M
     int animationOptionSize = 0;
     {
         const ResParticleAnimation& resAnimation = src->GetParticleAnimation();
-        if (resAnimation.IsValid()){
+        if (resAnimation.IsValid())
+        {
             animationSize += sizeof(ResParticleAnimationData);
 
             enabledSize = resAnimation.GetAnimationEnabledCount() * sizeof(bool);
             dataSize = resAnimation.GetAnimationDataCount() * sizeof(s32);
 
             const ResParticleAnimationOption& option = resAnimation.GetParticleAnimationOption();
-            if (option.IsValid()){
-                switch (option.GetTypeInfo()){
+            if (option.IsValid())
+            {
+                switch (option.GetTypeInfo())
+                {
                 case ResParticleAnimationOption::TYPE_INFO:
                     animationOptionSize = sizeof(ResParticleAnimationOptionData);
                     break;
@@ -447,7 +483,8 @@ void ParticleUtil::GetMemorySizeForDuplicateResParticleUpdaterInternal(nw::os::M
     size.Add(childOptionSize, 4);
 }
 
-ResParticleUpdaterData* ParticleUtil::DuplicateResParticleUpdater(const ResParticleUpdater* src, nw::os::IAllocator* allocator){
+ResParticleUpdaterData* ParticleUtil::DuplicateResParticleUpdater(const ResParticleUpdater* src, nw::os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(src);
     NW_NULL_ASSERT(allocator);
 
@@ -457,7 +494,8 @@ ResParticleUpdaterData* ParticleUtil::DuplicateResParticleUpdater(const ResParti
     int childFormSize = 0;
     int childOptionSize = 0;
 
-    switch (src->GetTypeInfo()){
+    switch (src->GetTypeInfo())
+    {
     case ResParticleUpdater::TYPE_INFO:
         baseSize = sizeof(ResParticleUpdaterData);
         break;
@@ -477,7 +515,8 @@ ResParticleUpdaterData* ParticleUtil::DuplicateResParticleUpdater(const ResParti
         baseSize = sizeof(ResParticleRandomUpdaterData);
         break;
     case ResParticleChildUpdater::TYPE_INFO:
-        baseSize = sizeof(ResParticleChildUpdaterData);{
+        baseSize = sizeof(ResParticleChildUpdaterData);
+        {
             const ResParticleChildUpdater& child = ResDynamicCast<ResParticleChildUpdater>(*src);
             NW_ASSERT(child.IsValid());
 
@@ -486,8 +525,10 @@ ResParticleUpdaterData* ParticleUtil::DuplicateResParticleUpdater(const ResParti
             const ResParticleForm& form = child.GetParticleForm();
             const ResParticleChildUpdaterOption& option = child.GetTiming();
 
-            if (form.IsValid()){
-                switch (form.GetTypeInfo()){
+            if (form.IsValid())
+            {
+                switch (form.GetTypeInfo())
+                {
                 case ResParticleForm::TYPE_INFO:
                     childFormSize = sizeof(ResParticleFormData);
                     break;
@@ -514,8 +555,10 @@ ResParticleUpdaterData* ParticleUtil::DuplicateResParticleUpdater(const ResParti
                 }
             }
 
-            if (option.IsValid()){
-                switch (option.GetTypeInfo()){
+            if (option.IsValid())
+            {
+                switch (option.GetTypeInfo())
+                {
                 case ResParticleChildUpdaterFinalUpdateOption::TYPE_INFO:
                     childOptionSize = sizeof(ResParticleChildUpdaterFinalUpdateOptionData);
                     break;
@@ -572,15 +615,18 @@ ResParticleUpdaterData* ParticleUtil::DuplicateResParticleUpdater(const ResParti
     int animationOptionSize = 0;
     {
         const ResParticleAnimation& resAnimation = src->GetParticleAnimation();
-        if (resAnimation.IsValid()){
+        if (resAnimation.IsValid())
+        {
             animationSize += sizeof(ResParticleAnimationData);
 
             enabledSize = resAnimation.GetAnimationEnabledCount() * sizeof(bool);
             dataSize = resAnimation.GetAnimationDataCount() * sizeof(s32);
 
             const ResParticleAnimationOption& option = resAnimation.GetParticleAnimationOption();
-            if (option.IsValid()){
-                switch (option.GetTypeInfo()){
+            if (option.IsValid())
+            {
+                switch (option.GetTypeInfo())
+                {
                 case ResParticleAnimationOption::TYPE_INFO:
                     animationOptionSize = sizeof(ResParticleAnimationOptionData);
                     break;
@@ -613,7 +659,8 @@ ResParticleUpdaterData* ParticleUtil::DuplicateResParticleUpdater(const ResParti
     size += ut::RoundUp(childOptionSize, 4);
 
     void* memory = allocator->Alloc(size, 4);
-    if (memory == NULL){
+    if (memory == NULL)
+    {
         return NULL;
     }
 
@@ -637,19 +684,22 @@ ResParticleUpdaterData* ParticleUtil::DuplicateResParticleUpdater(const ResParti
         dstData->toParticleAnimation.set_ptr(dstPtr);
         dstPtr += ut::RoundUp(animationSize, 4);
 
-        if (enabledSize > 0){
+        if (enabledSize > 0)
+        {
             ::nw::os::MemCpy(dstPtr, animation.GetAnimationEnabled(), enabledSize);
             dstAnimation->toAnimationEnabledTable.set_ptr(dstPtr);
             dstPtr += ut::RoundUp(enabledSize, 4);
         }
 
-        if (dataSize > 0){
+        if (dataSize > 0)
+        {
             ::nw::os::MemCpy(dstPtr, animation.GetAnimationData(), dataSize);
             dstAnimation->toAnimationDataTable.set_ptr(dstPtr);
             dstPtr += ut::RoundUp(dataSize, 4);
         }
 
-        if (animationOptionSize != 0){
+        if (animationOptionSize != 0)
+        {
             const ResParticleAnimationOption& option = animation.GetParticleAnimationOption();
 
             ::nw::os::MemCpy(dstPtr, option.ptr(), animationOptionSize);
@@ -658,13 +708,15 @@ ResParticleUpdaterData* ParticleUtil::DuplicateResParticleUpdater(const ResParti
         }
     }
 
-    switch (src->GetTypeInfo()){
+    switch (src->GetTypeInfo())
+    {
     case ResParticleChildUpdater::TYPE_INFO:{
             ResParticleChildUpdaterData* childData = reinterpret_cast<ResParticleChildUpdaterData*>(memory);
 
             const ResParticleChildUpdater& child = ResDynamicCast<ResParticleChildUpdater>(*src);
 
-            if (childStrSize > 0){
+            if (childStrSize > 0)
+            {
                 const char* str = child.GetParticleSetPath();
 
                 ::nw::os::MemCpy(dstPtr, str, childStrSize);
@@ -672,7 +724,8 @@ ResParticleUpdaterData* ParticleUtil::DuplicateResParticleUpdater(const ResParti
                 dstPtr += ut::RoundUp(childStrSize, 4);
             }
 
-            if (childFormSize > 0){
+            if (childFormSize > 0)
+            {
                 const ResParticleForm& form = child.GetParticleForm();
 
                 ::nw::os::MemCpy(dstPtr, form.ptr(), childFormSize);
@@ -680,7 +733,8 @@ ResParticleUpdaterData* ParticleUtil::DuplicateResParticleUpdater(const ResParti
                 dstPtr += ut::RoundUp(childFormSize, 4);
             }
 
-            if (childOptionSize > 0){
+            if (childOptionSize > 0)
+            {
                 const ResParticleChildUpdaterOption& option = child.GetTiming();
 
                 ::nw::os::MemCpy(dstPtr, option.ptr(), childOptionSize);

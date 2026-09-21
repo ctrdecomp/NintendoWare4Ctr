@@ -10,14 +10,16 @@ namespace nw {
 namespace gfx {
 namespace res {
 
-Result ResFog::Setup(os::IAllocator* allocator, ResGraphicsFile graphicsFile){
+Result ResFog::Setup(os::IAllocator* allocator, ResGraphicsFile graphicsFile)
+{
     Result result = RESOURCE_RESULT_OK;
 
     ResReferenceLookupTable refLut = ResDynamicCast<ResReferenceLookupTable>(this->GetFogSampler());
 
     Result referenceResult = SetupReferenceLut(refLut, graphicsFile);
 
-    if (referenceResult.IsSuccess()){
+    if (referenceResult.IsSuccess())
+    {
         result |= this->GetFogSampler().Setup();
     }
 
@@ -26,7 +28,8 @@ Result ResFog::Setup(os::IAllocator* allocator, ResGraphicsFile graphicsFile){
     return result;
 }
 
-void ResFog::Cleanup(){
+void ResFog::Cleanup()
+{
     ut::SafeCleanup(this->GetFogSampler());
 }
 

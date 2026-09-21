@@ -12,7 +12,8 @@ namespace gfx{
 class RenderContext;
 class Material;
 
-class ParticleMaterialActivator : public IMaterialActivator{
+class ParticleMaterialActivator : public IMaterialActivator
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(ParticleMaterialActivator);
 

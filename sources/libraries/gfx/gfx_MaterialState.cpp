@@ -6,7 +6,8 @@ namespace nw{
 namespace gfx{
 namespace internal{
 
-nn::math::MTX34* CreateMatrixForLinearShadowMapTexture(nn::math::MTX34* pOut, f32 coeff, f32 nearp, f32 farp){
+nn::math::MTX34* CreateMatrixForLinearShadowMapTexture(nn::math::MTX34* pOut, f32 coeff, f32 nearp, f32 farp)
+{
     f32 (*const m)[4] = pOut->matrix;
     f32 scaleZ = 1.0f / (farp - nearp);
 
@@ -28,10 +29,12 @@ nn::math::MTX34* CreateMatrixForLinearShadowMapTexture(nn::math::MTX34* pOut, f3
     return pOut;
 }
 
-math::MTX44* MaterialState::SetupTextureMatrix(math::MTX44* textureMatrix,ResTextureCoordinator::MappingMatrixMode mode,float scaleS, float scaleT,float rotate,float translateS, float translateT){
+math::MTX44* MaterialState::SetupTextureMatrix(math::MTX44* textureMatrix,ResTextureCoordinator::MappingMatrixMode mode,float scaleS, float scaleT,float rotate,float translateS, float translateT)
+{
     NW_NULL_ASSERT(textureMatrix);
 
-    switch (mode){
+    switch (mode)
+    {
     case ResTextureCoordinator::MAPPINGMATRIXMODE_MAYA:
         math::MTX44TextureMatrixForMaya(textureMatrix, scaleS, scaleT, rotate, translateS, translateT);
         break;
@@ -49,7 +52,8 @@ math::MTX44* MaterialState::SetupTextureMatrix(math::MTX44* textureMatrix,ResTex
     return textureMatrix;
 }
 
-void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting fragmentLighting, const ResFragmentLightingTable fragmentLightingTable){
+void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting fragmentLighting, const ResFragmentLightingTable fragmentLightingTable)
+{
     s32 flags = fragmentLighting.GetFlags();
     bool isDistribution0Enbaled = ut::CheckFlag(flags, ResFragmentLightingData::FLAG_DISTRIBUTION0_ENABLED);
     bool isDistribution1Enbaled = ut::CheckFlag(flags, ResFragmentLightingData::FLAG_DISTRIBUTION1_ENABLED);
@@ -64,7 +68,8 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
     ResImageLookupTable lookupTable;
 
     lightingLookupTable = fragmentLightingTable.GetReflectanceRSampler();
-    if (lightingLookupTable.IsValid() && isReflectionEnabled){
+    if (lightingLookupTable.IsValid() && isReflectionEnabled)
+    {
         NW_NULL_ASSERT(lightingLookupTable.GetSampler().IsValid());
 
         lookupTable = lightingLookupTable.GetSampler().Dereference();
@@ -77,7 +82,8 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
     }
 
     lightingLookupTable = fragmentLightingTable.GetReflectanceGSampler();
-    if (lightingLookupTable.IsValid() && isReflectionEnabled){
+    if (lightingLookupTable.IsValid() && isReflectionEnabled)
+    {
         NW_NULL_ASSERT(lightingLookupTable.GetSampler().IsValid());
 
         lookupTable = lightingLookupTable.GetSampler().Dereference();
@@ -90,7 +96,8 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
     }
 
     lightingLookupTable = fragmentLightingTable.GetReflectanceBSampler();
-    if (lightingLookupTable.IsValid() && isReflectionEnabled){
+    if (lightingLookupTable.IsValid() && isReflectionEnabled)
+    {
         NW_NULL_ASSERT(lightingLookupTable.GetSampler().IsValid());
 
         lookupTable = lightingLookupTable.GetSampler().Dereference();
@@ -103,7 +110,8 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
     }
 
     lightingLookupTable = fragmentLightingTable.GetDistribution0Sampler();
-    if (lightingLookupTable.IsValid() && isDistribution0Enbaled){
+    if (lightingLookupTable.IsValid() && isDistribution0Enbaled)
+    {
         NW_NULL_ASSERT(lightingLookupTable.GetSampler().IsValid());
 
         lookupTable = lightingLookupTable.GetSampler().Dereference();
@@ -116,7 +124,8 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
     }
 
     lightingLookupTable = fragmentLightingTable.GetDistribution1Sampler();
-    if (lightingLookupTable.IsValid() && isDistribution1Enbaled){
+    if (lightingLookupTable.IsValid() && isDistribution1Enbaled)
+    {
         NW_NULL_ASSERT(lightingLookupTable.GetSampler().IsValid());
 
         lookupTable = lightingLookupTable.GetSampler().Dereference();
@@ -129,7 +138,8 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
     }
 
     lightingLookupTable = fragmentLightingTable.GetFresnelSampler();
-    if (lightingLookupTable.IsValid() && isFresnelEnabled){
+    if (lightingLookupTable.IsValid() && isFresnelEnabled)
+    {
         NW_NULL_ASSERT(lightingLookupTable.GetSampler().IsValid());
 
         lookupTable = lightingLookupTable.GetSampler().Dereference();
@@ -144,9 +154,11 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
     GraphicsDevice::ActivateLutParameters();
 }
 
-/*void MaterialState::ActivateTextureCoordinators(RenderContext* renderContext, const ShaderProgram* shaderProgram, const ResMaterial texCoordMaterial){
+/*void MaterialState::ActivateTextureCoordinators(RenderContext* renderContext, const ShaderProgram* shaderProgram, const ResMaterial texCoordMaterial)
+{
 
-    enum{
+    enum
+    {
         TEXCOORD2_SHIFT = 13,
         TEXCOORD3_SHIFT = 8
     };
@@ -179,11 +191,14 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
 
     int coordinatorsCount = texCoordMaterial.GetActiveTextureCoordinatorsCount();
 
-    for (int unit = 0; unit < TEXTURE_UNIT_COUNT; ++unit){
+    for (int unit = 0; unit < TEXTURE_UNIT_COUNT; ++unit)
+    {
         shaderProgram->SetVertexUniformBool(NW_GFX_VERTEX_UNIFORM(UVMAP0) + unit, false);
 
-        if (unit == 1 || unit == 2){
-            if (unit < coordinatorsCount){
+        if (unit == 1 || unit == 2)
+        {
+            if (unit < coordinatorsCount)
+            {
                 shaderProgram->SetVertexUniformBool(NW_GFX_VERTEX_UNIFORM(ISTEX1) + unit - 1, true);
             }
             else{
@@ -195,17 +210,20 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
     math::VEC4 projectionTranslate;
     bool isProjectionEnabled = false;
 
-    for (int i = 0; i < coordinatorsCount; ++i){
+    for (int i = 0; i < coordinatorsCount; ++i)
+    {
         ResTextureCoordinator coordinator = texCoordMaterial.GetTextureCoordinators(i);
         NW_ASSERT(coordinator.IsValid());
 
-        if (!coordinator.IsEnabled()){
+        if (!coordinator.IsEnabled())
+        {
             continue;
         }
 
         math::MTX34 texMtx34;
 
-        if (coordinator.IsDirty()){
+        if (coordinator.IsDirty())
+        {
             math::MTX44 texMtx;
             SetupTextureMatrix(&texMtx,coordinator.GetMatrixMode(),coordinator.GetScale().x,coordinator.GetScale().y,coordinator.GetRotate(),coordinator.GetTranslate().x,coordinator.GetTranslate().y);
 
@@ -224,7 +242,8 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
 
         NW_ASSERTMSG(i < 1 || coordinator.GetMappingMethod() != ResTextureCoordinator::MAPPINGMETHOD_CAMERA_CUBE_ENV, "Cube Map is supported just on Texture Unit 0.");
 
-        switch (coordinator.GetMappingMethod()){
+        switch (coordinator.GetMappingMethod())
+        {
         case ResTextureCoordinator::MAPPINGMETHOD_UV_COORDINATE:{
                 textureMappings[i] = static_cast<GLfloat>(coordinator.GetSourceCoordinate());
                 shaderProgram->SetVertexUniformBool(NW_GFX_VERTEX_UNIFORM(UVMAP0) + i, true);
@@ -283,7 +302,8 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
                 ResCameraProjectionUpdater updater = camera->GetProjectionUpdater()->GetResource();
 
                 math::MTX34 projection = camera->TextureProjectionMatrix();
-                switch (updater.ref().typeInfo){
+                switch (updater.ref().typeInfo)
+                {
                 case ResPerspectiveProjectionUpdater::TYPE_INFO:{
                         f32 scaleFactor = 1.0f / (far - near);
                         math::MTX34 scaleMatrix = math::MTX34::Identity();
@@ -327,7 +347,8 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
                 textureMappings[i] = static_cast<GLfloat>(TEXTURE_COORDINATE_COUNT - 1) + static_cast<GLfloat>(coordinator.GetMappingMethod());
 
                 const Camera* camera = renderContext->GetActiveCamera();
-                if (camera){
+                if (camera)
+                {
                     texMtx34 = camera->InverseViewMatrix();
                 }
             }
@@ -345,24 +366,28 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
 
         int matrixCount = 3;
 
-        if (i == 2){
+        if (i == 2)
+        {
             matrixCount = 2;
         }
 
         internal::NWSetVertexUniform4fv(VERTEX_SHADER_UNIFORM_TEXMTX0_INDEX + 3 * i, matrixCount, texMtx34);
     }
 
-    if (isProjectionEnabled){
+    if (isProjectionEnabled)
+    {
         internal::NWSetVertexUniform4fv(VERTEX_SHADER_UNIFORM_TEXTRAN_INDEX, 1, projectionTranslate);
     }
 
     internal::NWSetVertexUniform3fv(VERTEX_SHADER_UNIFORM_TEXCMAP_INDEX, 1, textureMappings);
 }*/
 
-/*void MaterialState::ActivateParticleTextureCoordinators(RenderContext* renderContext, const ShaderProgram* shaderProgram, const ResMaterial texCoordMaterial){
+/*void MaterialState::ActivateParticleTextureCoordinators(RenderContext* renderContext, const ShaderProgram* shaderProgram, const ResMaterial texCoordMaterial)
+{
     NW_UNUSED_VARIABLE(renderContext);
 
-    enum{
+    enum
+    {
         TEXCOORD2_SHIFT = 13,
         TEXCOORD3_SHIFT = 8
     };
@@ -400,10 +425,12 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
     ResTextureCoordinator coordinator = texCoordMaterial.GetTextureCoordinators(0);
     NW_ASSERT(coordinator.IsValid());
 
-    if (coordinator.IsEnabled()){
+    if (coordinator.IsEnabled())
+    {
         math::MTX34 texMtx34;
 
-        if (coordinator.IsDirty()){
+        if (coordinator.IsDirty())
+        {
             math::MTX44 texMtx;
             SetupTextureMatrix(
                 &texMtx,
@@ -427,7 +454,8 @@ void MaterialState::ActivateFragmentLightingTable(const ResFragmentLighting frag
             texMtx34 = coordinator.GetTextureMatrix();
         }
 
-        NW_ASSERT(coordinator.GetMappingMethod() == ResTextureCoordinator::MAPPINGMETHOD_UV_COORDINATE);{
+        NW_ASSERT(coordinator.GetMappingMethod() == ResTextureCoordinator::MAPPINGMETHOD_UV_COORDINATE);
+        {
             textureMappings[0] = static_cast<GLfloat>(coordinator.GetSourceCoordinate());
             shaderProgram->SetVertexUniformBool(NW_GFX_VERTEX_UNIFORM(UVMAP0), true);
         }

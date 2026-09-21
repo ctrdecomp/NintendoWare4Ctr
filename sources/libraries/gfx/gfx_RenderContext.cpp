@@ -33,7 +33,8 @@
 #include <GLES2/gl2extern.h>
 
 namespace{
-nw::math::VEC4 GetTranslate(const nw::math::MTX34& transform){
+nw::math::VEC4 GetTranslate(const nw::math::MTX34& transform)
+{
     nw::math::VEC3 translate = transform.GetColumn(3);
     return nw::math::VEC4(translate);
 }
@@ -44,13 +45,15 @@ namespace gfx{
 
 const ut::FloatColor RenderContext::NULL_AMBIENT = ut::FloatColor();
 
-RenderContext* RenderContext::Builder::Create(nw::os::IAllocator* allocator){
+RenderContext* RenderContext::Builder::Create(nw::os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
 
     void* renderContextMemory = allocator->Alloc(sizeof(RenderContext));
     NW_NULL_ASSERT(renderContextMemory);
 
-    if (!renderContextMemory){
+    if (!renderContextMemory)
+    {
         NW_WARNING(false, "Allocation failed\n");
         return NULL;
     }
@@ -58,64 +61,69 @@ RenderContext* RenderContext::Builder::Create(nw::os::IAllocator* allocator){
     void* shaderProgramMemory = allocator->Alloc(sizeof(ShaderProgram));
     NW_NULL_ASSERT(shaderProgramMemory);
 
-    if (!shaderProgramMemory){
+    if (!shaderProgramMemory)
+    {
         NW_WARNING(false, "Allocation failed\n");
         return NULL;
     }
 
     GfxPtr<ShaderProgram> shaderProgram(new(shaderProgramMemory) ShaderProgram(allocator));
 
-    if (mParticleMaterialActivator == NULL){
-        mParticleMaterialActivator = ParticleMaterialActivator::Create(allocator);
+    if (m_ParticleMaterialActivator == NULL)
+    {
+        m_ParticleMaterialActivator = ParticleMaterialActivator::Create(allocator);
     }
 
-    GfxPtr<IMaterialActivator> particleMaterialActivator(mParticleMaterialActivator);
+    GfxPtr<IMaterialActivator> particleMaterialActivator(m_ParticleMaterialActivator);
 
     SceneEnvironment::Description description;
-    description.vertexLights = VertexLightArray(mMaxVertexLights, allocator);
-    description.cameras = CameraArray(mMaxCameras, allocator);
-    description.fogs = FogArray(mMaxFogs, allocator);
-    description.lightSets = LightSetArray(mMaxLightSets, allocator);
+    description.vertexLights = VertexLightArray(m_MaxVertexLights, allocator);
+    description.cameras = CameraArray(m_MaxCameras, allocator);
+    description.fogs = FogArray(m_MaxFogs, allocator);
+    description.lightSets = LightSetArray(m_MaxLightSets, allocator);
 
     return new(renderContextMemory) RenderContext(allocator, shaderProgram, particleMaterialActivator, description);
 }
 
 RenderContext::RenderContext(nw::os::IAllocator* allocator,GfxPtr<ShaderProgram> shaderProgram,GfxPtr<IMaterialActivator> particleMaterialActivator,const SceneEnvironment::Description& description):
     GfxObject(allocator),
-    mShaderProgram(shaderProgram),
-    mIsVertexAlphaEnabled(false),
-    mIsBoneWeightWEnabled(false),
-    mIsVertexAttributeDirty(true),
-    mIsShaderProgramDirty(true),
-    mRenderMode(RENDERMODE_DEFAULT),
-    mRenderTarget(NULL),
-    mModelCache(NULL),
-    mMaterial(NULL),
-    mMaterialCache(NULL),
-    mCameraCache(NULL),
-    mSceneEnvironment(description),
-    mParticleMaterialActivator(particleMaterialActivator)
-{}
+    m_ShaderProgram(shaderProgram),
+    m_IsVertexAlphaEnabled(false),
+    m_IsBoneWeightWEnabled(false),
+    m_IsVertexAttributeDirty(true),
+    m_IsShaderProgramDirty(true),
+    m_RenderMode(RENDERMODE_DEFAULT),
+    m_RenderTarget(NULL),
+    m_ModelCache(NULL),
+    m_Material(NULL),
+    m_MaterialCache(NULL),
+    m_CameraCache(NULL),
+    m_SceneEnvironment(description),
+    m_ParticleMaterialActivator(particleMaterialActivator) {}
 
-void RenderContext::SetRenderTarget(IRenderTarget* renderTarget, const Viewport& viewport){
-    mRenderTarget = renderTarget;
+void RenderContext::SetRenderTarget(IRenderTarget* renderTarget, const Viewport& viewport)
+    {
+    m_RenderTarget = renderTarget;
 
-    if (mRenderTarget){
-        const FrameBufferObject& fbo = mRenderTarget->GetBufferObject();
+    if (m_RenderTarget)
+    {
+        const FrameBufferObject& fbo = m_RenderTarget->GetBufferObject();
         fbo.ActivateBuffer();
 
-        GraphicsDevice::SetRenderBufferSize(mRenderTarget->GetDescription().width, mRenderTarget->GetDescription().height);
+        GraphicsDevice::SetRenderBufferSize(m_RenderTarget->GetDescription().width, m_RenderTarget->GetDescription().height);
 
         GraphicsDevice::ActivateViewport(viewport);
         GraphicsDevice::SetDepthRange(viewport.GetDepthNear(), viewport.GetDepthFar());
-        GraphicsDevice::SetDepthFormat(mRenderTarget->GetDescription().depthFormat);
+        GraphicsDevice::SetDepthFormat(m_RenderTarget->GetDescription().depthFormat);
     }
 }
 
-void RenderContext::SetRenderTarget(IRenderTarget* renderTarget){
+void RenderContext::SetRenderTarget(IRenderTarget* renderTarget)
+{
     f32 width = 0.0f;
     f32 height = 0.0f;
-    if (renderTarget){
+    if (renderTarget)
+    {
         width = static_cast<f32>(renderTarget->GetDescription().width);
         height = static_cast<f32>(renderTarget->GetDescription().height);
     }
@@ -127,75 +135,90 @@ void RenderContext::SetRenderTarget(IRenderTarget* renderTarget){
     this->SetRenderTarget(renderTarget, Viewport(x, y, width, height, near, far));
 }
 
-void RenderContext::ResetState(){
-    mModelCache = NULL;
-    mMaterial = NULL;
-    mMaterialCache = NULL;
-    mCameraCache = NULL;
-    mSceneEnvironment.Reset();
+void RenderContext::ResetState()
+{
+    m_ModelCache = NULL;
+    m_Material = NULL;
+    m_MaterialCache = NULL;
+    m_CameraCache = NULL;
+    m_SceneEnvironment.Reset();
 
-    mIsVertexAttributeDirty = true;
+    m_IsVertexAttributeDirty = true;
 
-    mShaderProgram.Get()->DeactivateDescription();
+    m_ShaderProgram.Get()->DeactivateDescription();
     GraphicsDevice::InvalidateAllLookupTables();
-    mMaterialHash.ResetMaterialHash(Model::MULTI_FLAG_BUFFER_MATERIAL);
+    m_MaterialHash.ResetMaterialHash(Model::MULTI_FLAG_BUFFER_MATERIAL);
 }
 
-void RenderContext::ResetState(s32 resetStateMode, s32 hashMask){
-    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_MODEL_CACHE)){
-        mModelCache = NULL;
+void RenderContext::ResetState(s32 resetStateMode, s32 hashMask)
+{
+    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_MODEL_CACHE))
+{
+        m_ModelCache = NULL;
     }
 
-    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_MATERIAL)){
-        mMaterial = NULL;
+    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_MATERIAL))
+    {
+        m_Material = NULL;
     }
 
-    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_MATERIAL_CACHE)){
-        mMaterialCache = NULL;
+    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_MATERIAL_CACHE))
+    {
+        m_MaterialCache = NULL;
     }
 
-    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_ACTIVE_CAMERA)){
-        mSceneEnvironment.mCamera = NULL;
-        mSceneEnvironment.mCameraIndex = -1;
+    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_ACTIVE_CAMERA))
+    {
+        m_SceneEnvironment.m_Camera = NULL;
+        m_SceneEnvironment.m_CameraIndex = -1;
     }
 
-    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_CAMERA_CACHE)){
-        mCameraCache = NULL;
+    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_CAMERA_CACHE))
+    {
+        m_CameraCache = NULL;
     }
 
-    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_SCENE_ENVIRONMENT)){
-        mSceneEnvironment.Reset();
+    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_SCENE_ENVIRONMENT))
+    {
+        m_SceneEnvironment.Reset();
     }
 
-    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_SHADER_PROGRAM)){
-        mShaderProgram.Get()->DeactivateDescription();
-        mIsShaderProgramDirty = true;
+    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_SHADER_PROGRAM))
+    {
+        m_ShaderProgram.Get()->DeactivateDescription();
+        m_IsShaderProgramDirty = true;
     }
 
-    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_LOOK_UP_TABLE)){
+    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_LOOK_UP_TABLE))
+    {
         GraphicsDevice::InvalidateAllLookupTables();
     }
 
-    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_HASH)){
-        mMaterialHash.ResetMaterialHash(hashMask);
+    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_HASH))
+    {
+        m_MaterialHash.ResetMaterialHash(hashMask);
     }
 
-    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_VERTEX_ATTRIBUTE)){
-        mIsVertexAttributeDirty = true;
+    if (ut::CheckFlag(resetStateMode, RenderContext::RESETSTATEMODE_VERTEX_ATTRIBUTE))
+    {
+        m_IsVertexAttributeDirty = true;
     }
 }
 
-void RenderContext::ClearBuffer(GLbitfield mask, const ut::FloatColor& color, f32 depth){
-    const FrameBufferObject& fbo = mRenderTarget->GetBufferObject();
+void RenderContext::ClearBuffer(GLbitfield mask, const ut::FloatColor& color, f32 depth)
+{
+    const FrameBufferObject& fbo = m_RenderTarget->GetBufferObject();
 
     {
         fbo.ClearBuffer(mask, color, depth, 0);
     }
 }
 
-void RenderContext::SetCameraMatrix(Camera* camera, bool isForce){
-    if (mCameraCache != camera || isForce){
-        mCameraCache = camera;
+void RenderContext::SetCameraMatrix(Camera* camera, bool isForce)
+{
+    if (m_CameraCache != camera || isForce)
+    {
+        m_CameraCache = camera;
 
         internal::NWSetVertexUniform4fv(VERTEX_SHADER_UNIFORM_VIEWMTX_INDEX, 3, camera->ViewMatrix());
         internal::NWSetVertexUniform4fv(VERTEX_SHADER_UNIFORM_PROJMTX_INDEX, 4, camera->ProjectionMatrix());
@@ -205,39 +228,44 @@ void RenderContext::SetCameraMatrix(Camera* camera, bool isForce){
     }
 }
 
-void RenderContext::SetModelMatrixForModel(Model* model){
+void RenderContext::SetModelMatrixForModel(Model* model)
+{
     NW_NULL_ASSERT(model);
-    NW_NULL_ASSERT(mShaderProgram);
+    NW_NULL_ASSERT(m_ShaderProgram);
 
-    mShaderProgram->SetWorldMatrix(math::MTX34::Identity());
-    mShaderProgram->SetModelNormalMatrix(model->NormalMatrix());
+    m_ShaderProgram->SetWorldMatrix(math::MTX34::Identity());
+    m_ShaderProgram->SetModelNormalMatrix(model->NormalMatrix());
 
-    mModelCache = model;
+    m_ModelCache = model;
 }
 
-void RenderContext::SetModelMatrixForSkeletalModel(SkeletalModel* skeletalModel){
+void RenderContext::SetModelMatrixForSkeletalModel(SkeletalModel* skeletalModel)
+{
     NW_NULL_ASSERT(skeletalModel);
-    NW_NULL_ASSERT(mShaderProgram);
+    NW_NULL_ASSERT(m_ShaderProgram);
 
     Skeleton* skeleton = skeletalModel->GetSkeleton();
     NW_NULL_ASSERT(skeleton);
     ResSkeleton resSkeleton = skeleton->GetResSkeleton();
     NW_ASSERT(resSkeleton.IsValid());
 
-    if (ut::CheckFlag(resSkeleton.GetFlags(), ResSkeletonData::FLAG_MODEL_COORDINATE)){
-        mShaderProgram->SetWorldMatrix(skeletalModel->WorldMatrix());
+    if (ut::CheckFlag(resSkeleton.GetFlags(), ResSkeletonData::FLAG_MODEL_COORDINATE))
+    {
+        m_ShaderProgram->SetWorldMatrix(skeletalModel->WorldMatrix());
     }
     else{
-        mShaderProgram->SetWorldMatrix(math::MTX34::Identity());
+        m_ShaderProgram->SetWorldMatrix(math::MTX34::Identity());
     }
 
-    mShaderProgram->SetModelNormalMatrix(skeletalModel->NormalMatrix());
+    m_ShaderProgram->SetModelNormalMatrix(skeletalModel->NormalMatrix());
 
-    mModelCache = skeletalModel;
+    m_ModelCache = skeletalModel;
 }
 
-void RenderContext::ActivateContext(IMaterialActivator* userMaterialActivator){
-    if (mMaterialCache == mMaterial){
+void RenderContext::ActivateContext(IMaterialActivator* userMaterialActivator)
+{
+    if (m_MaterialCache == m_Material)
+    {
         return;
     }
 
@@ -245,128 +273,148 @@ void RenderContext::ActivateContext(IMaterialActivator* userMaterialActivator){
     ActivateSceneEnvironment();
     ActivateMaterial(userMaterialActivator);
 
-    mSceneEnvironment.SetAllFlagsDirty(false);
+    m_SceneEnvironment.SetAllFlagsDirty(false);
 
-    mMaterialCache = mMaterial;
+    m_MaterialCache = m_Material;
 }
 
-void RenderContext::ActivateParticleContext(){
-    if (mIsVertexAttributeDirty){
+void RenderContext::ActivateParticleContext()
+{
+    if (m_IsVertexAttributeDirty)
+    {
         internal::ClearVertexAttribute();
-        mIsVertexAttributeDirty = false;
+        m_IsVertexAttributeDirty = false;
     }
 
-    if (mMaterialCache == mMaterial){
+    if (m_MaterialCache == m_Material)
+    {
         return;
     }
 
     bool isParticleMaterialEnabled = false;
-    if (mMaterialCache != NULL){
+    if (m_MaterialCache != NULL)
+    {
         isParticleMaterialEnabled =
-            ut::CheckFlag(mMaterialCache->GetOriginal().GetFlags(), ResMaterialData::FLAG_PARTICLE_MATERIAL_ENABLED) &&
-            ut::CheckFlag(mMaterial->GetOriginal().GetFlags(), ResMaterialData::FLAG_PARTICLE_MATERIAL_ENABLED);
+            ut::CheckFlag(m_MaterialCache->GetOriginal().GetFlags(), ResMaterialData::FLAG_PARTICLE_MATERIAL_ENABLED) &&
+            ut::CheckFlag(m_Material->GetOriginal().GetFlags(), ResMaterialData::FLAG_PARTICLE_MATERIAL_ENABLED);
     }
 
-    if (isParticleMaterialEnabled){
-        mIsShaderProgramDirty = false;
+    if (isParticleMaterialEnabled)
+    {
+        m_IsShaderProgramDirty = false;
         ActivateParticleMaterial();
     }
     else{
         ActivateContext();
     }
 
-    mMaterialCache = mMaterial;
+    m_MaterialCache = m_Material;
 }
 
-void RenderContext::ActivateVertexAttribute(ResMesh mesh){
-    NW_NULL_ASSERT(mesh.ref().mActivateCommandCache);
+void RenderContext::ActivateVertexAttribute(ResMesh mesh)
+{
+    NW_NULL_ASSERT(mesh.ref().m_ActivateCommandCache);
 
-    if (mIsVertexAttributeDirty){
+    if (m_IsVertexAttributeDirty)
+    {
         internal::ClearVertexAttribute();
-        mIsVertexAttributeDirty = false;
+        m_IsVertexAttributeDirty = false;
     }
 
-    internal::NWUseCmdlist(mesh.ref().mActivateCommandCache, mesh.ref().mActivateCommandCacheSize);
-    internal::NWUseCmdlist(mesh.ref().mIrScaleCommand, sizeof(mesh.ref().mIrScaleCommand));
+    internal::NWUseCmdlist(mesh.ref().m_ActivateCommandCache, mesh.ref().m_ActivateCommandCacheSize);
+    internal::NWUseCmdlist(mesh.ref().m_IrScaleCommand, sizeof(mesh.ref().m_IrScaleCommand));
 
-    const bool hasVertexAlpha = (mesh.ref().mFlags & ResMesh::FLAG_HAS_VERTEX_ALPHA) ? true : false;
-    const bool hasBoneWeightW = (mesh.ref().mFlags & ResMesh::FLAG_HAS_BONE_WEIGHT_W) ? true : false;
+    const bool hasVertexAlpha = (mesh.ref().m_Flags & ResMesh::FLAG_HAS_VERTEX_ALPHA) ? true : false;
+    const bool hasBoneWeightW = (mesh.ref().m_Flags & ResMesh::FLAG_HAS_BONE_WEIGHT_W) ? true : false;
 
-    mShaderProgram->SetVertexUniformBool(NW_GFX_VERTEX_UNIFORM(ISVERTA), hasVertexAlpha);
-    mShaderProgram->SetVertexUniformBool(NW_GFX_VERTEX_UNIFORM(ISBONEW), hasBoneWeightW);
+    m_ShaderProgram->SetVertexUniformBool(NW_GFX_VERTEX_UNIFORM(ISVERTA), hasVertexAlpha);
+    m_ShaderProgram->SetVertexUniformBool(NW_GFX_VERTEX_UNIFORM(ISBONEW), hasBoneWeightW);
 }
 
-void RenderContext::ActivateShaderProgram(){
-    if (!ut::CheckFlag(mRenderMode, RenderContext::RENDERMODE_IGNORE_SHADER)){
-        ResShaderProgramDescription description = mMaterial->GetDescription();
+void RenderContext::ActivateShaderProgram()
+{
+    if (!ut::CheckFlag(m_RenderMode, RenderContext::RENDERMODE_IGNORE_SHADER))
+{
+        ResShaderProgramDescription description = m_Material->GetDescription();
 
         NW_ASSERT(description.IsValid());
 
-        ResShaderProgramDescription previousDescription = mShaderProgram->GetActiveDescription();
+        ResShaderProgramDescription previousDescription = m_ShaderProgram->GetActiveDescription();
 
-        if (previousDescription != description){
+        if (previousDescription != description)
+        {
             if (previousDescription.IsValid() &&
                 previousDescription.GetGeometryShaderIndex() >= 0 &&
-                description.GetGeometryShaderIndex() < 0){
-                mIsVertexAttributeDirty = true;
+                description.GetGeometryShaderIndex() < 0)
+                {
+                m_IsVertexAttributeDirty = true;
 
                 const s32 hashMask = Model::FLAG_BUFFER_SHADER_PARAMETER |
                     Model::FLAG_BUFFER_MATERIAL_COLOR |
                     Model::FLAG_BUFFER_TEXTURE_COORDINATOR |
                     Model::FLAG_BUFFER_SCENE_ENVIRONMENT;
-                mMaterialHash.ResetMaterialHash(hashMask);
+                m_MaterialHash.ResetMaterialHash(hashMask);
 
-                mSceneEnvironment.SetAllFlagsDirty(true);
+                m_SceneEnvironment.SetAllFlagsDirty(true);
             }
 
-            mShaderProgram.Get()->ActivateDescription(description);
+            m_ShaderProgram.Get()->ActivateDescription(description);
 
-            mIsShaderProgramDirty = true;
+            m_IsShaderProgramDirty = true;
         }
         else{
-            mIsShaderProgramDirty = false;
+            m_IsShaderProgramDirty = false;
         }
     }
 }
 
-void RenderContext::ActivateSceneEnvironment(){
-    if (!ut::CheckFlag(mRenderMode, RenderContext::RENDERMODE_IGNORE_SCENEENVIRONMENT)){
-        NW_NULL_ASSERT(mMaterial);
-        const Model* owner = mMaterial->GetOwnerModel();
+void RenderContext::ActivateSceneEnvironment()
+{
+    if (!ut::CheckFlag(m_RenderMode, RenderContext::RENDERMODE_IGNORE_SCENEENVIRONMENT))
+{
+        NW_NULL_ASSERT(m_Material);
+        const Model* owner = m_Material->GetOwnerModel();
         NW_NULL_ASSERT(owner);
 
-        ResMaterial resMaterial = mMaterial->GetSceneEnvironmentResMaterial();
+        ResMaterial resMaterial = m_Material->GetSceneEnvironmentResMaterial();
 
-        this->mSceneEnvironment.SetActiveLightSet(resMaterial.GetLightSetIndex());
+        this->m_SceneEnvironment.SetActiveLightSet(resMaterial.GetLightSetIndex());
 
-        if (this->mSceneEnvironment.IsFragmentLightsDirty()){
+        if (this->m_SceneEnvironment.IsFragmentLightsDirty())
+        {
             ActivateFragmentLights();
         }
 
-        if (this->mSceneEnvironment.IsHemiSphereLightDirty()){
+        if (this->m_SceneEnvironment.IsHemiSphereLightDirty())
+        {
             ActivateHemiSphereLight();
         }
-        if (this->mSceneEnvironment.IsVertexLightsDirty()){
+        if (this->m_SceneEnvironment.IsVertexLightsDirty())
+        {
             ActivateVertexLights();
         }
-        this->mSceneEnvironment.SetActiveFog(resMaterial.GetFogIndex());
+        this->m_SceneEnvironment.SetActiveFog(resMaterial.GetFogIndex());
 
-        if (this->mSceneEnvironment.IsFogDirty()){
+        if (this->m_SceneEnvironment.IsFogDirty())
+        {
             ActivateFog();
         }
     }
 }
 
-void RenderContext::ActivateFog(){
-    if (mSceneEnvironment.GetActiveFog() != NULL){
-        NW_ASSERT(mSceneEnvironment.GetActiveFog()->GetResFog().IsValid());
-        NW_ASSERT(mSceneEnvironment.GetActiveFog()->GetResFog().GetFogSampler().IsValid());
+void RenderContext::ActivateFog()
+{
+    if (m_SceneEnvironment.GetActiveFog() != NULL)
+    {
+        NW_ASSERT(m_SceneEnvironment.GetActiveFog()->GetResFog().IsValid());
+        NW_ASSERT(m_SceneEnvironment.GetActiveFog()->GetResFog().GetFogSampler().IsValid());
 
-        ResFog resFog = mSceneEnvironment.GetActiveFog()->GetResFog();
+        ResFog resFog = m_SceneEnvironment.GetActiveFog()->GetResFog();
 
         ResImageLookupTable lut = resFog.GetFogSampler();
 
-        enum{
+        enum
+        {
             REG_FOG_ZFLIP = 0xe0,
             REG_FOG_COLOR = 0xe1,
             REG_FOG_ZFLIP_SHIFT = 16
@@ -390,10 +438,12 @@ void RenderContext::ActivateFog(){
     }
 }
 
-void RenderContext::ActivateHemiSphereLight(){
-    const HemiSphereLight* hemiSphereLight = mSceneEnvironment.GetHemiSphereLight();
+void RenderContext::ActivateHemiSphereLight()
+{
+    const HemiSphereLight* hemiSphereLight = m_SceneEnvironment.GetHemiSphereLight();
     if (hemiSphereLight &&
-        ut::CheckFlag(mShaderProgram->GetActiveDescription().GetFlags(), ResShaderProgramDescription::FLAG_IS_SUPPORTING_HEMISPHERE_LIGHTING)){
+        ut::CheckFlag(m_ShaderProgram->GetActiveDescription().GetFlags(), ResShaderProgramDescription::FLAG_IS_SUPPORTING_HEMISPHERE_LIGHTING))
+    {
         ResHemiSphereLight resLight = hemiSphereLight->GetResHemiSphereLight();
         NW_ASSERT(resLight.IsValid());
 
@@ -402,7 +452,8 @@ void RenderContext::ActivateHemiSphereLight(){
 
         math::VEC3 direction(resLight.GetDirection());
         if (ut::CheckFlag(resLight.GetFlags(), ResHemiSphereLightData::FLAG_IS_INHERITING_DIRECTION_ROTATE) &&
-            hemiSphereLight->GetParent() != NULL){
+            hemiSphereLight->GetParent() != NULL)
+            {
             math::VEC3TransformNormal(&direction, &hemiSphereLight->TrackbackWorldMatrix(), &resLight.GetDirection());
         }
 
@@ -418,19 +469,22 @@ void RenderContext::ActivateHemiSphereLight(){
     }
 }
 
-void RenderContext::ActivateFragmentLights(){
+void RenderContext::ActivateFragmentLights()
+{
     GraphicsDevice::ResetFragmentLightEnabled();
-    int lightCount = mSceneEnvironment.GetFragmentLightCount();
+    int lightCount = m_SceneEnvironment.GetFragmentLightCount();
 
-    for (int i = 0; i < lightCount; ++i){
-        const FragmentLight* light = mSceneEnvironment.GetFragmentLight(i);
+    for (int i = 0; i < lightCount; ++i)
+    {
+        const FragmentLight* light = m_SceneEnvironment.GetFragmentLight(i);
         ActivateFragmentLight(i, light);
     }
 
     GraphicsDevice::ActivateFragmentLightEnabled();
 }
 
-void RenderContext::ActivateFragmentLight(int index, const FragmentLight* light){
+void RenderContext::ActivateFragmentLight(int index, const FragmentLight* light)
+{
     ResFragmentLight resLight = light->GetResFragmentLight();
     NW_ASSERT(resLight.IsValid());
 
@@ -442,7 +496,8 @@ void RenderContext::ActivateFragmentLight(int index, const FragmentLight* light)
 
     const math::MTX34& viewMatrix = camera->ViewMatrix();
 
-    if (lightKind == ResFragmentLight::KIND_DIRECTIONAL){
+    if (lightKind == ResFragmentLight::KIND_DIRECTIONAL)
+    {
         nw::math::VEC4 direction(light->Direction());
         direction.w = 0.0f;
 
@@ -454,18 +509,20 @@ void RenderContext::ActivateFragmentLight(int index, const FragmentLight* light)
         GraphicsDevice::SetFragmentLightSpotEnabled(index, false);
         GraphicsDevice::SetFragmentLightDistanceAttnEnabled(index, false);
     }
-    else if (lightKind == ResFragmentLight::KIND_POINT){
+    else if (lightKind == ResFragmentLight::KIND_POINT)
+    {
         GraphicsDevice::SetFragmentLightSpotEnabled(index, false);
 
         if (ut::CheckFlag(resLight.GetFlags(), ResFragmentLightData::FLAG_DISTANCE_ATTENUATION_ENABLED) &&
-            resLight.GetDistanceSampler().IsValid()){
+            resLight.GetDistanceSampler().IsValid())
+            {
             GraphicsDevice::SetFragmentLightDistanceAttnEnabled(index, true);
             GraphicsDevice::ActivateFragmentLightDistanceAttnTable(index, resLight.GetDistanceSampler().Dereference());
 
             GraphicsDevice::ActivateFragmentLightDistanceAttnScaleBias(
                 index,
-                resLight.ref().mDistanceAttenuationScale,
-                resLight.ref().mDistanceAttenuationBias);
+                resLight.ref().m_DistanceAttenuationScale,
+                resLight.ref().m_DistanceAttenuationBias);
         }
         else{
             GraphicsDevice::SetFragmentLightDistanceAttnEnabled(index, false);
@@ -478,11 +535,13 @@ void RenderContext::ActivateFragmentLight(int index, const FragmentLight* light)
         GraphicsDevice::ActivateFragmentLightPosition(index, position);
         GraphicsDevice::SetFragmentLightPositionW(index, (position.w == 0.0f));
     }
-    else if (lightKind == ResFragmentLight::KIND_SPOT){
+    else if (lightKind == ResFragmentLight::KIND_SPOT)
+    {
         NW_ASSERTMSG(resLight.GetAngleSampler().IsValid(), "The spot light must contain angle sampler(lookuptable).");
         NW_ASSERTMSG(resLight.GetAngleSampler().GetSampler().IsValid(), "The spot light must contain angle sampler(lookuptable).");
 
-        if (resLight.GetAngleSampler().IsValid()){
+        if (resLight.GetAngleSampler().IsValid())
+        {
             GraphicsDevice::SetFragmentLightSpotEnabled(index, true);
             GraphicsDevice::ActivateFragmentLightSpotTable(index, resLight.GetAngleSampler().GetSampler().Dereference());
             GraphicsDevice::SetLutIsAbs(GraphicsDevice::LUT_TARGET_SP, resLight.GetAngleSampler().GetSampler().Dereference().IsAbs());
@@ -490,14 +549,15 @@ void RenderContext::ActivateFragmentLight(int index, const FragmentLight* light)
             GraphicsDevice::SetLutScale(GraphicsDevice::LUT_TARGET_SP, resLight.GetAngleSampler().GetScale());
         }
 
-        if (ut::CheckFlag(resLight.GetFlags(), ResFragmentLightData::FLAG_DISTANCE_ATTENUATION_ENABLED) && resLight.GetDistanceSampler().IsValid()){
+        if (ut::CheckFlag(resLight.GetFlags(), ResFragmentLightData::FLAG_DISTANCE_ATTENUATION_ENABLED) && resLight.GetDistanceSampler().IsValid())
+        {
             GraphicsDevice::SetFragmentLightDistanceAttnEnabled(index, true);
             GraphicsDevice::ActivateFragmentLightDistanceAttnTable(index, resLight.GetDistanceSampler().Dereference());
 
             GraphicsDevice::ActivateFragmentLightDistanceAttnScaleBias(
                 index,
-                resLight.ref().mDistanceAttenuationScale,
-                resLight.ref().mDistanceAttenuationBias);
+                resLight.ref().m_DistanceAttenuationScale,
+                resLight.ref().m_DistanceAttenuationBias);
         }
         else{
             GraphicsDevice::SetFragmentLightDistanceAttnEnabled(index, false);
@@ -518,27 +578,33 @@ void RenderContext::ActivateFragmentLight(int index, const FragmentLight* light)
     }
 }
 
-void RenderContext::ActivateVertexLights(){
-    int size = mSceneEnvironment.GetVertexLightCount();
-    if (size > 0){
+void RenderContext::ActivateVertexLights()
+{
+    int size = m_SceneEnvironment.GetVertexLightCount();
+    if (size > 0)
+    {
         const ShaderProgram* shaderProgram = GetShaderProgram();
 
-        if (shaderProgram->GetActiveDescription().GetMaxVertexLightCount() > 0){
+        if (shaderProgram->GetActiveDescription().GetMaxVertexLightCount() > 0)
+        {
             shaderProgram->SetVertexUniformInt(NW_GFX_VERTEX_UNIFORM(LIGHTCT), ut::Max<s32>(size - 1, 0), 0, 1);
         }
 
-        for (int i = 0; i < size; i++){
-            ActivateVertexLight(i, mSceneEnvironment.GetVertexLight(i));
+        for (int i = 0; i < size; i++)
+        {
+            ActivateVertexLight(i, m_SceneEnvironment.GetVertexLight(i));
         }
     }
 }
 
-void RenderContext::ActivateVertexLight(int index, const VertexLight* light){
-    if (mShaderProgram->GetActiveDescription().GetMaxVertexLightCount() > index){
+void RenderContext::ActivateVertexLight(int index, const VertexLight* light)
+{
+    if (m_ShaderProgram->GetActiveDescription().GetMaxVertexLightCount() > index)
+    {
         const float LIGHT_INFINITY = 0.0f;
         const float LIGHT_FINITY = 1.0f;
 
-        s32 endUniform = mShaderProgram->GetActiveDescription().GetVertexLightEndUniform();
+        s32 endUniform = m_ShaderProgram->GetActiveDescription().GetVertexLightEndUniform();
         ResVertexLight resLight = light->GetResVertexLight();
         NW_ASSERT(resLight.IsValid());
 
@@ -547,40 +613,44 @@ void RenderContext::ActivateVertexLight(int index, const VertexLight* light){
 
         const math::MTX34& viewMatrix = camera->ViewMatrix();
 
-        mShaderProgram->SetUniversal(endUniform - (index + 1) * VERTEX_LIGHT_SET_COUNT + VERTEX_LIGHT_AMBIENT, resLight.GetAmbient());
-        mShaderProgram->SetUniversal(endUniform - (index + 1) * VERTEX_LIGHT_SET_COUNT + VERTEX_LIGHT_DIFFUSE, resLight.GetDiffuse());
+        m_ShaderProgram->SetUniversal(endUniform - (index + 1) * VERTEX_LIGHT_SET_COUNT + VERTEX_LIGHT_AMBIENT, resLight.GetAmbient());
+        m_ShaderProgram->SetUniversal(endUniform - (index + 1) * VERTEX_LIGHT_SET_COUNT + VERTEX_LIGHT_DIFFUSE, resLight.GetDiffuse());
 
-        if (resLight.GetLightKind() == ResVertexLight::KIND_DIRECTIONAL){
+        if (resLight.GetLightKind() == ResVertexLight::KIND_DIRECTIONAL)
+        {
 
             math::VEC4 position(light->Direction());
             position.w = LIGHT_INFINITY;
 
             TransformToViewCoordinate(&position, &viewMatrix, &position);
-            mShaderProgram->SetUniversal(endUniform - (index + 1) * VERTEX_LIGHT_SET_COUNT + VERTEX_LIGHT_POSITION, -position);
+            m_ShaderProgram->SetUniversal(endUniform - (index + 1) * VERTEX_LIGHT_SET_COUNT + VERTEX_LIGHT_POSITION, -position);
         }
         else{
             math::VEC4 position = GetTranslate(light->WorldMatrix());
             position.w = LIGHT_FINITY;
 
             TransformToViewCoordinate(&position, &viewMatrix, &position);
-            mShaderProgram->SetUniversal(endUniform - (index + 1) * VERTEX_LIGHT_SET_COUNT + VERTEX_LIGHT_POSITION, position);
+            m_ShaderProgram->SetUniversal(endUniform - (index + 1) * VERTEX_LIGHT_SET_COUNT + VERTEX_LIGHT_POSITION, position);
 
-            mShaderProgram->SetUniversal(
+            m_ShaderProgram->SetUniversal(
                 endUniform - (index + 1) * VERTEX_LIGHT_SET_COUNT + VERTEX_LIGHT_DISTANCE_ATTENUATION,
                 resLight.GetDistanceAttenuationAndEnabled());
 
-            if (resLight.GetLightKind() == ResVertexLight::KIND_SPOT){
+            if (resLight.GetLightKind() == ResVertexLight::KIND_SPOT)
+            {
                 math::VEC4 spotDirection(light->Direction());
                 spotDirection.w = 0.0f;
 
                 TransformToViewCoordinate(&spotDirection, &viewMatrix, &spotDirection);
 
                 math::VEC4 spotFactor(resLight.GetSpotFactor().x, resLight.GetSpotFactor().y, 0.0f, 0.0f);
-                if (resLight.GetSpotFactor().y > 0.0f && resLight.GetSpotFactor().y < math::PI){
+                if (resLight.GetSpotFactor().y > 0.0f && resLight.GetSpotFactor().y < math::PI)
+                {
                     spotFactor.y = nw::math::CosRad(resLight.GetSpotFactor().y);
                     spotDirection.w = 1.0f;
                 }
-                else if (resLight.GetSpotFactor().y == 0.0f){
+                else if (resLight.GetSpotFactor().y == 0.0f)
+                {
                     const float EPSILON = 1e-5f;
                     const float GREATER_THAN_ONE = 1.0f + EPSILON;
                     spotFactor.y = GREATER_THAN_ONE;
@@ -590,17 +660,18 @@ void RenderContext::ActivateVertexLight(int index, const VertexLight* light){
                     spotDirection.w = 0.0f;
                 }
 
-                mShaderProgram->SetUniversal(endUniform - (index + 1) * VERTEX_LIGHT_SET_COUNT + VERTEX_LIGHT_SPOT_DIRECTION, spotDirection);
-                mShaderProgram->SetUniversal(endUniform - (index + 1) * VERTEX_LIGHT_SET_COUNT + VERTEX_LIGHT_SPOT_FACTOR, spotFactor);
+                m_ShaderProgram->SetUniversal(endUniform - (index + 1) * VERTEX_LIGHT_SET_COUNT + VERTEX_LIGHT_SPOT_DIRECTION, spotDirection);
+                m_ShaderProgram->SetUniversal(endUniform - (index + 1) * VERTEX_LIGHT_SET_COUNT + VERTEX_LIGHT_SPOT_FACTOR, spotFactor);
             }
             else{
-                mShaderProgram->SetUniversal(endUniform - (index + 1) * VERTEX_LIGHT_SET_COUNT + VERTEX_LIGHT_SPOT_DIRECTION, math::VEC4::Zero());
+                m_ShaderProgram->SetUniversal(endUniform - (index + 1) * VERTEX_LIGHT_SET_COUNT + VERTEX_LIGHT_SPOT_DIRECTION, math::VEC4::Zero());
             }
         }
     }
 }
 
-void RenderContext::TransformToViewCoordinate(math::VEC4* out, const math::MTX34* __restrict view, const math::VEC4* v){
+void RenderContext::TransformToViewCoordinate(math::VEC4* out, const math::MTX34* __restrict view, const math::VEC4* v)
+{
     f32 vx = v->x;
     f32 vy = v->y;
     f32 vz = v->z;
@@ -612,13 +683,15 @@ void RenderContext::TransformToViewCoordinate(math::VEC4* out, const math::MTX34
     out->w = vw;
 }
 
-void RenderContext::RenderPrimitive(ResPrimitive primitive){
+void RenderContext::RenderPrimitive(ResPrimitive primitive)
+{
     NW_ASSERT(primitive.IsValid());
 
-    mShaderProgram->FlushUniform();
+    m_ShaderProgram->FlushUniform();
 
-    if ((primitive.GetFlags() & ResPrimitive::FLAG_COMMAND_HAS_BEEN_SETUP) == 0){
-        ResShaderProgramDescription description = mShaderProgram->GetActiveDescription();
+    if ((primitive.GetFlags() & ResPrimitive::FLAG_COMMAND_HAS_BEEN_SETUP) == 0)
+    {
+        ResShaderProgramDescription description = m_ShaderProgram->GetActiveDescription();
         bool hasGeometryShader = (description.GetGeometryShaderObject() > 0);
 
         primitive.SetupDrawCommand(hasGeometryShader);
@@ -626,16 +699,18 @@ void RenderContext::RenderPrimitive(ResPrimitive primitive){
 
     ResIndexStreamArray indexStreams = primitive.GetIndexStreams();
     ResIndexStreamArray::iterator end = indexStreams.end();
-    for (ResIndexStreamArray::iterator stream = indexStreams.begin(); stream != end; ++stream){
+    for (ResIndexStreamArray::iterator stream = indexStreams.begin(); stream != end; ++stream)
+    {
         ResIndexStream indexStream = *stream;
 
-        if (!indexStream.IsVisible()){
+        if (!indexStream.IsVisible())
+        {
             continue;
         }
 
-        NW_NULL_ASSERT(indexStream.ref().mCommandCache);
-        NW_ASSERT(indexStream.ref().mCommandCacheSize > 0);
-        internal::NWUseCmdlist(indexStream.ref().mCommandCache, indexStream.ref().mCommandCacheSize);
+        NW_NULL_ASSERT(indexStream.ref().m_CommandCache);
+        NW_ASSERT(indexStream.ref().m_CommandCacheSize > 0);
+        internal::NWUseCmdlist(indexStream.ref().m_CommandCache, indexStream.ref().m_CommandCacheSize);
     }
 }
 

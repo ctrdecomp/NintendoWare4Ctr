@@ -10,7 +10,8 @@
 
 namespace nw {
 namespace font {
-class TextWriterResource : private nn::util::NonCopyable<TextWriterResource>{
+class TextWriterResource : private nn::util::NonCopyable<TextWriterResource>
+{
     friend class CharWriter;
 public:
     typedef const int   (*TexEnvUniformLocationSquareArray)[internal::TCLOC_MAX];
@@ -20,42 +21,44 @@ public:
     ~TextWriterResource();
     void Finalize();
     static void FinalizeGX();
-    void DeleteResource(){ this->Finalize(); }
+    void DeleteResource() { this->Finalize(); }
     void InitResource(const void* shaderBinary,u32 size);
     void SetPosZ(f32 posZ);
-    void UpdatePosZ(f32 posZ){
-        if (this->mPosZ != posZ){
+    void UpdatePosZ(f32 posZ)
+    {
+        if (this->m_PosZ != posZ)
+        {
             SetPosZ(posZ);
         }
     }
-    void ActiveGlProgram() const{
-        glUseProgram(this->mProgramId);
+    void ActiveGlProgram() const
+    {
+        glUseProgram(this->m_ProgramId);
     }
 
-    bool SetLoadingTexture(const void* pTexture){
-        const bool isChanged = this->mLoadingTexture != pTexture;
-        this->mLoadingTexture = pTexture;
+    bool SetLoadingTexture(const void* pTexture)
+    {
+        const bool isChanged = this->m_LoadingTexture != pTexture;
+        this->m_LoadingTexture = pTexture;
         return isChanged;
     }
-    void ActiveGlProgram() const{
-        glUseProgram(mProgramId);
-    }
-    internal::VertexAttribute* GetVertexAttributeArray()  { return mVtxAttrs; }
-    TexEnvUniformLocationSquareArray GetTexEnvUniformLocations() const   { return mTexEnvUniformLocations; }
-    void ResetLoadingTexture(){ this->mLoadingTexture = NULL; }
+
+    internal::VertexAttribute* GetVertexAttributeArray() { return m_VtxAttrs; }
+    TexEnvUniformLocationSquareArray GetTexEnvUniformLocations() const { return m_TexEnvUniformLocations; }
+    void ResetLoadingTexture() { this->m_LoadingTexture = NULL; }
 
     void SetViewMtx(const nn::math::MTX34& mtx) const;
 
     void SetProjectionMtx(const nn::math::MTX44& mtx) const;
 
-    u32 mProgramId;
-    GLuint mTextureId;
-    internal::VertexAttribute mVtxAttrs[internal::TRIFAN_VTX_MAX];
-    int mUniformLocations[internal::LOC_MAX];
-    int mTexEnvUniformLocations[internal::TEXENV_MAX][internal::TCLOC_MAX];
-    const void* mLoadingTexture;
-    f32 mPosZ;
-    bool mIsInitialized;
+    u32 m_ProgramId;
+    GLuint m_TextureId;
+    internal::VertexAttribute m_VtxAttrs[internal::TRIFAN_VTX_MAX];
+    int m_UniformLocations[internal::LOC_MAX];
+    int m_TexEnvUniformLocations[internal::TEXENV_MAX][internal::TCLOC_MAX];
+    const void* m_LoadingTexture;
+    f32 m_PosZ;
+    bool m_IsInitialized;
 };
 
 }

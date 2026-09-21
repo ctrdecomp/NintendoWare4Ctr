@@ -9,7 +9,8 @@ namespace os{
 }
 namespace gfx{
 
-class FrustumProjectionUpdater : public CameraProjectionUpdater{
+class FrustumProjectionUpdater : public CameraProjectionUpdater
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(FrustumProjectionUpdater);
 
@@ -19,26 +20,31 @@ public:
     static FrustumProjectionUpdater* Create(nw::os::IAllocator* allocator);
     static FrustumProjectionUpdater* Create(nw::os::IAllocator* allocator,ResFrustumProjectionUpdater resUpdater);
 
-    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize,bool isDynamicBuild){
+    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize,bool isDynamicBuild)
+    {
         nw::os::MemorySizeCalculator& size = *pSize;
 
         size += sizeof(FrustumProjectionUpdater);
-        if (isDynamicBuild){
+        if (isDynamicBuild)
+        {
             size += sizeof(ResFrustumProjectionUpdaterData);
         }
     }
 
     void virtual Update(nw::math::MTX44* projectionMatrix, nw::math::MTX34* textureProjectionMatrix);
 
-    virtual ResCameraProjectionUpdater GetResource() {
-        return this->mResource;
+    virtual ResCameraProjectionUpdater GetResource()
+    {
+        return this->m_Resource;
     }
 
-    virtual const ResCameraProjectionUpdater GetResource() const {
-        return this->mResource;
+    virtual const ResCameraProjectionUpdater GetResource() const
+    {
+        return this->m_Resource;
     }
 
-    virtual anim::ResCameraAnimData::ProjectionUpdaterKind Kind() const{
+    virtual anim::ResCameraAnimData::ProjectionUpdaterKind Kind() const
+    {
         return anim::ResCameraAnimData::PROJECTION_UPDATER_FRUSTUM;
     }
     
@@ -47,7 +53,7 @@ private:
 
     virtual ~FrustumProjectionUpdater();
 
-    ResFrustumProjectionUpdater mResource;
+    ResFrustumProjectionUpdater m_Resource;
 };
 
 }

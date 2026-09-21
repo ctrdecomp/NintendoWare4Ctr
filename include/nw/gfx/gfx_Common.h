@@ -16,7 +16,8 @@ namespace res {
 }
 using namespace ::nw::gfx::res;
 
-enum PlatformConstants{
+enum PlatformConstants
+{
     VERTEX_ATTRIBUTE_COUNT = 12,
     COMBINER_COUNT = 6,
     COMBINER_AVAILABLE_COUNT = COMBINER_COUNT,
@@ -27,46 +28,50 @@ enum PlatformConstants{
     FOG_TABLE_SIZE = 256
 };
 
-class Result{
+class Result
+{
     typedef Result self_type;
 public:
-    Result() : mResult(0)
-    {}
+    Result() : m_Result(0) {}
 
-    Result(u32 code) : mResult(code)
-    {}
+    Result(u32 code) : m_Result(code) {}
 
     static const bit32 MASK_FAIL_BIT        = 0x80000000;
     static const bit32 MASK_DESCRIPTION     = 0x0000ffff;
 
-    self_type operator = (u32 code) { mResult = code; return *this; }
-    self_type operator |= (u32 code) { mResult |= code; return *this; }
-    self_type operator &= (u32 code) { mResult &= code; return *this; }
-    self_type operator = (self_type result) { mResult = result.GetCode(); return *this; }
-    self_type operator |= (self_type result) { mResult |= result.GetCode(); return *this; }
-    self_type operator &= (self_type result) { mResult &= result.GetCode(); return *this; }
+    self_type operator = (u32 code) { m_Result = code; return *this; }
+    self_type operator |= (u32 code) { m_Result |= code; return *this; }
+    self_type operator &= (u32 code) { m_Result &= code; return *this; }
+    self_type operator = (self_type result) { m_Result = result.GetCode(); return *this; }
+    self_type operator |= (self_type result) { m_Result |= result.GetCode(); return *this; }
+    self_type operator &= (self_type result) { m_Result &= result.GetCode(); return *this; }
 
-    u32 GetCode() const{
-        return mResult;
+    u32 GetCode() const
+    {
+        return m_Result;
     }
 
-    bool IsFailure() const{
-        return (mResult & MASK_FAIL_BIT) != 0;
+    bool IsFailure() const
+    {
+        return (m_Result & MASK_FAIL_BIT) != 0;
     }
 
-    bool IsSuccess() const{
+    bool IsSuccess() const
+    {
         return !IsFailure();
     }
 
-    int GetDescription() const{
-        return static_cast<int>(mResult & MASK_DESCRIPTION);
+    int GetDescription() const
+    {
+        return static_cast<int>(m_Result & MASK_DESCRIPTION);
     }
 
 private:
-    u32 mResult;
+    u32 m_Result;
 };
 
-enum ResourceResult{
+enum ResourceResult
+{
     RESOURCE_RESULT_OK = 0,
     RESOURCE_RESULT_NOT_FOUND_TEXTURE = 1 << 0,
     RESOURCE_RESULT_NOT_FOUND_SHADER = 1 << 1,
@@ -76,11 +81,13 @@ enum ResourceResult{
     RESOURCE_RESULT_IRRELEVANT_TEXTURE_MAPPING_METHOD = 1 << 5
 };
 
-enum InitializeResult{
+enum InitializeResult
+{
     INITIALIZE_RESULT_OK = 0
 };
 
-enum BindResult{
+enum BindResult
+{
     BIND_RESULT_OK = 0,
     BIND_RESULT_NOT_ALL_ANIM_MEMBER_BOUND = 1 << 0,
     BIND_RESULT_NO_MEMBER_BOUND = 1 << 1,
@@ -98,10 +105,11 @@ using nw::os::AllocateAndCopyString;
 namespace internal {
 
 template<typename TRes>
-inline bool  ResCheckRevision(const TRes res ){
+inline bool ResCheckRevision(const TRes res)
+{
     if (!res.IsValid()) { return false; }
     
-    return nw::ut::internal::CheckRevision( res.GetRevision(), TRes::BINARY_REVISION );
+    return nw::ut::internal::CheckRevision(res.GetRevision(), TRes::BINARY_REVISION);
 }
 
 }

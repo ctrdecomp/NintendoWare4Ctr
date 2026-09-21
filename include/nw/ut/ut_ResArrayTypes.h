@@ -11,11 +11,12 @@ namespace ut {
 namespace internal {
 
 template <typename TDic>
-class ResArrayDicTraits{
+class ResArrayDicTraits
+{
 public:
-
     template <typename T>
-    class Traits{
+    class Traits
+    {
     public:
         typedef typename TDic::ResDicNodeData*         pointer;
         typedef const typename TDic::ResDicNodeData*   const_pointer;
@@ -45,25 +46,29 @@ public:
 
 
 template <typename T>
-class ResArrayPrimitive{
+class ResArrayPrimitive
+{
 public:
     typedef internal::ResArray< T, internal::ResArrayPrimitiveTraits >   type;
 };
 
 template <typename T>
-class ResArrayClass{
+class ResArrayClass
+{
 public:
     typedef internal::ResArray< T, internal::ResArrayClassTraits >   type;
 };
 
 template <typename T>
-class ResArrayLinear{
+class ResArrayLinear
+{
 public:
     typedef internal::ResArray< T, internal::ResArrayDicTraits<ResDicLinearData>::Traits > type;
 };
 
 template <typename T>
-class ResArrayPatricia{
+class ResArrayPatricia
+{
 public:
     typedef internal::ResArray< T, internal::ResArrayDicTraits<ResDicPatriciaData>::Traits > type;
 };

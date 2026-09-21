@@ -6,7 +6,8 @@
 namespace nw {
 namespace gfx {
 
-WorldMatrixUpdater* WorldMatrixUpdater::Builder::Create(os::IAllocator* allocator){
+WorldMatrixUpdater* WorldMatrixUpdater::Builder::Create(os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
     
     void* updaterMemory = allocator->Alloc(sizeof(WorldMatrixUpdater));
@@ -16,13 +17,15 @@ WorldMatrixUpdater* WorldMatrixUpdater::Builder::Create(os::IAllocator* allocato
 }
 
 WorldMatrixUpdater::WorldMatrixUpdater(os::IAllocator* allocator): 
-    GfxObject(allocator){
+    GfxObject(allocator)
+    {
     NW_NULL_ASSERT(allocator);
 }
 
-WorldMatrixUpdater::~WorldMatrixUpdater(){}
+WorldMatrixUpdater::~WorldMatrixUpdater() {}
 
-void WorldMatrixUpdater::CalculateWorldXsi(math::MTX34* transformMatrix,math::VEC3* scale,const CalculatedTransform& localTransform,const CalculatedTransform& parentWorldTransform,const CalculatedTransform& parentLocalTransform) const{
+void WorldMatrixUpdater::CalculateWorldXsi(math::MTX34* transformMatrix,math::VEC3* scale,const CalculatedTransform& localTransform,const CalculatedTransform& parentWorldTransform,const CalculatedTransform& parentLocalTransform) const
+{
     NW_NULL_ASSERT(transformMatrix);
     NW_NULL_ASSERT(scale);
 
@@ -30,19 +33,22 @@ void WorldMatrixUpdater::CalculateWorldXsi(math::MTX34* transformMatrix,math::VE
 
     const math::MTX34& parentMatrix = parentWorldTransform.TransformMatrix();
 
-    if (localTransform.IsEnabledFlagsOr(CalculatedTransform::FLAG_IS_IDENTITY | CalculatedTransform::FLAG_IS_ROTATE_TRANSLATE_ZERO)){
+    if (localTransform.IsEnabledFlagsOr(CalculatedTransform::FLAG_IS_IDENTITY | CalculatedTransform::FLAG_IS_ROTATE_TRANSLATE_ZERO))
+    {
         math::MTX34Copy(transformMatrix, parentMatrix);
     }
     else{
         bool isParentScaleOne = parentWorldTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE);
-        const math::VEC3& parentScale = parentWorldTransform.mScale;
+        const math::VEC3& parentScale = parentWorldTransform.m_Scale;
 
         const math::MTX34& localMatrix = localTransform.TransformMatrix();
         math::VEC3 localTranslate = localTransform.TransformMatrix().GetColumn(3);
 
-        if (localTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_ROTATE_ZERO)){
+        if (localTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_ROTATE_ZERO))
+        {
 
-            if (isParentScaleOne){
+            if (isParentScaleOne)
+            {
                 math::MTX34MultTranslate(transformMatrix, &parentMatrix, &localTranslate);
             }
             else{
@@ -51,7 +57,8 @@ void WorldMatrixUpdater::CalculateWorldXsi(math::MTX34* transformMatrix,math::VE
             }
         }
         else{
-            if (isParentScaleOne){
+            if (isParentScaleOne)
+            {
                 math::MTX34Mult(transformMatrix, &parentMatrix, &localMatrix);
             }
             else{
@@ -65,29 +72,34 @@ void WorldMatrixUpdater::CalculateWorldXsi(math::MTX34* transformMatrix,math::VE
         }
     }
 
-    if (parentWorldTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE)){
-        scale->Set(localTransform.mScale);
+    if (parentWorldTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE))
+    {
+        scale->Set(localTransform.m_Scale);
     }
     else{
-        math::VEC3Mult(scale, &parentWorldTransform.mScale, &localTransform.mScale);
+        math::VEC3Mult(scale, &parentWorldTransform.m_Scale, &localTransform.m_Scale);
     }
 }
 
-void WorldMatrixUpdater::CalculateWorldMayaSsc(math::MTX34* transformMatrix,math::VEC3* scale,const CalculatedTransform& localTransform,const CalculatedTransform& parentWorldTransform,const CalculatedTransform& parentLocalTransform) const{
+void WorldMatrixUpdater::CalculateWorldMayaSsc(math::MTX34* transformMatrix,math::VEC3* scale,const CalculatedTransform& localTransform,const CalculatedTransform& parentWorldTransform,const CalculatedTransform& parentLocalTransform) const
+{
     NW_NULL_ASSERT(transformMatrix);
     NW_NULL_ASSERT(scale);
 
-    const math::MTX34& parentMatrix = parentWorldTransform.mTransformMatrix;
+    const math::MTX34& parentMatrix = parentWorldTransform.m_TransformMatrix;
 
-    if (localTransform.IsEnabledFlagsOr(CalculatedTransform::FLAG_IS_IDENTITY | CalculatedTransform::FLAG_IS_ROTATE_TRANSLATE_ZERO)){
+    if (localTransform.IsEnabledFlagsOr(CalculatedTransform::FLAG_IS_IDENTITY | CalculatedTransform::FLAG_IS_ROTATE_TRANSLATE_ZERO))
+    {
         math::MTX34Copy(transformMatrix, parentMatrix);
     }
     else{
-        const math::MTX34& localMatrix = localTransform.mTransformMatrix;
-        math::VEC3 localTranslate = localTransform.mTransformMatrix.GetColumn(3);
+        const math::MTX34& localMatrix = localTransform.m_TransformMatrix;
+        math::VEC3 localTranslate = localTransform.m_TransformMatrix.GetColumn(3);
         
-        if (localTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_ROTATE_ZERO)){
-            if (parentLocalTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE)){
+        if (localTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_ROTATE_ZERO))
+        {
+            if (parentLocalTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE))
+            {
 
                 math::MTX34MultTranslate(transformMatrix, &parentMatrix, &localTranslate);
             }
@@ -95,21 +107,22 @@ void WorldMatrixUpdater::CalculateWorldMayaSsc(math::MTX34* transformMatrix,math
 
                 math::MTX34Copy(transformMatrix, parentMatrix);
                 math::MTX34 scaledParentRotate(*transformMatrix);
-                const math::VEC3& parentScale = parentLocalTransform.mScale;
+                const math::VEC3& parentScale = parentLocalTransform.m_Scale;
                 this->ScaleMatrix(&scaledParentRotate, parentScale);
                 math::VEC3Transform(&localTranslate, &scaledParentRotate, &localTranslate);
                 this->AddTranslate(transformMatrix, localTranslate);
             }
         }
         else{
-            if (parentLocalTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE)){
+            if (parentLocalTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE))
+            {
                 math::MTX34MultTranslate(transformMatrix, &parentMatrix, &localTranslate);
                 math::MTX33Mult(transformMatrix, transformMatrix, &localMatrix);
             }
             else{
                 math::MTX34Copy(transformMatrix, parentMatrix);
                 math::MTX34 scaledParentRotate(*transformMatrix);
-                const math::VEC3& parentScale = parentLocalTransform.mScale;
+                const math::VEC3& parentScale = parentLocalTransform.m_Scale;
                 this->ScaleMatrix(&scaledParentRotate, parentScale);
                 math::VEC3Transform(&localTranslate, &scaledParentRotate, &localTranslate);
                 this->AddTranslate(transformMatrix, localTranslate);
@@ -118,69 +131,77 @@ void WorldMatrixUpdater::CalculateWorldMayaSsc(math::MTX34* transformMatrix,math
         }
     }
 
-    if (parentWorldTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE)){
-        scale->Set(localTransform.mScale);
+    if (parentWorldTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE))
+    {
+        scale->Set(localTransform.m_Scale);
     }
     else{
-        math::VEC3Mult(scale, &parentWorldTransform.mScale, &localTransform.mScale);
+        math::VEC3Mult(scale, &parentWorldTransform.m_Scale, &localTransform.m_Scale);
     }
 }
 
-void WorldMatrixUpdater::CalculateWorldBasic(math::MTX34* transformMatrix, math::VEC3* scale,const CalculatedTransform& localTransform,const CalculatedTransform& parentWorldTransform,const CalculatedTransform& parentLocalTransform) const{
+void WorldMatrixUpdater::CalculateWorldBasic(math::MTX34* transformMatrix, math::VEC3* scale,const CalculatedTransform& localTransform,const CalculatedTransform& parentWorldTransform,const CalculatedTransform& parentLocalTransform) const
+{
     NW_NULL_ASSERT(transformMatrix);
     NW_NULL_ASSERT(scale);
 
-    const math::MTX34& parentMatrix = parentWorldTransform.mTransformMatrix;
+    const math::MTX34& parentMatrix = parentWorldTransform.m_TransformMatrix;
 
-    if (localTransform.IsEnabledFlagsOr(CalculatedTransform::FLAG_IS_IDENTITY | CalculatedTransform::FLAG_IS_ROTATE_TRANSLATE_ZERO)){
-        if (parentLocalTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE)){
+    if (localTransform.IsEnabledFlagsOr(CalculatedTransform::FLAG_IS_IDENTITY | CalculatedTransform::FLAG_IS_ROTATE_TRANSLATE_ZERO))
+    {
+        if (parentLocalTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE))
+        {
             math::MTX34Copy(transformMatrix, parentMatrix);
         }
         else{
 
-            this->MultScale(transformMatrix, &parentMatrix, parentLocalTransform.mScale);
+            this->MultScale(transformMatrix, &parentMatrix, parentLocalTransform.m_Scale);
             this->CopyTranslate(transformMatrix, parentMatrix);
         }
     }
     else{
-        if (localTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_ROTATE_ZERO)){
-            if (parentLocalTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE)){
-                math::VEC3 localTranslate = localTransform.mTransformMatrix.GetColumn(3);
+        if (localTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_ROTATE_ZERO))
+        {
+            if (parentLocalTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE))
+            {
+                math::VEC3 localTranslate = localTransform.m_TransformMatrix.GetColumn(3);
 
                 math::MTX34MultTranslate(transformMatrix, &parentMatrix, &localTranslate);
             }
             else
             {
-                math::VEC3 localTranslate = localTransform.mTransformMatrix.GetColumn(3);
+                math::VEC3 localTranslate = localTransform.m_TransformMatrix.GetColumn(3);
 
-                this->MultScale(transformMatrix, &parentMatrix, parentLocalTransform.mScale);
+                this->MultScale(transformMatrix, &parentMatrix, parentLocalTransform.m_Scale);
                 this->CopyTranslate(transformMatrix, parentMatrix);
                 math::MTX34MultTranslate(transformMatrix, transformMatrix, &localTranslate);
             }
         }
         else{
-            if (parentLocalTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE)){
-                math::VEC3 localTranslate = localTransform.mTransformMatrix.GetColumn(3);
+            if (parentLocalTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE))
+            {
+                math::VEC3 localTranslate = localTransform.m_TransformMatrix.GetColumn(3);
 
                 math::MTX34MultTranslate(transformMatrix, &parentMatrix, &localTranslate);
-                math::MTX33Mult(transformMatrix, transformMatrix, &localTransform.mTransformMatrix);
+                math::MTX33Mult(transformMatrix, transformMatrix, &localTransform.m_TransformMatrix);
             }
             else{
-                math::VEC3 localTranslate = localTransform.mTransformMatrix.GetColumn(3);
+                math::VEC3 localTranslate = localTransform.m_TransformMatrix.GetColumn(3);
 
-                this->MultScale(transformMatrix, &parentMatrix, parentLocalTransform.mScale);
+                this->MultScale(transformMatrix, &parentMatrix, parentLocalTransform.m_Scale);
                 this->CopyTranslate(transformMatrix, parentMatrix);
                 math::MTX34MultTranslate(transformMatrix, transformMatrix, &localTranslate);
-                math::MTX33Mult(transformMatrix, transformMatrix, &localTransform.mTransformMatrix);
+                math::MTX33Mult(transformMatrix, transformMatrix, &localTransform.m_TransformMatrix);
             }
         }
     }
 
-    if (parentWorldTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE)){
-        scale->Set(localTransform.mScale);
+    if (parentWorldTransform.IsEnabledFlags(CalculatedTransform::FLAG_IS_SCALE_ONE))
+    {
+        scale->Set(localTransform.m_Scale);
     }
     else{
-        math::VEC3Mult(scale, &parentWorldTransform.mScale, &localTransform.mScale);
+        math::VEC3Mult(scale, &parentWorldTransform.m_Scale, &localTransform.m_Scale);
     }
 }
 

@@ -13,7 +13,8 @@ namespace os{
 }
 namespace gfx{
 
-enum ShaderUniform{
+enum ShaderUniform
+{
     SHADER_UNIFORM_PROJMTX,
     SHADER_UNIFORM_VIEWMTX,
     SHADER_UNIFORM_WRLDMTX,
@@ -372,7 +373,8 @@ enum ShaderUniform{
     SHADER_UNIFORM_COUNT
 };
 
-enum VertexShaderUniformIndex{
+enum VertexShaderUniformIndex
+{
     VERTEX_SHADER_UNIFORM_PROJMTX_INDEX = 86,
     VERTEX_SHADER_UNIFORM_VIEWMTX_INDEX = 90,
     VERTEX_SHADER_UNIFORM_WRLDMTX_INDEX = 0,
@@ -407,21 +409,23 @@ enum VertexShaderUniformIndex{
     VERTEX_SHADER_UNIFORM_INDEX_MAX = 96
 };
 
-class ShaderUniformLocation : public GfxObject{
+class ShaderUniformLocation : public GfxObject
+{
 public:
     static ShaderUniformLocation* Create(nw::os::IAllocator* allocator);
 
     void BuildUniformLocations(GLuint programObject);
 
-    GLint GetUniformLocation(int location) const{
-        return mUniformLocations[location];
+    GLint GetUniformLocation(int location) const
+    {
+        return m_UniformLocations[location];
     }
 
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(ShaderUniformLocation);
 
     ShaderUniformLocation(nw::os::IAllocator* allocator);
-    nw::ut::FixedSizeArray<GLint, SHADER_UNIFORM_COUNT> mUniformLocations;
+    nw::ut::FixedSizeArray<GLint, SHADER_UNIFORM_COUNT> m_UniformLocations;
 };
 
 #define NW_GFX_VERTEX_UNIFORM(x) VERTEX_SHADER_UNIFORM_##x##_INDEX

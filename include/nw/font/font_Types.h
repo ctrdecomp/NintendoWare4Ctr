@@ -8,7 +8,8 @@ namespace nw {
 namespace font {
 namespace internal {
 
-enum{
+enum
+{
     VERTEX_ATTR_POS,
     VERTEX_ATTR_POS_Z,
     VERTEX_ATTR_COLOR,
@@ -17,14 +18,16 @@ enum{
     VERTEX_ATTR_NUM
 };
 
-enum{
+enum
+{
     POS_X,
     POS_Y,
 
     POS_NUM
 };
 
-enum{
+enum
+{
     COLOR_R,
     COLOR_G,
     COLOR_B,
@@ -33,14 +36,16 @@ enum{
     COLOR_NUM
 };
 
-enum{
+enum
+{
     TEXCOORD_X,
     TEXCOORD_Y,
 
     TEXCOORD_NUM
 };
 
-enum{
+enum
+{
     TRIFAN_VTX_RT,
     TRIFAN_VTX_LT,
     TRIFAN_VTX_LB,
@@ -49,7 +54,8 @@ enum{
     TRIFAN_VTX_MAX
 };
 
-enum{
+enum
+{
     LOC_PROJECTION,
     LOC_MODELVIEW,
 
@@ -61,7 +67,8 @@ enum{
     LOC_MAX
 };
 
-enum{
+enum
+{
     TCLOC_SRCRGB,
     TCLOC_SRCALPHA,
     TCLOC_OPERANDRGB,
@@ -75,7 +82,8 @@ enum{
     TCLOC_MAX
 };
 
-enum{
+enum
+{
     TEXENV_3,
     TEXENV_4,
     TEXENV_5,
@@ -83,14 +91,16 @@ enum{
     TEXENV_MAX
 };
 
-enum TextColor{
+enum TextColor
+{
     TEXTCOLOR_START, 
     TEXTCOLOR_END,
 
     TEXTCOLOR_MAX
 };
 
-struct VertexAttribute{
+struct VertexAttribute
+{
     f32 pos[POS_NUM];
     ut::Color8 color;
     f32 tex[TEXCOORD_NUM];

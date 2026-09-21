@@ -16,7 +16,8 @@ class GraphicsResource;
 class Layout;
 class ResourceAccessor;
 
-struct ResBlockSet{
+struct ResBlockSet
+{
     const res::TextureList* pTextureList;
     const res::FontList* pFontList;
     const res::MaterialList* pMaterialList;
@@ -25,7 +26,8 @@ struct ResBlockSet{
 
 namespace internal{
 
-enum FrameSpecFlag{
+enum FrameSpecFlag
+{
     FRAMESPECFLAG_CONST_VERTEX  = 1 << 0,
     FRAMESPECFLAG_FRAME         = 1 << 1,
     FRAMESPECFLAG_SWAP          = 1 << 2,
@@ -49,19 +51,21 @@ enum FrameSpecFlag{
 bool EqualsResName(const char* name1, const char* name2);
 bool EqualsMaterialName(const char* name1, const char* name2);
 
-inline const char* GetStrTableStr(const void* pStrTable, int index){
+inline const char* GetStrTableStr(const void* pStrTable, int index)
+{
     const u32* offsets = static_cast<const u32*>(pStrTable);
     const char* stringPool = static_cast<const char*>(pStrTable);
 
     return &stringPool[offsets[index]];
 }
-class TexCoordAry{
+class TexCoordAry
+{
 public:
     TexCoordAry();
-    bool IsEmpty() const{return mCap == 0;}
+    bool IsEmpty() const {return m_Cap == 0;}
     void Free();
     void Reserve(u8 num);
-    u8 GetSize() const{return mNum;}
+    u8 GetSize() const {return m_Num;}
     void SetSize(u8 num);
     const TexCoordQuad* GetArray() const {return mpData;}
     void GetCoord(u32 idx,TexCoordQuad coord) const;
@@ -69,8 +73,8 @@ public:
     void Copy(const void* pResTexCoord,u8 texCoordNum);
 
 protected:
-    u8 mCap;
-    u8 mNum;
+    u8 m_Cap;
+    u8 m_Num;
     math::VEC2 (*mpData)[VERTEX_MAX];
 };
 
@@ -83,31 +87,38 @@ void DrawLine(const DrawInfo& drawInfo,const math::VEC2& pos,const Size& size,ut
 
 void            FinalizeGraphics();
 
-inline u8 GetVtxColorElement(const ut::Color8 cols[],u32 idx){
+inline u8 GetVtxColorElement(const ut::Color8 cols[],u32 idx)
+{
     return reinterpret_cast<const u8*>(&cols[idx / sizeof(ut::Color8)])[idx % sizeof(ut::Color8)];
 }
 
-inline void SetVtxColorElement(ut::Color8 cols[],u32 idx,u8 value){
+inline void SetVtxColorElement(ut::Color8 cols[],u32 idx,u8 value)
+{
     reinterpret_cast<u8*>(&cols[idx / sizeof(ut::Color8)])[idx % sizeof(ut::Color8)] = value;
 }
 
-inline HorizontalPosition GetHorizontalPosition(u8 var){
+inline HorizontalPosition GetHorizontalPosition(u8 var)
+{
     return static_cast<HorizontalPosition>(var % HORIZONTALPOSITION_MAX);
 }
 
-inline VerticalPosition GetVerticalPosition(u8 var){
+inline VerticalPosition GetVerticalPosition(u8 var)
+{
     return static_cast<VerticalPosition>(var / HORIZONTALPOSITION_MAX);
 }
 
-inline void SetHorizontalPosition(u8* pVar, u8 newVal){
+inline void SetHorizontalPosition(u8* pVar, u8 newVal)
+{
     *pVar = u8(GetVerticalPosition(*pVar) * HORIZONTALPOSITION_MAX + newVal);
 }
 
-inline void SetVerticalPosition(u8* pVar, u8 newVal){
+inline void SetVerticalPosition(u8* pVar, u8 newVal)
+{
     *pVar = u8(newVal * HORIZONTALPOSITION_MAX + GetHorizontalPosition(*pVar));
 }
 
-class GL{
+class GL
+{
 public:
     static void SetTextureSamplerType(GraphicsResource& graphicsResource, int index, int value);
     static void SetTevCombineRgb(GraphicsResource& graphicsResource, int index, TevMode value);

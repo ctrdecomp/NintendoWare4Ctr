@@ -14,9 +14,11 @@ namespace lyt{
 
 class Layout;
 
-class GraphicsResource{
+class GraphicsResource
+{
 public:
-    enum Uniform{
+    enum Uniform
+    {
         UNIFORM_uProjection,
         UNIFORM_uModelView,
         UNIFORM_uTexMtx0,
@@ -99,7 +101,8 @@ public:
         UNIFORM_MAX
     };
 
-    enum VBO{
+    enum VBO
+    {
         VBO_ELEMENT,
         VBO_VERTEX_INDEX,
         VBO_MAX
@@ -113,55 +116,61 @@ public:
     bool FinishSetup();
     void Finalize();
 
-    bool Initialized() const{return mInitialized;}
-    const void* GetRectShaderBinary() const{return mpRectShaderBinary;}
-    u32 GetRectShaderBinarySize() const{return mRectShaderBinarySize;}
-    font::WideTextWriter& GetTextWriter(){return mTextWriter;}
-    const font::WideTextWriter& GetTextWriter() const{return mTextWriter;}
-    font::TextWriterResource& GetTextWriterResource(){return mTextWriterResource;}
-    const font::TextWriterResource& GetTextWriterResource() const{return mTextWriterResource;}
-    const math::MTX34&  GetMtxModelView() const{return mMtxModelView;}
-    void SetMtxModelView(const math::MTX34 m){
-        mMtxModelView = m;
-        mMtxModelViewLoaded = false;
+    bool Initialized() const {return m_Initialized;}
+    const void* GetRectShaderBinary() const {return m_pRectShaderBinary;}
+    u32 GetRectShaderBinarySize() const {return m_RectShaderBinarySize;}
+    font::WideTextWriter& GetTextWriter() {return m_TextWriter;}
+    const font::WideTextWriter& GetTextWriter() const {return m_TextWriter;}
+    font::TextWriterResource& GetTextWriterResource() {return m_TextWriterResource;}
+    const font::TextWriterResource& GetTextWriterResource() const {return m_TextWriterResource;}
+    const math::MTX34&  GetMtxModelView() const {return m_MtxModelView;}
+    void SetMtxModelView(const math::MTX34 m)
+    {
+        m_MtxModelView = m;
+        m_MtxModelViewLoaded = false;
     }
-    int GetTexCoordSrc(int index) const{return mTexCoordSrc[index];}
-    void SetTexCoordSrc(int index, int src){mTexCoordSrc[index] = src;}
+    int GetTexCoordSrc(int index) const {return m_TexCoordSrc[index];}
+    void SetTexCoordSrc(int index, int src) {m_TexCoordSrc[index] = src;}
 
     void SetProjectionMtx(const nw::math::MTX44& mtx);
 
-    GLint GetUniformLocation(int uniformName) const{return mUniformLocation[uniformName];}
-    u32 GetNumTexEnv() const{return mNumTexEnv;}
+    GLint GetUniformLocation(int uniformName) const {return m_UniformLocation[uniformName];}
+    u32 GetNumTexEnv() const {return m_NumTexEnv;}
 
     void ResetGlProgramState();
     void ResetGlState();
 
-    void SetNumTexEnv(u32 numTexEnv){mNumTexEnv = static_cast<u8>(numTexEnv);}
-    bool GetTexEnvAuto() const{return mTexEnvAuto;}
-    u8 GetNumTexMap() const{return mNumTexMap;}
-    void SetTexEnvAuto(bool value, u8 numTexMap = 0){
-        mTexEnvAuto = value;
-        mNumTexMap = numTexMap;
+    void SetNumTexEnv(u32 numTexEnv) {m_NumTexEnv = static_cast<u8>(numTexEnv);}
+    bool GetTexEnvAuto() const {return m_TexEnvAuto;}
+    u8 GetNumTexMap() const {return m_NumTexMap;}
+    void SetTexEnvAuto(bool value, u8 numTexMap = 0)
+    {
+        m_TexEnvAuto = value;
+        m_NumTexMap = numTexMap;
     }
 
-    GLuint GetGlProgram() const{return mGlProgram;}
-    GLuint GetGlProgramDebug() const{return mGlProgramDebug;}
+    GLuint GetGlProgram() const {return m_GlProgram;}
+    GLuint GetGlProgramDebug() const {return m_GlProgramDebug;}
  
-    void LoadMtxModelView(){
-        if (!this->mMtxModelViewLoaded){
-            this->mMtxModelViewLoaded = true;
+    void LoadMtxModelView()
+    {
+        if (!this->m_MtxModelViewLoaded)
+        {
+            this->m_MtxModelViewLoaded = true;
             GLint loc = this->GetUniformLocation(this->UNIFORM_uModelView);
-            glUniform4fv(loc, 3, &this->mMtxModelView.matrix[0][0]);
+            glUniform4fv(loc, 3, &this->m_MtxModelView.matrix[0][0]);
         }
     }
 
-    void UseProgram(GLuint program){ glUseProgram(program); }
+    void UseProgram(GLuint program) { glUseProgram(program); }
 
 public:
-    GLuint GetVBO(int index) const{return mGlVertexBufferObject[index];}
-    void SetupProgram(){
-        if (this->mFirstDraw){
-            this->mFirstDraw = false;
+    GLuint GetVBO(int index) const {return m_GlVertexBufferObject[index];}
+    void SetupProgram()
+    {
+        if (this->m_FirstDraw)
+        {
+            this->m_FirstDraw = false;
             this->ActiveVBO();
         }
     }
@@ -171,22 +180,22 @@ protected:
     void ActiveVBO();
 
 protected:
-    void* mpRectShaderBinary;
-    u32 mRectShaderBinarySize;
-    font::TextWriterResource mTextWriterResource;
-    font::WideTextWriter mTextWriter;
-    GLuint mGlProgram;
-    GLuint mGlProgramDebug;
-    math::MTX34 mMtxModelView;
-    s8 mTexCoordSrc[TexMapMax];
-    u8 mNumTexEnv;
-    u8 mNumTexMap;
-    GLuint mGlVertexBufferObject[VBO_MAX];
-    GLint mUniformLocation[UNIFORM_MAX];
-    bool mTexEnvAuto;
-    bool mMtxModelViewLoaded;
-    bool mFirstDraw;
-    bool mInitialized;
+    void* m_pRectShaderBinary;
+    u32 m_RectShaderBinarySize;
+    font::TextWriterResource m_TextWriterResource;
+    font::WideTextWriter m_TextWriter;
+    GLuint m_GlProgram;
+    GLuint m_GlProgramDebug;
+    math::MTX34 m_MtxModelView;
+    s8 m_TexCoordSrc[TexMapMax];
+    u8 m_NumTexEnv;
+    u8 m_NumTexMap;
+    GLuint m_GlVertexBufferObject[VBO_MAX];
+    GLint m_UniformLocation[UNIFORM_MAX];
+    bool m_TexEnvAuto;
+    bool m_MtxModelViewLoaded;
+    bool m_FirstDraw;
+    bool m_Initialized;
 };
 
 }

@@ -4,12 +4,13 @@
 #include <nw/ut/ut_MoveArray.h>
 #include <nw/ut/ut_RuntimeTypeInfo.h>
 
-namespace adsl{
+namespace nw{
 namespace gfx{
 
 class Material;
 
-class IMaterialIdGenerator : public GfxObject{
+class IMaterialIdGenerator : public GfxObject
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(IMaterialIdGenerator);
 
@@ -21,8 +22,7 @@ public:
 
 protected:
     IMaterialIdGenerator(nw::os::IAllocator* allocator) : 
-        GfxObject(allocator) 
-    {}
+        GfxObject(allocator) {}
 
 };
 

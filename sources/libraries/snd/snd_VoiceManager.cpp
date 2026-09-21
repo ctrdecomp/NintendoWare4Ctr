@@ -26,7 +26,7 @@ VoiceManager& VoiceManager::GetInstance()
 
 void VoiceManager::Initialize(void* mem, size_t memSize)
 {
-    if(m_Initialized)
+    if (m_Initialized)
     {
         return;
     }
@@ -46,14 +46,14 @@ void VoiceManager::Initialize(void* mem, size_t memSize)
 
 void VoiceManager::Finalize()
 {
-    if(!m_Initialized)
+    if (!m_Initialized)
     {
         return;
     }
 
     StopAllVoices();
 
-    while(!m_FreeVoiceList.IsEmpty())
+    while (!m_FreeVoiceList.IsEmpty())
     {
         Voice& voice = m_FreeVoiceList.GetFront();
         m_FreeVoiceList.PopFront();
@@ -65,9 +65,9 @@ void VoiceManager::Finalize()
 
 Voice* VoiceManager::AllocVoice(int voiceChannelCount, int priority, Voice::VoiceCallback callback, void* callbackData)
 {
-    if(m_FreeVoiceList.IsEmpty())
+    if (m_FreeVoiceList.IsEmpty())
     {
-        if(DropLowestPriorityVoice(priority) == 0)
+        if (DropLowestPriorityVoice(priority) == 0)
         {
             return NULL;
         }

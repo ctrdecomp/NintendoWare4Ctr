@@ -10,20 +10,20 @@ UserRenderNode::UserRenderNode(
     os::IAllocator* allocator,
     const UserRenderNode::Description& description)
     : TransformNode(allocator, ResTransformNode(), description),
-    mTranslucencyKind(description.translucencyKind),
-    mPriority(description.priority),
-    mLayerId(description.layerId),
-    mUserRenderCommand(description.userRenderCommand),
-    mDescription(description)
-{}
+    m_TranslucencyKind(description.translucencyKind),
+    m_Priority(description.priority),
+    m_LayerId(description.layerId),
+    m_UserRenderCommand(description.userRenderCommand),
+    m_Description(description) {}
 
-UserRenderNode*UserRenderNode::DynamicBuilder::Create(os::IAllocator* allocator){
+UserRenderNode*UserRenderNode::DynamicBuilder::Create(os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
 
     void* memory = allocator->Alloc(sizeof(UserRenderNode));
     NW_NULL_ASSERT(memory);
 
-    UserRenderNode* node = new(memory) UserRenderNode(allocator,this->mDescription);
+    UserRenderNode* node = new(memory) UserRenderNode(allocator,this->m_Description);
     
     Result result = node->Initialize(allocator);
 
@@ -32,7 +32,8 @@ UserRenderNode*UserRenderNode::DynamicBuilder::Create(os::IAllocator* allocator)
     return node;
 }
 
-void UserRenderNode::Accept(ISceneVisitor* visitor){
+void UserRenderNode::Accept(ISceneVisitor* visitor)
+{
     visitor->VisitUserRenderNode(this);
     AcceptChildren(visitor);
 }

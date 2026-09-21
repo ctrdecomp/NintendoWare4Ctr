@@ -6,7 +6,8 @@
 namespace nw{
 namespace gfx{
 
-class StandardSkeleton  : public Skeleton{
+class StandardSkeleton  : public Skeleton
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(StandardSkeleton);
 
@@ -16,7 +17,8 @@ public:
 
     static StandardSkeleton* Create(ResSkeleton resource,int maxCallbacks,bool isFixedSizeMemory,Skeleton::TransformPose::TransformArray poseTransforms,nw::os::IAllocator* allocator);
 
-    static size_t GetMemorySize(ResSkeleton resource,int maxCallbacks, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT){
+    static size_t GetMemorySize(ResSkeleton resource,int maxCallbacks, size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT)
+    {
         nw::os::MemorySizeCalculator size(alignment);
 
         GetMemorySizeInternal(&size, resource, maxCallbacks);
@@ -24,7 +26,8 @@ public:
         return size.GetSizeWithPadding(alignment);
     }
 
-    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize,ResSkeleton resource,int maxCallbacks){
+    static void GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize,ResSkeleton resource,int maxCallbacks)
+    {
         nw::os::MemorySizeCalculator& size = *pSize;
 
         size += sizeof(StandardSkeleton);
@@ -36,25 +39,25 @@ public:
         Skeleton::GetMemorySizeForConstruct(pSize, maxCallbacks);
     }
 
-    virtual TransformPose& LocalTransformPose() { return mPose; }
+    virtual TransformPose& LocalTransformPose() { return m_Pose; }
 
-    virtual const TransformPose& LocalTransformPose() const { return mPose; }
+    virtual const TransformPose& LocalTransformPose() const { return m_Pose; }
 
-    virtual TransformPose& WorldTransformPose() { return mWorldTransformPose; }
+    virtual TransformPose& WorldTransformPose() { return m_WorldTransformPose; }
 
-    virtual const TransformPose& WorldTransformPose() const { return mWorldTransformPose; }
+    virtual const TransformPose& WorldTransformPose() const { return m_WorldTransformPose; }
 
-    virtual MatrixPose& WorldMatrixPose() { return mWorldMatrixPose; }
+    virtual MatrixPose& WorldMatrixPose() { return m_WorldMatrixPose; }
 
-    virtual const MatrixPose& WorldMatrixPose() const { return mWorldMatrixPose; }
+    virtual const MatrixPose& WorldMatrixPose() const { return m_WorldMatrixPose; }
 
-    virtual MatrixPose& SkiningMatrixPose() { return mSkiningMatrixPose; }
+    virtual MatrixPose& SkiningMatrixPose() { return m_SkiningMatrixPose; }
 
-    virtual const MatrixPose& SkiningMatrixPose() const { return mSkiningMatrixPose; }
+    virtual const MatrixPose& SkiningMatrixPose() const { return m_SkiningMatrixPose; }
 
-    virtual OriginalPose& LocalOriginalPose() { return mOriginalPose; }
+    virtual OriginalPose& LocalOriginalPose() { return m_OriginalPose; }
 
-    virtual const OriginalPose& LocalOriginalPose() const { return mOriginalPose; }
+    virtual const OriginalPose& LocalOriginalPose() const { return m_OriginalPose; }
 
 protected:
     StandardSkeleton(nw::os::IAllocator* allocator,ResSkeleton resource,int maxCallbacks,bool isFixedSizeMemory,Skeleton::TransformPose::TransformArray poseTransforms,
@@ -63,21 +66,20 @@ protected:
         Skeleton::MatrixPose::MatrixArray skiningMatrices): 
         
         Skeleton(allocator, resource, maxCallbacks, isFixedSizeMemory),
-        mPose(poseTransforms),
-        mWorldTransformPose(poseWorldTransforms),
-        mWorldMatrixPose(poseWorldMatrices),
-        mSkiningMatrixPose(skiningMatrices),
-        mOriginalPose(resource)
-    {}
+        m_Pose(poseTransforms),
+        m_WorldTransformPose(poseWorldTransforms),
+        m_WorldMatrixPose(poseWorldMatrices),
+        m_SkiningMatrixPose(skiningMatrices),
+        m_OriginalPose(resource) {}
 
-    virtual ~StandardSkeleton(){}
+    virtual ~StandardSkeleton() {}
 
 private:
-    TransformPose mPose;
-    TransformPose mWorldTransformPose;
-    MatrixPose mWorldMatrixPose;
-    MatrixPose mSkiningMatrixPose;
-    OriginalPose mOriginalPose;
+    TransformPose m_Pose;
+    TransformPose m_WorldTransformPose;
+    MatrixPose m_WorldMatrixPose;
+    MatrixPose m_SkiningMatrixPose;
+    OriginalPose m_OriginalPose;
 };
 
 }

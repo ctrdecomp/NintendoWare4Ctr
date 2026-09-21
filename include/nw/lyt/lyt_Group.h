@@ -9,47 +9,50 @@
 namespace nw{
 namespace lyt{
 
-struct PaneLink{
+struct PaneLink
+{
     ut::LinkListNode link;
     Pane* target;
 };
 
 typedef ut::LinkList<PaneLink, offsetof(PaneLink, link)> PaneLinkList;
 
-class Group{
+class Group
+{
 public:
     Group();
     Group(const res::Group* pResGroup, Pane* pRootPane);
     virtual ~Group();
     void AppendPane(Pane* pPane);
 
-    const char* GetName() const{return mName;}
-    PaneLinkList& GetPaneList(){return mPaneLinkList;}
-    bool IsUserAllocated() const{return mUserAllocated != 0;}
-    void SetUserAllocated(){mUserAllocated = 1;}
-    ut::LinkListNode mLink_;
+    const char* GetName() const {return m_Name;}
+    PaneLinkList& GetPaneList() {return m_PaneLinkList;}
+    bool IsUserAllocated() const {return m_UserAllocated != 0;}
+    void SetUserAllocated() {m_UserAllocated = 1;}
+    ut::LinkListNode m_Link_;
 
 protected:
     void Init();
 
-    PaneLinkList mPaneLinkList;
-    char mName[ResourceNameStrMax + 1];
-    u8 mUserAllocated;
-    u8 mPadding[2];
+    PaneLinkList m_PaneLinkList;
+    char m_Name[ResourceNameStrMax + 1];
+    u8 m_UserAllocated;
+    u8 m_Padding[2];
 };
 
-typedef ut::LinkList<Group, offsetof(Group, mLink_)> GroupList;
+typedef ut::LinkList<Group, offsetof(Group, m_Link_)> GroupList;
 
-class GroupContainer{
+class GroupContainer
+{
 public:
-    GroupContainer(){}
+    GroupContainer() {}
     ~GroupContainer();
     void AppendGroup(Group* pGroup);
     Group* FindGroupByName(const char* findName);
 
-    GroupList& GetGroupList(){return mGroupList;}
+    GroupList& GetGroupList() {return m_GroupList;}
 protected:
-    GroupList mGroupList;
+    GroupList m_GroupList;
 };
 
 }

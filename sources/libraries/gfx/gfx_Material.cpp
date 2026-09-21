@@ -5,7 +5,8 @@
 #include <nw/gfx/gfx_AnimObject.h>
 
 namespace{
-nw::gfx::ResMaterial GetAvailableResMaterial(nw::gfx::Material* material, nw::gfx::Model::BufferOption bufferOption){
+nw::gfx::ResMaterial GetAvailableResMaterial(nw::gfx::Material* material, nw::gfx::Model::BufferOption bufferOption)
+{
     return nw::ut::CheckFlag(material->GetOwnerModel()->GetBufferOption(), bufferOption) ? material->GetBuffer() : material->GetOriginal();
 }
 }
@@ -17,41 +18,45 @@ NW_UT_RUNTIME_TYPEINFO_DEFINITION(Material, SceneObject);
 
 Material::Material(nw::os::IAllocator* allocator, ResMaterial resMaterial, s32 bufferCount, Model* owner):
     SceneObject(allocator, resMaterial),
-    mOwner(owner),
-    mBufferCount(bufferCount){
+    m_Owner(owner),
+    m_BufferCount(bufferCount)
+    {
     ResBinaryShader resShader = resMaterial.GetShader().Dereference();
 
     NW_ASSERT(resShader.IsValid());
-    mProgramDescription = resShader.GetDescriptions(resMaterial.GetShaderProgramDescriptionIndex());
+    m_ProgramDescription = resShader.GetDescriptions(resMaterial.GetShaderProgramDescriptionIndex());
 }
 
-Material* Material::Create(ResMaterial resource, s32 bufferCount, Model* parent, nw::os::IAllocator* allocator){
+Material* Material::Create(ResMaterial resource, s32 bufferCount, Model* parent, nw::os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
     NW_ASSERT(resource.IsValid());
 
     NW_ASSERTMSG(bufferCount <= 1, "Material Buffer Count must be 0 or 1.");
 
     void* memory = allocator->Alloc(sizeof(Material));
-    if (memory == NULL){
+    if (memory == NULL)
+    {
         return NULL;
     }
 
     Material* material = new(memory) Material(allocator, resource, bufferCount, parent);
 
     Result result = material->Initialize(allocator);
-    if (result.IsSuccess()){
-        material->mShaderParameterResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_SHADER_PARAMETER);
-        material->mShadingParameterResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_SHADING_PARAMETER);
-        material->mMaterialColorResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_MATERIAL_COLOR);
-        material->mRasterizationResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_RASTERIZATION);
-        material->mTextureCoordinatorResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_TEXTURE_COORDINATOR);
-        material->mTextureMapperResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_TEXTURE_MAPPER);
-        material->mFragmentLightingResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_FRAGMENT_LIGHTING);
-        material->mFragmentLightingTableResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_FRAGMENT_LIGHTING_TABLE);
-        material->mTextureCombinerResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_TEXTURE_COMBINER);
-        material->mAlphaTestResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_ALPHA_TEST);
-        material->mFragmentOperationResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_FRAGMENT_OPERATION);
-        material->mSceneEnvironmentResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_SCENE_ENVIRONMENT);
+    if (result.IsSuccess())
+    {
+        material->m_ShaderParameterResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_SHADER_PARAMETER);
+        material->m_ShadingParameterResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_SHADING_PARAMETER);
+        material->m_MaterialColorResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_MATERIAL_COLOR);
+        material->m_RasterizationResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_RASTERIZATION);
+        material->m_TextureCoordinatorResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_TEXTURE_COORDINATOR);
+        material->m_TextureMapperResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_TEXTURE_MAPPER);
+        material->m_FragmentLightingResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_FRAGMENT_LIGHTING);
+        material->m_FragmentLightingTableResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_FRAGMENT_LIGHTING_TABLE);
+        material->m_TextureCombinerResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_TEXTURE_COMBINER);
+        material->m_AlphaTestResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_ALPHA_TEST);
+        material->m_FragmentOperationResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_FRAGMENT_OPERATION);
+        material->m_SceneEnvironmentResMaterial = GetAvailableResMaterial(material, Model::FLAG_BUFFER_SCENE_ENVIRONMENT);
         return material;
     }
     else{
@@ -60,75 +65,94 @@ Material* Material::Create(ResMaterial resource, s32 bufferCount, Model* parent,
     }
 }
 
-void Material::GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResMaterial resMaterial, s32 bufferCount, bit32 bufferOption){
+void Material::GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResMaterial resMaterial, s32 bufferCount, bit32 bufferOption)
+{
     nw::os::MemorySizeCalculator& size = *pSize;
 
     size += sizeof(Material);
 
     size += sizeof(ResMaterial) * bufferCount;
-    if (bufferCount > 0){
+    if (bufferCount > 0)
+    {
         nw::os::MemorySizeCalculator bufferSize(size.GetAlignment());
 
         bufferSize += sizeof(ResMaterialData);
 
-        if (ut::CheckFlag(bufferOption, Model::FLAG_BUFFER_SHADER_PARAMETER)){
+        if (ut::CheckFlag(bufferOption, Model::FLAG_BUFFER_SHADER_PARAMETER))
+        {
             bufferSize += sizeof(ut::Offset) * resMaterial.GetShaderParametersCount();
 
-            for (int i = 0; i < resMaterial.GetShaderParametersCount(); ++i){
+            for (int i = 0; i < resMaterial.GetShaderParametersCount(); ++i)
+            {
                 const int parameterLength = resMaterial.GetShaderParameters(i).GetParameterLength();
 
                 bufferSize += sizeof(ResShaderParameterData) + sizeof(f32) * (parameterLength - 1);
             }
         }
 
-        if (ut::CheckFlag(bufferOption, Model::FLAG_BUFFER_TEXTURE_MAPPER)){
-            for (int i = 0; i < resMaterial.GetTextureMappersCount(); i++){
+        if (ut::CheckFlag(bufferOption, Model::FLAG_BUFFER_TEXTURE_MAPPER))
+        {
+            for (int i = 0; i < resMaterial.GetTextureMappersCount(); i++)
+            {
                 ResPixelBasedTextureMapper resTextureMapper = resMaterial.GetTextureMappers(i);
-                if (resTextureMapper.IsValid()){
+                if (resTextureMapper.IsValid())
+                {
                     resTextureMapper.GetMemorySizeForCloneInternal(&bufferSize);
                 }
             }
         }
 
-        if (ut::CheckFlag(bufferOption, Model::FLAG_BUFFER_PROCEDURAL_TEXTURE_MAPPER)){
+        if (ut::CheckFlag(bufferOption, Model::FLAG_BUFFER_PROCEDURAL_TEXTURE_MAPPER))
+        {
             ResProceduralTextureMapper resTextureMapper = resMaterial.GetProceduralTextureMapper();
-            if (resTextureMapper.IsValid()){
+            if (resTextureMapper.IsValid())
+            {
                 resTextureMapper.GetMemorySizeForCloneInternal(&bufferSize);
             }
         }
 
-        if (ut::CheckFlagOr(bufferOption, Model::MULTI_FLAG_BUFFER_FRAGMENT_SHADER)){
-            if (resMaterial.GetFragmentShader().IsValid()){
+        if (ut::CheckFlagOr(bufferOption, Model::MULTI_FLAG_BUFFER_FRAGMENT_SHADER))
+        {
+            if (resMaterial.GetFragmentShader().IsValid())
+            {
                 bufferSize += sizeof(ResFragmentShaderData);
 
-                if (ut::CheckFlag(bufferOption, Model::FLAG_BUFFER_FRAGMENT_LIGHTING_TABLE)){
+                if (ut::CheckFlag(bufferOption, Model::FLAG_BUFFER_FRAGMENT_LIGHTING_TABLE))
+                {
                     ResFragmentShader resFragmentShader = resMaterial.GetFragmentShader();
 
-                    if (resFragmentShader.GetFragmentLightingTable().IsValid()){
+                    if (resFragmentShader.GetFragmentLightingTable().IsValid())
+                    {
                         ResFragmentLightingTable resFragmentLightingTable = resFragmentShader.GetFragmentLightingTable();
 
                         bufferSize += sizeof(ResFragmentLightingTableData);
-                        if (resFragmentLightingTable.GetReflectanceRSampler().IsValid()){
+                        if (resFragmentLightingTable.GetReflectanceRSampler().IsValid())
+                        {
                             bufferSize += sizeof(ResLightingLookupTableData);
                             bufferSize += sizeof(ResReferenceLookupTableData);
                         }
-                        if (resFragmentLightingTable.GetReflectanceGSampler().IsValid()){
+                        if (resFragmentLightingTable.GetReflectanceGSampler().IsValid())
+                        {
                             bufferSize += sizeof(ResLightingLookupTableData);
                             bufferSize += sizeof(ResReferenceLookupTableData);
                         }
-                        if (resFragmentLightingTable.GetReflectanceBSampler().IsValid()){
+                        if (resFragmentLightingTable.GetReflectanceBSampler().IsValid())
+                        {
                             bufferSize += sizeof(ResLightingLookupTableData);
                             bufferSize += sizeof(ResReferenceLookupTableData);
                         }
-                        if (resFragmentLightingTable.GetDistribution0Sampler().IsValid()){
+                        if (resFragmentLightingTable.GetDistribution0Sampler().IsValid())
+                        {
                             bufferSize += sizeof(ResLightingLookupTableData);
                             bufferSize += sizeof(ResReferenceLookupTableData);
                         }
-                        if (resFragmentLightingTable.GetDistribution1Sampler().IsValid()){
+                        if (resFragmentLightingTable.GetDistribution1Sampler().IsValid())
+                        {
                             bufferSize += sizeof(ResLightingLookupTableData);
                             bufferSize += sizeof(ResReferenceLookupTableData);
                         }
-                        if (resFragmentLightingTable.GetFresnelSampler().IsValid()){
+                        if (resFragmentLightingTable.GetFresnelSampler().IsValid())
+                        {
                             bufferSize += sizeof(ResLightingLookupTableData);
                             bufferSize += sizeof(ResReferenceLookupTableData);
                         }
@@ -142,14 +166,18 @@ void Material::GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResMat
     }
 }
 
-Material::~Material(){
-    std::for_each(mBuffers.begin(), mBuffers.end(), ResMaterialDestroyer(&this->GetAllocator()));
+Material::~Material()
+{
+    std::for_each(m_Buffers.begin(), m_Buffers.end(), ResMaterialDestroyer(&this->GetAllocator()));
 }
 
-bool Material::CanUseBuffer(u32 objectType) const{
-    if (0 < mBufferCount){
+bool Material::CanUseBuffer(u32 objectType) const
+{
+    if (0 < m_BufferCount)
+    {
         bit32 option = GetOwnerModel()->GetBufferOption();
-        switch (objectType){
+        switch (objectType)
+        {
         case anim::ResAnimGroupMember::OBJECT_TYPE_MATERIAL_COLOR:
             return ut::CheckFlag(option, Model::FLAG_BUFFER_MATERIAL_COLOR);
         case anim::ResAnimGroupMember::OBJECT_TYPE_TEXTURE_SAMPLER:
@@ -167,28 +195,33 @@ bool Material::CanUseBuffer(u32 objectType) const{
     return false;
 }
 
-Result Material::CreateBuffers(nw::os::IAllocator* allocator){
+Result Material::CreateBuffers(nw::os::IAllocator* allocator)
+{
     Result result = INITIALIZE_RESULT_OK;
 
-    NW_NULL_ASSERT(mOwner);
-    bit32 bufferOption = mOwner->GetBufferOption();
+    NW_NULL_ASSERT(m_Owner);
+    bit32 bufferOption = m_Owner->GetBufferOption();
 
-    if (mBufferCount != 0){
-        void* memory = allocator->Alloc(sizeof(ResMaterial) * mBufferCount);
-        if (memory == NULL){
+    if (m_BufferCount != 0)
+    {
+        void* memory = allocator->Alloc(sizeof(ResMaterial) * m_BufferCount);
+        if (memory == NULL)
+        {
             result |= Result::MASK_FAIL_BIT;
         }
 
         NW_ENSURE_AND_RETURN(result);
 
-        mBuffers = ResMaterialArray(memory, mBufferCount, allocator);
+        m_Buffers = ResMaterialArray(memory, m_BufferCount, allocator);
 
-        for (int bufferIndex = 0; bufferIndex < mBufferCount; bufferIndex++){
+        for (int bufferIndex = 0; bufferIndex < m_BufferCount; bufferIndex++)
+        {
             NW_ENSURE_AND_RETURN(result);
             ::std::pair<ResMaterial, Result> copyResult = CopyResMaterial(allocator, bufferOption);
 
-            if (copyResult.second.IsSuccess()){
-                this->mBuffers.PushBackFast(copyResult.first);
+            if (copyResult.second.IsSuccess())
+            {
+                this->m_Buffers.PushBackFast(copyResult.first);
             }
             else{
                 DestroyResMaterial(allocator, copyResult.first);
@@ -200,13 +233,15 @@ Result Material::CreateBuffers(nw::os::IAllocator* allocator){
     return result;
 }
 
-::std::pair<ResMaterial, Result> Material::CopyResMaterial(nw::os::IAllocator* allocator, bit32 bufferOption){
+::std::pair<ResMaterial, Result> Material::CopyResMaterial(nw::os::IAllocator* allocator, bit32 bufferOption)
+{
     Result result = INITIALIZE_RESULT_OK;
 
     ResMaterial resMaterial = GetOriginal();
 
     void* materialMemory = allocator->Alloc(sizeof(ResMaterialData));
-    if (materialMemory == NULL){
+    if (materialMemory == NULL)
+    {
         result |= Result::MASK_FAIL_BIT;
         return ::std::make_pair(ResMaterial(NULL), result);
     }
@@ -217,7 +252,7 @@ Result Material::CreateBuffers(nw::os::IAllocator* allocator){
 
     buffer->toName.set_ptr(NULL);
     buffer->toShader.set_ptr(NULL);
-    buffer->mShaderParametersTableCount = 0;
+    buffer->m_ShaderParametersTableCount = 0;
     buffer->toShaderParametersTable.set_ptr(NULL);
     buffer->toTextureMappers[0].set_ptr(NULL);
     buffer->toTextureMappers[1].set_ptr(NULL);
@@ -225,28 +260,31 @@ Result Material::CreateBuffers(nw::os::IAllocator* allocator){
     buffer->toProceduralTextureMapper.set_ptr(NULL);
     buffer->toFragmentShader.set_ptr(NULL);
 
-    buffer->mAlphaTestHash = 0x0;
-    buffer->mFragmentLightingHash = 0x0;
-    buffer->mFragmentLightingTableHash = 0x0;
-    buffer->mFragmentLightingTableParametersHash = 0x0;
-    buffer->mFragmentOperationHash = 0x0;
-    buffer->mMaterialColorHash = 0x0;
-    buffer->mRasterizationHash = 0x0;
-    buffer->mShaderParametersHash = 0x0;
-    buffer->mShadingParameterHash = 0x0;
-    buffer->mTextureCombinersHash = 0x0;
-    buffer->mTextureCoordinatorsHash = 0x0;
-    buffer->mTextureMappersHash = 0x0;
-    buffer->mTextureSamplersHash = 0x0;
+    buffer->m_AlphaTestHash = 0x0;
+    buffer->m_FragmentLightingHash = 0x0;
+    buffer->m_FragmentLightingTableHash = 0x0;
+    buffer->m_FragmentLightingTableParametersHash = 0x0;
+    buffer->m_FragmentOperationHash = 0x0;
+    buffer->m_MaterialColorHash = 0x0;
+    buffer->m_RasterizationHash = 0x0;
+    buffer->m_ShaderParametersHash = 0x0;
+    buffer->m_ShadingParameterHash = 0x0;
+    buffer->m_TextureCombinersHash = 0x0;
+    buffer->m_TextureCoordinatorsHash = 0x0;
+    buffer->m_TextureMappersHash = 0x0;
+    buffer->m_TextureSamplersHash = 0x0;
 
-    if (ut::CheckFlag(bufferOption, Model::FLAG_BUFFER_SHADER_PARAMETER)){
-        buffer->mShaderParametersTableCount = resMaterial.GetShaderParametersCount();
+    if (ut::CheckFlag(bufferOption, Model::FLAG_BUFFER_SHADER_PARAMETER))
+    {
+        buffer->m_ShaderParametersTableCount = resMaterial.GetShaderParametersCount();
 
         ut::Offset* offsets = NULL;
-        if (buffer->mShaderParametersTableCount != 0){
+        if (buffer->m_ShaderParametersTableCount != 0)
+        {
             offsets = allocator->AllocAndConstruct<ut::Offset>(resMaterial.GetShaderParametersCount());
 
-            if (offsets == NULL){
+            if (offsets == NULL)
+            {
                 result |= Result::MASK_FAIL_BIT;
                 return ::std::make_pair(copyMaterial, result);
             }
@@ -254,18 +292,21 @@ Result Material::CreateBuffers(nw::os::IAllocator* allocator){
             buffer->toShaderParametersTable.set_ptr(offsets);
         }
 
-        for (int i = 0; i < resMaterial.GetShaderParametersCount(); i++){
+        for (int i = 0; i < resMaterial.GetShaderParametersCount(); i++)
+        {
             offsets[i].set_ptr(NULL);
         }
 
-        for (int i = 0; i < resMaterial.GetShaderParametersCount(); i++){
+        for (int i = 0; i < resMaterial.GetShaderParametersCount(); i++)
+        {
             ResShaderParameter resShaderParameter = resMaterial.GetShaderParameters(i);
             ResShaderParameterValue resShaderParameterValue = resShaderParameter.GetParameter();
 
             const int parameterLength = resShaderParameter.GetParameterLength();
 
             void* parameterMemory = allocator->Alloc(sizeof(ResShaderParameterData) + sizeof(f32) * (parameterLength - 1));
-            if (parameterMemory == NULL){
+            if (parameterMemory == NULL)
+            {
                 result |= Result::MASK_FAIL_BIT;
                 return ::std::make_pair(copyMaterial, result);
             }
@@ -273,21 +314,26 @@ Result Material::CreateBuffers(nw::os::IAllocator* allocator){
             ResShaderParameterData* shaderParameter = static_cast<ResShaderParameterData*>(parameterMemory);
             *shaderParameter = ResShaderParameterData(resShaderParameter.ref());
 
-            for (int j = 0; j < parameterLength; ++j){
-                shaderParameter->mParameter.mValue[j] = resShaderParameterValue.ref().mValue[j];
+            for (int j = 0; j < parameterLength; ++j)
+            {
+                shaderParameter->m_Parameter.m_Value[j] = resShaderParameterValue.ref().m_Value[j];
             }
 
             offsets[i].set_ptr(shaderParameter);
         }
     }
 
-    if (ut::CheckFlag(bufferOption, Model::FLAG_BUFFER_TEXTURE_MAPPER)){
-        for (int i = 0; i < resMaterial.GetTextureMappersCount(); i++){
+    if (ut::CheckFlag(bufferOption, Model::FLAG_BUFFER_TEXTURE_MAPPER))
+    {
+        for (int i = 0; i < resMaterial.GetTextureMappersCount(); i++)
+        {
             ResPixelBasedTextureMapper resTextureMapper = resMaterial.GetTextureMappers(i);
-            if (resTextureMapper.IsValid()){
+            if (resTextureMapper.IsValid())
+            {
                 ResTextureMapper textureMapper = resTextureMapper.CloneDynamic(allocator);
 
-                if (!textureMapper.IsValid()){
+                if (!textureMapper.IsValid())
+                {
                     result |= Result::MASK_FAIL_BIT;
                     return ::std::make_pair(copyMaterial, result);
                 }
@@ -297,12 +343,15 @@ Result Material::CreateBuffers(nw::os::IAllocator* allocator){
         }
     }
 
-    if (ut::CheckFlag(bufferOption, Model::FLAG_BUFFER_PROCEDURAL_TEXTURE_MAPPER)){
+    if (ut::CheckFlag(bufferOption, Model::FLAG_BUFFER_PROCEDURAL_TEXTURE_MAPPER))
+    {
         ResProceduralTextureMapper resTextureMapper = resMaterial.GetProceduralTextureMapper();
-        if (resTextureMapper.IsValid()){
+        if (resTextureMapper.IsValid())
+        {
             ResTextureMapper textureMapper = resTextureMapper.CloneDynamic(allocator);
 
-            if (!textureMapper.IsValid()){
+            if (!textureMapper.IsValid())
+            {
                 result |= Result::MASK_FAIL_BIT;
                 return ::std::make_pair(copyMaterial, result);
             }
@@ -311,12 +360,15 @@ Result Material::CreateBuffers(nw::os::IAllocator* allocator){
         }
     }
 
-    if (ut::CheckFlagOr(bufferOption, Model::MULTI_FLAG_BUFFER_FRAGMENT_SHADER)){
+    if (ut::CheckFlagOr(bufferOption, Model::MULTI_FLAG_BUFFER_FRAGMENT_SHADER))
+    {
         ResFragmentShader resFragmentShader = resMaterial.GetFragmentShader();
-        if (resFragmentShader.IsValid()){
+        if (resFragmentShader.IsValid())
+        {
             void* shaderMemory = allocator->Alloc(sizeof(ResFragmentShaderData));
 
-            if (shaderMemory == NULL){
+            if (shaderMemory == NULL)
+            {
                 result |= Result::MASK_FAIL_BIT;
                 return ::std::make_pair(copyMaterial, result);
             }
@@ -327,15 +379,18 @@ Result Material::CreateBuffers(nw::os::IAllocator* allocator){
 
             fragmentShader->toFragmentLightingTable.set_ptr(NULL);
 
-            if (ut::CheckFlag(bufferOption, Model::FLAG_BUFFER_FRAGMENT_LIGHTING_TABLE)){
+            if (ut::CheckFlag(bufferOption, Model::FLAG_BUFFER_FRAGMENT_LIGHTING_TABLE))
+            {
                 ResFragmentLightingTable resFragmentLightingTable = resFragmentShader.GetFragmentLightingTable();
-                if (resFragmentLightingTable.IsValid()){
+                if (resFragmentLightingTable.IsValid())
+                {
                     ::std::pair<ResFragmentLightingTable, Result> copyResult =
                         CopyResFragmentLightingTable(allocator, resFragmentLightingTable);
 
                     fragmentShader->toFragmentLightingTable.set_ptr(copyResult.first.ptr());
 
-                    if (copyResult.second.IsFailure()){
+                    if (copyResult.second.IsFailure())
+                    {
                         result |= Result::MASK_FAIL_BIT;
                         return ::std::make_pair(copyMaterial, result);
                     }
@@ -347,25 +402,32 @@ Result Material::CreateBuffers(nw::os::IAllocator* allocator){
     return ::std::make_pair(copyMaterial, result);
 }
 
-void Material::DestroyResMaterial(nw::os::IAllocator* allocator, ResMaterial resMaterial){
+void Material::DestroyResMaterial(nw::os::IAllocator* allocator, ResMaterial resMaterial)
+{
     NW_NULL_ASSERT(allocator);
-    if (resMaterial.IsValid()){
+    if (resMaterial.IsValid())
+    {
         resMaterial.Cleanup();
 
         DestroyResFragmentShader(allocator, resMaterial.GetFragmentShader());
 
-        if (resMaterial.GetProceduralTextureMapper().IsValid()){
+        if (resMaterial.GetProceduralTextureMapper().IsValid())
+        {
             resMaterial.GetProceduralTextureMapper().DestroyDynamic();
         }
 
-        for (int i = 0; i < resMaterial.GetTextureMappersCount(); i++){
-            if (resMaterial.GetTextureMappers(i).IsValid()){
+        for (int i = 0; i < resMaterial.GetTextureMappersCount(); i++)
+        {
+            if (resMaterial.GetTextureMappers(i).IsValid())
+            {
                 resMaterial.GetTextureMappers(i).DestroyDynamic();
             }
         }
 
-        if (resMaterial.ref().toShaderParametersTable.to_ptr() != NULL){
-            for (int i = 0; i < resMaterial.GetShaderParametersCount(); i++){
+        if (resMaterial.ref().toShaderParametersTable.to_ptr() != NULL)
+        {
+            for (int i = 0; i < resMaterial.GetShaderParametersCount(); i++)
+            {
                 DestroyResShaderParameter(allocator, resMaterial.GetShaderParameters(i));
             }
             allocator->Free(resMaterial.ref().toShaderParametersTable.to_ptr());
@@ -375,37 +437,46 @@ void Material::DestroyResMaterial(nw::os::IAllocator* allocator, ResMaterial res
     }
 }
 
-void Material::DestroyResFragmentShader(nw::os::IAllocator* allocator, ResFragmentShader resFragmentShader){
-    if (resFragmentShader.IsValid()){
+void Material::DestroyResFragmentShader(nw::os::IAllocator* allocator, ResFragmentShader resFragmentShader)
+{
+    if (resFragmentShader.IsValid())
+    {
         ResFragmentLightingTable resFragmentLightingTable = resFragmentShader.GetFragmentLightingTable();
 
-        if (resFragmentLightingTable.IsValid()){
-            if (resFragmentLightingTable.GetReflectanceRSampler().IsValid()){
+        if (resFragmentLightingTable.IsValid())
+        {
+            if (resFragmentLightingTable.GetReflectanceRSampler().IsValid())
+            {
                 allocator->Free(resFragmentLightingTable.GetReflectanceRSampler().GetSampler().ptr());
                 allocator->Free(resFragmentLightingTable.GetReflectanceRSampler().ptr());
             }
 
-            if (resFragmentLightingTable.GetReflectanceGSampler().IsValid()){
+            if (resFragmentLightingTable.GetReflectanceGSampler().IsValid())
+            {
                 allocator->Free(resFragmentLightingTable.GetReflectanceGSampler().GetSampler().ptr());
                 allocator->Free(resFragmentLightingTable.GetReflectanceGSampler().ptr());
             }
 
-            if (resFragmentLightingTable.GetReflectanceBSampler().IsValid()){
+            if (resFragmentLightingTable.GetReflectanceBSampler().IsValid())
+            {
                 allocator->Free(resFragmentLightingTable.GetReflectanceBSampler().GetSampler().ptr());
                 allocator->Free(resFragmentLightingTable.GetReflectanceBSampler().ptr());
             }
 
-            if (resFragmentLightingTable.GetDistribution0Sampler().IsValid()){
+            if (resFragmentLightingTable.GetDistribution0Sampler().IsValid())
+            {
                 allocator->Free(resFragmentLightingTable.GetDistribution0Sampler().GetSampler().ptr());
                 allocator->Free(resFragmentLightingTable.GetDistribution0Sampler().ptr());
             }
 
-            if (resFragmentLightingTable.GetDistribution1Sampler().IsValid()){
+            if (resFragmentLightingTable.GetDistribution1Sampler().IsValid())
+            {
                 allocator->Free(resFragmentLightingTable.GetDistribution1Sampler().GetSampler().ptr());
                 allocator->Free(resFragmentLightingTable.GetDistribution1Sampler().ptr());
             }
 
-            if (resFragmentLightingTable.GetFresnelSampler().IsValid()){
+            if (resFragmentLightingTable.GetFresnelSampler().IsValid())
+            {
                 allocator->Free(resFragmentLightingTable.GetFresnelSampler().GetSampler().ptr());
                 allocator->Free(resFragmentLightingTable.GetFresnelSampler().ptr());
             }
@@ -417,17 +488,21 @@ void Material::DestroyResFragmentShader(nw::os::IAllocator* allocator, ResFragme
     }
 }
 
-void Material::DestroyResShaderParameter(nw::os::IAllocator* allocator, ResShaderParameter resShaderParameter){
-    if (resShaderParameter.IsValid()){
+void Material::DestroyResShaderParameter(nw::os::IAllocator* allocator, ResShaderParameter resShaderParameter)
+{
+    if (resShaderParameter.IsValid())
+    {
         allocator->Free(resShaderParameter.ptr());
     }
 }
 
-::std::pair<ResFragmentLightingTable, Result> Material::CopyResFragmentLightingTable(nw::os::IAllocator* allocator,ResFragmentLightingTable resFragmentLightingTable){
+::std::pair<ResFragmentLightingTable, Result> Material::CopyResFragmentLightingTable(nw::os::IAllocator* allocator,ResFragmentLightingTable resFragmentLightingTable)
+{
     Result result = INITIALIZE_RESULT_OK;
 
     void* tableMemory = allocator->Alloc(sizeof(ResFragmentLightingTableData));
-    if (tableMemory == NULL){
+    if (tableMemory == NULL)
+    {
         result |= Result::MASK_FAIL_BIT;
         return ::std::make_pair(ResFragmentLightingTable(NULL), result);
     }
@@ -441,7 +516,8 @@ void Material::DestroyResShaderParameter(nw::os::IAllocator* allocator, ResShade
     fragmentLightingTable->toDistribution1Sampler.set_ptr(NULL);
     fragmentLightingTable->toFresnelSampler.set_ptr(NULL);
 
-    if (resFragmentLightingTable.GetReflectanceRSampler().IsValid() && result.IsSuccess()){
+    if (resFragmentLightingTable.GetReflectanceRSampler().IsValid() && result.IsSuccess())
+    {
         ::std::pair<ResLightingLookupTable, Result> copyResult =
             CopyResLightingLookupTable(allocator, resFragmentLightingTable.GetReflectanceRSampler());
 
@@ -450,7 +526,8 @@ void Material::DestroyResShaderParameter(nw::os::IAllocator* allocator, ResShade
         result |= copyResult.second;
     }
 
-    if (resFragmentLightingTable.GetReflectanceGSampler().IsValid() && result.IsSuccess()){
+    if (resFragmentLightingTable.GetReflectanceGSampler().IsValid() && result.IsSuccess())
+    {
         ::std::pair<ResLightingLookupTable, Result> copyResult =
             CopyResLightingLookupTable(allocator, resFragmentLightingTable.GetReflectanceGSampler());
 
@@ -459,7 +536,8 @@ void Material::DestroyResShaderParameter(nw::os::IAllocator* allocator, ResShade
         result |= copyResult.second;
     }
 
-    if (resFragmentLightingTable.GetReflectanceBSampler().IsValid() && result.IsSuccess()){
+    if (resFragmentLightingTable.GetReflectanceBSampler().IsValid() && result.IsSuccess())
+    {
         ::std::pair<ResLightingLookupTable, Result> copyResult =
             CopyResLightingLookupTable(allocator, resFragmentLightingTable.GetReflectanceBSampler());
 
@@ -468,7 +546,8 @@ void Material::DestroyResShaderParameter(nw::os::IAllocator* allocator, ResShade
         result |= copyResult.second;
     }
 
-    if (resFragmentLightingTable.GetDistribution0Sampler().IsValid() && result.IsSuccess()){
+    if (resFragmentLightingTable.GetDistribution0Sampler().IsValid() && result.IsSuccess())
+    {
         ::std::pair<ResLightingLookupTable, Result> copyResult =
             CopyResLightingLookupTable(allocator, resFragmentLightingTable.GetDistribution0Sampler());
 
@@ -477,7 +556,8 @@ void Material::DestroyResShaderParameter(nw::os::IAllocator* allocator, ResShade
         result |= copyResult.second;
     }
 
-    if (resFragmentLightingTable.GetDistribution1Sampler().IsValid() && result.IsSuccess()){
+    if (resFragmentLightingTable.GetDistribution1Sampler().IsValid() && result.IsSuccess())
+    {
         ::std::pair<ResLightingLookupTable, Result> copyResult =
             CopyResLightingLookupTable(allocator, resFragmentLightingTable.GetDistribution1Sampler());
 
@@ -486,7 +566,8 @@ void Material::DestroyResShaderParameter(nw::os::IAllocator* allocator, ResShade
         result |= copyResult.second;
     }
 
-    if (resFragmentLightingTable.GetFresnelSampler().IsValid() && result.IsSuccess()){
+    if (resFragmentLightingTable.GetFresnelSampler().IsValid() && result.IsSuccess())
+    {
         ::std::pair<ResLightingLookupTable, Result> copyResult =
             CopyResLightingLookupTable(allocator, resFragmentLightingTable.GetFresnelSampler());
 
@@ -498,12 +579,14 @@ void Material::DestroyResShaderParameter(nw::os::IAllocator* allocator, ResShade
     return ::std::make_pair(ResFragmentLightingTable(fragmentLightingTable), result);
 }
 
-::std::pair<ResLightingLookupTable, Result> Material::CopyResLightingLookupTable(nw::os::IAllocator* allocator, ResLightingLookupTable resLightingLookupTable){
+::std::pair<ResLightingLookupTable, Result> Material::CopyResLightingLookupTable(nw::os::IAllocator* allocator, ResLightingLookupTable resLightingLookupTable)
+{
     Result result = INITIALIZE_RESULT_OK;
 
     void* tableMemory = allocator->Alloc(sizeof(ResLightingLookupTableData));
 
-    if (tableMemory == NULL){
+    if (tableMemory == NULL)
+    {
         result |= Result::MASK_FAIL_BIT;
         return ::std::make_pair(ResLightingLookupTable(NULL), result);
     }
@@ -512,7 +595,8 @@ void Material::DestroyResShaderParameter(nw::os::IAllocator* allocator, ResShade
 
     void* referenceTableMemory = allocator->Alloc(sizeof(ResReferenceLookupTableData));
 
-    if (referenceTableMemory == NULL){
+    if (referenceTableMemory == NULL)
+    {
         result |= Result::MASK_FAIL_BIT;
         allocator->Free(lightingLookupTable);
         return ::std::make_pair(ResLightingLookupTable(NULL), result);
@@ -526,18 +610,20 @@ void Material::DestroyResShaderParameter(nw::os::IAllocator* allocator, ResShade
     referenceLookupTable->toPath.set_ptr(sampler.GetPath());
     referenceLookupTable->toTableName.set_ptr(sampler.GetTableName());
 
-    lightingLookupTable->mInput = resLightingLookupTable.GetInput();
-    lightingLookupTable->mScale = resLightingLookupTable.GetScale();
+    lightingLookupTable->m_Input = resLightingLookupTable.GetInput();
+    lightingLookupTable->m_Scale = resLightingLookupTable.GetScale();
     lightingLookupTable->toSampler.set_ptr(referenceLookupTable);
 
     return ::std::make_pair(ResLightingLookupTable(lightingLookupTable), result);
 }
 
-void* Material::GetAnimTargetObject(const anim::ResAnimGroupMember& anim, const ResMaterial resMaterial){
+void* Material::GetAnimTargetObject(const anim::ResAnimGroupMember& anim, const ResMaterial resMaterial)
+{
     u32 objectType = anim.GetObjectType();
     ResMaterial mat = resMaterial;
 
-    switch (objectType){
+    switch (objectType)
+    {
     case anim::ResAnimGroupMember::OBJECT_TYPE_MATERIAL_COLOR:{
             anim::ResMaterialColorMember member = ResStaticCast<anim::ResMaterialColorMember>(anim);
             const char* matName = member.GetMaterialName();
@@ -593,7 +679,8 @@ void* Material::GetAnimTargetObject(const anim::ResAnimGroupMember& anim, const 
     }
 }
 
-Result Material::Initialize(nw::os::IAllocator* allocator){
+Result Material::Initialize(nw::os::IAllocator* allocator)
+{
     Result result = INITIALIZE_RESULT_OK;
 
     result |= CreateBuffers(allocator);

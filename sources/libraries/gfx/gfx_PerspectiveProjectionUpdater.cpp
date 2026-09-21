@@ -7,7 +7,8 @@ namespace gfx{
 
 NW_UT_RUNTIME_TYPEINFO_DEFINITION(PerspectiveProjectionUpdater,CameraProjectionUpdater);
 
-PerspectiveProjectionUpdater* PerspectiveProjectionUpdater::Create(os::IAllocator* allocator){
+PerspectiveProjectionUpdater* PerspectiveProjectionUpdater::Create(os::IAllocator* allocator)
+{
     NW_NULL_ASSERT(allocator);
     
     void* updaterMemory = allocator->Alloc(sizeof(PerspectiveProjectionUpdater));
@@ -18,17 +19,18 @@ PerspectiveProjectionUpdater* PerspectiveProjectionUpdater::Create(os::IAllocato
     ResPerspectiveProjectionUpdaterData* buffer = new(dataMemory) ResPerspectiveProjectionUpdaterData();
 
     buffer->typeInfo = ResPerspectiveProjectionUpdater::TYPE_INFO;
-    buffer->mNear = PROJECTION_NEAR_CLIP;
-    buffer->mFar = PROJECTION_FAR_CLIP;
-    buffer->mFovy = PROJECTION_FOVY_RADIAN;
-    buffer->mAspectRatio = PROJECTION_ASPECT_RATIO;
+    buffer->m_Near = PROJECTION_NEAR_CLIP;
+    buffer->m_Far = PROJECTION_FAR_CLIP;
+    buffer->m_Fovy = PROJECTION_FOVY_RADIAN;
+    buffer->m_AspectRatio = PROJECTION_ASPECT_RATIO;
 
     ResPerspectiveProjectionUpdater resUpdater = ResPerspectiveProjectionUpdater(buffer);
 
     return new(updaterMemory) PerspectiveProjectionUpdater(allocator, true, resUpdater);
 }
 
-PerspectiveProjectionUpdater* PerspectiveProjectionUpdater::Create(os::IAllocator* allocator,ResPerspectiveProjectionUpdater resUpdater){
+PerspectiveProjectionUpdater* PerspectiveProjectionUpdater::Create(os::IAllocator* allocator,ResPerspectiveProjectionUpdater resUpdater)
+{
     NW_NULL_ASSERT(allocator);
     
     void* updaterMemory = allocator->Alloc(sizeof(PerspectiveProjectionUpdater));
@@ -39,26 +41,28 @@ PerspectiveProjectionUpdater* PerspectiveProjectionUpdater::Create(os::IAllocato
 
 PerspectiveProjectionUpdater::PerspectiveProjectionUpdater(os::IAllocator* allocator,bool isDynamic,ResPerspectiveProjectionUpdater resUpdater): 
     CameraProjectionUpdater(allocator, isDynamic),
-    mResource(resUpdater)
-{}
+    m_Resource(resUpdater) {}
 
-PerspectiveProjectionUpdater::~PerspectiveProjectionUpdater(){
-    if (this->IsDynamic() && this->mResource.IsValid()){
-        this->GetAllocator().Free(this->mResource.ptr());
+PerspectiveProjectionUpdater::~PerspectiveProjectionUpdater()
+{
+    if (this->IsDynamic() && this->m_Resource.IsValid())
+    {
+        this->GetAllocator().Free(this->m_Resource.ptr());
     }
 }
 
-void PerspectiveProjectionUpdater::Update(math::MTX44* projectionMatrix, math::MTX34* textureProjectionMatrix){
+void PerspectiveProjectionUpdater::Update(math::MTX44* projectionMatrix, math::MTX34* textureProjectionMatrix)
+{
     NW_ASSERT(m_Resource.IsValid());
 
-    float fovy = this->mResource.GetFovy();
+    float fovy = this->m_Resource.GetFovy();
     NW_ASSERT(0 < fovy && fovy < nw::math::F_PI);
 
-    float aspect = this->mResource.GetAspectRatio();
+    float aspect = this->m_Resource.GetAspectRatio();
     NW_ASSERT(aspect != 0);
 
-    float near = this->mResource.GetNear();
-    float far = this->mResource.GetFar();
+    float near = this->m_Resource.GetNear();
+    float far = this->m_Resource.GetFar();
     NW_ASSERT(near != far);
 
     math::MTX44PerspectivePivotRad(projectionMatrix,fovy,aspect,near,far,this->GetPivotDirection());

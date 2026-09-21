@@ -9,7 +9,8 @@ namespace font {
 namespace internal{
     class TextureObject;
 
-struct CharAttribute{
+struct CharAttribute
+{
     nn::math::VEC4 pos;
     ut::Color8 color[internal::TEXTCOLOR_MAX];
     nn::math::VEC4 tex;
@@ -18,7 +19,8 @@ struct CharAttribute{
 
 }
 
-struct DispStringBuffer{
+struct DispStringBuffer
+{
     const u32 charCountMax;
     u16 charCount;
     u16 drawCharCount;
@@ -32,27 +34,33 @@ struct DispStringBuffer{
 
     static u32          CalcCommandBufferCapacity(u32 charNum);
     DispStringBuffer(u32 charNum);
-    void ClearCommand(){
+    void ClearCommand()
+    {
         generatedCommand = false;
     }
 
     //! コマンドが生成済みかどうかを判定します。
-    bool IsGeneratedCommand(){
+    bool IsGeneratedCommand()
+    {
         return 0 != generatedCommand;
     }
 
-    bool IsCommandEmpty(){
+    bool IsCommandEmpty()
+    {
         return 0 == commandBufferSize;
     }
-    u16 GetDrawCharCount() const    { return this->drawCharCount; }
-    void SetDrawCharCount(u16 count){
+    u16 GetDrawCharCount() const { return this->drawCharCount; }
+    void SetDrawCharCount(u16 count)
+    {
         drawCharCount = count;
     }
-    void ResetDrawCharCount(){
+    void ResetDrawCharCount()
+    {
         SetDrawCharCount(0xFFFF);
     }
     
-    internal::CharAttribute* GetCharAttrs() const{
+    internal::CharAttribute* GetCharAttrs() const
+    {
         return reinterpret_cast<internal::CharAttribute*>(
             reinterpret_cast<uptr>(this) + sizeof(*this) );
     }

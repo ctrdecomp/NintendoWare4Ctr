@@ -10,22 +10,24 @@
 namespace nw{
 namespace gfx{
 
-class ParticleEmitter : public TransformNode{
+class ParticleEmitter : public TransformNode
+{
 private:
     NW_DISALLOW_COPY_AND_ASSIGN(ParticleEmitter);
 
 public:
     NW_UT_RUNTIME_TYPEINFO;
 
-    struct Description : public TransformNode::Description{
-        Description()
-        {}
+    struct Description : public TransformNode::Description
+    {
+        Description() {}
     };
 
 
     static ParticleEmitter* Create(SceneNode* parent,ResSceneObject resource,const ParticleEmitter::Description& description,nw::os::IAllocator* allocator);
 
-    static size_t GetMemorySize(ResParticleEmitter resource,const ParticleEmitter::Description& description,size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT){
+    static size_t GetMemorySize(ResParticleEmitter resource,const ParticleEmitter::Description& description,size_t alignment = nw::os::IAllocator::DEFAULT_ALIGNMENT)
+    {
         os::MemorySizeCalculator size(alignment);
 
         GetMemorySizeInternal(&size, resource, description);
@@ -37,118 +39,144 @@ public:
 
     virtual void Accept(ISceneVisitor* visitor);
 
-    void UpdateParticleFrame(){
-        this->mParticleAnimFrameController.UpdateFrame();
+    void UpdateParticleFrame()
+    {
+        this->m_ParticleAnimFrameController.UpdateFrame();
     }
 
-    void Reset(){
-        mIsFirstEmission = true;
-        mEmissionCount = 0;
-        mNextEmissionTime = 0;
+    void Reset()
+    {
+        m_IsFirstEmission = true;
+        m_EmissionCount = 0;
+        m_NextEmissionTime = 0;
 
-        this->mParticleAnimFrameController.SetFrame(0);
+        this->m_ParticleAnimFrameController.SetFrame(0);
     }
 
-    ResParticleEmitter GetResParticleEmitter(){
+    ResParticleEmitter GetResParticleEmitter()
+    {
         return ResDynamicCast<ResParticleEmitter>( this->GetResSceneObject() );
     }
 
-    const ResParticleEmitter GetResParticleEmitter() const{
+    const ResParticleEmitter GetResParticleEmitter() const
+    {
         return ResDynamicCast<ResParticleEmitter>( this->GetResSceneObject() );
     }
 
-    ResParticleEmitterParameter GetResParticleEmitterParameterCopy(bool copyOnly = false){
-        if (mResParameter.IsValid()){
-            return mResParameter;
+    ResParticleEmitterParameter GetResParticleEmitterParameterCopy(bool copyOnly = false)
+    {
+        if (m_ResParameter.IsValid())
+        {
+            return m_ResParameter;
         }
 
-        if (!copyOnly && this->GetResParticleEmitter().IsValid()){
-            return ResParticleEmitterParameter(&this->GetResParticleEmitter().ptr()->mIsResourceCopyEnabled);
+        if (!copyOnly && this->GetResParticleEmitter().IsValid())
+        {
+            return ResParticleEmitterParameter(&this->GetResParticleEmitter().ptr()->m_IsResourceCopyEnabled);
         }
 
-        return mResParameter;
+        return m_ResParameter;
     }
 
-    const ResParticleEmitterParameter GetResParticleEmitterParameterCopy(bool copyOnly = false) const{
-        if (this->mResParameter.IsValid()){
-            return mResParameter;
+    const ResParticleEmitterParameter GetResParticleEmitterParameterCopy(bool copyOnly = false) const
+    {
+        if (this->m_ResParameter.IsValid())
+        {
+            return m_ResParameter;
         }
 
-        if (!copyOnly && this->GetResParticleEmitter().IsValid()){
-            return ResParticleEmitterParameter(&this->GetResParticleEmitter().ptr()->mIsResourceCopyEnabled);
+        if (!copyOnly && this->GetResParticleEmitter().IsValid())
+        {
+            return ResParticleEmitterParameter(&this->GetResParticleEmitter().ptr()->m_IsResourceCopyEnabled);
         }
 
-        return mResParameter;
+        return m_ResParameter;
     }
 
-    ResParticleForm GetResParticleFormCopy(bool copyOnly = false){
-        if (this->mResForm.IsValid()){
-            return mResForm;
+    ResParticleForm GetResParticleFormCopy(bool copyOnly = false)
+    {
+        if (this->m_ResForm.IsValid())
+        {
+            return m_ResForm;
         }
 
-        if (!copyOnly && this->GetResParticleEmitter().IsValid()){
+        if (!copyOnly && this->GetResParticleEmitter().IsValid())
+        {
             return this->GetResParticleEmitter().GetParticleForm();
         }
 
-        return mResForm;
+        return m_ResForm;
     }
 
     const ResParticleForm GetResParticleFormCopy(bool copyOnly = false) const
     {
-        if (this->mResForm.IsValid()){
-            return mResForm;
+        if (this->m_ResForm.IsValid())
+        {
+            return m_ResForm;
         }
 
-        if (!copyOnly && this->GetResParticleEmitter().IsValid()){
+        if (!copyOnly && this->GetResParticleEmitter().IsValid())
+        {
             return this->GetResParticleEmitter().GetParticleForm();
         }
 
-        return mResForm;
+        return m_ResForm;
     }
 
     int GetEmissionCount(f32 prevTime, f32 time);
 
-    void SetParticleSet(ParticleSet* particleSet){
-        this->mParticleSet = particleSet;
+    void SetParticleSet(ParticleSet* particleSet)
+    {
+        this->m_ParticleSet = particleSet;
     }
 
-    ParticleSet* GetParticleSet(){
-        return this->mParticleSet;
+    ParticleSet* GetParticleSet()
+    {
+        return this->m_ParticleSet;
     }
 
-    const ParticleSet* GetParticleSet() const{
-        return this->mParticleSet;
+    const ParticleSet* GetParticleSet() const
+    {
+        return this->m_ParticleSet;
     }
 
-    anim::AnimFrameController& ParticleAnimFrameController(){
-        return mParticleAnimFrameController;
+    anim::AnimFrameController& ParticleAnimFrameController()
+    {
+        return m_ParticleAnimFrameController;
     }
 
-    const anim::AnimFrameController& ParticleAnimFrameController() const{
-        return mParticleAnimFrameController;
+    const anim::AnimFrameController& ParticleAnimFrameController() const
+    {
+        return m_ParticleAnimFrameController;
     }
 
-    void Srand(u32 seed){
-        mParticleRandom.Srand(seed);
+    void Srand(u32 seed)
+    {
+        m_ParticleRandom.Srand(seed);
     }
 
-    bool IsAlive() const{
+    bool IsAlive() const
+    {
         const ResParticleEmitterParameter resource = this->GetResParticleEmitterParameterCopy(false);
-        if (!resource.IsValid()){
+        if (!resource.IsValid())
+        {
             return false;
         }
 
-        if (resource.GetEmissionRatio() == 0){
+        if (resource.GetEmissionRatio() == 0)
+        {
             return false;
         }
 
-        if (resource.GetEmissionSpanInfinity()){
+        if (resource.GetEmissionSpanInfinity())
+        {
             return true;
         }
 
-        f32 time = this->mParticleAnimFrameController.GetFrame();
+        f32 time = this->m_ParticleAnimFrameController.GetFrame();
         f32 cookedTime = time - resource.GetEmissionStart() - 1;
-        if (cookedTime >= resource.GetEmissionSpan()){
+        if (cookedTime >= resource.GetEmissionSpan())
+        {
             return false;
         }
 
@@ -177,16 +205,16 @@ protected:
     virtual ~ParticleEmitter();
 
 private:
-    bool mIsFirstEmission;
-    f32 mEmissionCount;
-    s32 mNextEmissionTime;
-    ParticleSet* mParticleSet;
+    bool m_IsFirstEmission;
+    f32 m_EmissionCount;
+    s32 m_NextEmissionTime;
+    ParticleSet* m_ParticleSet;
 
-    ParticleRandom mParticleRandom;
-    anim::AnimFrameController mParticleAnimFrameController;
+    ParticleRandom m_ParticleRandom;
+    anim::AnimFrameController m_ParticleAnimFrameController;
 
-    ResParticleEmitterParameter mResParameter;
-    ResParticleForm mResForm;
+    ResParticleEmitterParameter m_ResParameter;
+    ResParticleForm m_ResForm;
 };
 
 }

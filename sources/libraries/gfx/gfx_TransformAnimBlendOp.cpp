@@ -8,14 +8,17 @@ const float TransformAnimBlendOp::WeightDiscard = -1.0f;
 
 namespace {
 
-void FlogVector3(math::VEC3* dst){
+void FlogVector3(math::VEC3* dst)
+{
     dst->x = math::FLog(dst->x);
     dst->y = math::FLog(dst->y);
     dst->z = math::FLog(dst->z);
 }
 
-void BlendVector3(math::VEC3* dst,const math::VEC3* src,const float weight,const bool overrideFlag){
-    if (overrideFlag){
+void BlendVector3(math::VEC3* dst,const math::VEC3* src,const float weight,const bool overrideFlag)
+{
+    if (overrideFlag)
+    {
         VEC3Scale(dst, src, weight);
     }   
     else{
@@ -27,17 +30,21 @@ void BlendVector3(math::VEC3* dst,const math::VEC3* src,const float weight,const
 
 }
 
-void TransformAnimBlendOp::Apply(void* target, const anim::AnimResult* result) const{
+void TransformAnimBlendOp::Apply(void* target, const anim::AnimResult* result) const
+{
     *reinterpret_cast<CalculatedTransform*>(target) = *reinterpret_cast<const CalculatedTransform*>(result->GetValueBuffer());
 }
 
-void TransformAnimBlendOp::ConvertToAnimResult(anim::AnimResult* result,const void* source) const{
+void TransformAnimBlendOp::ConvertToAnimResult(anim::AnimResult* result,const void* source) const
+{
     *reinterpret_cast<CalculatedTransform*>(result->GetValueBuffer()) = *reinterpret_cast<const CalculatedTransform*>(source);
 }
 
-void TransformAnimBlendOp::BlendScaleStandard(CalculatedTransform* dst,const CalculatedTransform* src,const float weight) const{
-    if (weight != TransformAnimBlendOp::WeightDiscard){
-        BlendVector3(&dst->mScale, &src->Scale(),
+void TransformAnimBlendOp::BlendScaleStandard(CalculatedTransform* dst,const CalculatedTransform* src,const float weight) const
+{
+    if (weight != TransformAnimBlendOp::WeightDiscard)
+    {
+        BlendVector3(&dst->m_Scale, &src->Scale(),
             weight, dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_SCALE));
 
         dst->DisableFlags(CalculatedTransform::FLAG_IS_IGNORE_SCALE);
@@ -45,20 +52,23 @@ void TransformAnimBlendOp::BlendScaleStandard(CalculatedTransform* dst,const Cal
     }
 }
 
-void TransformAnimBlendOp::BlendScaleAccurate(CalculatedTransform* dst,const CalculatedTransform* src,const float weight) const{
-    if (weight != TransformAnimBlendOp::WeightDiscard){
+void TransformAnimBlendOp::BlendScaleAccurate(CalculatedTransform* dst,const CalculatedTransform* src,const float weight) const
+{
+    if (weight != TransformAnimBlendOp::WeightDiscard)
+    {
 
         math::VEC3 logScale = src->Scale();
         FlogVector3(&logScale);
-        BlendVector3(&dst->mScale, &logScale, weight, dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_SCALE));
+        BlendVector3(&dst->m_Scale, &logScale, weight, dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_SCALE));
 
         dst->DisableFlags(CalculatedTransform::FLAG_IS_IGNORE_SCALE);
         dst->EnableFlags(CalculatedTransform::FLAG_IS_DIRTY);
     }
 }
 
-bool TransformAnimBlendOp::PostBlendAccurateScale(CalculatedTransform* transform) const{
-    math::VEC3& scale = transform->mScale;
+bool TransformAnimBlendOp::PostBlendAccurateScale(CalculatedTransform* transform) const
+{
+    math::VEC3& scale = transform->m_Scale;
     scale.x = math::FExp(scale.x);
     scale.y = math::FExp(scale.y);
     scale.z = math::FExp(scale.z);
@@ -66,12 +76,15 @@ bool TransformAnimBlendOp::PostBlendAccurateScale(CalculatedTransform* transform
     return true;
 }
 
-void TransformAnimBlendOp::BlendRotateMatrix(CalculatedTransform* dst,const CalculatedTransform* src,const float weight) const{
-    if (weight != TransformAnimBlendOp::WeightDiscard){
-        math::MTX34& dstMtx = dst->mTransformMatrix;
+void TransformAnimBlendOp::BlendRotateMatrix(CalculatedTransform* dst,const CalculatedTransform* src,const float weight) const
+{
+    if (weight != TransformAnimBlendOp::WeightDiscard)
+    {
+        math::MTX34& dstMtx = dst->m_TransformMatrix;
         const math::MTX34& srcMtx = src->TransformMatrix();
 
-        if (dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE)){
+        if (dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE))
+        {
             dstMtx.matrix[0][0] = srcMtx.matrix[0][0] * weight;
             dstMtx.matrix[0][1] = srcMtx.matrix[0][1] * weight;
             dstMtx.matrix[0][2] = srcMtx.matrix[0][2] * weight;
@@ -95,21 +108,25 @@ void TransformAnimBlendOp::BlendRotateMatrix(CalculatedTransform* dst,const Calc
     }
 }
 
-void TransformAnimBlendOp::BlendRotateQuaternion(CalculatedTransform* dst,const CalculatedTransform* src,const float weight) const{
-    if (weight != TransformAnimBlendOp::WeightDiscard){
-        math::MTX34& dstMtx = dst->mTransformMatrix;
+void TransformAnimBlendOp::BlendRotateQuaternion(CalculatedTransform* dst,const CalculatedTransform* src,const float weight) const
+{
+    if (weight != TransformAnimBlendOp::WeightDiscard)
+    {
+        math::MTX34& dstMtx = dst->m_TransformMatrix;
         const math::MTX34& srcMtx = src->TransformMatrix();
 
         float& addedWeight = dstMtx.matrix[1][1];
         math::QUAT srcQ;
-        if (src->IsEnabledFlags(CalculatedTransform::FLAG_CONVERTED_FOR_BLEND)){
+        if (src->IsEnabledFlags(CalculatedTransform::FLAG_CONVERTED_FOR_BLEND))
+        {
             srcQ = math::QUAT(srcMtx.matrix[0][0], srcMtx.matrix[0][1], srcMtx.matrix[0][2], srcMtx.matrix[1][0]);
         }
         else{
             math::MTX34ToQUAT(&srcQ, &srcMtx);
         }
         math::QUAT dstQ;
-        if (dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE)){
+        if (dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE))
+        {
             addedWeight = weight;
             dstQ = srcQ;
         }
@@ -129,13 +146,16 @@ void TransformAnimBlendOp::BlendRotateQuaternion(CalculatedTransform* dst,const 
     }
 }
 
-void TransformAnimBlendOp::BlendTranslate(CalculatedTransform* dst,const CalculatedTransform* src,const float weight) const{
-    if (weight != TransformAnimBlendOp::WeightDiscard){
+void TransformAnimBlendOp::BlendTranslate(CalculatedTransform* dst,const CalculatedTransform* src,const float weight) const
+{
+    if (weight != TransformAnimBlendOp::WeightDiscard)
+    {
         const math::MTX34& dstMtx = dst->TransformMatrix();
         const math::MTX34& srcMtx = src->TransformMatrix();
 
         math::VEC3 srcT(srcMtx.matrix[0][3], srcMtx.matrix[1][3], srcMtx.matrix[2][3]);
-        if (dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_TRANSLATE)){
+        if (dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_TRANSLATE))
+        {
             VEC3Scale(&srcT, &srcT, weight);
             dst->SetTranslate(srcT);
             dst->DisableFlags(CalculatedTransform::FLAG_IS_IGNORE_TRANSLATE);
@@ -148,27 +168,31 @@ void TransformAnimBlendOp::BlendTranslate(CalculatedTransform* dst,const Calcula
     }
 }
 
-bool TransformAnimBlendOp::OverrideTransform(CalculatedTransform* dst,const CalculatedTransform* src,const bit32 blendFlags) const{
+bool TransformAnimBlendOp::OverrideTransform(CalculatedTransform* dst,const CalculatedTransform* src,const bit32 blendFlags) const
+{
     const bool needToConverted = dst->IsEnabledFlags(CalculatedTransform::FLAG_CONVERTED_FOR_BLEND) && !src->IsEnabledFlags(CalculatedTransform::FLAG_CONVERTED_FOR_BLEND);
 
     math::MTX34 dstMtx = dst->TransformMatrix();
     const math::MTX34& srcMtx = src->TransformMatrix();
 
     if (dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_SCALE) &&
-        !src->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_SCALE)){
+        !src->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_SCALE))
+        {
         dst->SetScale(src->Scale());
 
         dst->DisableFlags(CalculatedTransform::FLAG_IS_IGNORE_SCALE);
 
-        if (needToConverted && (blendFlags & FLAG_ACCURATE_SCALE)){
-            math::VEC3& dstScale = dst->mScale;
+        if (needToConverted && (blendFlags & FLAG_ACCURATE_SCALE))
+        {
+            math::VEC3& dstScale = dst->m_Scale;
             FlogVector3(&dstScale);
             dst->EnableFlags(CalculatedTransform::FLAG_IS_DIRTY);
         }
     }
 
     if (dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE) &&
-        !src->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE)){
+        !src->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE))
+        {
         dstMtx.matrix[0][0] = srcMtx.matrix[0][0];
         dstMtx.matrix[0][1] = srcMtx.matrix[0][1];
         dstMtx.matrix[0][2] = srcMtx.matrix[0][2];
@@ -183,12 +207,14 @@ bool TransformAnimBlendOp::OverrideTransform(CalculatedTransform* dst,const Calc
 
         dst->DisableFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE);
 
-        if (needToConverted && (blendFlags & FLAG_QUATERNION_ROTATE)){
+        if (needToConverted && (blendFlags & FLAG_QUATERNION_ROTATE))
+        {
             dst->RotateMatrixToQuaternion();
         }
     }
 
-    if (dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_TRANSLATE) && !src->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_TRANSLATE)){
+    if (dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_TRANSLATE) && !src->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_TRANSLATE))
+    {
         dstMtx.matrix[0][3] = srcMtx.matrix[0][3];
         dstMtx.matrix[1][3] = srcMtx.matrix[1][3];
         dstMtx.matrix[2][3] = srcMtx.matrix[2][3];
