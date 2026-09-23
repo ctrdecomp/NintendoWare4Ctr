@@ -81,7 +81,7 @@ struct WaveFile
             u8  byte[1];
         };
     };
-};  // struct WaveFile
+};
 
 } // namespace internal
 } // namespace snd

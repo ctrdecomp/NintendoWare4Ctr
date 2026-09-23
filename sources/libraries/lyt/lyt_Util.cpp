@@ -222,7 +222,8 @@ const TextureInfo LoadTexture(const void* pImgRes, u32 size, int texLoadFlag)
             glCompressedTexImage2D(GL_TEXTURE_2D | texLoadFlag,0,texSpec[format].format,realWidth,realHeight,0,imageSize,pixels);
             NW_GL_ASSERT();
         }
-        else{
+        else
+        {
             glTexImage2D(GL_TEXTURE_2D | texLoadFlag,0,texSpec[format].format,realWidth,realHeight,0,texSpec[format].format,texSpec[format].type,pixels);
             NW_GL_ASSERT();
         }

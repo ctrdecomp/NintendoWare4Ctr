@@ -41,12 +41,12 @@ public:
     public:
         StartResult(): 
             m_Code(START_ERR_UNKNOWN)
-            {
+        {
         }
 
         StartResult(ResultCode code): 
             m_Code(code)
-            {
+        {
         }
 
         bool IsSuccess() const
@@ -111,7 +111,7 @@ public:
 
         StartInfo(): 
             enableFlag(0)
-            {
+        {
         }
     };
 

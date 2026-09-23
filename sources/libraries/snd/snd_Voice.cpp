@@ -4,6 +4,12 @@
 
 #include <nw/snd/snd_Voice.h>
 
+#include <cstring>
+#include <nw/snd/snd_Util.h>
+#include <nw/snd/snd_Config.h>
+#include <nw/snd/snd_VoiceManager.h>
+#include <nw/snd/snd_HardwareManager.h>
+
 namespace nw {
 namespace snd {
 namespace internal {
@@ -16,9 +22,11 @@ Voice::Voice():
     m_IsStarted(false),
     m_IsPause(false),
     m_SyncFlag(0)
-    {
+{
     for (int i = 0; i < CHANNEL_MAX; i++)
+    {
         m_pHardwareChannel[i] = NULL;
+    }
 }
 
 Voice::~Voice()

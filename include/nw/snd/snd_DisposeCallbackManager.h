@@ -12,7 +12,7 @@ namespace driver {
 class DisposeCallbackManager
 {
 public:
-    typedef ut::LinkList< DisposeCallback, offsetof(DisposeCallback,m_DisposeLink)> CallbackList;
+    typedef ut::LinkList< DisposeCallback, offsetof(DisposeCallback,m_DisposeLink) > CallbackList;
 
 public:
     static DisposeCallbackManager& GetInstance();

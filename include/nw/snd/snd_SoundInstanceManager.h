@@ -15,19 +15,47 @@ public:
     typedef ut::LinkList<Sound, offsetof(Sound, m_PriorityLink)> PriorityList;
 
 public:
-    SoundInstanceManager(): 
-        m_pBuffer(NULL), 
-        m_BufferSize(0)
-        {
+    SoundInstanceManager()
+    {
     }
 
     ~SoundInstanceManager()
     {
     }
 
+    void UpdatePriority(Sound* sound, int priority)
+    {
+        RemovePriorityList(sound);
+        InsertPriorityList(sound, priority);
+    }
+
+    void Free(Sound* sound)
+    {
+        NW_NULL_ASSERT(sound);
+
+        RemovePriorityList(sound);
+
+        sound->Finalize();
+        m_FreeList.PushBack(sound);
+    }
+
 private:
-    void* m_pBuffer;
-    u32 m_BufferSize;
+    void InsertPriorityList(Sound* sound, int priority)
+    {
+        Iterator itr = m_PriorityList.GetBeginIter();
+        while (itr != m_PriorityList.GetEndIter())
+        {
+            if (priority < itr->CalcCurrentPlayerPriority()) break;
+            (void)++itr;
+        }
+        m_PriorityList.Insert(itr, sound);
+    }
+
+    void RemovePriorityList(Sound* sound) 
+    { 
+        m_PriorityList.Erase(sound);
+    }
+
     PriorityList m_PriorityList;
     PriorityList m_FreeList;
 };

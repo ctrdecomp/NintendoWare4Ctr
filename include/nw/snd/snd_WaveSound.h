@@ -17,10 +17,22 @@ namespace internal {
 class WaveSound;
 class SoundDataManager;
 
+typedef SoundInstanceManager<WaveSound> WaveSoundInstanceManager;
+
 class WaveSound : public BasicSound
 {
+    friend class WaveSoundHandle;
+
 public:
     NW_UT_RUNTIME_TYPEINFO;
+
+    WaveSound(WaveSoundInstanceManager& manager);
+    virtual ~WaveSound() {}
+    virtual void Initialize();
+    virtual void Finalize();
+    virtual bool IsPrepared(){ return m_PreparedFlag; }
+    virtual bool IsAttachedTempSpecialHandle(){ return m_pTempSpecialHandle != NULL; }
+    virtual void DetachTempSpecialHandle(){}
 
     struct StartInfo
     {
@@ -30,7 +42,29 @@ public:
         const driver::WaveSoundPlayer::WaveSoundCallback* callback;
         u32 callbackData;
     };
+
+    struct LoadInfo
+    {
+        const SoundArchive* arc;
+        const SoundDataManager* mgr;
+        const LoadItemInfo* wsd;
+    };
+
+    void Prepare(const void* wsdFile, const StartInfo& startInfo);
+    bool RegisterDataLoadTask(const LoadInfo& loadInfo, const StartInfo& startInfo);
+    void SetChannelPriority(int priority);
+    void SetReleasePriorityFix(bool fix);
+    long GetPlaySamplePosition() const;
+
+    static void NotifyAsyncLoadFinishedFunc(bool result, const LoadItemInfo* wsd, void* userData);
 protected:
+    virtual driver::BasicSoundPlayer* GetBasicSoundPlayerHandle(){ &m_WaveSoundPlayerInstance; }
+    virtual void OnUpdatePlayerPriority() 
+    {
+        int priority = CalcCurrentPlayerPriority();
+        m_pManager.UpdatePriority(this, priority);
+    }
+
     typedef void (*NotifyAsyncLoadFinished)(bool result, const LoadItemInfo* wsd, void* userData);
 
     class DataLoadTask : public Task
@@ -64,8 +98,6 @@ public:
     bool m_PreparedFlag;
     bool m_InitializeFlag;
 };
-
-typedef SoundInstanceManager<WaveSound> WaveSoundInstanceManager;
 
 } // namespace internal
 } // namespace snd

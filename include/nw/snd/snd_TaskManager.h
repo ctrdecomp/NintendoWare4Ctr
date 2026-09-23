@@ -58,7 +58,7 @@ private:
     volatile bool m_IsWaitTaskCancel;
     nn::os::CriticalSection m_CriticalSection;
     nn::os::BlockingQueue   m_BlockingQueue;
-    uptr                    m_MsgBuffer[ THREAD_MESSAGE_BUFSIZE ];
+    uptr                    m_MsgBuffer[THREAD_MESSAGE_BUFSIZE];
 };
 
 

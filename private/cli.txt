@@ -1,4 +1,0 @@
-git push -u origin main --force
-git rev-parse HEAD > private/PrjRev.txt
-
-//upload new version ^
