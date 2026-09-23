@@ -84,14 +84,8 @@ public:
         TYPE_PAIR
     };
     static const CharCode INVALID_CHARACTER_CODE = INVALID_CHAR_CODE;
-#if defined(NW_VERSION_USE_FNT1) && defined(NW_VERSION_USE_FNT2)
-    Font();
-#else
-    Font()
-    {
-    }
-#endif
 
+    Font();
     virtual ~Font();
     virtual int GetWidth() const = 0;
     virtual int GetHeight() const = 0;
@@ -119,12 +113,6 @@ public:
     virtual bool IsLinearFilterEnableAtSmall() const = 0;
     virtual bool IsLinearFilterEnableAtLarge() const = 0;
     virtual u32 GetTextureWrapFilterValue() const = 0;
-
-private:
-#if defined(NW_VERSION_USE_FNT2)
-    bool m_IsEnableKerning;
-    bool m_IsEnableExtraMargin;
-#endif
 };
 
 }

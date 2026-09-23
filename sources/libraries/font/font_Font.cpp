@@ -13,19 +13,10 @@ Glyph::Glyph():
 
 /* Font */
 
-#if defined(NW_VERSION_USE_FNT1)
-    Font::Font()
-    {
-        NW_PUT_MODULE_SYMBOL(fnt1);
-    }
-#elif defined(NW_VERSION_USE_FNT2)
-    Font::Font():
-        m_IsEnableKerning;(true),
-        m_IsEnableExtraMargin;(true)
-    {
-        NW_PUT_MODULE_SYMBOL(fnt2);
-    }
-#endif
+Font::Font()
+{
+    NW_PUT_MODULE_SYMBOL(fnt1);
+}
 
 Font::~Font() {}
 
