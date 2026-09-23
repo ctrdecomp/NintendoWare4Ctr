@@ -9,8 +9,6 @@
 #include <nw/math.h>
 #include <nw/font.h>
 #include <nw/lyt.h>
-#include <nw/anim.h>
-#include <nw/gfx.h>
 
 #ifdef __cplusplus
 

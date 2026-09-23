@@ -3,3 +3,9 @@
 # HEADERS NO VS ERRORS!
 
 private/*
+include/nw/gfx.h
+include/nw/anim.h
+include/nw/gfx/*
+include/nw/anim/*
+sources/libraries/anim/*
+sources/libraries/gfx/*
