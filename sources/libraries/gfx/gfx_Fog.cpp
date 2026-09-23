@@ -235,10 +235,11 @@ void Fog::SetupFogSampler(ResImageLookupTable fogSampler, ResFogUpdater fogUpdat
         if (m_WScale == 0.0f)
         {
             f32 depth = -(f32)i / (f32)(HALF_TABLE_SIZE);
-            viewPos.w = inverseProjectionMatrix.matrix[3][2] * depth + inverseProjectionMatrix.matrix[3][3];
-            viewPos.z = -(inverseProjectionMatrix.matrix[2][2] * depth + inverseProjectionMatrix.matrix[2][3]) / viewPos.w;
+            viewPos.w = inverseProjectionMatrix.f._32 * depth + inverseProjectionMatrix.f._33;
+            viewPos.z = -(inverseProjectionMatrix.f._22 * depth + inverseProjectionMatrix.f._23) / viewPos.w;
         }
-        else{
+        else
+        {
             viewPos.z = ((f32)i / (f32)HALF_TABLE_SIZE) * (m_Far - m_Near) + m_Near;
         }
 
@@ -250,7 +251,8 @@ void Fog::SetupFogSampler(ResImageLookupTable fogSampler, ResFogUpdater fogUpdat
         {
             viewPos.z = 0.0f;
         }
-        else{
+        else
+        {
             if (fogUpdater.GetFogUpdaterType() == ResFogUpdater::FOG_UPDATER_TYPE_LINEAR)
             {
                 viewPos.z = (fogUpdater.GetMaxFogDepth() - viewPos.z) / (fogUpdater.GetMaxFogDepth() - fogUpdater.GetMinFogDepth());

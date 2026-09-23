@@ -89,15 +89,15 @@ void TransformAnimEvaluator::EvaluateMemberAnim(CalculatedTransform* result,anim
         {
             if (!(flags & anim::ResTransformAnimData::FLAG_TRANSLATE_X_NOT_EXIST))
             {
-                result->DirectTransformMatrix().matrix[0][3] = transformAnim.EvaluateTranslateX(frame);
+                result->DirectTransformMatrix().f._03 = transformAnim.EvaluateTranslateX(frame);
             }
             if (!(flags & anim::ResTransformAnimData::FLAG_TRANSLATE_Y_NOT_EXIST))
             {
-                result->DirectTransformMatrix().matrix[1][3] = transformAnim.EvaluateTranslateY(frame);
+                result->DirectTransformMatrix().f._13 = transformAnim.EvaluateTranslateY(frame);
             }
             if (!(flags & anim::ResTransformAnimData::FLAG_TRANSLATE_Z_NOT_EXIST))
             {
-                result->DirectTransformMatrix().matrix[2][3] = transformAnim.EvaluateTranslateZ(frame);
+                result->DirectTransformMatrix().f._23 = transformAnim.EvaluateTranslateZ(frame);
             }
         }
 

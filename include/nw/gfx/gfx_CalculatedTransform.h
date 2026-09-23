@@ -99,18 +99,18 @@ public:
 
     void SetTransformMatrix(f32 x00, f32 x01, f32 x02, f32 x03,f32 x10, f32 x11, f32 x12, f32 x13,f32 x20, f32 x21, f32 x22, f32 x23)
     {
-        this->m_TransformMatrix.matrix[0][0] = x00;
-        this->m_TransformMatrix.matrix[1][0] = x10;
-        this->m_TransformMatrix.matrix[2][0] = x20;
-        this->m_TransformMatrix.matrix[0][1] = x01;
-        this->m_TransformMatrix.matrix[1][1] = x11;
-        this->m_TransformMatrix.matrix[2][1] = x21;
-        this->m_TransformMatrix.matrix[0][2] = x02;
-        this->m_TransformMatrix.matrix[1][2] = x12;
-        this->m_TransformMatrix.matrix[2][2] = x22;
-        this->m_TransformMatrix.matrix[0][3] = x03;
-        this->m_TransformMatrix.matrix[1][3] = x13;
-        this->m_TransformMatrix.matrix[2][3] = x23;
+        this->m_TransformMatrix.f._00 = x00;
+        this->m_TransformMatrix.f._10 = x10;
+        this->m_TransformMatrix.f._20 = x20;
+        this->m_TransformMatrix.f._01 = x01;
+        this->m_TransformMatrix.f._11 = x11;
+        this->m_TransformMatrix.f._21 = x21;
+        this->m_TransformMatrix.f._02 = x02;
+        this->m_TransformMatrix.f._12 = x12;
+        this->m_TransformMatrix.f._22 = x22;
+        this->m_TransformMatrix.f._03 = x03;
+        this->m_TransformMatrix.f._13 = x13;
+        this->m_TransformMatrix.f._23 = x23;
 
         this->EnableFlags(CalculatedTransform::FLAG_IS_DIRTY);
     }
@@ -118,30 +118,30 @@ public:
     template<typename TMatrix>
     void SetRotateMatrix(const TMatrix& rotateMatrix)
     {
-        this->m_TransformMatrix.matrix[0][0] = rotateMatrix.matrix[0][0];
-        this->m_TransformMatrix.matrix[1][0] = rotateMatrix.matrix[1][0];
-        this->m_TransformMatrix.matrix[2][0] = rotateMatrix.matrix[2][0];
-        this->m_TransformMatrix.matrix[0][1] = rotateMatrix.matrix[0][1];
-        this->m_TransformMatrix.matrix[1][1] = rotateMatrix.matrix[1][1];
-        this->m_TransformMatrix.matrix[2][1] = rotateMatrix.matrix[2][1];
-        this->m_TransformMatrix.matrix[0][2] = rotateMatrix.matrix[0][2];
-        this->m_TransformMatrix.matrix[1][2] = rotateMatrix.matrix[1][2];
-        this->m_TransformMatrix.matrix[2][2] = rotateMatrix.matrix[2][2];
+        this->m_TransformMatrix.f._00 = rotateMatrix.f._00;
+        this->m_TransformMatrix.f._10 = rotateMatrix.f._10;
+        this->m_TransformMatrix.f._20 = rotateMatrix.f._20;
+        this->m_TransformMatrix.f._01 = rotateMatrix.f._01;
+        this->m_TransformMatrix.f._11 = rotateMatrix.f._11;
+        this->m_TransformMatrix.f._21 = rotateMatrix.f._21;
+        this->m_TransformMatrix.f._02 = rotateMatrix.f._02;
+        this->m_TransformMatrix.f._12 = rotateMatrix.f._12;
+        this->m_TransformMatrix.f._22 = rotateMatrix.f._22;
 
         this->EnableFlags(CalculatedTransform::FLAG_IS_DIRTY);
     }
 
     void SetRotateMatrix(f32 x00, f32 x01, f32 x02,f32 x10, f32 x11, f32 x12,f32 x20, f32 x21, f32 x22)
     {
-        this->m_TransformMatrix.matrix[0][0] = x00;
-        this->m_TransformMatrix.matrix[1][0] = x10;
-        this->m_TransformMatrix.matrix[2][0] = x20;
-        this->m_TransformMatrix.matrix[0][1] = x01;
-        this->m_TransformMatrix.matrix[1][1] = x11;
-        this->m_TransformMatrix.matrix[2][1] = x21;
-        this->m_TransformMatrix.matrix[0][2] = x02;
-        this->m_TransformMatrix.matrix[1][2] = x12;
-        this->m_TransformMatrix.matrix[2][2] = x22;
+        this->m_TransformMatrix.f._00 = x00;
+        this->m_TransformMatrix.f._10 = x10;
+        this->m_TransformMatrix.f._20 = x20;
+        this->m_TransformMatrix.f._01 = x01;
+        this->m_TransformMatrix.f._11 = x11;
+        this->m_TransformMatrix.f._21 = x21;
+        this->m_TransformMatrix.f._02 = x02;
+        this->m_TransformMatrix.f._12 = x12;
+        this->m_TransformMatrix.f._22 = x22;
 
         this->EnableFlags(CalculatedTransform::FLAG_IS_DIRTY);
     }
@@ -166,9 +166,9 @@ public:
 
     void SetTranslate(f32 x, f32 y, f32 z)
     {
-        this->m_TransformMatrix.matrix[0][3] = x;
-        this->m_TransformMatrix.matrix[1][3] = y;
-        this->m_TransformMatrix.matrix[2][3] = z;
+        this->m_TransformMatrix.f._03 = x;
+        this->m_TransformMatrix.f._13 = y;
+        this->m_TransformMatrix.f._23 = z;
 
         this->EnableFlags(CalculatedTransform::FLAG_IS_DIRTY);
     }
@@ -181,14 +181,17 @@ public:
     void GetTranslate(math::VEC3* translate) const
     {
         NW_NULL_ASSERT(translate);
-        translate->x = this->m_TransformMatrix.matrix[0][3];
-        translate->y = this->m_TransformMatrix.matrix[1][3];
-        translate->z = this->m_TransformMatrix.matrix[2][3];
+        translate->x = this->m_TransformMatrix.f._03;
+        translate->y = this->m_TransformMatrix.f._13;
+        translate->z = this->m_TransformMatrix.f._23;
     }
 
     math::VEC3 GetTranslate() const
     {
-        return nw::math::VEC3(this->m_TransformMatrix.matrix[0][3],this->m_TransformMatrix.matrix[1][3],this->m_TransformMatrix.matrix[2][3]);
+        return math::VEC3(
+            this->m_TransformMatrix.f._03,
+            this->m_TransformMatrix.f._13,
+            this->m_TransformMatrix.f._23);
     }
 
     void SetRotateXYZ(f32 x, f32 y, f32 z)
@@ -215,9 +218,9 @@ public:
     {
         if (!this->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE))
         {
-            math::VEC3* v0 = reinterpret_cast<math::VEC3*>(&this->m_TransformMatrix.matrix[0]);
-            math::VEC3* v1 = reinterpret_cast<math::VEC3*>(&this->m_TransformMatrix.matrix[1]);
-            math::VEC3* v2 = reinterpret_cast<math::VEC3*>(&this->m_TransformMatrix.matrix[2]);
+            math::VEC3* v0 = reinterpret_cast<math::VEC3*>(&this->m_TransformMatrix.m[0]);
+            math::VEC3* v1 = reinterpret_cast<math::VEC3*>(&this->m_TransformMatrix.m[1]);
+            math::VEC3* v2 = reinterpret_cast<math::VEC3*>(&this->m_TransformMatrix.m[2]);
 
             (void)math::VEC3Cross(v2, v0, v1);
 
@@ -248,10 +251,10 @@ public:
 
             math::QUAT q;
             math::MTX34ToQUAT(&q, &this->m_TransformMatrix);
-            this->m_TransformMatrix.matrix[0][0] = q.x;
-            this->m_TransformMatrix.matrix[0][1] = q.y;
-            this->m_TransformMatrix.matrix[0][2] = q.z;
-            this->m_TransformMatrix.matrix[1][0] = q.w;
+            this->m_TransformMatrix.f._00 = q.x;
+            this->m_TransformMatrix.f._01 = q.y;
+            this->m_TransformMatrix.f._02 = q.z;
+            this->m_TransformMatrix.f._10 = q.w;
 
             this->EnableFlags(CalculatedTransform::FLAG_IS_DIRTY);
         }
@@ -263,17 +266,17 @@ public:
         if (!this->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE))
         {
             math::VEC3 t = this->m_TransformMatrix.GetColumn(3);
-            math::QUAT q(this->m_TransformMatrix.matrix[0][0], this->m_TransformMatrix.matrix[0][1], this->m_TransformMatrix.matrix[0][2], this->m_TransformMatrix.matrix[1][0]);
+            math::QUAT q(this->m_TransformMatrix.f._00, this->m_TransformMatrix.f._01, this->m_TransformMatrix.f._02, this->m_TransformMatrix.f._10);
             math::QUATToMTX34(&this->m_TransformMatrix, &q);
             this->m_TransformMatrix.SetColumn(3, t);
 
-            math::VEC3* v0 = reinterpret_cast<math::VEC3*>(&this->m_TransformMatrix.matrix[0]);
-            math::VEC3* v1 = reinterpret_cast<math::VEC3*>(&this->m_TransformMatrix.matrix[1]);
-            math::VEC3* v2 = reinterpret_cast<math::VEC3*>(&this->m_TransformMatrix.matrix[2]);
+            math::VEC3* v0 = reinterpret_cast<math::VEC3*>(&this->m_TransformMatrix.m[0]);
+            math::VEC3* v1 = reinterpret_cast<math::VEC3*>(&this->m_TransformMatrix.m[1]);
+            math::VEC3* v2 = reinterpret_cast<math::VEC3*>(&this->m_TransformMatrix.m[2]);
             if (math::VEC3SquareLen(v0) < s_VecSquareLenTol ||
                 math::VEC3SquareLen(v1) < s_VecSquareLenTol ||
                 math::VEC3SquareLen(v2) < s_VecSquareLenTol)
-                {
+            {
                 return false;
             }
 
@@ -287,9 +290,9 @@ public:
         if (!this->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE))
         {
             const math::MTX34& m = this->TransformMatrix();
-            const math::VEC3* v0 = reinterpret_cast<const math::VEC3*>(&m.matrix[0]);
-            const math::VEC3* v1 = reinterpret_cast<const math::VEC3*>(&m.matrix[1]);
-            const math::VEC3* v2 = reinterpret_cast<const math::VEC3*>(&m.matrix[2]);
+            const math::VEC3* v0 = reinterpret_cast<const math::VEC3*>(&m.m[0]);
+            const math::VEC3* v1 = reinterpret_cast<const math::VEC3*>(&m.m[1]);
+            const math::VEC3* v2 = reinterpret_cast<const math::VEC3*>(&m.m[2]);
 
             if (math::VEC3SquareLen(v0) < s_VecSquareLenTol ||
                 math::VEC3SquareLen(v1) < s_VecSquareLenTol ||

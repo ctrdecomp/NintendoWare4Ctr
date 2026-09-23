@@ -154,24 +154,75 @@ protected:
         {
             inheritingDirection = direction;
         }
-        else{
+        else
+        {
             const nn::math::MTX34& parentWorldMatrix = TrackbackWorldMatrix();
 
             inheritingDirection.x =
-                parentWorldMatrix.matrix[0][0] * direction.x +
-                parentWorldMatrix.matrix[0][1] * direction.y +
-                parentWorldMatrix.matrix[0][2] * direction.z;
-
+                parentWorldMatrix.f._00 * direction.x +
+                parentWorldMatrix.f._01 * direction.y +
+                parentWorldMatrix.f._02 * direction.z;
+    
             inheritingDirection.y =
-                parentWorldMatrix.matrix[1][0] * direction.x +
-                parentWorldMatrix.matrix[1][1] * direction.y +
-                parentWorldMatrix.matrix[1][2] * direction.z;
-
+                parentWorldMatrix.f._10 * direction.x +
+                parentWorldMatrix.f._11 * direction.y +
+                parentWorldMatrix.f._12 * direction.z;
+    
             inheritingDirection.z =
-                parentWorldMatrix.matrix[2][0] * direction.x +
-                parentWorldMatrix.matrix[2][1] * direction.y +
-                parentWorldMatrix.matrix[2][2] * direction.z;
+                parentWorldMatrix.f._20 * direction.x +
+                parentWorldMatrix.f._21 * direction.y +
+                parentWorldMatrix.f._22 * direction.z;
         }
+    }
+
+    void SetResourceBasedTransform(
+        const math::MTX34& transformMatrix,
+        const math::VEC3& scale = math::VEC3(1.0f, 1.0f, 1.0f)
+        )
+    {
+        math::Transform3& resTransform = GetResTransformNode().GetTransform();
+
+        math::MTX34 resultMatrix;
+        nw::math::MTX34RotXYZRad(&resultMatrix,
+            resTransform.rotate.x,
+            resTransform.rotate.y,
+            resTransform.rotate.z);
+        resultMatrix.f._03 = resTransform.translate.x;
+        resultMatrix.f._13 = resTransform.translate.y;
+        resultMatrix.f._23 = resTransform.translate.z;
+
+        math::MTX34Mult(&resultMatrix, &transformMatrix, &resultMatrix);
+
+        math::VEC3 resultScale;
+        math::VEC3Mult(&resultScale, &scale, &resTransform.scale);
+
+        m_Transform.SetTransformMatrix(resultMatrix);
+        m_Transform.SetScale(resultScale);
+        m_Transform.UpdateFlagsStrictly();
+    }
+
+    void SetResourceScaledTransform(const math::MTX34& transformMatrix)
+    {
+        math::VEC3 scale;
+        math::MTX34 matrix;
+        nw::math::MTX34DecomposeToColumnScale(&scale, &transformMatrix);
+
+        NW_ASSERT(scale.x > 0 && scale.y > 0 && scale.z > 0);
+
+        matrix.f._00 = transformMatrix.f._00 / scale.x;
+        matrix.f._10 = transformMatrix.f._10 / scale.x;
+        matrix.f._20 = transformMatrix.f._20 / scale.x;
+        matrix.f._01 = transformMatrix.f._01 / scale.y;
+        matrix.f._11 = transformMatrix.f._11 / scale.y;
+        matrix.f._21 = transformMatrix.f._21 / scale.y;
+        matrix.f._02 = transformMatrix.f._02 / scale.z;
+        matrix.f._12 = transformMatrix.f._12 / scale.z;
+        matrix.f._22 = transformMatrix.f._22 / scale.z;
+        matrix.f._03 = transformMatrix.f._03;
+        matrix.f._13 = transformMatrix.f._13;
+        matrix.f._23 = transformMatrix.f._23;
+
+        SetResourceBasedTransform(matrix, scale);
     }
 
     static void GetMemorySizeForInitialize(nw::os::MemorySizeCalculator* pSize, ResTransformNode resTransformNode, Description description)
@@ -184,7 +235,8 @@ protected:
         {
             CalculateMatrixSignal::GetMemorySizeForInvalidateSignalInternal(pSize);
         }
-        else{
+        else
+        {
             CalculateMatrixSignal::GetMemorySizeForFixedSizedSignalInternal(pSize, description.maxCallbacks);
         }
     }

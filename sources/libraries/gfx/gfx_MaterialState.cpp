@@ -268,17 +268,17 @@ void MaterialState::ActivateTextureCoordinators(RenderContext* renderContext, co
 
                 if (i == 0)
                 {
-                    projectionTranslate.x = texMtx34.matrix[0][3];
-                    projectionTranslate.y = texMtx34.matrix[1][3];
+                    projectionTranslate.x = texMtx34._03;
+                    projectionTranslate.y = texMtx34._13;
                 }
                 else
                 {
-                    projectionTranslate.z = texMtx34.matrix[0][3];
-                    projectionTranslate.w = texMtx34.matrix[1][3];
+                    projectionTranslate.z = texMtx34._03;
+                    projectionTranslate.w = texMtx34._13;
                 }
 
-                texMtx34.matrix[0][3] = 0.0f;
-                texMtx34.matrix[1][3] = 0.0f;
+                texMtx34._03 = 0.0f;
+                texMtx34._13 = 0.0f;
 
                 math::MTX34Mult(&texMtx34, &texMtx34, &camera->TextureProjectionMatrix());
                 math::MTX34Mult(&texMtx34, &texMtx34, &referenceViewMatrix);
@@ -296,11 +296,11 @@ void MaterialState::ActivateTextureCoordinators(RenderContext* renderContext, co
 
                 NW_NULL_ASSERT(camera);
 
-                projectionTranslate.x = texMtx34.matrix[0][3];
-                projectionTranslate.y = texMtx34.matrix[1][3];
+                projectionTranslate.x = texMtx34._03;
+                projectionTranslate.y = texMtx34._13;
 
-                texMtx34.matrix[0][3] = 0.0f;
-                texMtx34.matrix[1][3] = 0.0f;
+                texMtx34._03 = 0.0f;
+                texMtx34._13 = 0.0f;
 
                 f32 near = camera->GetNear();
                 f32 far = camera->GetFar();
@@ -329,8 +329,8 @@ void MaterialState::ActivateTextureCoordinators(RenderContext* renderContext, co
 
                 case ResOrthoProjectionUpdater::TYPE_INFO:{
                         f32 scaleFactor = -1.0f / (far - near);
-                        projection.matrix[2][2] = scaleFactor;
-                        projection.matrix[2][3] = near * scaleFactor;
+                        projection._22 = scaleFactor;
+                        projection._23 = near * scaleFactor;
                     }
                     break;
 

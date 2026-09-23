@@ -8,32 +8,32 @@ namespace anim {
 namespace res {
 
 namespace internal {
-    inline f32 Round( f32 value )
+    inline f32 Round(f32 value)
     {
         return nn::math::FFloor(value + 0.5f);
     }
 
-    inline f32 CastS9_10ToF32( s32 value )
+    inline f32 CastS9_10ToF32(s32 value)
     {
         return f32(value) * (1.f / 1024.f);
     }
 
-    inline s32 CastF32ToS9_10( f32 value )
+    inline s32 CastF32ToS9_10(f32 value)
     {
         return s32(Round(value * 1024.f));
     }
 
-    inline f32 CastS7_8ToF32( s32 value )
+    inline f32 CastS7_8ToF32(s32 value)
     {
         return f32(value) * (1.f / 256.f);
     }
 
-    inline s32 CastF32ToS7_8( f32 value )
+    inline s32 CastF32ToS7_8(f32 value)
     {
         return s32(Round(value * 256.f));
     }
 
-    inline f32 CastS10_5ToF32( s32 value )
+    inline f32 CastS10_5ToF32(s32 value)
     {
         return f32(value) * (1.f / 32.f);
     }
@@ -280,9 +280,15 @@ struct ResSegmentFloatCurveData : public ResFloatCurveData
         FLAG_CONSTANT       = (0x1 << (ResFloatCurveData::FLAG_SHIFT_MAX + 0)),
         FLAG_MONO_SEGMENT   = (0x1 << (ResFloatCurveData::FLAG_SHIFT_MAX + 1))
     };
-    nw::ut::ResF32 m_ConstantValue;
-    s32 m_NumSegments;
-    nw::ut::Offset toSegments[1];
+    union
+    {
+        ut::ResF32 m_ConstantValue;
+        struct 
+        {
+            ut::ResS32 m_NumSegments;
+            ut::Offset toSegments[1];
+        } segmentsTable;
+    };
 };
 
 struct ResCompositeFloatCurveData : public ResFloatCurveData
