@@ -415,7 +415,7 @@ struct ResFullBakedAnimData : public ResMemberAnimData
     nw::ut::Offset      toTransform;
 };
 
-class ResMemberAnim : public nw::ut::ResCommon< ResMemberAnimData >
+class ResMemberAnim : public nw::ut::ResCommon<ResMemberAnimData>
 {
 public:
     enum PrimitiveType
@@ -432,15 +432,12 @@ public:
         PRIMITIVETYPE_FULL_BAKED
     };
     
-    NW_RES_CTOR( ResMemberAnim )
-    
-    NW_RES_FIELD_FLAGS_DECL( u32, Flags )
+    NW_RES_CTOR(ResMemberAnim)
+    NW_RES_FIELD_FLAGS_DECL(u32, Flags)
+    NW_RES_FIELD_STRING_DECL(Path)
+    NW_RES_FIELD_PRIMITIVE_DECL(u32, PrimitiveType)
 
-    NW_RES_FIELD_STRING_DECL( Path )
-
-    NW_RES_FIELD_PRIMITIVE_DECL( u32, PrimitiveType )
-
-    gfx::Result Setup(nw::os::IAllocator* allocator, gfx::ResGraphicsFile graphicsFile);
+    gfx::Result Setup(os::IAllocator* allocator, gfx::ResGraphicsFile graphicsFile);
 
     void Cleanup();
 
@@ -453,7 +450,7 @@ public:
 
 typedef nw::ut::ResArrayClass<ResMemberAnim>::type  ResMemberAnimArray;
 
-class ResAnim : public nw::ut::ResCommon< ResAnimData >
+class ResAnim : public nw::ut::ResCommon<ResAnimData>
 {
 public:
     enum { BINARY_REVISION = REVISION_RES_ANIM_DATA };

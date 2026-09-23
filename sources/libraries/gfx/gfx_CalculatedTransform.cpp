@@ -68,13 +68,14 @@ void CalculatedTransform::UpdateRotateFlagsStrictly()
     }
 
     const math::MTX34& mtx = this->m_TransformMatrix;
-    if (mtx.matrix[0][0] == 1.0f && mtx.matrix[0][1] == 0.0f && mtx.matrix[0][2] == 0.0f &&
-        mtx.matrix[1][0] == 0.0f && mtx.matrix[1][1] == 1.0f && mtx.matrix[1][2] == 0.0f &&
-        mtx.matrix[2][0] == 0.0f && mtx.matrix[2][1] == 0.0f && mtx.matrix[2][2] == 1.0f)
+    if (mtx.f._00 == 1.0f && mtx.f._01 == 0.0f && mtx.f._02 == 0.0f &&
+        mtx.f._10 == 0.0f && mtx.f._11 == 1.0f && mtx.f._12 == 0.0f &&
+        mtx.f._20 == 0.0f && mtx.f._21 == 0.0f && mtx.f._22 == 1.0f)
         {
         this->EnableFlags(FLAG_IS_ROTATE_ZERO);
     }
-    else{
+    else
+    {
         this->DisableFlags(FLAG_IS_ROTATE_ZERO);
     }
 }
@@ -87,7 +88,7 @@ void CalculatedTransform::UpdateRotateFlags()
     }
 
     const math::MTX34& mtx = this->m_TransformMatrix;
-    if (mtx.matrix[0][0] == 1.0f && mtx.matrix[1][1] == 1.0f)
+    if (mtx.f._00 == 1.0f && mtx.f._11 == 1.0f)
     {
 #if 0   
         NW_WARNING(
@@ -98,7 +99,8 @@ void CalculatedTransform::UpdateRotateFlags()
 #endif
         this->EnableFlags(FLAG_IS_ROTATE_ZERO);
     }
-    else{
+    else
+    {
         this->DisableFlags(FLAG_IS_ROTATE_ZERO);
     }
 }
@@ -111,11 +113,12 @@ void CalculatedTransform::UpdateTranslateFlags()
     }
 
     const math::MTX34& mtx = this->m_TransformMatrix;
-    if (mtx.matrix[0][3] == 0.0f && mtx.matrix[1][3] == 0.0f && mtx.matrix[2][3] == 0.0f)
+    if (mtx.f._03 == 0.0f && mtx.f._13 == 0.0f && mtx.f._23 == 0.0f)
     {
         this->EnableFlags(FLAG_IS_TRANSLATE_ZERO);
     }
-    else{
+    else
+    {
         this->DisableFlags(FLAG_IS_TRANSLATE_ZERO);
     }
 }

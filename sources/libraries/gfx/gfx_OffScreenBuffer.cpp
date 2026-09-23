@@ -18,7 +18,7 @@ OffScreenBuffer::OffScreenBuffer(os::IAllocator* pAllocator, const Description& 
     m_ActivateCommand(NULL),
     m_Description(description),
     m_Texture(resTexture)
-    {
+{
     ResPixelBasedTexture resPixelBasedTexture = ResStaticCast<ResPixelBasedTexture>(resTexture);
 
     NW_ASSERT(resPixelBasedTexture.GetTextureObject() != 0);
@@ -38,8 +38,8 @@ OffScreenBuffer::OffScreenBuffer(os::IAllocator* pAllocator, const Description& 
         NW_FATAL_ERROR("illegal texture format for OffScreenBuffer");
     }
     
-    this->m_BackBufferObject.SetColorFormat( format );
-    this->m_BackBufferObject.SetDepthFormat( 0 );
+    this->m_BackBufferObject.SetColorFormat(format);
+    this->m_BackBufferObject.SetDepthFormat(0);
 
     switch (resTexture.GetTypeInfo())
     {

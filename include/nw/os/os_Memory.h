@@ -157,13 +157,13 @@ struct SafeFreeFunctor : public std::unary_function<TMemory&, void>
 };
 
 template<typename TArray>
-inline void SafeFreeAll(TArray& array, IAllocator* allocator)
+NW_INLINE void SafeFreeAll(TArray& array, IAllocator* allocator)
 {
     std::for_each(array.begin(), array.end(),SafeFreeFunctor<typename TArray::value_type>(allocator));
     array.clear();
 }
 
-inline bool IsDeviceMemory(const void* memory)
+NW_INLINE bool IsDeviceMemory(const void* memory)
 {
     if (nn::os::GetDeviceMemoryAddress() <= (uint)memory && (uint)memory < nn::os::GetDeviceMemoryAddress() + nn::os::GetDeviceMemorySize())
     {

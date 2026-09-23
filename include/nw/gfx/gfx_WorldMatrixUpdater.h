@@ -61,47 +61,47 @@ private:
     template<typename TMatrix, typename UMatrix>
     void MultScale(TMatrix* dstMatrix, const UMatrix* srcMatrix, const math::VEC3& scale) const
     {
-        dstMatrix->matrix[0][0] = srcMatrix->matrix[0][0] * scale.x;
-        dstMatrix->matrix[1][0] = srcMatrix->matrix[1][0] * scale.x;
-        dstMatrix->matrix[2][0] = srcMatrix->matrix[2][0] * scale.x;
+        dstMatrix->f._00 = srcMatrix->f._00 * scale.x;
+        dstMatrix->f._10 = srcMatrix->f._10 * scale.x;
+        dstMatrix->f._20 = srcMatrix->f._20 * scale.x;
 
-        dstMatrix->matrix[0][1] = srcMatrix->matrix[0][1] * scale.y;
-        dstMatrix->matrix[1][1] = srcMatrix->matrix[1][1] * scale.y;
-        dstMatrix->matrix[2][1] = srcMatrix->matrix[2][1] * scale.y;
+        dstMatrix->f._01 = srcMatrix->f._01 * scale.y;
+        dstMatrix->f._11 = srcMatrix->f._11 * scale.y;
+        dstMatrix->f._21 = srcMatrix->f._21 * scale.y;
 
-        dstMatrix->matrix[0][2] = srcMatrix->matrix[0][2] * scale.z;
-        dstMatrix->matrix[1][2] = srcMatrix->matrix[1][2] * scale.z;
-        dstMatrix->matrix[2][2] = srcMatrix->matrix[2][2] * scale.z;
+        dstMatrix->f._02 = srcMatrix->f._02 * scale.z;
+        dstMatrix->f._12 = srcMatrix->f._12 * scale.z;
+        dstMatrix->f._22 = srcMatrix->f._22 * scale.z;
     }
 
     template<typename TMatrix>
     void ScaleMatrix(TMatrix* dstMatrix, const math::VEC3& scale) const
     {
-        dstMatrix->matrix[0][0] *= scale.x;
-        dstMatrix->matrix[1][0] *= scale.x;
-        dstMatrix->matrix[2][0] *= scale.x;
+        dstMatrix->f._00 *= scale.x;
+        dstMatrix->f._10 *= scale.x;
+        dstMatrix->f._20 *= scale.x;
 
-        dstMatrix->matrix[0][1] *= scale.y;
-        dstMatrix->matrix[1][1] *= scale.y;
-        dstMatrix->matrix[2][1] *= scale.y;
+        dstMatrix->f._01 *= scale.y;
+        dstMatrix->f._11 *= scale.y;
+        dstMatrix->f._21 *= scale.y;
 
-        dstMatrix->matrix[0][2] *= scale.z;
-        dstMatrix->matrix[1][2] *= scale.z;
-        dstMatrix->matrix[2][2] *= scale.z;
+        dstMatrix->f._02 *= scale.z;
+        dstMatrix->f._12 *= scale.z;
+        dstMatrix->f._22 *= scale.z;
     }
 
-    void CopyTranslate(nw::math::MTX34* dstMatrix, const nw::math::MTX34& srcMatrix) const
+    void CopyTranslate(math::MTX34* dstMatrix, const math::MTX34& srcMatrix) const
     {
-        dstMatrix->matrix[0][3] = srcMatrix.matrix[0][3];
-        dstMatrix->matrix[1][3] = srcMatrix.matrix[1][3];
-        dstMatrix->matrix[2][3] = srcMatrix.matrix[2][3];
+        dstMatrix->f._03 = srcMatrix.f._03;
+        dstMatrix->f._13 = srcMatrix.f._13;
+        dstMatrix->f._23 = srcMatrix.f._23;
     }
 
-    void AddTranslate(nw::math::MTX34* dstMatrix, const nw::math::VEC3& translate) const
+    void AddTranslate(math::MTX34* dstMatrix, const math::VEC3& translate) const
     {
-        dstMatrix->matrix[0][3] += translate.x;
-        dstMatrix->matrix[1][3] += translate.y;
-        dstMatrix->matrix[2][3] += translate.z;
+        dstMatrix->f._03 += translate.x;
+        dstMatrix->f._13 += translate.y;
+        dstMatrix->f._23 += translate.z;
     }
 
     void CompensateScale(math::VEC3& scale) const

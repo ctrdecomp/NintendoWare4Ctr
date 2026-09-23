@@ -62,7 +62,8 @@ void WorldMatrixUpdater::CalculateWorldXsi(math::MTX34* transformMatrix,math::VE
                 math::MTX34MultTranslate(transformMatrix, &parentMatrix, &localTranslate);
             }
         }
-        else{
+        else
+        {
             if (isParentScaleOne)
             {
                 math::MTX34Mult(transformMatrix, &parentMatrix, &localMatrix);
@@ -71,9 +72,9 @@ void WorldMatrixUpdater::CalculateWorldXsi(math::MTX34* transformMatrix,math::VE
             {
                 math::MTX34 scaledLocalMatrix;
                 math::MTX34Copy(&scaledLocalMatrix, &localMatrix);
-                scaledLocalMatrix.matrix[0][3] *= parentScale.x;
-                scaledLocalMatrix.matrix[1][3] *= parentScale.y;
-                scaledLocalMatrix.matrix[2][3] *= parentScale.z;
+                scaledLocalMatrix.f._03 *= parentScale.x;
+                scaledLocalMatrix.f._13 *= parentScale.y;
+                scaledLocalMatrix.f._23 *= parentScale.z;
                 math::MTX34Mult(transformMatrix, &parentMatrix, &scaledLocalMatrix);
             }
         }

@@ -89,22 +89,23 @@ void TransformAnimBlendOp::BlendRotateMatrix(CalculatedTransform* dst,const Calc
 
         if (dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE))
         {
-            dstMtx.matrix[0][0] = srcMtx.matrix[0][0] * weight;
-            dstMtx.matrix[0][1] = srcMtx.matrix[0][1] * weight;
-            dstMtx.matrix[0][2] = srcMtx.matrix[0][2] * weight;
+            dstMtx.f._00 = srcMtx.f._00 * weight;
+            dstMtx.f._01 = srcMtx.f._01 * weight;
+            dstMtx.f._02 = srcMtx.f._02 * weight;
 
-            dstMtx.matrix[1][0] = srcMtx.matrix[1][0] * weight;
-            dstMtx.matrix[1][1] = srcMtx.matrix[1][1] * weight;
-            dstMtx.matrix[1][2] = srcMtx.matrix[1][2] * weight;
+            dstMtx.f._10 = srcMtx.f._10 * weight;
+            dstMtx.f._11 = srcMtx.f._11 * weight;
+            dstMtx.f._12 = srcMtx.f._12 * weight;
         }
-        else{
-            dstMtx.matrix[0][0] += srcMtx.matrix[0][0] * weight;
-            dstMtx.matrix[0][1] += srcMtx.matrix[0][1] * weight;
-            dstMtx.matrix[0][2] += srcMtx.matrix[0][2] * weight;
+        else
+        {
+            dstMtx.f._00 += srcMtx.f._00 * weight;
+            dstMtx.f._01 += srcMtx.f._01 * weight;
+            dstMtx.f._02 += srcMtx.f._02 * weight;
 
-            dstMtx.matrix[1][0] += srcMtx.matrix[1][0] * weight;
-            dstMtx.matrix[1][1] += srcMtx.matrix[1][1] * weight;
-            dstMtx.matrix[1][2] += srcMtx.matrix[1][2] * weight;
+            dstMtx.f._10 += srcMtx.f._10 * weight;
+            dstMtx.f._11 += srcMtx.f._11 * weight;
+            dstMtx.f._12 += srcMtx.f._12 * weight;
         }
 
         dst->DisableFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE);
@@ -119,13 +120,14 @@ void TransformAnimBlendOp::BlendRotateQuaternion(CalculatedTransform* dst,const 
         math::MTX34& dstMtx = dst->m_TransformMatrix;
         const math::MTX34& srcMtx = src->TransformMatrix();
 
-        float& addedWeight = dstMtx.matrix[1][1];
+        float& addedWeight = dstMtx.f._11;
         math::QUAT srcQ;
         if (src->IsEnabledFlags(CalculatedTransform::FLAG_CONVERTED_FOR_BLEND))
         {
-            srcQ = math::QUAT(srcMtx.matrix[0][0], srcMtx.matrix[0][1], srcMtx.matrix[0][2], srcMtx.matrix[1][0]);
+            srcQ = math::QUAT(srcMtx.f._00, srcMtx.f._01, srcMtx.f._02, srcMtx.f._10);
         }
-        else{
+        else
+        {
             math::MTX34ToQUAT(&srcQ, &srcMtx);
         }
         math::QUAT dstQ;
@@ -134,16 +136,17 @@ void TransformAnimBlendOp::BlendRotateQuaternion(CalculatedTransform* dst,const 
             addedWeight = weight;
             dstQ = srcQ;
         }
-        else{
-            dstQ = math::QUAT(dstMtx.matrix[0][0], dstMtx.matrix[0][1], dstMtx.matrix[0][2], dstMtx.matrix[1][0]);
+        else
+        {
+            dstQ = math::QUAT(dstMtx.f._00, dstMtx.f._01, dstMtx.f._02, dstMtx.f._10);
             addedWeight += weight;
             const float t = (addedWeight != 0.0f) ? weight / addedWeight : 0.0f;
             math::QUATSlerp(&dstQ, &dstQ, &srcQ, t);
         }
-        dstMtx.matrix[0][0] = dstQ.x;
-        dstMtx.matrix[0][1] = dstQ.y;
-        dstMtx.matrix[0][2] = dstQ.z;
-        dstMtx.matrix[1][0] = dstQ.w;
+        dstMtx.f._00 = dstQ.x;
+        dstMtx.f._01 = dstQ.y;
+        dstMtx.f._02 = dstQ.z;
+        dstMtx.f._10 = dstQ.w;
 
         dst->DisableFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE);
         dst->SetTransformMatrix(dstMtx);
@@ -157,15 +160,16 @@ void TransformAnimBlendOp::BlendTranslate(CalculatedTransform* dst,const Calcula
         const math::MTX34& dstMtx = dst->TransformMatrix();
         const math::MTX34& srcMtx = src->TransformMatrix();
 
-        math::VEC3 srcT(srcMtx.matrix[0][3], srcMtx.matrix[1][3], srcMtx.matrix[2][3]);
+        math::VEC3 srcT(srcMtx.f._03, srcMtx.f._13, srcMtx.f._23);
         if (dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_TRANSLATE))
         {
             VEC3Scale(&srcT, &srcT, weight);
             dst->SetTranslate(srcT);
             dst->DisableFlags(CalculatedTransform::FLAG_IS_IGNORE_TRANSLATE);
         }
-        else{
-            math::VEC3 dstT(dstMtx.matrix[0][3], dstMtx.matrix[1][3], dstMtx.matrix[2][3]);
+        else
+        {
+            math::VEC3 dstT(dstMtx.f._03, dstMtx.f._13, dstMtx.f._23);
             BlendVector3(&dstT, &srcT, weight, false);
             dst->SetTranslate(dstT);
         }
@@ -197,17 +201,17 @@ bool TransformAnimBlendOp::OverrideTransform(CalculatedTransform* dst,const Calc
     if (dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE) &&
         !src->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE))
         {
-        dstMtx.matrix[0][0] = srcMtx.matrix[0][0];
-        dstMtx.matrix[0][1] = srcMtx.matrix[0][1];
-        dstMtx.matrix[0][2] = srcMtx.matrix[0][2];
+        dstMtx.f._00 = srcMtx.f._00;
+        dstMtx.f._01 = srcMtx.f._01;
+        dstMtx.f._02 = srcMtx.f._02;
 
-        dstMtx.matrix[1][0] = srcMtx.matrix[1][0];
-        dstMtx.matrix[1][1] = srcMtx.matrix[1][1];
-        dstMtx.matrix[1][2] = srcMtx.matrix[1][2];
+        dstMtx.f._10 = srcMtx.f._10;
+        dstMtx.f._11 = srcMtx.f._11;
+        dstMtx.f._12 = srcMtx.f._12;
 
-        dstMtx.matrix[2][0] = srcMtx.matrix[2][0];
-        dstMtx.matrix[2][1] = srcMtx.matrix[2][1];
-        dstMtx.matrix[2][2] = srcMtx.matrix[2][2];
+        dstMtx.f._20 = srcMtx.f._20;
+        dstMtx.f._21 = srcMtx.f._21;
+        dstMtx.f._22 = srcMtx.f._22;
 
         dst->DisableFlags(CalculatedTransform::FLAG_IS_IGNORE_ROTATE);
 
@@ -219,9 +223,9 @@ bool TransformAnimBlendOp::OverrideTransform(CalculatedTransform* dst,const Calc
 
     if (dst->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_TRANSLATE) && !src->IsEnabledFlags(CalculatedTransform::FLAG_IS_IGNORE_TRANSLATE))
     {
-        dstMtx.matrix[0][3] = srcMtx.matrix[0][3];
-        dstMtx.matrix[1][3] = srcMtx.matrix[1][3];
-        dstMtx.matrix[2][3] = srcMtx.matrix[2][3];
+        dstMtx.f._03 = srcMtx.f._03;
+        dstMtx.f._13 = srcMtx.f._13;
+        dstMtx.f._23 = srcMtx.f._23;
 
         dst->DisableFlags(CalculatedTransform::FLAG_IS_IGNORE_TRANSLATE);
     }

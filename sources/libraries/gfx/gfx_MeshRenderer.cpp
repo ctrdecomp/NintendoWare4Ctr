@@ -168,9 +168,9 @@ static bool isIllegal(const math::VEC3& vec)
 static bool isIllegal(const math::MTX34& mtx)
 {
     return
-        isIllegal(mtx.matrix[0][0]) || isIllegal(mtx.matrix[0][1]) || isIllegal(mtx.matrix[0][2]) || isIllegal(mtx.matrix[0][3]) ||
-        isIllegal(mtx.matrix[1][0]) || isIllegal(mtx.matrix[1][1]) || isIllegal(mtx.matrix[1][2]) || isIllegal(mtx.matrix[1][3]) ||
-        isIllegal(mtx.matrix[2][0]) || isIllegal(mtx.matrix[2][1]) || isIllegal(mtx.matrix[2][2]) || isIllegal(mtx.matrix[2][3]);
+        isIllegal(mtx._00) || isIllegal(mtx._01) || isIllegal(mtx._02) || isIllegal(mtx._03) ||
+        isIllegal(mtx._10) || isIllegal(mtx._11) || isIllegal(mtx._12) || isIllegal(mtx._13) ||
+        isIllegal(mtx._20) || isIllegal(mtx._21) || isIllegal(mtx._22) || isIllegal(mtx._23);
 }
 }
 
@@ -244,21 +244,6 @@ void MeshRenderer::RenderParticleShape(Model* model, ResParticleShape resource, 
         internal::NWCopyMtx34Reverse((f32*)&command[commandIndex], (f32*)&camera->InverseViewMatrix());
         commandIndex += 12;
 
-        /*command[commandIndex++] = 0;
-        command[commandIndex++] = 0;
-        command[commandIndex++] = 0;
-        command[commandIndex++] = 0x3f800000;
-
-        command[commandIndex++] = 0;
-        command[commandIndex++] = 0;
-        command[commandIndex++] = 0x3f800000;
-        command[commandIndex++] = 0;
-
-        command[commandIndex++] = 0;
-        command[commandIndex++] = 0x3f800000;
-        command[commandIndex++] = 0;
-        command[commandIndex++] = 0;
-
         command[commandIndex++] = 0;
         command[commandIndex++] = 0;
         command[commandIndex++] = 0;
@@ -272,9 +257,25 @@ void MeshRenderer::RenderParticleShape(Model* model, ResParticleShape resource, 
         command[commandIndex++] = 0;
         command[commandIndex++] = 0x3f800000;
         command[commandIndex++] = 0;
-        command[commandIndex++] = 0;*/
+        command[commandIndex++] = 0;
+
+        command[commandIndex++] = 0;
+        command[commandIndex++] = 0;
+        command[commandIndex++] = 0;
+        command[commandIndex++] = 0x3f800000;
+
+        command[commandIndex++] = 0;
+        command[commandIndex++] = 0;
+        command[commandIndex++] = 0x3f800000;
+        command[commandIndex++] = 0;
+
+        command[commandIndex++] = 0;
+        command[commandIndex++] = 0x3f800000;
+        command[commandIndex++] = 0;
+        command[commandIndex++] = 0;
     }
-    else{
+    else
+    {
         nw::math::MTX34* worldMatrix;
 
         worldMatrix = &model->WorldMatrix();
