@@ -48,7 +48,7 @@ public:
             taskThreadCommandBufferSize(DEFAULT_TASK_THREAD_COMMAND_BUFFER_SIZE),
             autoCreateSoundThread(true),
             enableGetSoundThreadTick(true)
-            {
+        {
         }
     };
 

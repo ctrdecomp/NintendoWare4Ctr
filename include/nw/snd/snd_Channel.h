@@ -1,8 +1,15 @@
 #ifndef NW_SND_CHANNEL_H_
 #define NW_SND_CHANNEL_H_
 
+#include <nn/snd.h>
 #include <nw/snd/snd_Global.h>
 #include <nw/snd/snd_Voice.h>
+#include <nw/snd/snd_MoveValue.h>
+#include <nw/snd/snd_CurveAdshr.h>
+#include <nw/snd/snd_CurveLfo.h>
+#include <nw/snd/snd_DisposeCallback.h>
+
+#include <nw/snd/snd_HardwareManager.h>
 
 namespace nw { 
 namespace snd { 
@@ -27,10 +34,12 @@ public:
         CALLBACK_STATUS_CANCEL
     };
 
-    typedef void (*ChannelCallback)(Channel* channel,ChannelCallbackStatus status,void* userData);
+    typedef void (*ChannelCallback)(Channel* channel, ChannelCallbackStatus status, u32 userData);
+
+    static const int PRIORITY_RELEASE = Voice::PRIORITY_RELEASE;
 
 private:
-    static void VoiceCallbackFunc(driver::Voice* voice,Voice::VoiceCallbackStatus status,void* arg);
+    static void VoiceCallbackFunc(driver::Voice* voice, Voice::VoiceCallbackStatus status, void* arg);
     void AppendWaveBuffer(const WaveInfo& waveInfo);
 
     static const int KEY_INIT = 60;
@@ -44,7 +53,7 @@ private:
     public:
         Disposer(Channel* channel) : m_pChannel(channel) {}
         virtual ~Disposer() {}
-        virtual void InvalidateData( const void* start, const void* end );
+        virtual void InvalidateData(const void* start, const void* end);
     private:
         Channel* m_pChannel;
     };

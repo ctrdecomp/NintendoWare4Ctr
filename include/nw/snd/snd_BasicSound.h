@@ -14,60 +14,31 @@ class SoundHandle;
 class SoundPlayer;
 class SoundActor;
 
-struct OutputAmbientParam
-{
-    f32 volume;
-    f32 pan;
-    f32 span;
-    f32 fxSend[AUX_BUS_NUM];
-
-    OutputAmbientParam()
-    {
-        Initialize();
-    }
-
-    void Initialize()
-    {
-        volume = 1.0f;
-        pan = span = 0.0f;
-        for (int i = 0; i < AUX_BUS_NUM; i++)
-            fxSend[i] = 0.0f;
-    }
-};
-
 struct SoundParam
 {
     f32 volume;
     f32 pitch;
+    f32 pan;
+    f32 span;
+    f32 fxSend;
     f32 lpf;
     f32 biquadFilterValue;
     int biquadFilterType;
     int priority;
-    int outputLineFlag;
     u32 userData;
-    OutputAmbientParam tvParam;
-    OutputAmbientParam drcParam[DRC_OUT_COUNT];
 
-    SoundParam()
+    SoundParam(): 
+        volume(1.0f),
+        pitch(1.0f),
+        pan(0.0f),
+        span(0.0f),
+        fxSend(0.0f),
+        lpf(0.0f),
+        biquadFilterValue(0.0f),
+        biquadFilterType(0),
+        priority(0),
+        userData(0)
     {
-        Initialize();
-    }
-
-    void Initialize()
-    {
-        volume            = 1.0f;
-        pitch             = 1.0f;
-        lpf               = 0.0f;
-        biquadFilterValue = 0.0f;
-        biquadFilterType  = BIQUAD_FILTER_TYPE_INHERIT;
-        priority          = 0;
-        userData          = 0;
-
-        outputLineFlag    = -1;
-
-        tvParam.Initialize();
-        for (int i = 0; i < DRC_OUT_COUNT; i++)
-            drcParam[i].Initialize();
     }
 };
 
@@ -75,28 +46,27 @@ struct SoundAmbientParam
 {
     f32 volume;
     f32 pitch;
+    f32 pan;
+    f32 span;
+    f32 fxSend;
     f32 lpf;
     f32 biquadFilterValue;
     int biquadFilterType;
     int priority;
     u32 userData;
-    int outputLineFlag;
-    OutputAmbientParam tvParam;
-    OutputAmbientParam drcParam[DRC_OUT_COUNT];
 
     SoundAmbientParam(): 
-        volume(1.0f), 
-        pitch(1.0f), 
-        lpf(0.0f), 
-        biquadFilterValue(0.0f), 
-        biquadFilterType(BIQUAD_FILTER_TYPE_INHERIT), 
-        priority(0), 
-        userData(0), 
-        outputLineFlag(-1)
-        {
-        tvParam.Initialize();
-        for (int i = 0; i < DRC_OUT_COUNT; i++)
-            drcParam[i].Initialize();
+        volume(1.0f),
+        pitch(1.0f),
+        pan(0.0f),
+        span(0.0f),
+        fxSend(0.0f),
+        lpf(0.0f),
+        biquadFilterValue(0.0f),
+        biquadFilterType(0),
+        priority(0),
+        userData(0)
+    {
     }
 };
 
@@ -106,31 +76,21 @@ struct SoundActorParam
 {
     f32 volume;
     f32 pitch;
+    f32 pan;
 
-    f32 tvVolume;
-    f32 tvPan;
-
-    f32 drcVolume[DRC_OUT_COUNT];
-    f32 drcPan[DRC_OUT_COUNT];
-
-    SoundActorParam()
+    SoundActorParam(): 
+        volume(1.0f),
+        pitch(1.0f),
+        pan(0.0f) 
     {
-        Reset();
     }
 
     void Reset()
     {
-        volume = pitch = tvVolume = 1.0f;
-        tvPan = 0.0f;
-
-        for (int i = 0; i < DRC_OUT_COUNT; i++)
-        {
-            drcVolume[i] = 1.0f;
-            drcPan[i] = 0.0f;
-        }
+        volume = pitch = 1.0f;
+        pan = 0.0f;
     }
 };
-static_assert(sizeof(SoundActorParam) == 0x18);
 
 namespace driver {
 
@@ -202,7 +162,9 @@ public:
 
     void SetPitch(f32 pitch);
     f32  GetPitch() const;
+
     void SetLpfFreq(f32 lpfFreq);
+    f32  GetLpfFreq() const
 
     void SetOutputLine(u32 lineFlag);
     u32 GetOutputLine() const;
@@ -214,23 +176,27 @@ public:
     f32  GetPan() const;
 
     void SetFxSend(AuxBus bus, f32 send);
+    f32 GetFxSend(AuxBus bus) const;
 
     void SetPanMode(PanMode mode);
 
     void SetPanCurve(PanCurve curve);
 
     void SetSurroundPan(f32 pan);
+    f32 GetSurroundPan() const;
 
     void SetMainSend(f32 send);
+    f32  GetMainSend() const;
 
     void SetFrontBypass(bool isFrontBypass);
 
     void SetRemoteFilter(u8 filter);
 
     void SetBiquadFilter(int type, f32 value);
+    void GetBiquadFilter(int* type, f32* value) const;
 
     void SetRemoteOutVolume(u32 remoteIndex, f32 volume);
-    f32 GetRemoteOutVolume(u32 remoteIndex) const;
+    f32  GetRemoteOutVolume(u32 remoteIndex) const;
 
     int GetRemainingFadeFrames() const;
     int GetRemainingPauseFadeFrames() const;
@@ -292,7 +258,6 @@ protected:
     virtual driver::BasicSoundPlayer* GetBasicSoundPlayerHandle() = 0;
 
     virtual void OnUpdatePlayerPriority() {}
-    virtual void OnUpdate() {}
 
     virtual void UpdateMoveValue();
     virtual void UpdateParam();
@@ -342,7 +307,7 @@ private:
     f32 m_LpfFreq;
     f32 m_BiquadFilterValue;
     f32 m_MainSend;
-    f32 m_FxSend[ AUX_BUS_NUM ];
+    f32 m_FxSend[AUX_BUS_NUM];
     f32 m_ExtSurroundPan;
 
 public:

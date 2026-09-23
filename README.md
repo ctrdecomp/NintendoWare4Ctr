@@ -19,9 +19,10 @@ Also note, not *every* function from this library is in this repo.
 ## Libraries
 
 * **anim** - Animation (Anim curves, controllers, etc.)
-* **eft** - Effect Emitter (Effects used in later versions of *Nw4c*)
+* **ctrl** - Layout 2D Controller (Used in `module2`)
+* **eft** - Effect Emitter (Effects used in `module2` version of Nw4c)
 * **font** - Font (Font writing, rendering, handling, etc.)
-* **h3d** - Hitrus3D (Later version of the Graphics engine, improved rendering, models, etc.)
+* **h3d** - Hitrus3D (`module2` version of the Graphics engine, improved rendering, models, etc.)
 * **gfx** - GraphicsFX (Graphics engine, cameras, particles, models, materials, etc.)
 * **io** - Input/Output
 * **lyt** - Layout (2D UI)

@@ -18,7 +18,6 @@ struct WaveSoundFile
         const InfoBlock* GetInfoBlock() const;
     };
 
-    
     struct WaveSoundData;
 
     struct InfoBlockBody

@@ -16,7 +16,7 @@ Channel* Bank::NoteOn(const void* bankFile, const NoteOnInfo& noteOnInfo, const 
         const SoundArchivePlayer& player, const PlayerHeapDataManager* dataMgr) const
 {
     VelocityRegionInfo regionInfo;
-    {
+{
     BankFileReader reader(bankFile);
     if (reader.ReadVelocityRegionInfo(&regionInfo, noteOnInfo.prgNo, noteOnInfo.key, noteOnInfo.velocity) == false)
     {

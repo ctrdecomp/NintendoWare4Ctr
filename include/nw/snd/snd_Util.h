@@ -7,13 +7,29 @@
 
 namespace nw { 
 namespace snd { 
+
+class SoundArchive;
+class SoundArchivePlayer;
+
 namespace internal {
+
+class SoundArchiveLoader;
+class PlayerHeapDataManager;
+struct LoadItemInfo;
 
 class Util
 {
 public:
+    static const int PITCH_DIVISION_BIT = 8;
+
     static const void* GetWaveFile(u32 waveArchiveId, u32 waveIndex, const SoundArchive& arc, const SoundArchivePlayer& player);
     static const void* GetWaveFile(u32 waveArchiveId, u32 waveIndex, const SoundArchive& arc, const PlayerHeapDataManager* mgr);
+    static bool IsLoadedWaveArchive(const void* wsdFile, u32 index, const SoundArchive& arc, const SoundArchiveLoader& mgr);
+
+    static f32 CalcPitchRatio(int pitch);
+    static f32 CalcVolumeRatio(f32 dB);
+
+    static unsigned long GetByteBySample(unsigned long sample, SampleFormat format);
 
     template< typename ITEM_TYPE, typename COUNT_TYPE=nw::ut::ResU32 >
     struct Table
@@ -159,6 +175,35 @@ public:
             }
             *value = *reinterpret_cast<const nw::ut::ResF32*>(ut::AddOffsetToPtr(this, (count * sizeof(nw::ut::ResF32))));
             return true;
+        }
+
+        static const int BIT_NUMBER_MAX = 31;
+        NW_INLINE u32 GetTrueCount(u32 bitNumber) const
+        {
+            NW_ASSERT(bitNumber <= BIT_NUMBER_MAX);
+
+            bool ret = false;
+            int count = 0;
+            for (u32 i = 0; i <= bitNumber; i++)
+            {
+                if (bitFlag & (0x1 << i))
+                {
+                    count++;
+                    if (i == bitNumber)
+                    {
+                        ret = true;
+                    }
+                }
+            }
+
+            if (ret)
+            {
+                return count;
+            }
+            else
+            {
+                return 0;
+            }
         }
     };
 
