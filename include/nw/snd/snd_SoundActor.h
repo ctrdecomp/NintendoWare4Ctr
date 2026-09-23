@@ -72,25 +72,25 @@ public:
 
     void SetDrcOutVolume(f32 volume, u32 drcIndex = 0)
     {
-      //NW_ASSERT_MAXLT(drcIndex, DRC_OUT_COUNT);
+        //NW_ASSERT_MAXLT(drcIndex, DRC_OUT_COUNT);
         m_ActorParam.drcVolume[drcIndex] = volume;
     }
 
     f32 GetDrcOutVolume(u32 drcIndex = 0) const
     {
-      //NW_ASSERT_MAXLT(drcIndex, DRC_OUT_COUNT);
+        //NW_ASSERT_MAXLT(drcIndex, DRC_OUT_COUNT);
         return m_ActorParam.drcVolume[drcIndex];
     }
 
     void SetDrcPan(f32 pan, u32 drcIndex = 0)
     {
-      //NW_ASSERT_MAXLT(drcIndex, DRC_OUT_COUNT);
+        //NW_ASSERT_MAXLT(drcIndex, DRC_OUT_COUNT);
         m_ActorParam.drcPan[drcIndex] = pan;
     }
 
     f32 GetDrcPan(u32 drcIndex = 0) const
     {
-      //NW_ASSERT_MAXLT(drcIndex, DRC_OUT_COUNT);
+        //NW_ASSERT_MAXLT(drcIndex, DRC_OUT_COUNT);
         return m_ActorParam.drcPan[drcIndex];
     }
 

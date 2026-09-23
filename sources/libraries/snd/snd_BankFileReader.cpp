@@ -10,7 +10,7 @@ namespace internal {
 namespace
 {
 
-const u32 SIGNATURE_INFO_BLOCK  = NW_UT_MAKE_SIGWORD( 'I', 'N', 'F', 'O' );
+const u32 SIGNATURE_INFO_BLOCK  = NW_UT_MAKE_SIGWORD('I', 'N', 'F', 'O');
 
 const u32 SUPPORTED_FILE_VERSION = 0x01000000;
 const u32 CURRENT_FILE_VERSION   = 0x01000100;

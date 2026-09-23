@@ -102,12 +102,12 @@ public:
 
     void SetDispStringBuffer(DispStringBuffer* buffer)
     {
-        mpDispStringBuffer = buffer;
+        m_pDispStringBuffer = buffer;
     }
 
     void SetFont(const Font* pFont)
     {
-        mpFont = pFont; 
+        m_pFont = pFont;
     }
 
     void SetScale(f32 hScale,f32 vScale)
@@ -134,13 +134,13 @@ public:
 
     void SetTextWriterResource(TextWriterResource* pTextWriterResource)
     {
-        mpTextWriterResource = pTextWriterResource;
+        m_pTextWriterResource = pTextWriterResource;
     }
 
 
     bool IsWidthFixed() const { return m_IsWidthFixed; }
     f32 GetFixedWidth() const { return m_FixedWidth; }
-    const Font* GetFont() const { return mpFont; }
+    const Font* GetFont() const { return m_pFont; }
     f32 GetScaleH() const { return m_Scale.x; }
     f32 GetScaleV() const { return m_Scale.y; }
 
@@ -157,9 +157,9 @@ public:
     CharScale m_Scale;
     CursorPos m_CursorPos;
     f32 m_FixedWidth;
-    const Font* mpFont;
-    TextWriterResource* mpTextWriterResource;
-    DispStringBuffer* mpDispStringBuffer;
+    const Font* m_pFont;
+    TextWriterResource* m_pTextWriterResource;
+    DispStringBuffer* m_pDispStringBuffer;
     bool m_IsWidthFixed;
     u8 m_Alpha;
 };

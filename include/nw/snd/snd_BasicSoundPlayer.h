@@ -34,8 +34,7 @@ class BasicSoundPlayer
 {
 public:
     BasicSoundPlayer();
-    virtual ~BasicSoundPlayer() 
-{};
+    virtual ~BasicSoundPlayer() {};
 
     virtual void Initialize();
     virtual void Finalize();
@@ -60,6 +59,8 @@ public:
     void SetPanMode(PanMode mode) { m_PlayerParamSet.panMode = mode; }
     void SetPanCurve(PanCurve curve) { m_PlayerParamSet.panCurve = curve; }
     void SetFrontBypass(bool frontBypass) { m_PlayerParamSet.isFrontBypass = frontBypass; }
+    void SetPlayerHeapDataManager(const PlayerHeapDataManager* mgr){ m_pPlayerHeapDataManager = mgr; }
+    void SetFxSend(AuxBus bus, float send);
 
     float GetVolume() const { return m_PlayerParamSet.volume; }
     float GetPitch() const { return m_PlayerParamSet.pitch; }
@@ -70,6 +71,8 @@ public:
     PanMode GetPanMode() const { return m_PlayerParamSet.panMode; }
     PanCurve GetPanCurve() const { return m_PlayerParamSet.panCurve; }
     float GetSurroundPan() const { return m_PlayerParamSet.surroundPan; }
+    float GetFxSend(AuxBus bus) const;
+
     bool IsFrontBypass() const { return m_PlayerParamSet.isFrontBypass; }
 
     bool TryWaitInstanceFree()
