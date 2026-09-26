@@ -14,8 +14,8 @@ Glyph::Glyph():
 /* Font */
 
 Font::Font():
-    m_IsEnableKerning;(true),
-    m_IsEnableExtraMargin;(true)
+    m_IsEnableKerning(true),
+    m_IsEnableExtraMargin(true)
 {
     NW_PUT_MODULE_SYMBOL(fnt2);
 }

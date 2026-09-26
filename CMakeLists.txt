@@ -56,8 +56,10 @@ function(nw_library TARGET_NAME MODULE_DIR)
     )
 endfunction()
 
+#nw_library(nw_ctrl    ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/ctrl)
+#nw_library(nw_eft    ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/eft)
 nw_library(nw_font    ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/font)
-nw_library(nw_gfx     ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/gfx)
+#nw_library(nw_h3d    ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/h3d)
 nw_library(nw_io      ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/io)
 nw_library(nw_lyt     ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/lyt)
 nw_library(nw_os      ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/os)
@@ -67,9 +69,12 @@ nw_library(nw_ut      ${CMAKE_CURRENT_SOURCE_DIR}/sources/libraries/ut)
 add_library(NintendoWare INTERFACE)
 
 target_link_libraries(NintendoWare INTERFACE
+    #nw_ctrl
+    #nw_eft
     nw_font
+    #nw_h3d
+    nw_io
     nw_lyt
-    nw_gfx
     nw_os
     nw_ut
     nw_snd
