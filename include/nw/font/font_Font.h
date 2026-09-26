@@ -84,13 +84,10 @@ public:
         TYPE_PAIR
     };
     static const CharCode INVALID_CHARACTER_CODE = INVALID_CHAR_CODE;
-#if defined(NW_VERSION_USE_FNT1) && defined(NW_VERSION_USE_FNT2)
-    Font();
-#else
+
     Font()
     {
     }
-#endif
 
     virtual ~Font();
     virtual int GetWidth() const = 0;

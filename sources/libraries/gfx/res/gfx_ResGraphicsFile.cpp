@@ -19,9 +19,6 @@ namespace res {
 
 Result ResGraphicsFile::Setup(os::IAllocator* allocator, ResGraphicsFile graphicsFile)
 {
-#if defined(NW_VERSION_USE_GFX1)
-    NW_PUT_MODULE_SYMBOL(GFX1);
-#endif
     Result result = RESOURCE_RESULT_OK;
     NW_ASSERT(this->IsValid());
     NW_ASSERT(internal::ResCheckRevision(*this));
