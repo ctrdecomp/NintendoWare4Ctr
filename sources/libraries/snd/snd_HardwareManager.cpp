@@ -21,7 +21,7 @@ HardwareManager::HardwareManager():
     m_IsInitialized(false), 
     m_OutputMode(OUTPUT_MODE_STEREO), 
     m_SrcType(SRC_TYPE_4TAP)
-    {
+{
     m_MasterVolume.InitValue(0);
     m_VolumeForReset.InitValue(0);
 

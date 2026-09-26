@@ -133,6 +133,5 @@ inline ResDicPatriciaData* InitializeResDicPatricia(ResDicPatriciaData* resData)
 }
 
 } // namespace internal
-
 } // namespace ut
 } // namespace nw

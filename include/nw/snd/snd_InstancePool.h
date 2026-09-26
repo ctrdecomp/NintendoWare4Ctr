@@ -13,12 +13,12 @@ class PoolImpl
 public:
     PoolImpl(): 
         m_pNext(NULL)
-        {
+    {
     }
 
 protected:
     u32 CreateImpl(void* buffer, size_t size, u32 objSize);
-    void DestroyImpl();
+    void DestroyImpl(void* buffer, size_t size);
     int CountImpl() const;
     void* AllocImpl();
     void FreeImpl(void* ptr);
@@ -32,7 +32,7 @@ class InstancePool : private PoolImpl
 {
 public:
     u32 Create(void* buffer, unsigned long size)
-{
+    {
         u32 objSize =
             (sizeof(T) > sizeof(InstancePool<T>*))
                 ? sizeof(T)
@@ -40,9 +40,9 @@ public:
         return CreateImpl(buffer, size, objSize);
     }
 
-    void Destroy()
+    void Destroy(void* buffer, size_t size)
     {
-        DestroyImpl();
+        DestroyImpl(buffer, size);
     }
 
     int Count() const

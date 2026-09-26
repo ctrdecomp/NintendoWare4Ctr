@@ -25,7 +25,7 @@ public:
     virtual int GetAllocatableTrackCount() const { return m_TrackPool.Count(); }
 
     unsigned long Create(void* buffer, unsigned long size);
-    void Destroy();
+    void Destroy(void* buffer, unsigned long size);
 
 private:
     MmlParser* m_pParser;

@@ -30,7 +30,8 @@ ResDicPatriciaData::ResDicNodeData* ResDicPatricia::Get(const ResName rhs) const
         {
             x = &r.data[x->idxRight];
         }
-        else{
+        else
+        {
             x = &r.data[x->idxLeft];
         }
     }

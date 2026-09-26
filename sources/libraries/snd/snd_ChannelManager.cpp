@@ -2,8 +2,6 @@
 //
 // Project: NintendoWare4Ctr
 
-#include "precompiled.h"
-
 #include <nw/snd/snd_ChannelManager.h>
 
 namespace nw {
@@ -11,20 +9,15 @@ namespace snd {
 namespace internal {
 namespace driver {
 
-/* ========================================================================
-        ChannelManager class
-   ======================================================================== */
-
 ChannelManager& ChannelManager::GetInstance()
 {
     static ChannelManager instance;
     return instance;
 }
 
-ChannelManager::ChannelManager()
-: 
-m_IsInitialized( false ),
-  m_ChannelCount( 0)
+ChannelManager::ChannelManager(): 
+    m_IsInitialized(false),
+    m_ChannelCount(0)
 {
 }
 

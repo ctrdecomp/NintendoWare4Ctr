@@ -14,11 +14,13 @@ class DriverCommandManager
 public:
     static DriverCommandManager& GetInstance();
     static DriverCommandManager& GetInstanceForTaskThread();
+
+    ~DriverCommandManager();
     
     void Initialize(void* commandBuffer, u32 commandBufferSize);
     void Finalize();
     
-    template< typename Command >
+    template<typename Command>
     Command* AllocCommand();
     u32 GetAllocatableCommandSize() const;
     
@@ -61,6 +63,7 @@ private:
     u32 m_CommandMemoryAreaEnd;
 
     bool m_CommandMemoryAreaZeroFlag;
+    bool m_Available;
 };
 
 template< typename Command >

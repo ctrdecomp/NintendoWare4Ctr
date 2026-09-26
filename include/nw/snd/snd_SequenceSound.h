@@ -24,7 +24,7 @@ class NoteOnCallback;
 
 class SequenceSound;
 
-typedef SoundInstanceManager<SequenceSound> SequenceSoundInstanceManager;
+typedef SoundInstanceManager<SequenceSound, driver::SequenceSoundPlayer> SequenceSoundInstanceManager;
 
 class SequenceSound : public BasicSound
 {
@@ -55,8 +55,6 @@ private:
         bool result,
         const LoadItemInfo* seq,
         const LoadItemInfo banks[],
-        const LoadItemInfo warcs[],
-        const bool warcIsIndividuals[],
         void* userData
     );
 
@@ -118,13 +116,15 @@ public:
         }
     };
 
-    void Prepare(const Resource& res, const StartInfo& startInfo);
+    void Prepare(const void* seqBase, const StartInfo& startInfo);
+    void SetBankData(const LoadItemInfo banks[]);
 
     bool RegisterDataLoadTask(const LoadInfo& loadInfo, const StartInfo& startInfo);
+    static void NotifyAsyncLoadFinishedFunc(bool result, const LoadItemInfo* seq, const LoadItemInfo banks[], void* userData);
 
-    void Initialize() override;
-    void Finalize() override;
-    bool IsPrepared() const override { return m_PreparedFlag; }
+    virtual void Initialize();
+    virtual void Finalize();
+    virtual bool IsPrepared() const { return m_PreparedFlag; }
 
     void SetTempoRatio(f32 tempoRatio);
     void SetChannelPriority(int priority);
@@ -158,12 +158,6 @@ public:
     void SetTrackMainSend(u32 trackBitFlag, f32 send);
     void SetTrackFxSend(u32 trackBitFlag, AuxBus bus, f32 send);
 
-    void SetTrackDrcOutVolume(u32 drcIndex, u32 trackBitFlag, f32 volume);
-    void SetTrackDrcPan(u32 drcIndex, u32 trackBitFlag, f32 pan);
-    void SetTrackDrcSurroundPan(u32 drcIndex, u32 trackBitFlag, f32 span);
-    void SetTrackDrcMainSend(u32 drcIndex, u32 trackBitFlag, f32 send);
-    void SetTrackDrcFxSend(u32 drcIndex, u32 trackBitFlag, AuxBus bus, f32 send);
-
     bool ReadVariable(int varNo, s16* var) const;
     static bool ReadGlobalVariable(int varNo, s16* var);
     bool ReadTrackVariable(int trackNo, int varNo, s16* var) const;
@@ -172,13 +166,12 @@ public:
     void WriteTrackVariable(int trackNo, int varNo, s16 var);
 
 protected:
-    bool IsAttachedTempSpecialHandle() override;
-    void DetachTempSpecialHandle() override;
+    virtual bool IsAttachedTempSpecialHandle();
+    virtual void DetachTempSpecialHandle();
 
-    driver::BasicSoundPlayer* GetBasicSoundPlayerHandle() override { return &m_SequenceSoundPlayerInstance; }
+    virtual driver::BasicSoundPlayer* GetBasicSoundPlayerHandle() { return &m_SequenceSoundPlayerInstance; }
 
-    void OnUpdatePlayerPriority() override;
-    void OnUpdate() override { CheckLoadState(); }
+    virtual void OnUpdatePlayerPriority();
 
 private:
     void Skip(driver::SequenceSoundPlayer::OffsetType offsetType, int offset);
@@ -203,15 +196,10 @@ private:
     DataLoadTask m_DataLoadTask;
     PlayerHeapDataManager m_DataManager;
 
-    int m_TaskCommandId;
-
-    Resource m_Res;
-
-    s8 m_LoadState;
+    volatile bool m_LoadingFlag;
     bool m_InitializeFlag;
     bool m_PreparedFlag;
 };
-
 
 } // namespace internal
 } // namespace snd

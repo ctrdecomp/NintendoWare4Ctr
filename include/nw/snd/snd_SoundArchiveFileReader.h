@@ -21,6 +21,7 @@ public:
 
     void SetStringBlock(const void* stringBlock);
     void SetInfoBlock(const void* infoBlock);
+    void SetInfoChunk(const void* infoChuck);
 
     u32 GetStringBlockSize() const { return m_Header.GetStringBlockSize(); }
     s32 GetStringBlockOffset() const { return m_Header.GetStringBlockOffset(); }

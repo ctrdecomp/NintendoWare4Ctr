@@ -17,7 +17,7 @@ CmdCache::CmdCache():
     m_IsCopy(false) {}
 
 void CmdCache::Init(void* buffer,u32 size,bool isCopy)
-    {
+{
     m_CmdBuffer = static_cast<u8*>(ut::RoundUp(buffer, 4));
     void *const bufferEnd = AddOffsetToPtr(buffer, size);
     m_CmdMaxBufferSize = RoundDown(GetOffsetFromPtr(this->m_CmdBuffer, bufferEnd), 8);

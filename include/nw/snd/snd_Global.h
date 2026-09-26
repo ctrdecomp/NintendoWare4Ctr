@@ -42,8 +42,6 @@ enum SeqMute
     SEQ_MUTE_STOP
 };
 
-static const int DRC_OUT_COUNT = 1;
-
 static const u32 WAVE_CHANNEL_MAX = 2;
 static const u32 SEQ_BANK_MAX = 4;
 
@@ -68,6 +66,12 @@ enum PanCurve
     PAN_CURVE_INVALID
 };
 
+enum DecayCurve
+{
+    DECAY_CURVE_LOG = 1,
+    DECAY_CURVE_LINEAR = 2
+};
+
 enum WaveType
 {
     WAVE_TYPE_NWWAV,
@@ -89,7 +93,7 @@ struct AdshrCurve
         sustain(s), 
         hold(h), 
         release(r)
-        {
+    {
     }
 };
 
@@ -206,7 +210,9 @@ struct AdshrCurve
         decay(d),
         sustain(s),
         hold(h),
-        release(r) {}
+        release(r) 
+    {
+    }
 };
 
 namespace internal{

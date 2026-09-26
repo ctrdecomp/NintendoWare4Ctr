@@ -95,7 +95,7 @@ public:
             SeqSoundInfo(): 
                 seqDataAddress(NULL), 
                 startLocationLabel(NULL)
-                {
+            {
                 for (u32 i = 0; i < SoundArchive::SEQ_BANK_MAX; i++)
                     bankIds[i] = SoundArchive::INVALID_ID;
             }

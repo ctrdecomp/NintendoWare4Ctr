@@ -39,7 +39,7 @@ public:
     static const int DEFAULT_TIMEBASE       = 48;
     static const int DEFAULT_TEMPO          = 120;
 
-    static const int DEFAULT_SKIP_INTERVAL_TICK = 48*4*4;
+    static const int MAX_SKIP_TICK_PER_FRAME = 48*4*4;
 
 public:
     struct ParserPlayerParam
@@ -120,28 +120,11 @@ public:
     void SetTrackTranspose(u32 trackBitFlag, s8 transpose);
     void SetTrackVelocityRange(u32 trackBitFlag, u8 range);
     void SetTrackOutputLine(u32 trackBitFlag, u32 outputLine);
+    void SetSeqData(const void* seqBase, s32 seqOffset);
+    void SetBankData(const void* bankFiles[], u32 bankFileCount);
+    void SetTrackPan(u32 trackBitFlag, float pan);
+    void SetTrackSurroundPan(u32 trackBitFlag, float span);
     void ResetTrackOutputLine(u32 trackBitFlag);
-
-    const BankFileReader& GetBankFileReader(u8 bankIndex) const
-    {
-        return m_BankFileReader[bankIndex];
-    }
-    const WaveArchiveFileReader& GetWaveArchiveFileReader(u8 bankIndex) const
-    {
-        return m_WarcFileReader[bankIndex];
-    }
-
-    void SetTrackTvVolume(u32 trackBitFlag, f32 volume);
-    void SetTrackTvPan(u32 trackBitFlag, f32 pan);
-    void SetTrackTvSurroundPan(u32 trackBitFlag, f32 span);
-    void SetTrackTvMainSend(u32 trackBitFlag, f32 send);
-    void SetTrackTvFxSend(u32 trackBitFlag, AuxBus bus, f32 send);
-
-    void SetTrackDrcVolume(u32 drcIndex, u32 trackBitFlag, f32 volume);
-    void SetTrackDrcPan(u32 drcIndex, u32 trackBitFlag, f32 pan);
-    void SetTrackDrcSurroundPan(u32 drcIndex, u32 trackBitFlag, f32 span);
-    void SetTrackDrcMainSend(u32 drcIndex, u32 trackBitFlag, f32 send);
-    void SetTrackDrcFxSend(u32 drcIndex, u32 trackBitFlag, AuxBus bus, f32 send);
 
     s16 GetLocalVariable(int varNo) const;
     static s16 GetGlobalVariable(int varNo);
@@ -161,6 +144,8 @@ public:
     void SetPlayerTrack(int trackNo, SequenceTrack* track);
 
     const SequenceTrackAllocator* GetTrackAllocator() { return m_pSequenceTrackAllocator; }
+
+    const void* GetBankFile(u8 bankIndex) const { return m_pBankFiles[bankIndex]; }
 
     void Update();
 
@@ -186,10 +171,9 @@ private:
     void FinishPlayer();
     
     f32 CalcTickPerMinute() const { return m_ParserParam.timebase * m_ParserParam.tempo * m_TempoRatio; }
-    f32 CalcTickPerMsec() const { return CalcTickPerMinute() / ( 60 * 1000.0f ); }
+    f32 CalcTickPerMsec() const { return CalcTickPerMinute() / (60 * 1000.0f); }
     
     static vs16 m_GlobalVariable[GLOBAL_VARIABLE_NUM];
-    static vs32 m_SkipIntervalTickPerFrame;
 
     bool m_ReleasePriorityFixFlag;
 
@@ -209,42 +193,41 @@ private:
 
     vs16 m_LocalVariable[PLAYER_VARIABLE_NUM];
     vu32 m_TickCounter;
-    
-    WaveArchiveFileReader m_WarcFileReader[SoundArchive::SEQ_BANK_MAX];
-    BankFileReader m_BankFileReader[SoundArchive::SEQ_BANK_MAX];
+
+    const void* m_pBankFiles[SoundArchive::SEQ_BANK_MAX];
 };
 
 template <typename T>
 void SequenceSoundPlayer::SetTrackParam(u32 trackBitFlag, void (SequenceTrack::*func)(T), T param)
 {
-    for (
-        int trackNo = 0
-        ; trackNo < TRACK_NUM_PER_PLAYER && trackBitFlag != 0
-        ; trackNo++, trackBitFlag >>= 1
-    )
+    for (int trackNo = 0; trackNo < TRACK_NUM_PER_PLAYER && trackBitFlag != 0 ; trackNo++, trackBitFlag >>= 1)
     {
         if ((trackBitFlag & 1) == 0)
+        {
             continue;
+        }
         SequenceTrack* track = GetPlayerTrack(trackNo);
         if (track != NULL)
-            (track->*func)( param );
+        {
+            (track->*func)(param);
+        }
     }
 }
 
 template <typename T, typename U>
 void SequenceSoundPlayer::SetTrackParam(u32 trackBitFlag, void (SequenceTrack::*func)(T, U), T param1, U param2)
 {
-    for (
-        int trackNo = 0
-        ; trackNo < TRACK_NUM_PER_PLAYER && trackBitFlag != 0
-        ; trackNo++, trackBitFlag >>= 1
-    )
+    for (int trackNo = 0; trackNo < TRACK_NUM_PER_PLAYER && trackBitFlag != 0; trackNo++, trackBitFlag >>= 1)
     {
         if ((trackBitFlag & 1) == 0)
+        {
             continue;
+        }
         SequenceTrack* track = GetPlayerTrack(trackNo);
         if (track != NULL)
+        {
             (track->*func)(param1, param2);
+        }
     }
 }
 

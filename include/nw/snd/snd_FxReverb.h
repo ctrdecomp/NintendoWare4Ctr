@@ -24,7 +24,7 @@ public:
             m_Comb0(19 * NN_SND_SAMPLES_PER_FRAME), 
             m_Comb1(23 * NN_SND_SAMPLES_PER_FRAME), 
             m_AllPass(13 * NN_SND_SAMPLES_PER_FRAME)
-            {
+        {
         }
     };
 
@@ -51,7 +51,7 @@ public:
             m_EarlyGain(0.6f),
             m_FusedGain(0.4f),
             m_UseHpfDamping(false)
-            {
+        {
         }
     };
 
@@ -80,27 +80,27 @@ private:
     void FreeBuffer();
     void InitializeParam();
 
-    Param           m_Param;
-    uptr            m_pBuffer;
-    size_t          m_BufferSize;
-    FilterSize      m_FilterSize;
-    WorkBuffer      m_WorkBuffer;
+    Param m_Param;
+    uptr m_pBuffer;
+    size_t m_BufferSize;
+    FilterSize m_FilterSize;
+    WorkBuffer m_WorkBuffer;
     
-    s32  m_EarlyLength;
-    s32  m_EarlyPos;
+    s32 m_EarlyLength;
+    s32 m_EarlyPos;
     
-    s32  m_PreDelayLength;
-    s32  m_PreDelayPos;
+    s32 m_PreDelayLength;
+    s32 m_PreDelayPos;
     
-    s32  m_CombFilterLength[2];
-    s32  m_CombFilterPos[2];
-    s32  m_CombFilterCoef[2];
+    s32 m_CombFilterLength[2];
+    s32 m_CombFilterPos[2];
+    s32 m_CombFilterCoef[2];
     
-    s32  m_AllPassFilterLength;
-    s32  m_AllPassFilterPos;
-    s32  m_AllPassFilterCoef;
+    s32 m_AllPassFilterLength;
+    s32 m_AllPassFilterPos;
+    s32 m_AllPassFilterCoef;
     
-    s32  m_LastLpfOut[4];
+    s32 m_LastLpfOut[4];
 
     s32 m_EarlyGain;
     s32 m_FusedGain;
@@ -112,7 +112,7 @@ private:
     FilterSize m_FilterSizeAtInitialize;
     bool m_IsEnableSurroundAtInitialize;
 
-    u8   m_ProcessChannelCount;
+    u8 m_ProcessChannelCount;
     bool m_IsActive;
 };
 

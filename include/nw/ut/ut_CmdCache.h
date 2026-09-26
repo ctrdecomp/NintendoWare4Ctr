@@ -28,6 +28,6 @@ private:
     bool m_IsCopy;
 };
 
-}   // namespace internal
-}   // namespace ut
-}   // namespace nw
+} // namespace internal
+} // namespace ut
+} // namespace nw

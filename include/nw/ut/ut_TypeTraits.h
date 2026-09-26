@@ -99,7 +99,9 @@ NW_TRAITS_SPEC##Order(Traits<SpecialType const volatile>, Value)
 
 template<typename TType>
 struct IsArray : public internal::FalseType
-{};
+{
+
+};
 
 template<typename TType, int Size>
 struct IsArray<TType[Size]> : public internal::TrueType
@@ -140,5 +142,5 @@ template<typename Cond, typename Then, typename Else>
 struct If_ : public internal::IfCond<Cond::value, Then, Else>
 {};
 
-} // ut
-} // nw
+} // namespace ut
+} // namespace nw

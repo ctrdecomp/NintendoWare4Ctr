@@ -31,12 +31,12 @@ bool RomFileStream::Open(FileReader* openedFileReader, bool closeEnable)
 {
     if (m_CloseOnDestroyFlag)
     {
-        this->Close();
+        Close();
     }
 
     m_pOpenedFileReader = openedFileReader;
-    this->m_FilePosition.SetFileSize(this->m_pOpenedFileReader->GetSize());
-    this->m_FilePosition.Seek(0, FILE_STREAM_SEEK_BEGIN);
+    m_FilePosition.SetFileSize(m_pOpenedFileReader->GetSize());
+    m_FilePosition.Seek(0, FILE_STREAM_SEEK_BEGIN);
 
     m_CloseOnDestroyFlag = false;
     m_CloseEnableFlag = closeEnable;
@@ -48,10 +48,10 @@ bool RomFileStream::Open(const char* path)
 {
     NW_NULL_ASSERT(path);
 
-    this->m_FileReader.Initialize(path);
+    m_FileReader.Initialize(path);
     m_pOpenedFileReader = &m_FileReader;
-    this->m_FilePosition.SetFileSize(this->m_pOpenedFileReader->GetSize());
-    this->m_FilePosition.Seek(0, FILE_STREAM_SEEK_BEGIN);
+    m_FilePosition.SetFileSize(m_pOpenedFileReader->GetSize());
+    m_FilePosition.Seek(0, FILE_STREAM_SEEK_BEGIN);
     m_CloseOnDestroyFlag = true;
     m_CloseEnableFlag = true;
     m_IsAvailable = true;
@@ -75,18 +75,18 @@ void RomFileStream::Close()
 
 s32 RomFileStream::Read(void* buf, u32 length)
 {
-    m_pOpenedFileReader->Seek(this->m_FilePosition.Tell(), nn::fs::POSITION_BASE_BEGIN);
-    s32 readBytes = this->m_pOpenedFileReader->Read(buf, length);
+    m_pOpenedFileReader->Seek(m_FilePosition.Tell(), nn::fs::POSITION_BASE_BEGIN);
+    s32 readBytes = m_pOpenedFileReader->Read(buf, length);
     if (readBytes > 0)
     {
-        this->m_FilePosition.Skip(readBytes);
+        m_FilePosition.Skip(readBytes);
     }
     return readBytes;
 }
 
 void RomFileStream::Seek(s32 offset, u32 origin)
 {
-    this->m_FilePosition.Seek(offset, origin);
+    m_FilePosition.Seek(offset, origin);
 }
 
 }

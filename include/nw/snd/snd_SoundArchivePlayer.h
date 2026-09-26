@@ -3,10 +3,14 @@
 
 #include <nw/snd/snd_SoundStartable.h>
 #include <nw/snd/snd_NoteOnCallback.h>
+#include <nw/snd/snd_SoundArchive.h>
+#include <nw/snd/snd_BasicSound.h>
 #include <nw/snd/snd_SequenceSoundPlayer.h>
 #include <nw/snd/snd_SequenceSound.h>
 #include <nw/snd/snd_WaveSound.h>
 #include <nw/snd/snd_StreamSound.h>
+#include <nw/snd/snd_Util.h>
+#include <nw/snd/snd_SoundInstanceManager.h>
 #include <nw/snd/snd_MmlSequenceTrackAllocator.h>
 #include <nw/snd/snd_MmlParser.h>
 
@@ -26,40 +30,57 @@ class SoundArchiveFilesHook;
 class SoundArchivePlayer : public SoundStartable
 {
 private:
+    static const int DEFAULT_STREAM_BLOCK_COUNT = 5;
+    
     class SequenceNoteOnCallback : public internal::driver::NoteOnCallback
     {
         NW_DISALLOW_COPY_AND_ASSIGN(SequenceNoteOnCallback);
 
     public:
-        SequenceNoteOnCallback(): 
-            m_pSoundArchivePlayer(NULL)
-            {
-        }
-
-        void Initialize(const SoundArchivePlayer& player)
+        SequenceNoteOnCallback(const SoundArchivePlayer& player): 
+            m_pSoundArchivePlayer(player)
         {
-            m_pSoundArchivePlayer = &player;
         }
 
         virtual internal::driver::Channel* NoteOn(internal::driver::SequenceSoundPlayer* seqPlayer, u8 bankIndex, const internal::driver::NoteOnInfo& noteOnInfo);
     private:
-        const SoundArchivePlayer* m_pSoundArchivePlayer;
+        const SoundArchivePlayer& m_pSoundArchivePlayer;
+    };
+
+    class WaveSoundCallback : public internal::driver::WaveSoundPlayer::WaveSoundCallback
+    {
+    public:
+        WaveSoundCallback(const SoundArchivePlayer& player): 
+            m_pSoundArchivePlayer(player) 
+        { 
+        }
+
+        virtual bool GetWaveSoundData(internal::WaveSoundInfo* info,
+            internal::WaveSoundNoteInfo* noteInfo, internal::WaveInfo* waveData,
+            const internal::driver::WaveSoundPlayer::WaveSoundCallbackArg& arg) const;
+    private:
+        const SoundArchivePlayer& m_pSoundArchivePlayer;
     };
 
     friend class SoundArchivePlayer::SequenceNoteOnCallback;
 
 public:
     SoundArchivePlayer();
+
     virtual ~SoundArchivePlayer();
-    virtual SoundArchive::ItemId detail_GetItemId(const char* pString) { return m_pSoundArchive->GetItemId(pString); }
+    virtual SoundArchive::ItemId detail_GetItemId(const char* pString) 
+    { 
+        NW_NULL_ASSERT(m_pSoundArchive);
+        return m_pSoundArchive->GetItemId(pString); 
+    }
+    const void* detail_GetFileAddress(SoundArchive::FileId fileId) const;
 
-    size_t GetRequiredMemSize(const SoundArchive* arc, size_t userParamSizePerSound = 0) const;
-    size_t GetRequiredStreamBufferSize(const SoundArchive* arc) const;
+    size_t GetRequiredMemSize(const SoundArchive* arc);
+    size_t GetRequiredStreamBufferSize(const SoundArchive* arc);
 
-    bool Initialize(const SoundArchive* arc, const SoundDataManager* manager, void* buffer, u32 size, void* strmBuffer, u32 strmBufferSize, size_t userParamSizePerSound = 0);
+    bool Initialize(const SoundArchive* arc, const SoundDataManager* manager, void* buffer, u32 size, void* strmBuffer, u32 strmBufferSize);
 
     size_t GetRequiredStreamCacheSize(const SoundArchive* arc, size_t cacheSizePerSound) const;
-
 
     void Finalize();
     bool IsAvailable() const;
@@ -68,10 +89,13 @@ public:
     const SoundArchive& GetSoundArchive() const;
 
     SoundPlayer& GetSoundPlayer(SoundArchive::ItemId playerId);
-    const SoundPlayer& GetSoundPlayer(SoundArchive::ItemId playerId) const;
+    SoundPlayer& GetSoundPlayer(const char* pPlayerName);
 
     StartResult detail_SetupSoundImpl(SoundHandle* handle, u32 soundId, internal::BasicSound::AmbientInfo* ambientArgInfo,
         SoundActor* actor, bool holdFlag, const StartInfo* startInfo);
+
+    void SetSequenceUserprocCallback(SequenceUserprocCallback callback, void* callbackArg);
+    void UpdateCommonSoundParam(internal::BasicSound* sound, const SoundArchive::SoundInfo* commonInfo);
 
 protected:
     virtual StartResult detail_SetupSound(SoundHandle* handle, u32 soundId, bool holdFlag, const StartInfo* startInfo);
@@ -79,8 +103,7 @@ private:
     StartResult PrepareSequenceSoundImpl(
         internal::SequenceSound* sound, const SoundArchive::SoundInfo* commonInfo,
         const SoundArchive::SequenceSoundInfo* info, SoundStartable::StartInfo::StartOffsetType startOffsetType,
-        int startOffset, const StartInfo::SeqSoundInfo* externalSeqInfo
-    );
+        int startOffset, const StartInfo::SeqSoundInfo* externalSeqInfo);
 
     StartResult PrepareStreamSoundImpl(internal::StreamSound* sound, const SoundArchive::SoundInfo* commonInfo, const SoundArchive::StreamSoundInfo* info,
         SoundStartable::StartInfo::StartOffsetType startOffsetType, int startOffset);
@@ -88,20 +111,27 @@ private:
     StartResult PrepareWaveSoundImpl(internal::WaveSound* sound, const SoundArchive::SoundInfo* commonInfo, const SoundArchive::WaveSoundInfo* info,
         SoundStartable::StartInfo::StartOffsetType startOffsetType, int startOffset);
 
-    internal::PlayerHeap* CreatePlayerHeap(void** ppBuffer, const void* pEndAddress, size_t heapSize);
-    bool SetupMram(const SoundArchive* arc, void* buffer, size_t size, size_t userParamSizePerSound);
-    bool SetupSoundPlayer(const SoundArchive* arc, void** buffer, const void* endp);
-    bool SetupSequenceSound(int numSounds, void** buffer, const void* endp);
-    bool SetupSequenceTrack(int numTracks, void** buffer, const void* endp);
-    bool SetupWaveSound(int numSounds, void** buffer, const void* endp);
-    bool SetupStreamSound(int numSounds, void** buffer, const void* endp);
-    bool SetupStreamBuffer(const SoundArchive* arc, void* buffer, size_t size);
-    bool SetupUserParamForBasicSound(const SoundArchive::SoundArchivePlayerInfo& info, void** buffer, const void* endp, size_t userParamSizePerSound);
+    template<typename Sound, typename Player>
+    Sound* AllocSound(
+        internal::SoundInstanceManager<Sound, Player>* manager,
+        SoundArchive::ItemId soundId, int priority, int ambientPriority,
+        internal::BasicSound::AmbientInfo* ambientArgInfo);
+
+    internal::PlayerHeap* CreatePlayerHeap(void** ppBuffer, void* pEndAddress, size_t heapSize);
+    bool SetupMram(const SoundArchive* arc, void* buffer, unsigned long size);
+    bool SetupSoundPlayer(const SoundArchive* arc, void** buffer, void* endp);
+    bool SetupSequenceSound(const SoundArchive* arc, int numSounds, void** buffer, void* endp);
+    bool SetupSequenceTrack(const SoundArchive* arc, int numTracks, void** buffer, void* endp);
+    bool SetupWaveSound(const SoundArchive* arc, int numWaves, void** buffer, void* endp);
+    bool SetupStreamSound(const SoundArchive* arc, int numStreams, void** buffer, void* endp);
+    bool SetupStreamBuffer(const SoundArchive* arc, void* buffer, unsigned long size);
+    bool SetupUserParamForBasicSound(const SoundArchive::SoundArchivePlayerInfo& info, void** buffer, const void* endp);
     void SetCommonSoundParam(internal::BasicSound* sound, const SoundArchive::SoundInfo* commonInfo);
 private:
 
     const SoundArchive* m_pSoundArchive;
     SequenceNoteOnCallback m_SequenceCallback;
+    WaveSoundCallback m_WaveSoundCallback;
     SequenceUserprocCallback m_SequenceUserprocCallback;
     void* m_pSequenceUserprocCallbackArg;
     u32 m_SoundPlayerCount;

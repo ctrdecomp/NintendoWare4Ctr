@@ -13,6 +13,10 @@ class StreamSoundHandle;
 
 namespace internal {
 
+class StreamSound;
+
+typedef SoundInstanceManager<StreamSound, driver::StreamSoundPlayer> StreamSoundInstanceManager;
+
 class StreamSound : public BasicSound
 {
     friend class StreamSoundHandle;
@@ -60,12 +64,10 @@ private:
     MoveValue<float, int> m_TrackVolume[driver::StreamSoundPlayer::STRM_TRACK_NUM];
 
     io::FileStream* m_pFileStream;
-    int m_FileStreamBuffer[FILE_STREAM_BUFFER_SIZE/sizeof(int)];
+    int m_FileStreamBuffer[FILE_STREAM_BUFFER_SIZE / sizeof(int)];
     u16 m_AllocTrackFlag;
     bool m_InitializeFlag;
 };
-
-typedef SoundInstanceManager<StreamSound> StreamSoundInstanceManager;
 
 } // namespace internal
 } // namespace snd

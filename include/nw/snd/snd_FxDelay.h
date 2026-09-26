@@ -20,7 +20,7 @@ public:
             m_DelayTime(250), 
             m_FeedbackGain(0.4f), 
             m_Damping(1.0f), 
-            m_IsEnableSurround(false), 
+            m_IsEnableSurround(false)
         {
         }
     };

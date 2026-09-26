@@ -1,6 +1,8 @@
-#include <nw/snd/snd_WaveArchiveFileReader.h>
+// Filename: snd_WaveArchiveFileReader.cpp
+//
+// Project: NintendoWare4Ctr
 
-// #define NW_SND_DEBUG_PRINT_ENABLE
+#include <nw/snd/snd_WaveArchiveFileReader.h>
 
 namespace nw {
 namespace snd {
@@ -30,8 +32,8 @@ bool IsValidFileHeader(const void* waveArchiveData)
             "wave archive file is not supported version.\n"
             "please reconvert file using new version tools.\n"
             "(SUPPORTED_FILE_VERSION:0x%08x >= your version:0x%08x)\n",
-            SUPPORTED_FILE_VERSION, header.version
-    );
+            SUPPORTED_FILE_VERSION, header.version);
+
     if (header.version < SUPPORTED_FILE_VERSION)
     {
         return false;
@@ -41,8 +43,8 @@ bool IsValidFileHeader(const void* waveArchiveData)
             "wave archive file is not supported version.\n"
             "please reconvert file using new version tools.\n"
             "(CURRENT_FILE_VERSION:0x%08x <= your version:0x%08x)\n",
-            CURRENT_FILE_VERSION, header.version
-    );
+            CURRENT_FILE_VERSION, header.version);
+
     if (header.version > CURRENT_FILE_VERSION)
     {
         return false;
@@ -137,13 +139,6 @@ const void* WaveArchiveFileReader::SetWaveFile(u32 waveIndex, const void* pWaveF
 
     const void* preAddress = GetWaveFileForIndividual(waveIndex);
     m_pLoadTable->waveFile[waveIndex] = pWaveFile;
-
-#ifdef NW_SND_ENABLE_DEBUG_PRINT
-    for (u32 i = 0; i < GetWaveFileCount(); i++)
-    {
-        NN_LOG("  [%3d] %p\n", i, m_pLoadTable->waveFile[i]);
-    }
-#endif // NW_SND_ENABLE_DEBUG_PRINT
 
     return preAddress;
 }

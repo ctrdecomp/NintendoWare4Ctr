@@ -25,7 +25,7 @@ public:
             m_Size(size), 
             m_Callback(callback), 
             m_pCallbackArg(callbackArg)
-            {
+        {
         }
 
         ~Block()
@@ -80,7 +80,7 @@ public:
     typedef ut::LinkList<Section, offsetof(Section, m_Link)> SectionList;
 
 private:
-    static const int HEAP_ALIGN = 256;
+    static const int HEAP_ALIGN = 32;
 
 public:
     FrameHeap();
@@ -103,6 +103,9 @@ public:
 
     void Dump(SoundDataManager& mgr, SoundArchive& arc) const;
     bool ProcessCallback(int level);
+
+    bool NewSection();
+    void ClearSection();
 
 private:
     ut::FrameHeap* m_pHeap;

@@ -7,11 +7,11 @@
 namespace nw {
 namespace snd {
 
-class SoundPlayer; // im lazy
+class SoundPlayer;
 
 namespace internal {
 
-class BasicSound; // im lazy
+class BasicSound;
 
 class PlayerHeap : public SoundMemoryAllocatable
 {

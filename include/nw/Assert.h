@@ -61,7 +61,22 @@
             NW_ASSERTMSG((exp) != NULL, "NW:Pointer must not be NULL ("#exp")")
 #endif
 
+// ALIGNMENT
 
+#ifndef NW_ALIGN_ASSERT
+#define NW_ALIGN_ASSERT(exp,align) \
+    NW_ASSERTMSG((NW_ANY_TO_PTR_VALUE(exp) & ((align) - 1)) == 0, "NW:Alignment Error(0x%x)\n"#exp" must be aligned to %d bytes boundary.", exp, align)
+#endif
+
+#ifndef NW_ALIGN32_ASSERT
+#define NW_ALIGN32_ASSERT(exp) \
+             NW_ALIGN_ASSERT((exp), 32)
+#endif
+
+#ifndef NW_ALIGN4_ASSERT
+#define NW_ALIGN4_ASSERT(exp) \
+             NW_ALIGN_ASSERT((exp), 4)
+#endif
 
 // FAILSAFE ASSERT
 

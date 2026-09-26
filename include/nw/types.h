@@ -62,5 +62,15 @@ typedef signed long PtrDiff;
 #endif
 
 #define NW_INLINE inline
+
+#ifndef NW_RELEASE
+#define NW_FORCE_INLINE inline
+#else
 #define NW_FORCE_INLINE __forceinline
+#endif
+
 #define NW_UNUSED_VARIABLE(x) ((void)(x))
+
+#define NW_ALIGN(x) __attribute__((aligned(x)))
+
+#define NW_ROUND_UP_32B(x) (((u32)(x) + 32 - 1) & ~(32 - 1))

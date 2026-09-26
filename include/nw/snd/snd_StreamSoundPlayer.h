@@ -77,7 +77,7 @@ public:
     bool LoadHeader(const StreamSoundFile::StreamSoundInfo& streamInfo,const StreamSoundFileReader::TrackInfo trackInfos[],const DspAdpcmParam dspAdpcmParam[],
         const DspAdpcmLoopParam dspAdpcmLoopParam[],u32 dataBlockOffset,u32 trackCount,u32 channelCount);
 
-    bool LoadStreamData(int bufferBlockIndex,int dataBlockIndex,u32 blockSamples,bool isDataLoopBlock,bool lastBlockFlag);
+    bool LoadStreamData(int bufferBlockIndex, int dataBlockIndex, u32 blockSamples, bool isDataLoopBlock, bool lastBlockFlag);
 
 protected:
     virtual void OnUpdateFrameSoundThread() { Update(); }
@@ -232,10 +232,10 @@ private:
 
     s32 m_TrackCount;
     s32 m_ChannelCount;
-    StreamChannel m_Channels[ STRM_CHANNEL_NUM ];
-    StreamTrack m_Tracks[ STRM_TRACK_NUM ];
+    StreamChannel m_Channels[STRM_CHANNEL_NUM];
+    StreamTrack m_Tracks[STRM_TRACK_NUM];
 
-    static u8 s_LoadBuffer[ LOAD_BUFFER_SIZE ];
+    static u8 s_LoadBuffer[LOAD_BUFFER_SIZE];
 };
 
 } // namespace driver

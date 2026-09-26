@@ -53,7 +53,7 @@ struct SendValue
     Util::Table<u8,u8> fxSend;
 };
 
-} // namespace ""
+} // namespace
 
 // WaveSoundFile::FileHeader
 const WaveSoundFile::InfoBlock* WaveSoundFile::FileHeader::GetInfoBlock() const

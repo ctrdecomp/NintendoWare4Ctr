@@ -111,6 +111,5 @@ public:
     nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
 };
 
-
 } // namespace ut
 } // namespace nw
