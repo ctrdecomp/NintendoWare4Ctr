@@ -66,9 +66,31 @@ inline size_t strncpy_t(TChar* dest,std::size_t destCount,const TChar* src,std::
 
 }
 
-inline size_t strcpy(char* dest,std::size_t destCount,const char* src)
+inline size_t strcpy(char* dest, std::size_t destCount, const char* src)
 {
     return internal::strncpy_t(dest, destCount, src, destCount - 1);
+}
+
+NW_INLINE size_t strncpy(char* dest,std::size_t destCount,const char* src,std::size_t srcCount)
+{
+    return ut::internal::strncpy_t(dest, destCount, src, srcCount);
+}
+
+NW_INLINE size_t strncat(
+    char* dest, std::size_t destCount,
+    const char* src, std::size_t srcCount)
+{
+    size_t length = std::strlen(dest);
+    if (destCount <= length + srcCount)
+    {
+        srcCount = destCount - length - 1;
+    }
+
+    char* result = std::strncat(dest, src, srcCount);
+
+    dest[destCount-1] = '\0';
+
+    return srcCount;
 }
 
 template <typename T>

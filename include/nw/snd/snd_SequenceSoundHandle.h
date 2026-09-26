@@ -309,46 +309,6 @@ public:
         }
     }
 
-    void SetTrackDrcOutVolume(u32 trackBitFlag, f32 volume, u32 drcIndex=0)
-    {
-        if (IsAttachedSound())
-        {
-            m_pSound->SetTrackDrcOutVolume(drcIndex, trackBitFlag, volume);
-        }
-    }
-
-    void SetTrackDrcPan(u32 trackBitFlag, f32 pan, u32 drcIndex=0)
-    {
-        if (IsAttachedSound())
-        {
-            m_pSound->SetTrackDrcPan(drcIndex, trackBitFlag, pan);
-        }
-    }
-
-    void SetTrackDrcSurroundPan(u32 trackBitFlag, f32 span, u32 drcIndex=0)
-    {
-        if (IsAttachedSound())
-        {
-            m_pSound->SetTrackDrcSurroundPan(drcIndex, trackBitFlag, span);
-        }
-    }
-
-    void SetTrackDrcMainSend(u32 trackBitFlag, f32 send, u32 drcIndex=0)
-    {
-        if (IsAttachedSound())
-        {
-            m_pSound->SetTrackDrcMainSend(drcIndex, trackBitFlag, send);
-        }
-    }
-
-    void SetTrackDrcFxSend(u32 trackBitFlag, AuxBus bus, f32 send, u32 drcIndex=0)
-    {
-        if (IsAttachedSound())
-        {
-            m_pSound->SetTrackDrcFxSend(drcIndex, trackBitFlag, bus, send);
-        }
-    }
-
     bool IsAttachedSound() const { return m_pSound != NULL; }
     void DetachSound();
 

@@ -31,8 +31,8 @@ bool IsValidFileHeader(const void* waveFile)
             "wave file is not supported version.\n"
             "please reconvert file using new version tools.\n"
             "(SUPPORTED_FILE_VERSION:0x%08x >= your version:0x%08x)\n",
-            SUPPORTED_FILE_VERSION, header.version
-    );
+            SUPPORTED_FILE_VERSION, header.version);
+
     if (header.version < SUPPORTED_FILE_VERSION)
     {
         return false;
@@ -42,8 +42,8 @@ bool IsValidFileHeader(const void* waveFile)
             "wave file is not supported version.\n"
             "please reconvert file using new version tools.\n"
             "(CURRENT_FILE_VERSION:0x%08x <= your version:0x%08x)\n",
-            CURRENT_FILE_VERSION, header.version
-    );
+            CURRENT_FILE_VERSION, header.version);
+            
     if (header.version > CURRENT_FILE_VERSION)
     {
         return false;
@@ -140,35 +140,6 @@ const void* WaveFileReader::GetWaveDataAddress(const WaveFile::ChannelInfo* info
 {
     NW_NULL_ASSERT(m_pInfoBlockBody);
     NW_NULL_ASSERT(info);
-
-#if 0
-    const void* waveDataAddress = NULL;
-
-    bool offsetIsDataBlock = (waveDataOffsetOrigin == NULL);
-    
-    if (waveDataOffsetOrigin == NULL) {
-        waveDataOffsetOrigin = m_pInfoBlockBody;
-    }
-
-    switch(m_pInfoBlockBody->dataLocationType) 
-    {
-    case WaveFile::WAVE_DATA_LOCATION_OFFSET:
-        waveDataAddress = ut::AddOffsetToPtr(waveDataOffsetOrigin, m_pInfoBlockBody->dataLocation);
-        if (offsetIsDataBlock) {
-            waveDataAddress = ut::AddOffsetToPtr(waveDataAddress, 8);
-        }
-        break;
-    case WaveFile::WAVE_DATA_LOCATION_ADDRESS:
-        waveDataAddress = reinterpret_cast<const void*>(m_pInfoBlockBody->dataLocation);
-        break;
-    default:
-        return NULL;
-    }
-
-    waveDataAddress = ut::AddOffsetToPtr(waveDataAddress, waveChannelInfo->channelDataOffset);
-    
-    return waveDataAddress;
-#endif
 
     return info->GetSamplesAddress(m_pDataBlockBody);
 }

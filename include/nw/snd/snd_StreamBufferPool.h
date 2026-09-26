@@ -23,12 +23,12 @@ private:
     static const int BLOCK_MAX = 32;
     static const int BIT_PER_BYTE = 8;
 
-    void*   m_pBuffer;
-    size_t  m_BufferSize;
-    size_t  m_BlockSize;
-    int     m_BlockCount;
-    int     m_AllocCount;
-    u8      m_AllocFlags[BLOCK_MAX / BIT_PER_BYTE];
+    void* m_pBuffer;
+    size_t m_BufferSize;
+    size_t m_BlockSize;
+    int m_BlockCount;
+    int m_AllocCount;
+    u8 m_AllocFlags[BLOCK_MAX / BIT_PER_BYTE];
 };
 
 } // namespace driver

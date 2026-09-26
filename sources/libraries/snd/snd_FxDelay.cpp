@@ -14,9 +14,9 @@ FxDelay::FxDelay():
     m_FeedbackGain(0x0),
     m_LpfCoef1(0x10000), 
     m_LpfCoef2(0x0), 
-    m_ProcessChannelCount( 4 ),
-    m_IsActive( false )
-    {
+    m_ProcessChannelCount(4),
+    m_IsActive(false)
+{
     FreeBuffer();
     
     for (int ch = 0; ch < m_ProcessChannelCount; ch++)
@@ -64,7 +64,7 @@ bool FxDelay::SetParam(const FxDelay::Param& param)
             }
         }
 
-        m_DelayFrames = (param.m_DelayTime * 1000 ) / NN_SND_USECS_PER_FRAME;
+        m_DelayFrames = (param.m_DelayTime * 1000) / NN_SND_USECS_PER_FRAME;
         if (m_DelayFrames == 0)
         {
             m_DelayFrames = 1;

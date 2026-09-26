@@ -339,8 +339,8 @@ struct DriverCommandAllVoicesSync : public DriverCommand
     u32 syncFlag;
 };
 
-} // namespace nw::snd::internal
-} // namespace nw::snd
+} // namespace internal
+} // namespace snd
 } // namespace nw
 
 

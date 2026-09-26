@@ -441,12 +441,9 @@ public:
 } // namespace ut
 } // namespace nw
 
-/*
-Macro for Lists, as for ones used in snd.
+/* 
 
-NAME = nameOfIter
-LIST = list member, for instance like `ut::LinkList m_ListTask` goes in here,as its a link list.
-lastly inside its { NAME->Function(); }
+From NW4R
 
 */
 

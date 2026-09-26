@@ -36,8 +36,19 @@ public:
     static void CalcPitch(const Sound3DManager& manager, const Sound3DListener& listener, const Sound3DParam& actorParam, f32* pitchPtr);
     static void CalcBiquadFilterValue(const Sound3DManager& manager, const Sound3DListener& listener, const Sound3DParam& actorParam, f32* biquadFilterValuePtr);
 private:
+    static void CalcVolumeAndPriorityImpl(f32 actorDistance, SoundArchive::Sound3DInfo::DecayCurve decayCurve, f32 decayRatio,
+        int maxPriorityReduction, f32 maxVolumeDistance, f32 unitDistance, f32* volumePtr, int* priorityPtr);
+
+    static void CalcPanImpl(const nw::math::VEC3& pos, f32 interiorSize, f32 actorDistance, f32 panRange,
+        f32 stereoSpeakerAngle, f32 surroundSpeakerFrontAngle, f32 surroundSpeakerRearAngle, f32 surroundPanOffset,
+        f32* panPtr, f32* surroundPanPtr);
+
     static void CalcPanSurround(const nw::math::VEC3& pos, f32 interiorSize, f32 actorDistance, f32 panRange, f32 surroundSpeakerFrontAngle, f32 surroundSpeakerRearAngle,
         f32 surroundPanOffset, f32* panPtr, f32* surroundPanPtr);
+        
+    static void CalcAngleAndDistance(
+        const nw::math::VEC3& pos, f32 actorDistance,
+        f32 interiorSize, f32* anglePtr, f32* distancePtr);
 };
 
 } // namespace snd

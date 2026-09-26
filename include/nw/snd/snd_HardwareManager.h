@@ -65,27 +65,27 @@ public:
     static const BiquadFilterBpf1024    BIQUAD_FILTER_BPF_1024;
     static const BiquadFilterBpf2048    BIQUAD_FILTER_BPF_2048;
 private:
-    bool                m_IsInitialized;
+    bool m_IsInitialized;
 
-    OutputMode          m_OutputMode;
-    SrcType             m_SrcType;
+    OutputMode m_OutputMode;
+    SrcType m_SrcType;
 
-    MoveValue<f32,int>  m_MasterVolume;
-    MoveValue<f32,int>  m_VolumeForReset;
-    MoveValue<f32,int>  m_AuxFadeVolume[AUX_BUS_NUM];
-    MoveValue<f32,int>  m_AuxUserVolume[AUX_BUS_NUM];
-    FxList              m_FxList[AUX_BUS_NUM];
-    AuxCallback         m_AuxCallback[AUX_BUS_NUM];
+    MoveValue<f32, int> m_MasterVolume;
+    MoveValue<f32, int> m_VolumeForReset;
+    MoveValue<f32, int> m_AuxFadeVolume[AUX_BUS_NUM];
+    MoveValue<f32, int> m_AuxUserVolume[AUX_BUS_NUM];
+    FxList m_FxList[AUX_BUS_NUM];
+    AuxCallback m_AuxCallback[AUX_BUS_NUM];
 
     const BiquadFilterCallback* m_BiquadFilterCallbackTable[BIQUAD_FILTER_TYPE_USER_MAX+1];
-    uptr                m_AuxCallbackContext[AUX_BUS_NUM];
-    nn::os::Tick        m_EffectProcessTick[AUX_BUS_NUM];
+    uptr m_AuxCallbackContext[AUX_BUS_NUM];
+    nn::os::Tick m_EffectProcessTick[AUX_BUS_NUM];
     u8 m_AuxCallbackWaitCounter[AUX_BUS_NUM];
 };
 
-} 
-} 
-} 
-}
+} // namespace driver
+} // namespace internal
+} // namespace snd
+} // namespace nw
 
 #endif // NW_SND_HARDWARE_MANAGER_H_

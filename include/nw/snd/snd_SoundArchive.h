@@ -5,7 +5,10 @@
 #include <nw/snd/snd_Global.h>
 #include <nw/snd/snd_Config.h>
 
-namespace nw  {
+namespace nw {
+namespace io {
+    class FileStream;
+}
 namespace snd {
 namespace internal {
 
@@ -85,7 +88,7 @@ public:
             allocateTrackFlags(0), 
             channelPriority(0), 
             isReleasePriorityFix(false)
-            {
+        {
             for (u32 i = 0; i < SEQ_BANK_MAX; i++)
                 bankIds[i] = INVALID_ID;
         }
@@ -101,7 +104,7 @@ public:
         StreamSoundInfo(): 
             allocTrackCount(0),
             allocChannelCount(0)
-            {
+        {
         }
     };
 
@@ -116,7 +119,7 @@ public:
             allocTrackCount(0), 
             channelPriority(0), 
             isReleasePriorityFix(false)
-            {
+        {
         }
     };
 
@@ -126,7 +129,7 @@ public:
 
         BankInfo(): 
             fileId(INVALID_ID) 
-            {
+        {
         }
     };
 
@@ -138,7 +141,7 @@ public:
         PlayerInfo(): 
             playableSoundMax(0),
             playerHeapSize(0) 
-            {
+        {
         }
     };
 
@@ -152,7 +155,7 @@ public:
             startId(INVALID_ID),
             endId(INVALID_ID),
             fileIdTable(NULL) 
-            {
+        {
         }
     };
 
@@ -178,7 +181,7 @@ public:
         WaveArchiveInfo(): 
             fileId(INVALID_ID), 
             isLoadIndividual(false) 
-            {
+        {
         }
     };
 
@@ -187,7 +190,7 @@ public:
         FileId fileId;
         GroupInfo(): 
             fileId(INVALID_ID) 
-            {
+        {
         }
     };
 
@@ -201,18 +204,21 @@ public:
             fileSize(0xffffffff),
             offsetFromFileBlockHead(0xffffffff),
             externalFilePath(NULL)
-            {
+        {
         }
     };
 
 public:
+    static const int FILE_PATH_MAX  = 256;
+
     SoundArchive();
     
     virtual ~SoundArchive();
     virtual const void* detail_GetFileAddress(FileId fileId) const = 0;
     virtual size_t detail_GetRequiredStreamBufferSize() const = 0;
-    virtual io::FileStream* OpenStream(void* buffer, int size, u32 begin, u32 length) = 0;
-    virtual io::FileStream* OpenExtStream(void* buffer, int size, const char* extFilePath, u32 begin, u32 length) const = 0;
+
+    void Initialize(internal::SoundArchiveFileReader* fileReader);
+    void Finalize();
 
     bool IsAvailable() const;
     u32 GetSoundCount() const;
@@ -221,8 +227,10 @@ public:
     u32 GetSoundGroupCount() const;
     u32 GetBankCount() const;
     u32 GetWaveArchiveCount() const;
+    SoundArchive::SoundType GetSoundType(ItemId soundId) const;
 
     u32 detail_GetFileCount() const;
+    const internal::Util::Table<u32>* detail_GetWaveArchiveIdTable(ItemId id) const;
 
     const char* GetItemLabel(ItemId id) const;
     ItemId GetItemId(const char* pLabel) const;
@@ -273,7 +281,12 @@ public:
     bool detail_ReadFileInfo(FileId fileId, FileInfo* info) const;
     io::FileStream* detail_OpenFileStream(FileId fileId, void* buffer, int size);
 
+    void SetExternalFileRoot(const char* extFileRoot);
+
     u32 GetSoundUserParam(ItemId soundId) const;
+protected:
+    virtual io::FileStream* OpenStream(void* buffer, int size, u32 begin, u32 length) = 0;
+    virtual io::FileStream* OpenExtStream(void* buffer, int size, const char* extFilePath, u32 begin, u32 length) const = 0;
 private:
     static const int FILE_PATH_CHARS_MAX = 256;
 

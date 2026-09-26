@@ -222,7 +222,6 @@ s16 CurveAdshr::CalcDecibelSquare(int scale)
     return DecibelSquareTable[scale];
 }
 
-
 } // namespace internal
 } // namespace snd
 } // namespace nw

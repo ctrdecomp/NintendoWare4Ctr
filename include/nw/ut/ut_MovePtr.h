@@ -2,12 +2,10 @@
 
 #include <nw/ut/ut_TypeTraits.h>
 
-namespace adsl{
+namespace nw{
 namespace gfx{
     class GfxObject;
 }
-}
-namespace nw{
 namespace os{
 
 class IAllocator;

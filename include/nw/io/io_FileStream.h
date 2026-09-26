@@ -29,12 +29,18 @@ public:
 
 protected:
     FileStream(): 
-        IOStream() {}
+        IOStream() 
+    {
+    }
         
     class FilePosition
     {
     public:
-        FilePosition() : m_FileSize(0), m_Position(0) {}
+        FilePosition(): 
+            m_FileSize(0), 
+            m_Position(0) 
+        {
+        }
         void SetFileSize(u32 fileSize) { m_FileSize = fileSize; }
         u32 GetFileSize() const { return m_FileSize; }
         

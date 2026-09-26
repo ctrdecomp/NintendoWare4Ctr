@@ -74,7 +74,7 @@ public:
     void Start();
     void Stop();
     void StopFinished();
-    void Pause( bool flag );
+    void Pause(bool flag);
 
     void Calc();
     void Update();
@@ -114,7 +114,7 @@ public:
 
     int GetPhysicalVoiceCount() const { return m_ChannelCount; }
     int GetChannelCount() const { return m_ChannelCount; }
-    const HardwareChannel* GetHardwareChannel( int channelIndex ) const;
+    const HardwareChannel* GetHardwareChannel(int channelIndex) const;
 
     void UpdateVoicesPriority();
 
@@ -145,32 +145,32 @@ private:
     void PauseAllHardwareChannel();
 
 private:
-    HardwareChannel*          m_pHardwareChannel[CHANNEL_MAX];
-    int                       m_ChannelCount;
-    VoiceCallback             m_Callback;
-    void*                     m_pCallbackData;
-    bool                      m_IsActive;
-    bool                      m_IsStart;
-    bool                      m_IsStarted;
-    bool                      m_IsPause;
-    bool                      m_IsPausing;
-    bool                      m_IsInitialized;
-    bool                      m_IsAllocating;
-    bool                      m_AllocateErrorFlag;
+    HardwareChannel* m_pHardwareChannel[CHANNEL_MAX];
+    int m_ChannelCount;
+    VoiceCallback m_Callback;
+    void* m_pCallbackData;
+    bool m_IsActive;
+    bool m_IsStart;
+    bool m_IsStarted;
+    bool m_IsPause;
+    bool m_IsPausing;
+    bool m_IsInitialized;
+    bool m_IsAllocating;
+    bool m_AllocateErrorFlag;
     nn::snd::CTR::WaveBuffer* m_pLastWaveBuffer;
-    u16                       m_SyncFlag;
-    u8                        m_BiquadType;
-    f32                       m_Volume;
-    f32                       m_Pitch;
-    PanMode                   m_PanMode;
-    PanCurve                  m_PanCurve;
-    f32                       m_Pan;
-    f32                       m_SurroundPan;
-    f32                       m_LpfFreq;
-    f32                       m_BiquadValue;
-    int                       m_Priority;
-    f32                       m_MainSend;
-    f32                       m_FxSend[AUX_BUS_NUM];
+    u16 m_SyncFlag;
+    u8 m_BiquadType;
+    f32 m_Volume;
+    f32 m_Pitch;
+    PanMode m_PanMode;
+    PanCurve m_PanCurve;
+    f32 m_Pan;
+    f32 m_SurroundPan;
+    f32 m_LpfFreq;
+    f32 m_BiquadValue;
+    int m_Priority;
+    f32 m_MainSend;
+    f32 m_FxSend[AUX_BUS_NUM];
 
     nw::snd::SampleFormat m_Format;
     uptr m_VoiceUser;

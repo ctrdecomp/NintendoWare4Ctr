@@ -164,7 +164,7 @@ public:
     f32  GetPitch() const;
 
     void SetLpfFreq(f32 lpfFreq);
-    f32  GetLpfFreq() const
+    f32  GetLpfFreq() const;
 
     void SetOutputLine(u32 lineFlag);
     u32 GetOutputLine() const;

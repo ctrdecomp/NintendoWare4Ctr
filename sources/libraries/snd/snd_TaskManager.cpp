@@ -8,16 +8,16 @@ namespace nw {
 namespace snd {
 namespace internal {
 
-TaskManager& TaskManager::GetInstance()
-{
-    static TaskManager instance;
-    return instance;
-}
-
 TaskManager::TaskManager(): 
     m_pCurrentTask(NULL),
     m_IsWaitTaskCancel(false)
 {
+}
+
+TaskManager& TaskManager::GetInstance()
+{
+    static TaskManager instance;
+    return instance;
 }
 
 void TaskManager::Initialize()

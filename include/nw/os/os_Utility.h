@@ -20,10 +20,10 @@ namespace nw {
 namespace os {
 namespace internal {
 
-void Printf(const char* fmt, ...);
-void VPrintf(const char* fmt, std::va_list vlist);
-void Warning(const char* fileName, int line, const char* fmt, ...);
-void Panic(const char* fileName, int line, const char* fmt, ...);
+__weak void Printf(const char* fmt, ...);
+__weak void VPrintf(const char* fmt, std::va_list vlist);
+__weak void Warning(const char* fileName, int line, const char* fmt, ...);
+__weak void Panic(const char* fileName, int line, const char* fmt, ...);
 void Halt();
 
 }

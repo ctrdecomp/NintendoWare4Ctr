@@ -1,8 +1,6 @@
 #ifndef NW_SND_GROUP_FILE_H_
 #define NW_SND_GROUP_FILE_H_
 
-//!@date
-
 #include <nw/snd/snd_Util.h>
 
 namespace nw {

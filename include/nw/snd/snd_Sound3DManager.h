@@ -32,7 +32,7 @@ struct Sound3DParam
 class Sound3DManager : 
     public internal::BasicSound::AmbientParamUpdateCallback, 
     public internal::BasicSound::AmbientArgAllocatorCallback
-    {
+{
 public:
     typedef internal::InstancePool<Sound3DParam> Sound3DParamPool;
     typedef ut::LinkList<Sound3DListener, offsetof(Sound3DListener,m_LinkNode)> ListenerList;

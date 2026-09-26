@@ -14,6 +14,8 @@ Also note, not *every* function from this library is in this repo.
 
 *    |____ **include/nw** - Headers used for the *Nw4c Engine*.
 
+*    |____ **shaders** - Nw4c ShaderBinary files used in games.
+
 *    |____ **sources/libraries** - Module source code.
 
 ## Libraries
@@ -50,7 +52,7 @@ Presets and features for more games can be added if desired.
 Building this project requires:
 
 - ARM C++ Complier (ARMCC) Version 4.0/4.1/5.0 [which can be found here.](https://github.com/RE-Pepper/data/releases/tag/dasdasdsa)
-- The Nintendo 3DS Software Development Kit hooked to your project [which can be found here.](https://github.com/ctrdecomp/CTR_SDK).
+- The Nintendo 3DS Software Development Kit hooked to your project [which can be found here.](https://github.com/ctrdecomp/CTR_SDK)
 
 ### Configuration
 

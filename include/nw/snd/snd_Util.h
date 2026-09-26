@@ -20,15 +20,60 @@ struct LoadItemInfo;
 class Util
 {
 public:
+    static const int SEMITONE_MAX = 12;
+    static const int MICROTONE_MAX = 256;
+
+    static const int VOLUME_DB_MIN = -904;
+    static const int VOLUME_DB_MAX = 60;
+
     static const int PITCH_DIVISION_BIT = 8;
+    static const int VOLUME_MIN = static_cast<int>(10 * VOLUME_DB_MIN);
+    static const int VOLUME_MAX = static_cast<int>(10 * VOLUME_DB_MAX); 
 
     static const void* GetWaveFile(u32 waveArchiveId, u32 waveIndex, const SoundArchive& arc, const SoundArchivePlayer& player);
     static const void* GetWaveFile(u32 waveArchiveId, u32 waveIndex, const SoundArchive& arc, const PlayerHeapDataManager* mgr);
     static bool IsLoadedWaveArchive(const void* wsdFile, u32 index, const SoundArchive& arc, const SoundArchiveLoader& mgr);
+    static bool IsLoadedWaveArchive(const void* bankFile, const SoundArchive& arc, const SoundArchiveLoader& mgr);
+
+    static bool IsDeviceMemory(uptr memory, size_t size)
+    {
+        const uptr head = nn::os::GetDeviceMemoryAddress();
+        const uptr tail = head + nn::os::GetDeviceMemorySize();
+        if (head <= memory && (memory + size) <= tail)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    enum PanCurve
+    {
+        PAN_CURVE_SQRT,
+        PAN_CURVE_SINCOS,
+        PAN_CURVE_LINEAR
+    };
+
+    struct PanInfo
+    {
+        PanCurve curve;
+        bool centerZeroFlag;
+        bool zeroClampFlag;
+        PanInfo(): 
+            curve(PAN_CURVE_SQRT), 
+            centerZeroFlag(false), 
+            zeroClampFlag(false) 
+        {
+        }
+    };
 
     static f32 CalcPitchRatio(int pitch);
     static f32 CalcVolumeRatio(f32 dB);
+    static f32 CalcLpfFreq(f32 scale);
+    static f32 CalcPanRatio(f32 pan, const PanInfo& info);
+    static f32 CalcSurroundPanRatio(f32 surroundPan, const PanInfo& info);
+    static u16 CalcRandom();
 
+    static unsigned long GetSampleByByte(unsigned long byte, SampleFormat format);
     static unsigned long GetByteBySample(unsigned long sample, SampleFormat format);
 
     template< typename ITEM_TYPE, typename COUNT_TYPE=nw::ut::ResU32 >
@@ -49,11 +94,30 @@ public:
         }
     };
 
+    class AutoStopWatch
+    {
+    public:
+        AutoStopWatch(nn::os::Tick& tick): 
+            m_Tick(tick)
+        {
+            m_TmpTick = nn::os::Tick::GetSystemCurrent();
+        }
+        ~AutoStopWatch()
+        {
+            m_Tick = nn::os::Tick::GetSystemCurrent() - m_TmpTick;
+        }
+    private:
+        nn::os::Tick& m_Tick;
+        nn::os::Tick  m_TmpTick;
+    };
+
     struct Reference
     {
-        nw::ut::ResU16  typeId;
-        u16             padding;
-        nw::ut::ResS32  offset;
+        nw::ut::ResU16 typeId;
+        u16 padding;
+        nw::ut::ResS32 offset;
+
+        static const s32 INVALID_OFFSET = -1;
 
         NW_INLINE bool IsValidTypeId(u16 validId) const
         {
@@ -237,10 +301,12 @@ public:
     class PerfHistogram
     {
     public:
-        PerfHistogram() { Initialize(); }
+        PerfHistogram() 
+        { 
+            Reset(); 
+        }
 
-        // Created so ct works
-        void Initialize()
+        void Reset()
         {
             m_MaxLoad = m_SumLoad = 0.0;
             m_Count = m_IrregularCount = 0;
@@ -252,6 +318,27 @@ public:
         int GetCount() const { return m_Count; }
         int GetIrregularCount() const { return m_IrregularCount; }
 
+        void SetLoad(f32 load)
+        {
+            if (load < 0.0f || load > 100.0f)
+            {
+                m_IrregularCount += 1;
+            }
+
+            if (load > m_MaxLoad)
+            {
+                m_MaxLoad = load;
+            }
+            
+            int loadIndex = static_cast<int>(load);
+            if (loadIndex < LOAD_COUNT_NUM)
+            {
+                m_LoadCount[loadIndex] += 1;
+            }
+            m_Count += 1;
+            m_SumLoad += load;
+        }
+
     private:
         static int const LOAD_COUNT_NUM = 101;
         f32 m_MaxLoad;
@@ -259,6 +346,10 @@ public:
         int m_LoadCount[LOAD_COUNT_NUM];
         int m_Count, m_IrregularCount;
     };
+private:
+    static const int CALC_LPF_FREQ_TABLE_SIZE = 24;
+    static const f32 CALC_LPF_FREQ_INTERCEPT;
+    static const u16 CalcLpfFreqTable[CALC_LPF_FREQ_TABLE_SIZE];
 };
 
 } // namespace internal

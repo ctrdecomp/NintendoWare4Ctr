@@ -1,7 +1,6 @@
 #pragma once
 
-/*#include <nw/ut/ut_BinaryFileFormat.h>
-//#include <nw/ut/ut_BinaryReader.h>
+#include <nw/ut/ut_BinaryFileFormat.h>
 #include <nw/ut/ut_Children.h>
 #include <nw/ut/ut_Flag.h>
 #include <nw/ut/ut_Inlines.h>
@@ -25,4 +24,4 @@
 #include <nw/ut/ut_ResMetaData.h>
 #include <nw/ut/ut_ResUtil.h>
 #include <nw/ut/ut_ResPrimitive.h>
-#include <nw/ut/ut_ResTypeInfo.h>*/
+#include <nw/ut/ut_ResTypeInfo.h>

@@ -50,50 +50,6 @@ public:
         return m_ActorParam.pitch;
     }
 
-    void SetMainOutVolume(f32 volume)
-    {
-        m_ActorParam.tvVolume = volume;
-    }
-
-    f32 GetMainOutVolume() const
-    {
-        return m_ActorParam.tvVolume;
-    }
-
-    void SetPan(f32 pan)
-    {
-        m_ActorParam.tvPan = pan;
-    }
-
-    f32 GetPan() const
-    {
-        return m_ActorParam.tvPan;
-    }
-
-    void SetDrcOutVolume(f32 volume, u32 drcIndex = 0)
-    {
-        //NW_ASSERT_MAXLT(drcIndex, DRC_OUT_COUNT);
-        m_ActorParam.drcVolume[drcIndex] = volume;
-    }
-
-    f32 GetDrcOutVolume(u32 drcIndex = 0) const
-    {
-        //NW_ASSERT_MAXLT(drcIndex, DRC_OUT_COUNT);
-        return m_ActorParam.drcVolume[drcIndex];
-    }
-
-    void SetDrcPan(f32 pan, u32 drcIndex = 0)
-    {
-        //NW_ASSERT_MAXLT(drcIndex, DRC_OUT_COUNT);
-        m_ActorParam.drcPan[drcIndex] = pan;
-    }
-
-    f32 GetDrcPan(u32 drcIndex = 0) const
-    {
-        //NW_ASSERT_MAXLT(drcIndex, DRC_OUT_COUNT);
-        return m_ActorParam.drcPan[drcIndex];
-    }
-
     int GetPlayingSoundCount(int actorPlayerId) const;
 
     void SetPlayableSoundCount(int actorPlayerId, int count);

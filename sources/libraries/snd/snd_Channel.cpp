@@ -29,7 +29,7 @@ u8 GetNwInterpolationTypeFromHardwareManager()
         result = 1;
         break;
     case SRC_TYPE_4TAP:
-        // 0 のまま
+        //! Fallthrough
         break;
     }
 
@@ -122,23 +122,11 @@ void Channel::Update(bool doPeriodicProc)
     m_SilenceVolume.Update();
     register f32 volume = m_InitVolume * m_UserVolume * m_SilenceVolume.GetValue() / SILENCE_VOLUME_MAX;
 
-#if 0
-    if ( m_CurveAdshr.GetStatus() == CurveAdshr::STATUS_RELEASE )
-    {
-        f32 envelopValue = Util::CalcVolumeRatio(m_CurveAdshr.GetValue());
-        if (envelopValue == 0.0f)
-        {
-            Stop();
-            return;
-        }
-    }
-#else
     if (m_CurveAdshr.GetStatus() == CurveAdshr::STATUS_RELEASE && m_CurveAdshr.GetValue() < -90.4f)
     {
         Stop();
         return;
     }
-#endif
 
     f32 cent = m_Key - m_OriginalKey + m_UserPitch + GetSweepValue();
     if (m_LfoTarget == LFO_TARGET_PITCH)
