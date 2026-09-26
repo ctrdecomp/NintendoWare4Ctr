@@ -46,9 +46,8 @@ void SoundSystem::detail_InitializeDriverCommandManager(const SoundSystemParam& 
 
 void SoundSystem::Initialize(const SoundSystemParam& param, uptr workMem, size_t workMemSize)
 {
-#if defined(NW_VERSION_USE_SND1)
     NW_PUT_MODULE_SYMBOL(snd);
-#endif
+
     if (s_IsInitialized)
     {
         return;
