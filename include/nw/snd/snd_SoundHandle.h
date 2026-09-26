@@ -224,6 +224,7 @@ public:
 
     void detail_AttachSound(internal::BasicSound* sound);
     void detail_AttachSoundAsTempHandle(internal::BasicSound* sound);
+    void detail_DuplicateHandle(SoundHandle* handle);
 
     internal::BasicSound* detail_GetAttachedSound()
     {

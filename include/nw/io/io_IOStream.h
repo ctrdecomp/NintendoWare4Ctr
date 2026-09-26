@@ -33,12 +33,12 @@ public:
     bool IsAvailable() const { return m_Available; }
 
 protected:
-
     IOStream() : 
         m_Available(false),
         m_Callback (NULL),
-        m_Arg (NULL) {}
-
+        m_Arg (NULL) 
+    {
+    }
 
     bool m_Available;
     s32 m_AsyncResult;

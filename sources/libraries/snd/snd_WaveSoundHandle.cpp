@@ -9,7 +9,7 @@ namespace snd {
 
 WaveSoundHandle::WaveSoundHandle(SoundHandle* pHandle): 
     m_pSound(NULL)
-    {
+{
     if (pHandle == NULL)
     {
         return;
@@ -54,5 +54,5 @@ void WaveSoundHandle::DetachSound()
     }
 }
 
-}
-}
+} // namespace snd
+} // namespace nw

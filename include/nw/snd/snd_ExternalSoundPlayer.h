@@ -32,12 +32,6 @@ public:
     bool AppendSound(internal::BasicSound* sound);
     void RemoveSound(internal::BasicSound* sound);
 
-    template <class Function>
-    void ForEachSoundRef(Function& function, bool reverse = false);
-
-    template <class Function>
-    Function ForEachSound(Function function, bool reverse = false);
-
     void Finalize(SoundActor* actor);
 
 private:

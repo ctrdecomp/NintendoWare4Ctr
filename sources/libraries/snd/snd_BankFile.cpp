@@ -8,11 +8,12 @@ namespace nw {
 namespace snd {
 namespace internal {
 
+// FileHeader
+
 const BankFile::InfoBlock* BankFile::FileHeader::GetInfoBlock() const
 {
-
+    return (InfoBlock*) Util::SoundFileHeader::GetBlock(0x5800);
 }
-
 
 }
 }

@@ -72,7 +72,7 @@ bool IsReverseEndianBinaryFile(const BinaryFileHeader* pFileHeader)
 
 BinaryBlockHeader*  GetNextBinaryBlockHeader(BinaryFileHeader* pFileHeader,BinaryBlockHeader* pBlockHeader)
 {
-    NW_POINTER_ASSERT( pFileHeader );
+    NW_POINTER_ASSERT(pFileHeader);
     
     void* ptr;
     if (!IsReverseEndianBinaryFile(pFileHeader))
@@ -82,22 +82,25 @@ BinaryBlockHeader*  GetNextBinaryBlockHeader(BinaryFileHeader* pFileHeader,Binar
             if (pFileHeader->dataBlocks == 0) return NULL;
             ptr = AddOffsetToPtr(pFileHeader, pFileHeader->headerSize);
         }
-        else{
+        else
+        {
             ptr = AddOffsetToPtr(pBlockHeader, pBlockHeader->size);
         }
-    
+        
         if (ptr >= AddOffsetToPtr(pFileHeader, pFileHeader->fileSize))
         {
             return NULL;
         }
     }
-    else{
+    else
+    {
         if (pBlockHeader == NULL)
         {
             if (pFileHeader->dataBlocks == 0 ) return NULL;
             ptr = AddOffsetToPtr( pFileHeader, ReverseEndian(pFileHeader->headerSize));
         }
-        else{
+        else
+        {
             ptr = AddOffsetToPtr(pBlockHeader, ReverseEndian(pBlockHeader->size));
         }
         

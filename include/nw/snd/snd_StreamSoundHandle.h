@@ -127,4 +127,4 @@ private:
 } // namespace snd
 } // namespace nw
 
-#endif
+#endif // NW_SND_STREAM_SOUND_HANDLE_H_

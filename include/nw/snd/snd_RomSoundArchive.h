@@ -18,8 +18,6 @@ public:
     virtual ~RomSoundArchive();
     virtual size_t detail_GetRequiredStreamBufferSize() const;
     virtual const void* detail_GetFileAddress( FileId fileId ) const { return NULL; }
-    virtual io::FileStream* OpenStream(void* buffer, int size, u32 begin, u32 length);
-    virtual io::FileStream* OpenExtStream(void* buffer, int size, const char* extFilePath, u32 begin, u32 length) const;
 
     bool Open(const char* filePath);
     void Close();
@@ -29,13 +27,16 @@ public:
     bool LoadHeader(void* buffer, unsigned long size);
     size_t GetLabelStringDataSize() const { return m_ArchiveReader.GetStringBlockSize(); }
 
-    bool LoadLabelStringData(void* buffer, unsigned long size );
+    bool LoadLabelStringData(void* buffer, unsigned long size);
+
+protected:
+    virtual io::FileStream* OpenStream(void* buffer, int size, u32 begin, u32 length);
+    virtual io::FileStream* OpenExtStream(void* buffer, int size, const char* extFilePath, u32 begin, u32 length) const;
 
 private:
     bool LoadFileHeader();
 
     internal::SoundArchiveFileReader m_ArchiveReader;
-
     nn::fs::FileReader m_FileReader;
     bool m_IsOpened;
 };
@@ -46,10 +47,10 @@ public:
     RomFileStream(const char* path, u32 offset, u32 size );
     RomFileStream(nn::fs::FileReader* fileReader, u32 offset, u32 size );
 
-    virtual s32  Read(void* buf, u32 length);
+    virtual s32 Read(void* buf, u32 length);
     virtual void Seek(s32 offset, u32 origin);
-    virtual u32  Tell()    const { return io::RomFileStream::Tell() - m_Offset; }
-    virtual u32  GetSize() const { return m_Size; }
+    virtual u32 Tell() const { return io::RomFileStream::Tell() - m_Offset; }
+    virtual u32 GetSize() const { return m_Size; }
 
 private:
     s32 m_Offset;

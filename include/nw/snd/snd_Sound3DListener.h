@@ -13,9 +13,32 @@ public:
     Sound3DListener();
 
     void SetMatrix(const nw::math::MTX34& mtx);
-    const nw::math::MTX34& GetMatrix() const { return m_Mtx; }
-
     void ResetMatrix();
+    const nw::math::MTX34& GetMatrix() const { return m_Mtx; }
+    void CalcPositionFromMatrix(const nw::math::MTX34& mtx, nw::math::VEC3* pos);
+
+    const nw::math::VEC3& GetPosition() const { return m_Position; }
+
+    void SetVelocity(const nw::math::VEC3& velocity);
+    const nw::math::VEC3& GetVelocity() const { return m_Velocity; }
+
+    void SetInteriorSize(f32 interiorSize);
+    f32 GetInteriorSize() const { return m_InteriorSize; }
+
+    void SetMaxVolumeDistance(f32 maxVolumeDistance);
+    f32 GetMaxVolumeDistance() const { return m_MaxVolumeDistance; }
+
+    void SetUnitDistance(f32 unitDistance);
+    f32 GetUnitDistance() const { return m_UnitDistance; }
+
+    void SetUserParam(u32 param) { m_UserParam = param; }
+    u32 GetUserParam() const { return m_UserParam; }
+
+    void SetUnitBiquadFilterValue(f32 value);
+    f32 GetUnitBiquadFilterValue() const { return m_UnitBiquadFilterValue; }
+
+    void SetMaxBiquadFilterValue(f32 value);
+    f32 GetMaxBiquadFilterValue() const { return m_MaxBiquadFilterValue; }
 private:
     nw::math::MTX34 m_Mtx;
     nw::math::VEC3 m_Position;

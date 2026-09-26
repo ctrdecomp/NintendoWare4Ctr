@@ -10,7 +10,7 @@ namespace internal {
 struct CurveLfoParam
 {
     f32 depth;
-    f32 speed;   // [Hz]
+    f32 speed;
     u32 delay;
     u8  range;
     u8  padding[3];

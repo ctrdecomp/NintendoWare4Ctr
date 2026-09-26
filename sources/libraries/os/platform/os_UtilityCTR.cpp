@@ -14,14 +14,14 @@ namespace nw {
 namespace os {
 namespace internal {
 
-void VPrintf(const char *fmt, std::va_list vlist)
+__weak void VPrintf(const char *fmt, std::va_list vlist)
 {
-    nn::dbg::detail::VPrintf(fmt, vlist);
+    nndbgDetailVPrintf(fmt, vlist);
 }
 
 void Halt()
 {
-    nn::dbg::Break();
+    (void)nn::dbg::Break();
 }
 
 }

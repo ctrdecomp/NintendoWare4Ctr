@@ -12,9 +12,9 @@ namespace
 {
 
 const u32 SUPPORTED_FILE_VERSION = 0x01000000;
-const u32 CURRENT_FILE_VERSION   = 0x01000100;
+const u32 CURRENT_FILE_VERSION = 0x01000100;
 
-const u32 SIGNATURE_INFO_BLOCK  = NW_UT_MAKE_SIGWORD( 'I', 'N', 'F', 'O' );
+const u32 SIGNATURE_INFO_BLOCK  = NW_UT_MAKE_SIGWORD('I', 'N', 'F', 'O');
 
 bool IsValidFileHeader(const void* bankFile)
 {
@@ -38,12 +38,12 @@ bool IsValidFileHeader(const void* bankFile)
     return true;
 }
 
-} // namespace ""
+} // namespace
 
 WaveSoundFileReader::WaveSoundFileReader(const void* waveSoundFile):
     m_pHeader(NULL),
     m_pInfoBlockBody(NULL)
-    {
+{
     NW_NULL_ASSERT(waveSoundFile);
 
     if (!IsValidFileHeader(waveSoundFile))

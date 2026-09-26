@@ -144,10 +144,12 @@ void BasicSound::Finalize()
     {
         DetachGeneralHandle();
     }
+
     if (IsAttachedTempGeneralHandle())
     {
         DetachTempGeneralHandle();
     }
+
     if (IsAttachedTempSpecialHandle())
     {
         DetachTempSpecialHandle();
@@ -228,7 +230,7 @@ void BasicSound::Pause(bool flag, int fadeFrames)
             m_UnPauseFlag = false;
             break;
         case PAUSE_STATE_PAUSED:
-            // do nothing
+            //! Fallthrough
             return;
         default:
             NW_ASSERTMSG(false, "Unexpected pause state %d", m_PauseState);
@@ -239,7 +241,7 @@ void BasicSound::Pause(bool flag, int fadeFrames)
     {
         switch(m_PauseState) {
         case PAUSE_STATE_NORMAL:
-            // do nothing
+            //! Fallthrough
             return;
         case PAUSE_STATE_PAUSING:
         case PAUSE_STATE_UNPAUSING:

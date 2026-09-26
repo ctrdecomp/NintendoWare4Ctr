@@ -11,13 +11,13 @@ namespace nw {
 namespace snd {
 
 class WaveSoundHandle;
+class SoundDataManager;
 
 namespace internal {
 
 class WaveSound;
-class SoundDataManager;
 
-typedef SoundInstanceManager<WaveSound> WaveSoundInstanceManager;
+typedef SoundInstanceManager<WaveSound, driver::WaveSoundPlayer> WaveSoundInstanceManager;
 
 class WaveSound : public BasicSound
 {

@@ -32,7 +32,10 @@ LinkListImpl::iterator LinkListImpl::erase(iterator itFirst,iterator itLast)
 
 void LinkListImpl::reverse(void)
 {
-    if (empty()) { return; }
+    if (empty())
+    { 
+        return; 
+    }
     
     Node* p = m_BaseNode.m_Next;
     Node* pNext;

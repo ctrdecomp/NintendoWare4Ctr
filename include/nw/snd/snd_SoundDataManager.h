@@ -20,6 +20,8 @@ public:
     virtual const void* GetFileWaveDataAddress(SoundArchive::FileId fileId) const = 0;
 };
 
+}
+
 class SoundDataManager : public internal::driver::DisposeCallback, public internal::SoundArchiveLoader
 {
 public:
@@ -57,7 +59,6 @@ private:
     internal::SoundFileManager* m_pFileManager;
 };
 
-} // namespace internal
 } // namespace snd
 } // namespace nw
 

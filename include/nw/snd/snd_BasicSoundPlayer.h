@@ -55,6 +55,9 @@ public:
     void SetVolume(f32 volume) { m_PlayerParamSet.volume = volume; }
     void SetPitch(f32 pitch) { m_PlayerParamSet.pitch = pitch; }
     void SetLpfFreq(f32 lpfFreq) { m_PlayerParamSet.lpfFreq = lpfFreq; }
+    void SetPan(f32 pan){ m_PlayerParamSet.pan = pan; }
+    void SetMainSend(f32 mainSend){ m_PlayerParamSet.mainSend = mainSend; }
+    void SetSurroundPan(f32 surroundPan){ m_PlayerParamSet.surroundPan = surroundPan; }
     void SetBiquadFilter(int type, f32 value);
     void SetPanMode(PanMode mode) { m_PlayerParamSet.panMode = mode; }
     void SetPanCurve(PanCurve curve) { m_PlayerParamSet.panCurve = curve; }
@@ -71,6 +74,7 @@ public:
     PanMode GetPanMode() const { return m_PlayerParamSet.panMode; }
     PanCurve GetPanCurve() const { return m_PlayerParamSet.panCurve; }
     float GetSurroundPan() const { return m_PlayerParamSet.surroundPan; }
+    float GetMainSend() const { return m_PlayerParamSet.mainSend; }
     float GetFxSend(AuxBus bus) const;
 
     bool IsFrontBypass() const { return m_PlayerParamSet.isFrontBypass; }
