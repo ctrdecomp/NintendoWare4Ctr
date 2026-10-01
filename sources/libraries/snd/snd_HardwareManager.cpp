@@ -213,7 +213,10 @@ void HardwareManager::SetOutputMode(OutputMode mode)
     {
         FxList& list = m_FxList[bus];
 
-        NW_UT_LINKLIST_FOREACH_SAFE(itr, list, { itr->OnChangeOutputMode(); })
+        for (FxList::Iterator itr = list.GetBeginIter(); itr != list.GetEndIter(); ++itr)
+        {
+            itr->OnChangeOutputMode();
+        }
     }
 }
 
@@ -289,7 +292,10 @@ void HardwareManager::FinalizeEffect(AuxBus bus)
     nn::snd::CTR::ClearAuxCallback(static_cast<nn::snd::CTR::AuxBusId>(bus));
     m_EffectProcessTick[bus] = nn::os::Tick(0);
 
-    NW_UT_LINKLIST_FOREACH_SAFE(itr, list, { itr->Finalize(); })
+    for (FxList::Iterator itr = list.GetBeginIter(); itr != list.GetEndIter(); ++itr)
+    {
+        itr->Finalize();
+    }
     list.Clear();
 }
 

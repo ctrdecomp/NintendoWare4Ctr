@@ -65,8 +65,6 @@ public:
         return m_Frame - m_Counter;
     }
 
-    ValueType GetTarget() const { return m_Target; }
-
 private:
     ValueType m_Origin;
     ValueType m_Target;

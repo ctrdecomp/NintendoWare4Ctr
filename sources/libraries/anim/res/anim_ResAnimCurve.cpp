@@ -472,7 +472,9 @@ namespace {
     }
 
     template <typename Traits>
-    const typename Traits::KeyType* GetFloatKeyFV_(const ResFloatSegmentFVData* pSegment, f32 frame)
+    const typename Traits::KeyType* GetFloatKeyFV_(
+        const ResFloatSegmentFVData* pSegment,
+        f32 frame)
     {
         return GetKeyFV_<Traits, ResFloatSegmentFVData>(pSegment, frame);
     }
@@ -561,39 +563,39 @@ namespace {
 
     typedef f32 (*CalcFloatSegmentFVFunc)(const ResFloatSegmentFVData* pSegment, f32 frame);
 
-    static CalcFloatSegmentFVFunc s_CalcFloatSegmentFVTable[][8] = 
+static CalcFloatSegmentFVFunc s_CalcFloatSegmentFVTable[][8] =
+{
     {
-        {
-            CalcStepFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVSS128Data>>,
-            CalcStepFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVSS64Data>>,
-            CalcStepFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVSS48Data>>,
-            CalcStepFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVS96Data>>,
-            CalcStepFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVS48Data>>,
-            CalcStepFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVS32Data>>,
-            CalcStepFloatSegmentFV_<ResAnimTraits<ResFloatKeyFV64Data>>,
-            CalcStepFloatSegmentFV_<ResAnimTraits<ResFloatKeyFV32Data>>,
-        },
-        {
-            CalcLinearFloatSegmentFV_< ResAnimTraits<ResFloatKeyFVSS128Data> >,
-            CalcLinearFloatSegmentFV_< ResAnimTraits<ResFloatKeyFVSS64Data> >,
-            CalcLinearFloatSegmentFV_< ResAnimTraits<ResFloatKeyFVSS48Data> >,
-            CalcLinearFloatSegmentFV_< ResAnimTraits<ResFloatKeyFVS96Data> >,
-            CalcLinearFloatSegmentFV_< ResAnimTraits<ResFloatKeyFVS48Data> >,
-            CalcLinearFloatSegmentFV_< ResAnimTraits<ResFloatKeyFVS32Data> >,
-            CalcLinearFloatSegmentFV_< ResAnimTraits<ResFloatKeyFV64Data> >,
-            CalcLinearFloatSegmentFV_< ResAnimTraits<ResFloatKeyFV32Data> >,
-        },
-        {
-            CalcHermiteFloatSegmentFVSS_<ResAnimTraits<ResFloatKeyFVSS128Data>>,
-            CalcHermiteFloatSegmentFVSS_<ResAnimTraits<ResFloatKeyFVSS64Data>>,
-            CalcHermiteFloatSegmentFVSS_<ResAnimTraits<ResFloatKeyFVSS48Data>>,
-            CalcHermiteFloatSegmentFVS_<ResAnimTraits<ResFloatKeyFVS96Data>>,
-            CalcHermiteFloatSegmentFVS_<ResAnimTraits<ResFloatKeyFVS48Data>>,
-            CalcHermiteFloatSegmentFVS_<ResAnimTraits<ResFloatKeyFVS32Data>>,
-            NULL,
-            NULL,
-        }
-    };
+        CalcStepFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVSS128Data> >,
+        CalcStepFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVSS64Data> >,
+        CalcStepFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVSS48Data> >,
+        CalcStepFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVS96Data> >,
+        CalcStepFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVS48Data> >,
+        CalcStepFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVS32Data> >,
+        CalcStepFloatSegmentFV_<ResAnimTraits<ResFloatKeyFV64Data> >,
+        CalcStepFloatSegmentFV_<ResAnimTraits<ResFloatKeyFV32Data> >
+    },
+    {
+        CalcLinearFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVSS128Data> >,
+        CalcLinearFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVSS64Data> >,
+        CalcLinearFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVSS48Data> >,
+        CalcLinearFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVS96Data> >,
+        CalcLinearFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVS48Data> >,
+        CalcLinearFloatSegmentFV_<ResAnimTraits<ResFloatKeyFVS32Data> >,
+        CalcLinearFloatSegmentFV_<ResAnimTraits<ResFloatKeyFV64Data> >,
+        CalcLinearFloatSegmentFV_<ResAnimTraits<ResFloatKeyFV32Data> >
+    },
+    {
+        CalcHermiteFloatSegmentFVSS_<ResAnimTraits<ResFloatKeyFVSS128Data> >,
+        CalcHermiteFloatSegmentFVSS_<ResAnimTraits<ResFloatKeyFVSS64Data> >,
+        CalcHermiteFloatSegmentFVSS_<ResAnimTraits<ResFloatKeyFVSS48Data> >,
+        CalcHermiteFloatSegmentFVS_<ResAnimTraits<ResFloatKeyFVS96Data> >,
+        CalcHermiteFloatSegmentFVS_<ResAnimTraits<ResFloatKeyFVS48Data> >,
+        CalcHermiteFloatSegmentFVS_<ResAnimTraits<ResFloatKeyFVS32Data> >,
+        NULL,
+        NULL
+    }
+};
 
 
     template <typename Traits>
@@ -615,9 +617,9 @@ namespace {
 
     static CalcIntCurveFVFunc s_CalcIntCurveFVTable[] = 
     {
-        CalcIntCurveFV_<ResAnimTraits<ResIntKeyFV64Data>>,
-        CalcIntCurveFV_<ResAnimTraits<ResIntKeyFV32Data>>,
-        CalcIntCurveFV_<ResAnimTraits<ResIntKeyFV16Data>>,
+        CalcIntCurveFV_<ResAnimTraits<ResIntKeyFV64Data> >,
+        CalcIntCurveFV_<ResAnimTraits<ResIntKeyFV32Data> >,
+        CalcIntCurveFV_<ResAnimTraits<ResIntKeyFV16Data> >,
     };
 
 
@@ -954,4 +956,4 @@ void CalcTransformCurve(math::MTX34* result, const ResFullBakedCurveData* pCurve
 
 } /* namespace res */
 } /* namespace anim */
-} /* namespace nw */
+} // namespace nw */

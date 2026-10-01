@@ -98,7 +98,7 @@ bool TextWriterBase<CharType>::CalcLineRectImpl(ut::Rect*   pRect,StreamType* pS
     StreamType prevStreamPos        = NULL;
     ut::Rect prevRect;
 
-    NN_POINTER_ASSERT(GetFont());
+    NN_POINTER_ASSERT_(GetFont());
     CharStrmReader reader = GetFont()->GetCharStrmReader(CharType(0));
 
     f32 lineFeed = GetLineHeight() - GetLineSpace();
@@ -144,7 +144,7 @@ bool TextWriterBase<CharType>::CalcLineRectImpl(ut::Rect*   pRect,StreamType* pS
             }
             operation = m_TagProcessor->CalcRect(&rect, code, &context);
 
-            NN_POINTER_ASSERT(context.str);
+            NN_POINTER_ASSERT_(context.str);
             reader.Set(context.str);
 
             pRect->left     = math::Min(pRect->left,      rect.left);

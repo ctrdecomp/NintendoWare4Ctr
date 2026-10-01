@@ -61,7 +61,6 @@ public:
     u8 GetTexSRTCap() const { return u8(m_MemCap.texSRT); }
     u8 GetTexCoordGenCap() const { return u8(m_MemCap.texCoordGen); }
     u8 GetTevStageCap() const { return u8(m_MemCap.tevStage); }
-     u8 GetColorElement(u32 colorType) const;
     bool IsAlphaCompareCap() const { return m_MemCap.alpComp != 0; }
     bool IsBlendModeCap() const { return m_MemCap.blendMode != 0; }
 

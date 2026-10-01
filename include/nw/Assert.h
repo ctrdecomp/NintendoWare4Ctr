@@ -81,8 +81,15 @@
 // FAILSAFE ASSERT
 
 #if !defined(NW_RELEASE)
+
 #define NW_FAILSAFE_IF(exp) if (exp)
+
 #else
-#define NW_FAILSAFE_IF(exp) if (exp) 
-{ NW_FATAL_ERROR(#exp); } if (false)
+
+#define NW_FAILSAFE_IF(exp) if (false)
+
 #endif
+
+#define NW_NULL_ASSERT(exp) \
+    NW_FAILSAFE_IF(exp) \
+    { NW_FATAL_ERROR(#exp); }

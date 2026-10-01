@@ -60,6 +60,9 @@ const u32   DRAW_MODE2_DEFAULT  = 0;
 const u32   DRAW_FUNC_DEFAULT   = 0;
 const u32   DRAW_MODE0_DEFAULT  = 0;
 
+const u32   DRAW_MODE0_ELEMENT  = 1;
+const u32   DRAW_MODE2_ELEMENT  = PICA_DATA_DRAW_TRIANGLES;
+
 const u32   s_DrawInitCommands[] =
 {
     NW_FONT_COMMAND_SET_BLEND_DEFAULT,
@@ -252,23 +255,6 @@ void EnsureShaderBinaryFileHeader(const void* shaderBinary)
     NN_ASSERT_(header.signature[0] == 'D' && header.signature[1] == 'V' && header.signature[2] == 'L' && header.signature[3] == 'B' );
 }
 
-u32 CalcInstCommandCount(u32 count)
-{
-    u32 size = (count / BURST_MAX) * math::RoundUp(2 + 1 + BURST_MAX, 2);
-    if (0 != count % BURST_MAX)
-    {
-        size += math::RoundUp(2 + 1 + (count % BURST_MAX), 2);
-    }
-    return size;
-}
-
-u32 CalcDrawBeginCommandBytes(const ShaderPackageHeader& header)
-{
-    const u32 instBytes = sizeof(u32) * (CalcInstCommandCount(header.instCount) + CalcInstCommandCount(header.swizzleCount));
-
-    return DRAWBEGIN_STATICCOMMAND_BYTES + instBytes;
-}
-
 void NormalizeF32Colors(math::VEC4* __restrict dst,const ut::Color8* __restrict src)
 {
     register const f32 d = 1.f / 255.f;
@@ -304,12 +290,6 @@ void SetVertexColor(math::VEC4* __restrict dst,const ut::Color8* __restrict src,
 const ShaderBinaryFileHeader& GetShaderBinaryFileHeader(const void* shaderBinary)
 {
     return *static_cast<const ShaderBinaryFileHeader*>(shaderBinary);
-}
-
-void EnsureShaderBinaryFileHeader(const void* shaderBinary)
-{
-    const ShaderBinaryFileHeader& header =
-        *static_cast<const ShaderBinaryFileHeader*>(shaderBinary);
 }
 
 const ShaderPackageHeader& GetShaderPackageHeader(const void* shaderBinary)

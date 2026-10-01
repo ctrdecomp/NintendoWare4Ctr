@@ -5,8 +5,7 @@
 
 #include <GLES2/gl2.h>
 #include <nn/types.h>
-#include <nn/math/math_Vec2.h>
-#include <nn/math/math_Vec3.h>
+#include <nw/math.h>
 
 #include <nw/ut/ut_Color.h>
 #include <nw/font/font_Font.h>

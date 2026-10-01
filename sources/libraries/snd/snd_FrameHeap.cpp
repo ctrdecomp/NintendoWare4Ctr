@@ -67,17 +67,18 @@ void FrameHeap::Clear()
     NewSection();
 }
 
-void* FrameHeap::Alloc(u32 size, DisposeCallback pCallback, void* pCallbackArg) 
+void* FrameHeap::Alloc(u32 size, DisposeCallback callback, void* callbackArg) 
 {
-    void* pBuffer = m_pHeap->Alloc(
+    NW_ASSERT(IsValid());
+    void* buffer = m_pHeap->Alloc(
         31 + ut::RoundUp(size, HEAP_ALIGN), HEAP_ALIGN);
 
-    if (pBuffer == NULL) 
+    if (buffer == NULL) 
     {
         return NULL;
     }
 
-    Block* pBlock = new (pBuffer) Block(size, pCallback, pCallbackArg);
+    Block* pBlock = new (buffer) Block(buffer, size, callback, callbackArg);
     m_SectionList.GetBack().AppendBlock(pBlock);
 
     return pBlock->GetBufferAddr();

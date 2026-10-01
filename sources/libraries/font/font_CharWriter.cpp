@@ -94,31 +94,31 @@ void CharWriter::SetupGX()
 
 void CharWriter::SetFontSize(f32 width,f32 height)
 {
-    NN_POINTER_ASSERT(this->m_pFont);
+    NN_POINTER_ASSERT_(this->m_pFont);
     SetScale(width / this->m_pFont->GetWidth(), height / this->m_pFont->GetHeight());
 }
 
 f32 CharWriter::GetFontWidth() const
 {
-    NN_POINTER_ASSERT(this->m_pFont);
+    NN_POINTER_ASSERT_(this->m_pFont);
     return this->m_pFont->GetWidth() * this->m_Scale.x;
 }
 
 f32 CharWriter::GetFontHeight() const
 {
-    NN_POINTER_ASSERT(m_pFont);
+    NN_POINTER_ASSERT_(m_pFont);
     return this->m_pFont->GetHeight() * this->m_Scale.y;
 }
 
 f32 CharWriter::GetFontAscent() const
 {
-    NN_POINTER_ASSERT(this->m_pFont);
+    NN_POINTER_ASSERT_(this->m_pFont);
     return this->m_pFont->GetAscent() * this->m_Scale.y;
 }
 
 f32 CharWriter::GetFontDescent() const
 {
-    NN_POINTER_ASSERT(this->m_pFont);
+    NN_POINTER_ASSERT_(this->m_pFont);
     return this->m_pFont->GetDescent() * this->m_Scale.y;
 }
 
@@ -153,14 +153,14 @@ f32 CharWriter::Print(CharCode code)
 
 void CharWriter::DrawGlyph(const Glyph& glyph)
 {
-    NN_POINTER_ASSERT(&glyph);
+    NN_POINTER_ASSERT_(&glyph);
     PrintGlyph(this->m_CursorPos.x, glyph);
     this->m_CursorPos.x += glyph.widths.glyphWidth * this->m_Scale.x;
 }
 
 void CharWriter::PrintGlyph(f32 x,const Glyph& glyph)
 {
-    NN_POINTER_ASSERT(&glyph);
+    NN_POINTER_ASSERT_(&glyph);
 
     const f32 y = this->m_CursorPos.y;
 
@@ -254,7 +254,7 @@ void CharWriter::PrintGlyph(f32 x,const Glyph& glyph)
 
 void CharWriter::LoadTexture(const Glyph& glyph)
 {
-    NN_POINTER_ASSERT(&glyph);
+    NN_POINTER_ASSERT_(&glyph);
 
     bool doLoad = false;
     GLuint texName = 0;

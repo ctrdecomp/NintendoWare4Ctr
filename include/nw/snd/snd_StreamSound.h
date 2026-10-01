@@ -58,7 +58,9 @@ public:
     driver::StreamSoundPlayer& detail_GetStreamSoundPlayer() { return m_StreamSoundPlayerInstance; }
 private:
     driver::StreamSoundPlayer m_StreamSoundPlayerInstance;
+public:
     StreamSoundHandle* m_pTempSpecialHandle;
+private:
     StreamSoundInstanceManager& m_Manager;
 
     MoveValue<float, int> m_TrackVolume[driver::StreamSoundPlayer::STRM_TRACK_NUM];

@@ -81,9 +81,11 @@ public:
 
 protected:
     struct ResHemiSphereLightDataDestroyer : public std::unary_function<ResHemiSphereLightData*, void>
-{
+    {
         ResHemiSphereLightDataDestroyer(nw::os::IAllocator* allocator = 0): 
-            m_Allocator(allocator) {}
+            m_Allocator(allocator) 
+        {
+        }
 
         result_type operator()(argument_type data)
         {
@@ -96,7 +98,15 @@ protected:
     typedef nw::ut::MovePtr<ResHemiSphereLightData, ResHemiSphereLightDataDestroyer> ResPtr;
 
     HemiSphereLight(nw::os::IAllocator* allocator,ResHemiSphereLight resObj,const HemiSphereLight::Description& description): 
-        Light(allocator,resObj,description) {}
+        Light(allocator, resObj, description) 
+    {
+    }
+
+    HemiSphereLight(os::IAllocator* allocator, ResPtr resource, const HemiSphereLight::Description& description): 
+        Light(allocator, ResHemiSphereLight(resource.Get()), description),
+        m_Resource(resource)
+    {
+    }
 
     virtual ~HemiSphereLight()
     {

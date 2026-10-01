@@ -128,7 +128,7 @@ protected:
     union
     {
         u32 m_UniformMtxBuffer[ 4 + 4 * UNIFORM_MTX_NUM  ];
-        struct
+        union
         {
             u32 m_UniformTextMtxBuffer  [ 4 + 4 * UNIFORM_TEXT_MTX_MAX ];
             u32 m_UniformTextColorBuffer[ 4 + 4 * UNIFORM_TEXTCOLOR_NUM ];

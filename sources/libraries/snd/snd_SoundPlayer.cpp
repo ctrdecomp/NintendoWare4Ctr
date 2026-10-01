@@ -31,22 +31,31 @@ SoundPlayer::~SoundPlayer()
 
 void SoundPlayer::Update()
 {
-    NW_UT_LINKLIST_FOREACH_SAFE(itr, m_SoundList,
-        { itr->Update(); });
+    for (SoundList::Iterator itr = m_SoundList.GetBeginIter(); itr != m_SoundList.GetEndIter();)
+    {
+        SoundList::Iterator curItr = itr++;
+        curItr->Update();
+    }
 
     detail_SortPriorityList();
 }
 
 void SoundPlayer::StopAllSound(int fadeFrames)
 {
-    NW_UT_LINKLIST_FOREACH_SAFE(itr, m_SoundList,
-        { itr->Stop(fadeFrames); });
+    for (SoundList::Iterator itr = m_SoundList.GetBeginIter(); itr != m_SoundList.GetEndIter();)
+    {
+        SoundList::Iterator curItr = itr++;
+        curItr->Stop(fadeFrames);
+    }
 }
 
-void SoundPlayer::PauseAllSound( bool flag, int fadeFrames )
+void SoundPlayer::PauseAllSound(bool flag, int fadeFrames)
 {
-    NW_UT_LINKLIST_FOREACH_SAFE(itr, m_SoundList,
-        { itr->Pause(flag, fadeFrames); });
+    for (SoundList::Iterator itr = m_SoundList.GetBeginIter(); itr != m_SoundList.GetEndIter();)
+    {
+        SoundList::Iterator curItr = itr++;
+        curItr->Pause(flag, fadeFrames);
+    }
 }
 
 void SoundPlayer::SetVolume(float volume)

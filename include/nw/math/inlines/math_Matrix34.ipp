@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cmath>
 #include <nw/math/math_Types.h>
 
@@ -8,7 +10,7 @@ inline MTX34* MTX34LookAtFIdx(nw::math::MTX34* pOut, const nw::math::VEC3* pCamP
 {
     using namespace nw::math;
 
-    f32 (*const m)[4] = pOut->matrix;
+    f32 (*const m)[4] = pOut->m;
 
     VEC3 lookReverse(pCamPos->x - pTarget->x, pCamPos->y - pTarget->y, pCamPos->z - pTarget->z);
 
@@ -96,7 +98,7 @@ inline MTX34* MTX34CameraRotateFIdx(nw::math::MTX34* pOut, const nw::math::VEC3*
     using namespace nw::math;
 
 
-    f32 (*const m)[4] = pOut->matrix;
+    f32 (*const m)[4] = pOut->m;
 
     f32 sx, sy, sz, cx, cy, cz;
     SinCosFIdx(&sx, &cx, pCamRotate->x);
@@ -147,9 +149,9 @@ inline MTX34* MTX34CameraRotateRad(MTX34* pOut, const VEC3* pCamPos, const VEC3*
 
 inline VEC3* MTX34DecomposeToColumnScale(VEC3* pOut, const MTX34* pM)
 {
-    pOut->x = FSqrt((pM->matrix[0][0] * pM->matrix[0][0]) + (pM->matrix[1][0] * pM->matrix[1][0]) + (pM->matrix[2][0] * pM->matrix[1][0]));
-    pOut->y = FSqrt((pM->matrix[0][1] * pM->matrix[0][1]) + (pM->matrix[1][1] * pM->matrix[1][1]) + (pM->matrix[2][1] * pM->matrix[2][1]));
-    pOut->z = FSqrt((pM->matrix[0][2] * pM->matrix[0][2]) + (pM->matrix[1][2] * pM->matrix[1][2]) + (pM->matrix[2][2] * pM->matrix[2][2]));
+    pOut->x = FSqrt((pM->m[0][0] * pM->m[0][0]) + (pM->m[1][0] * pM->m[1][0]) + (pM->m[2][0] * pM->m[1][0]));
+    pOut->y = FSqrt((pM->m[0][1] * pM->m[0][1]) + (pM->m[1][1] * pM->m[1][1]) + (pM->m[2][1] * pM->m[2][1]));
+    pOut->z = FSqrt((pM->m[0][2] * pM->m[0][2]) + (pM->m[1][2] * pM->m[1][2]) + (pM->m[2][2] * pM->m[2][2]));
 
     return pOut;
 }

@@ -362,7 +362,7 @@ void ResFontBase::GenTextureNames()
 void ResFontBase::DeleteTextureNames()
 {
     internal::TextureObject* texObjs = GetTextureObjectsBufferPtr();
-    NN_POINTER_ASSERT(texObjs);
+    NN_POINTER_ASSERT_(texObjs);
 
     const int sheetNum = GetActiveSheetNum();
     for (int i = 0; i < sheetNum; ++i)

@@ -56,9 +56,6 @@ public:
     int GetPlayableSoundCount(int actorPlayerId) const;
 
     template <class Function>
-    void ForEachSoundRef(Function& function, bool reverse = false);
-
-    template <class Function>
     Function ForEachSound(Function function, bool reverse = false);
 
     ActorPlayer* detail_GetActorPlayer(int actorPlayerId)
@@ -83,13 +80,10 @@ public:
     );
 
 private:
-    SoundStartable::StartResult detail_SetupSound(
-        SoundHandle* handle,
-        u32 soundId,
-        bool holdFlag,
-        const SoundStartable::StartInfo* startInfo
-    ) override;
-    SoundArchive::ItemId detail_GetItemId(const char* pString) override;
+    virtual SoundStartable::StartResult detail_SetupSound(
+        SoundHandle* handle, u32 soundId, bool holdFlag,
+        const SoundStartable::StartInfo* startInfo);
+    virtual SoundArchive::ItemId detail_GetItemId(const char* pString);
 
     struct SetupInfo
     {
@@ -103,13 +97,6 @@ private:
     bool m_IsInitialized;
     bool m_IsFinalized;
 };
-
-template <class Function>
-inline void SoundActor::ForEachSoundRef(Function& function, bool reverse)
-{
-    for (int actorPlayerIndex = 0; actorPlayerIndex < ACTOR_PLAYER_COUNT; actorPlayerIndex++)
-        m_ActorPlayer[actorPlayerIndex].ForEachSoundRef<Function>(function, reverse);
-}
 
 template <class Function>
 inline Function SoundActor::ForEachSound(Function function, bool reverse)

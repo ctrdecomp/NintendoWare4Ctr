@@ -77,15 +77,15 @@ bool BankFileReader::ReadVelocityRegionInfo(VelocityRegionInfo* info, int progra
         return false;
     }
 
-    const Util::WaveId& waveId = m_pInfoBlockBody->GetWaveId(pVelRegion->waveIdTableIndex);
+    const Util::WaveId* waveId = m_pInfoBlockBody->GetWaveId(pVelRegion->waveIdTableIndex);
 
-    if (waveId.waveIndex == 0xffffffff)
+    if (waveId->waveIndex == 0xffffffff)
     {
         return false;
     }
 
-    info->waveArchiveId  = waveId.waveArchiveId;
-    info->waveIndex  = waveId.waveIndex;
+    info->waveArchiveId  = waveId->waveArchiveId;
+    info->waveIndex  = waveId->waveIndex;
 
     const BankFile::RegionParameter* pRegParameter = pVelRegion->GetRegionParameter();
     if (pRegParameter == NULL)

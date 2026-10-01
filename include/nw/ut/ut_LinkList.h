@@ -29,7 +29,6 @@ public:
 
     Self* GetNext() const { return m_Next; }
     Self* GetPrev() const { return m_Prev; }
-    friend class internal::LinkListImpl;
 
     friend bool operator==(const Self& r1, const Self& r2) { return &r1 == &r2; }
     friend bool operator!=(const Self& r1, const Self& r2) { return !(r1 == r2); }
@@ -440,32 +439,3 @@ public:
 
 } // namespace ut
 } // namespace nw
-
-/* 
-
-From NW4R
-
-*/
-
-#define NW_UT_LINKLIST_FOREACH(NAME, LIST, ...)                                 \
-    {                                                                          \
-        typedef decltype((LIST).GetBeginIter()) IterType;                      \
-                                                                               \
-        for (IterType NAME = (LIST).GetBeginIter();                            \
-             NAME != (LIST).GetEndIter(); ++NAME){                              \
-            __VA_ARGS__;                                                       \
-        }                                                                      \
-    }
-
-
-#define NW_UT_LINKLIST_FOREACH_SAFE(NAME, LIST, ...)                         \
-    {                                                                          \
-        typedef decltype((LIST).GetBeginIter()) IterType;                      \
-                                                                               \
-        for (IterType __impl__ = (LIST).GetBeginIter();                        \
-             __impl__ != (LIST).GetEndIter();) {                               \
-                                                                               \
-            IterType NAME = __impl__++;                                        \
-            __VA_ARGS__;                                                       \
-        }                                                                      \
-    }

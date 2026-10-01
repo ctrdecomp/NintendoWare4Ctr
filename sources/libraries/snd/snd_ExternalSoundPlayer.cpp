@@ -23,20 +23,29 @@ Some can be copied from NW4R since NW4C and NW4R are somewhat simliar.
 
 ExternalSoundPlayer::~ExternalSoundPlayer()
 {
-    NW_UT_LINKLIST_FOREACH_SAFE (it, m_SoundList,
-        { it->DetachExternalSoundPlayer(NULL); })
+    for (SoundList::Iterator itr = m_SoundList.GetBeginIter(); itr != m_SoundList.GetEndIter(); )
+    {
+        SoundList::Iterator curItr = itr++;
+        curItr->DetachExternalSoundPlayer(this);
+    }
 }
 
 void ExternalSoundPlayer::StopAllSound(int fadeFrames)
 {
-    NW_UT_LINKLIST_FOREACH_SAFE(it, m_SoundList,
-        { it->Stop(fadeFrames); })
+    for (SoundList::Iterator itr = m_SoundList.GetBeginIter(); itr != m_SoundList.GetEndIter();)
+    {
+        SoundList::Iterator curItr = itr++;
+        curItr->Stop(fadeFrames);
+    }
 }
 
 void ExternalSoundPlayer::PauseAllSound(bool flag, int fadeFrames)
 {
-    NW_UT_LINKLIST_FOREACH_SAFE(it, m_SoundList,
-        { it->Pause(flag, fadeFrames); })
+    for (SoundList::Iterator itr = m_SoundList.GetBeginIter(); itr != m_SoundList.GetEndIter(); )
+    {
+        SoundList::Iterator curItr = itr++;
+        curItr->Pause(flag, fadeFrames);
+    }
 }
 
 void ExternalSoundPlayer::SetPlayableSoundCount(int count) 

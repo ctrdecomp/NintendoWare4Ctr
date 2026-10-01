@@ -15,6 +15,12 @@ namespace snd {
 namespace internal {
 namespace driver {
 
+#if NN_SND_SAMPLES_PER_FRAME == 96
+    #define SND_DENOM (29.33f)
+#else
+    #define SND_DENOM (48.89f)
+#endif
+
 SoundThread::SoundThread(): 
     m_SoundThreadSumTick(nn::os::Tick(0)),
     m_SoundThreadCount(0),
@@ -110,8 +116,11 @@ void SoundThread::Finalize()
 {
     Destroy();
     
-    NW_UT_LINKLIST_FOREACH_SAFE(it, m_PlayerCallbackList,
-        { it->OnShutdownSoundThread(); })
+    for (PlayerCallbackList::Iterator itr = m_PlayerCallbackList.GetBeginIter(); itr != m_PlayerCallbackList.GetEndIter();)
+    {
+        PlayerCallbackList::Iterator curItr = itr++;
+        curItr->OnShutdownSoundThread();
+    }
 
     m_CriticalSection.Finalize();
 }
@@ -160,8 +169,11 @@ void SoundThread::FrameProcess()
 	CriticalSection::ScopedLock lock(m_CriticalSection);
 
     {
-        NW_UT_LINKLIST_FOREACH_SAFE(it, m_SoundFrameCallbackList,
-            { it->OnBeginSoundFrame(); })
+        for (SoundFrameCallbackList::Iterator itr = m_SoundFrameCallbackList.GetBeginIter(); itr != m_SoundFrameCallbackList.GetEndIter();)
+        {
+            SoundFrameCallbackList::Iterator curItr = itr++;
+            curItr->OnBeginSoundFrame();
+        }
     }
 
     {
@@ -177,8 +189,11 @@ void SoundThread::FrameProcess()
         }
 
         {
-            NW_UT_LINKLIST_FOREACH_SAFE(it, m_PlayerCallbackList,
-                { it->OnUpdateFrameSoundThread(); })
+            for (PlayerCallbackList::Iterator itr = m_PlayerCallbackList.GetBeginIter(); itr != m_PlayerCallbackList.GetEndIter();)
+            {
+                PlayerCallbackList::Iterator curItr = itr++;
+                curItr->OnUpdateFrameSoundThread();
+            }
         }
         {
             ChannelManager::GetInstance().UpdateAllChannel();
@@ -190,8 +205,11 @@ void SoundThread::FrameProcess()
     }
 
     {
-        NW_UT_LINKLIST_FOREACH_SAFE(it, m_SoundFrameCallbackList,
-            { it->OnEndSoundFrame(); })
+        for (SoundFrameCallbackList::Iterator itr = m_SoundFrameCallbackList.GetBeginIter(); itr != m_SoundFrameCallbackList.GetEndIter();)
+        {
+            SoundFrameCallbackList::Iterator curItr = itr++;
+            curItr->OnEndSoundFrame();
+        }
     }
 }
 
@@ -215,8 +233,11 @@ void SoundThread::SoundThreadProc()
 
 void SoundThread::VoiceUpdate()
 {
-    NW_UT_LINKLIST_FOREACH_SAFE(it, m_PlayerCallbackList,
-        { it->OnUpdateVoiceSoundThread(); })
+    for (PlayerCallbackList::Iterator itr = m_PlayerCallbackList.GetBeginIter(); itr != m_PlayerCallbackList.GetEndIter();)
+    {
+        PlayerCallbackList::Iterator curItr = itr++;
+        curItr->OnUpdateVoiceSoundThread();
+    }
 }
 
 void SoundThread::CalcProcessCost(const nn::os::Tick& tick)

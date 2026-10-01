@@ -9,6 +9,9 @@
 
 namespace nw {
 namespace snd {
+namespace internal {
+    class ISound3DEngine;
+}
 
 class SoundArchive;
 class Sound3DManager;

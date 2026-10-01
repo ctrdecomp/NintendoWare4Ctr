@@ -12,7 +12,7 @@ namespace internal{
 
 nn::math::MTX34* CreateMatrixForLinearShadowMapTexture(nn::math::MTX34* pOut, f32 coeff, f32 nearp, f32 farp)
 {
-    f32 (*const m)[4] = pOut->matrix;
+    f32 (*const m)[4] = pOut->m;
     f32 scaleZ = 1.0f / (farp - nearp);
 
     m[0][0] = 0.5f * coeff * scaleZ;

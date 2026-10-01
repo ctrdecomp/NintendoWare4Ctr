@@ -4,6 +4,9 @@
 #include <nw/types.h>
 #include <nw/ut/ut_BinaryFileFormat.h>
 #include <nw/snd/snd_ItemType.h>
+#include <nw/snd/snd_Global.h>
+
+#include <nn/os.h>
 
 namespace nw { 
 namespace snd { 
@@ -89,7 +92,7 @@ public:
     public:
         static Child& GetInstance()
         {
-            static Child& instance;
+            static Child instance;
             return instance;
         }
     };

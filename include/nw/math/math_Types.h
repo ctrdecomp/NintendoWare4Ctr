@@ -6,9 +6,9 @@
 #include <nn/math/math_Matrix33.h>
 #include <nn/math/math_Matrix34.h>
 #include <nn/math/math_Matrix44.h>
-#include <nn/math/math_Vec2.h>
-#include <nn/math/math_Vec3.h>
-#include <nn/math/math_Vec4.h>
+#include <nn/math/math_Vector2.h>
+#include <nn/math/math_Vector3.h>
+#include <nn/math/math_Vector4.h>
 #include <nn/math/math_Quaternion.h>
 #include <nn/math/math_Transform.h>
 #include <nn/math/math_Triangular.h>

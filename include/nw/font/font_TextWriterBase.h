@@ -69,7 +69,7 @@ public:
 
     void SetTagProcessor(TagProcessorBase<CharType>* tagProcessor)
     {
-        NN_POINTER_ASSERT(tagProcessor);
+        NN_POINTER_ASSERT_(tagProcessor);
         this->m_TagProcessor = tagProcessor;
     }
 
@@ -80,7 +80,7 @@ public:
 
     f32 CalcStringWidth(const CharType* str) const
     {
-        NN_POINTER_ASSERT(str);
+        NN_POINTER_ASSERT_(str);
         return CalcStringWidth(str, StrLen(str));
     }
 
@@ -90,7 +90,7 @@ public:
 
     f32 CalcStringHeight(const CharType* str) const
     {
-        NN_POINTER_ASSERT(str);
+        NN_POINTER_ASSERT_(str);
         return CalcStringHeight(str, StrLen(str));
     }
 
@@ -102,8 +102,8 @@ public:
 
     void CalcStringRect(ut::Rect* pRect, const CharType* str) const
     {
-        NN_POINTER_ASSERT(pRect);
-        NN_POINTER_ASSERT(str);
+        NN_POINTER_ASSERT_(pRect);
+        NN_POINTER_ASSERT_(str);
         CalcStringRect(pRect, str, StrLen(str));
     }
 
@@ -114,7 +114,7 @@ public:
 
     f32 Print(const CharType* str)
     {
-        NN_POINTER_ASSERT(str);
+        NN_POINTER_ASSERT_(str);
         return Print(str, StrLen(str));
     }
 
@@ -130,7 +130,7 @@ public:
 
     static void* SetBuffer(CharType* buffer, std::size_t size)
     {
-        NN_POINTER_ASSERT(buffer);
+        NN_POINTER_ASSERT_(buffer);
         void* oldBuffer = s_FormatBuffer;
         s_FormatBuffer = buffer;
         s_FormatBufferSize = size;

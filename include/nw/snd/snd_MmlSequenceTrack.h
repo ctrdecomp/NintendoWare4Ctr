@@ -8,6 +8,8 @@ namespace snd {
 namespace internal { 
 namespace driver {
 
+class MmlParser;
+
 class MmlSequenceTrack : public SequenceTrack
 {
 public:

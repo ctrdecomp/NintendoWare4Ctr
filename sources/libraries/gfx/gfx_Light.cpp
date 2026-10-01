@@ -2,8 +2,9 @@
 //
 // Project: NintendoWare4Ctr
 
-#include <nw/gfx/gfx_AnimEvaluator.h>
 #include <nw/gfx/gfx_Light.h>
+#include <nw/gfx/gfx_HemiSphereLight.h>
+#include <nw/gfx/gfx_VertexLight.h>
 #include <nw/gfx/gfx_ISceneVisitor.h>
 #include <nw/gfx/gfx_AmbientLight.h>
 

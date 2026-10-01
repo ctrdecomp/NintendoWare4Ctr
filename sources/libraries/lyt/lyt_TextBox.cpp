@@ -435,13 +435,13 @@ void TextBox::GetTextGlobalMtx(nw::math::MTX34* pMtx) const
     pos.x += txtPos.x;
     pos.y -= txtPos.y;
 
-    pMtx->matrix[0][3] += pMtx->matrix[0][0] * pos.x + pMtx->matrix[0][1] * pos.y;
-    pMtx->matrix[1][3] += pMtx->matrix[1][0] * pos.x + pMtx->matrix[1][1] * pos.y;
-    pMtx->matrix[2][3] += pMtx->matrix[2][0] * pos.x + pMtx->matrix[2][1] * pos.y;
+    pMtx->m[0][3] += pMtx->m[0][0] * pos.x + pMtx->m[0][1] * pos.y;
+    pMtx->m[1][3] += pMtx->m[1][0] * pos.x + pMtx->m[1][1] * pos.y;
+    pMtx->m[2][3] += pMtx->m[2][0] * pos.x + pMtx->m[2][1] * pos.y;
 
-    pMtx->matrix[0][1] = - pMtx->matrix[0][1];
-    pMtx->matrix[1][1] = - pMtx->matrix[1][1];
-    pMtx->matrix[2][1] = - pMtx->matrix[2][1];
+    pMtx->m[0][1] = - pMtx->m[0][1];
+    pMtx->m[1][1] = - pMtx->m[1][1];
+    pMtx->m[2][1] = - pMtx->m[2][1];
 }
 
 void TextBox::SetupDrawCharData(Drawer* pDrawer)

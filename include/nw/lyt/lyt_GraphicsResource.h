@@ -158,7 +158,7 @@ public:
         {
             this->m_MtxModelViewLoaded = true;
             GLint loc = this->GetUniformLocation(this->UNIFORM_uModelView);
-            glUniform4fv(loc, 3, &this->m_MtxModelView.matrix[0][0]);
+            glUniform4fv(loc, 3, &this->m_MtxModelView.m[0][0]);
         }
     }
 

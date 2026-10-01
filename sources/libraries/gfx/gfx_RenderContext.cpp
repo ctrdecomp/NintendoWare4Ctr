@@ -681,9 +681,9 @@ void RenderContext::TransformToViewCoordinate(math::VEC4* out, const math::MTX34
     f32 vz = v->z;
     f32 vw = v->w;
 
-    out->x = view->matrix[0][0] * vx + view->matrix[0][1] * vy + view->matrix[0][2] * vz + view->matrix[0][3] * vw;
-    out->y = view->matrix[1][0] * vx + view->matrix[1][1] * vy + view->matrix[1][2] * vz + view->matrix[1][3] * vw;
-    out->z = view->matrix[2][0] * vx + view->matrix[2][1] * vy + view->matrix[2][2] * vz + view->matrix[2][3] * vw;
+    out->x = view->m[0][0] * vx + view->m[0][1] * vy + view->m[0][2] * vz + view->m[0][3] * vw;
+    out->y = view->m[1][0] * vx + view->m[1][1] * vy + view->m[1][2] * vz + view->m[1][3] * vw;
+    out->z = view->m[2][0] * vx + view->m[2][1] * vy + view->m[2][2] * vz + view->m[2][3] * vw;
     out->w = vw;
 }
 

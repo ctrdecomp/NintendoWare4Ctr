@@ -3,6 +3,7 @@
 // Project: NintendoWare4Ctr
 
 #include <nw/gfx/res/gfx_ResLookupTable.h>
+#include <nw/gfx/res/gfx_ResGraphicsFile.h>
 #include <nw/gfx/gfx_RenderContext.h>
 #include <nw/gfx/gfx_GraphicsDevice.h>
 

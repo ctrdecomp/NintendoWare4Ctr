@@ -69,15 +69,15 @@ public:
         math::VEC3Transform(&position, &camera.ViewMatrix(), &position);
         const math::MTX44& projection = camera.ProjectionMatrix();
         float z =
-            projection.matrix[2][0] * position.x +
-            projection.matrix[2][1] * position.y +
-            projection.matrix[2][2] * position.z +
-            projection.matrix[2][3];
+            projection.m[2][0] * position.x +
+            projection.m[2][1] * position.y +
+            projection.m[2][2] * position.z +
+            projection.m[2][3];
         float w =
-            projection.matrix[3][0] * position.x +
-            projection.matrix[3][1] * position.y +
-            projection.matrix[3][2] * position.z +
-            projection.matrix[3][3];
+            projection.m[3][0] * position.x +
+            projection.m[3][1] * position.y +
+            projection.m[3][2] * position.z +
+            projection.m[3][3];
         return ut::Clamp(-z / w, 0.0f, 1.0f);
     }
 
@@ -89,15 +89,15 @@ public:
         math::VEC3Transform(&position, (const math::MTX34*)&camera.ViewMatrix(), &position);
         const math::MTX44& projection = camera.ProjectionMatrix();
         float z =
-            projection.matrix[2][0] * position.x +
-            projection.matrix[2][1] * position.y +
-            projection.matrix[2][2] * position.z +
-            projection.matrix[2][3];
+            projection.m[2][0] * position.x +
+            projection.m[2][1] * position.y +
+            projection.m[2][2] * position.z +
+            projection.m[2][3];
         float w =
-            projection.matrix[3][0] * position.x +
-            projection.matrix[3][1] * position.y +
-            projection.matrix[3][2] * position.z +
-            projection.matrix[3][3];
+            projection.m[3][0] * position.x +
+            projection.m[3][1] * position.y +
+            projection.m[3][2] * position.z +
+            projection.m[3][3];
         return nw::ut::Clamp(-z / w, 0.0f, 1.0f);
     }
 private:

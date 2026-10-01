@@ -12,14 +12,14 @@ namespace snd {
 namespace internal {
 namespace driver {
 
-SequenceTrack::ParseResult MmlParser::Parse(MmlSequenceTrack* pTrack, bool doNoteOn) const
+SequenceTrack::ParseResult MmlParser::Parse(MmlSequenceTrack* track, bool doNoteOn) const
 {
     NW_NULL_ASSERT(track);
-    SequenceSoundPlayer* pPlayer = track->GetSequenceSoundPlayer();
+    SequenceSoundPlayer* player = track->GetSequenceSoundPlayer();
     NW_NULL_ASSERT(player);
 
-    SequenceTrack::ParserTrackParam& rTrackParam = pTrack->GetParserTrackParam();
-    SequenceSoundPlayer::ParserPlayerParam& rPlayerParam = pPlayer->GetParserPlayerParam();
+    SequenceTrack::ParserTrackParam& rTrackParam = track->GetParserTrackParam();
+    SequenceSoundPlayer::ParserPlayerParam& rPlayerParam = player->GetParserPlayerParam();
 
     SeqArgType argType = SEQ_ARG_NONE;
     SeqArgType argType2 = SEQ_ARG_NONE;
@@ -68,7 +68,7 @@ SequenceTrack::ParseResult MmlParser::Parse(MmlSequenceTrack* pTrack, bool doNot
     {
         const u8 velocity = ReadByte(&rTrackParam.currentAddr);
 
-        const s32 length = ReadArg(&rTrackParam.currentAddr, pPlayer, pTrack,
+        const s32 length = ReadArg(&rTrackParam.currentAddr, player, track,
                              useArgType ? argType : SEQ_ARG_VMIDI);
 
         int key = cmd + rTrackParam.transpose;
@@ -82,7 +82,7 @@ SequenceTrack::ParseResult MmlParser::Parse(MmlSequenceTrack* pTrack, bool doNot
 
         if (!rTrackParam.muteFlag && doNoteOn) 
         {
-            NoteOnCommandProc(pTrack, key, velocity, length > 0 ? length : -1,
+            NoteOnCommandProc(track, key, velocity, length > 0 ? length : -1,
                               rTrackParam.tieFlag);
         }
 
@@ -109,7 +109,7 @@ SequenceTrack::ParseResult MmlParser::Parse(MmlSequenceTrack* pTrack, bool doNot
             {
             case MmlCommand::MML_WAIT: 
             {
-                s32 time = ReadArg(&rTrackParam.currentAddr, pPlayer, pTrack,
+                s32 time = ReadArg(&rTrackParam.currentAddr, player, track,
                                    useArgType ? argType : SEQ_ARG_VMIDI);
 
                 if (doExecCommand) 
@@ -121,12 +121,12 @@ SequenceTrack::ParseResult MmlParser::Parse(MmlSequenceTrack* pTrack, bool doNot
 
             case MmlCommand::MML_PRG: 
             {
-                arg1 = ReadArg(&rTrackParam.currentAddr, pPlayer, pTrack,
+                arg1 = ReadArg(&rTrackParam.currentAddr, player, track,
                                useArgType ? argType : SEQ_ARG_VMIDI);
 
                 if (doExecCommand) 
                 {
-                    CommandProc(pTrack, cmd, arg1, arg2);
+                    CommandProc(track, cmd, arg1, arg2);
                 }
                 break;
             }
@@ -140,7 +140,7 @@ SequenceTrack::ParseResult MmlParser::Parse(MmlSequenceTrack* pTrack, bool doNot
                 {
                     arg1 = trackNo;
                     arg2 = offset;
-                    CommandProc(pTrack, cmd, arg1, arg2);
+                    CommandProc(track, cmd, arg1, arg2);
                 }
                 break;
             }
@@ -152,7 +152,7 @@ SequenceTrack::ParseResult MmlParser::Parse(MmlSequenceTrack* pTrack, bool doNot
                 if (doExecCommand) 
                 {
                     arg1 = offset;
-                    CommandProc(pTrack, cmd, arg1, arg2);
+                    CommandProc(track, cmd, arg1, arg2);
                 }
                 break;
             }
@@ -164,7 +164,7 @@ SequenceTrack::ParseResult MmlParser::Parse(MmlSequenceTrack* pTrack, bool doNot
                 if (doExecCommand) 
                 {
                     arg1 = offset;
-                    CommandProc(pTrack, cmd, arg1, arg2);
+                    CommandProc(track, cmd, arg1, arg2);
                 }
                 break;
             }
@@ -177,7 +177,7 @@ SequenceTrack::ParseResult MmlParser::Parse(MmlSequenceTrack* pTrack, bool doNot
         case 0xC0: 
         case 0xD0: 
         {
-            u8 arg = ReadArg(&rTrackParam.currentAddr, pPlayer, pTrack,
+            u8 arg = ReadArg(&rTrackParam.currentAddr, player, track,
                              useArgType ? argType : SEQ_ARG_U8);
 
             if (!doExecCommand) 
@@ -200,7 +200,7 @@ SequenceTrack::ParseResult MmlParser::Parse(MmlSequenceTrack* pTrack, bool doNot
             }
             }
 
-            CommandProc(pTrack, cmd, arg1, arg2);
+            CommandProc(track, cmd, arg1, arg2);
             break;
         }
 
@@ -208,7 +208,7 @@ SequenceTrack::ParseResult MmlParser::Parse(MmlSequenceTrack* pTrack, bool doNot
         {
             if (doExecCommand) 
             {
-                CommandProc(pTrack, cmd, arg1, arg2);
+                CommandProc(track, cmd, arg1, arg2);
             }
             break;
         }
@@ -216,12 +216,12 @@ SequenceTrack::ParseResult MmlParser::Parse(MmlSequenceTrack* pTrack, bool doNot
         case 0xE0: 
         {
             arg1 = static_cast<s16>(
-                ReadArg(&rTrackParam.currentAddr, pPlayer, pTrack,
+                ReadArg(&rTrackParam.currentAddr, player, track,
                         useArgType ? argType : SEQ_ARG_S16));
 
             if (doExecCommand) 
             {
-                CommandProc(pTrack, cmd, arg1, arg2);
+                CommandProc(track, cmd, arg1, arg2);
             }
             break;
         }
@@ -248,11 +248,11 @@ SequenceTrack::ParseResult MmlParser::Parse(MmlSequenceTrack* pTrack, bool doNot
                 case 0xe0: 
                 {
                     arg1 = static_cast<s16>(
-                        ReadArg(&rTrackParam.currentAddr, pPlayer, pTrack,
+                        ReadArg(&rTrackParam.currentAddr, player, track,
                                 useArgType ? argType : SEQ_ARG_S16));
 
                     if (doExecCommand) {
-                        CommandProc(pTrack, (cmd << 8) + cmdex, arg1, arg2);
+                        CommandProc(track, (cmd << 8) + cmdex, arg1, arg2);
                     }
                     break;
                 }
@@ -262,12 +262,12 @@ SequenceTrack::ParseResult MmlParser::Parse(MmlSequenceTrack* pTrack, bool doNot
                 {
                     arg1 = ReadByte(&rTrackParam.currentAddr);
                     arg2 = static_cast<s16>(
-                        ReadArg(&rTrackParam.currentAddr, pPlayer, pTrack,
+                        ReadArg(&rTrackParam.currentAddr, player, track,
                                 useArgType ? argType : SEQ_ARG_S16));
 
                     if (doExecCommand) 
                     {
-                        CommandProc(pTrack, (cmd << 8) + cmdex, arg1, arg2);
+                        CommandProc(track, (cmd << 8) + cmdex, arg1, arg2);
                     }
                     break;
                 }
@@ -279,7 +279,7 @@ SequenceTrack::ParseResult MmlParser::Parse(MmlSequenceTrack* pTrack, bool doNot
             default: {
                 if (doExecCommand) 
                 {
-                    CommandProc(pTrack, cmd, arg1, arg2);
+                    CommandProc(track, cmd, arg1, arg2);
                 }
                 break;
             }

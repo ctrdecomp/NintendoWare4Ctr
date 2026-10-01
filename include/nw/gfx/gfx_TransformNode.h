@@ -4,6 +4,8 @@
 #include <nw/gfx/gfx_SceneNode.h>
 #include <nw/gfx/gfx_CalculatedTransform.h>
 
+#include <nw/math/inlines/math_Matrix34.ipp>
+
 namespace nw{
 namespace os{
     class IAllocator;
@@ -275,7 +277,8 @@ inline void TransformNode::InheritTraversalResults()
     {
         results = nw::ut::EnableFlag(results, SceneNode::FLAG_IS_DIRTY);
     }
-    else{
+    else
+    {
         results = nw::ut::DisableFlag(results, SceneNode::FLAG_IS_DIRTY);
     }
 

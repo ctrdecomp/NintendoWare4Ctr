@@ -13,6 +13,7 @@ class SoundInstanceManager
 {
 public:
     typedef ut::LinkList<Sound, offsetof(Sound, m_PriorityLink)> PriorityList;
+    typedef typename PriorityList::Iterator Iterator;
 
 public:
     SoundInstanceManager()
@@ -53,6 +54,15 @@ public:
 
         m_FreeList.Clear();
         m_PriorityList.Clear();
+    }
+
+    Sound* GetLowestPrioritySound()
+    {
+        if (m_PriorityList.IsEmpty()) 
+        {
+            return NULL;
+        }
+        return &m_PriorityList.GetFront();
     }
 
     Sound* Alloc(int priority, int ambientPriority)

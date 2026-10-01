@@ -9,7 +9,7 @@ namespace snd {
 namespace internal {
 namespace driver {
 
-DisposeCallbackManager::~DisposeCallbackManager()
+DisposeCallbackManager::DisposeCallbackManager()
 {
 }
 
@@ -34,8 +34,11 @@ void DisposeCallbackManager::Dispose(void* mem, unsigned long size)
     const void* start = mem;
     const void* end = static_cast<u8*>(mem) + size;
 
-    NW_UT_LINKLIST_FOREACH_SAFE(itr, m_CallbackList,
-        {itr->InvalidateData(start, end); })
+    for (CallbackList::Iterator itr = GetInstance().m_CallbackList.GetBeginIter(); itr != GetInstance().m_CallbackList.GetEndIter(); )
+    {
+        CallbackList::Iterator curItr = itr++;
+        curItr->InvalidateData(start, end);
+    }
 }
 
 } // namespace driver

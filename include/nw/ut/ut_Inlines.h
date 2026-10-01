@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nw/Assert.h>
+#include <nw/types.h>
 
 #include <cstring>
 #include <cstdio>

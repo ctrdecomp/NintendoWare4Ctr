@@ -19,12 +19,12 @@ namespace internal {
 
 u32 PoolImpl::CreateImpl(void* buffer, size_t size, u32 stride) 
 {
-    NW_ASSERT(pBuffer);
+    NW_ASSERT(buffer);
 
-    u8* pPtr = static_cast<u8*>(ut::RoundUp(pBuffer, 4));
+    u8* pPtr = static_cast<u8*>(ut::RoundUp(buffer, 4));
     stride = ut::RoundUp(stride, 4);
 
-    u32 length = (size - ut::GetOffsetFromPtr(pBuffer, pPtr)) / stride;
+    u32 length = (size - ut::GetOffsetFromPtr(buffer, pPtr)) / stride;
 
     for (u32 i = 0; i < length; i++, pPtr += stride) 
     {

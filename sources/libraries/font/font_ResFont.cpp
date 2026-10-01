@@ -38,7 +38,7 @@ u32 ResFont::GetDrawBufferSize(const void* bfnt)
     int nBlocks = 0;
     while (nBlocks < fileHeader->dataBlocks)
     {
-        NN_POINTER_ASSERT( blockHeader );
+        NN_POINTER_ASSERT_(blockHeader);
         if (blockHeader->kind == BINBLOCK_SIG_TGLP)
         {
             pGlyph = reinterpret_cast<const FontTextureGlyph*>(

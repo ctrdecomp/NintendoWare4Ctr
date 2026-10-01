@@ -1,5 +1,9 @@
 #pragma once
 
+#include <nn/types.h>
+#include <cstdarg>
+#include <cstdio>
+
 #define NW_FONT_ADD_COMMANDS_PTR( ptr, command, size )  \
     std::memcpy( ptr, command, size );                  \
     (ptr) += (size) >> 2

@@ -66,9 +66,6 @@ public:
 class ResParticleEmitterParameter : public nw::ut::ResCommon<ResParticleEmitterParameterData>
 {
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleEmitterParameter) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('PEMT') };
-
     NW_RES_CTOR( ResParticleEmitterParameter )
 
     NW_RES_FIELD_PRIMITIVE_DECL( bool, IsResourceCopyEnabled)

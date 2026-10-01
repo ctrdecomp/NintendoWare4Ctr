@@ -197,24 +197,6 @@ enum SrcType
     SRC_TYPE_4TAP
 };
 
-struct AdshrCurve
-{
-    u8 attack;
-    u8 decay;
-    u8 sustain;
-    u8 hold;
-    u8 release;
-
-    AdshrCurve(u8 a = 0, u8 d = 0, u8 s = 0, u8 h = 0, u8 r = 0): 
-        attack(a),
-        decay(d),
-        sustain(s),
-        hold(h),
-        release(r) 
-    {
-    }
-};
-
 namespace internal{
 
 static const int WAVE_CHANNEL_MAX = 2;

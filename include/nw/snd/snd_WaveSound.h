@@ -30,7 +30,7 @@ public:
     virtual ~WaveSound() {}
     virtual void Initialize();
     virtual void Finalize();
-    virtual bool IsPrepared(){ return m_PreparedFlag; }
+    virtual bool IsPrepared() const { return m_PreparedFlag; }
     virtual bool IsAttachedTempSpecialHandle(){ return m_pTempSpecialHandle != NULL; }
     virtual void DetachTempSpecialHandle(){}
 

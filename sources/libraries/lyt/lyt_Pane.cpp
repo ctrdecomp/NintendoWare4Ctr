@@ -78,15 +78,15 @@ void Pane::Init()
 
 Pane::~Pane() 
 {
-    NW_UT_LINKLIST_FOREACH_SAFE(it, m_ChildList, {
-        m_ChildList.Erase(it);
-
-        if (!it->IsUserAllocated()) 
+    for (PaneList::Iterator it = m_ChildList.GetBeginIter(); it != m_ChildList.GetEndIter();)
+    {
+        PaneList::Iterator currIt = it++;
+        m_ChildList.Erase(currIt);
+        if (! currIt->IsUserAllocated())
         {
-            it->~Pane();
-            Layout::FreeMemory(&*it);
+            Layout::DeleteObj(&(*currIt));
         }
-    })
+    }
 
     UnbindAnimationSelf(NULL);
 }
@@ -163,14 +163,13 @@ Pane* Pane::FindPaneByName(const char* pName, bool recursive)
 
     if (recursive) 
     {
-        NW_UT_LINKLIST_FOREACH (it, m_ChildList, {
-            Pane* pResult = it->FindPaneByName(pName, true);
-
-            if (pResult != NULL)
+        for (PaneList::Iterator it = m_ChildList.GetBeginIter(); it != m_ChildList.GetEndIter(); ++it)
+        {
+            if (Pane* pPane = it->FindPaneByName(pName, recursive))
             {
-                return pResult;
+                return pPane;
             }
-        })
+        }
     }
 
     return NULL;
@@ -193,14 +192,13 @@ Material* Pane::FindMaterialByName(const char* pName, bool recursive)
 
     if (recursive) 
     {
-        NW_UT_LINKLIST_FOREACH (it, m_ChildList, {
-            Material* pResult = it->FindMaterialByName(pName, true);
-
-            if (pResult != NULL) 
+        for (PaneList::Iterator it = m_ChildList.GetBeginIter(); it != m_ChildList.GetEndIter(); ++it)
+        {
+            if (Material* pMat = it->FindMaterialByName(pName, recursive))
             {
-                return pResult;
+                return pMat;
             }
-        })
+        }
     }
 
     return NULL;
@@ -212,21 +210,23 @@ void Pane::Animate(u32 option)
 
     if (IsVisible() || !(option & ANIMATEOPT_NOANIMATEINVISIBLE)) 
     {
-        NW_UT_LINKLIST_FOREACH (it, m_ChildList, { it->Animate(option); })
+        for (PaneList::Iterator it = m_ChildList.GetBeginIter(); it != m_ChildList.GetEndIter(); ++it)
+        {
+            it->Animate(option);
+        }
     }
 }
 
 void Pane::AnimateSelf(u32 option) 
 {
-    NW_UT_LINKLIST_FOREACH (it, m_AnimList, {
-        if (!it->IsEnable()) 
+    for (AnimationList::Iterator it = m_AnimList.GetBeginIter(); it != m_AnimList.GetEndIter(); ++it)
+    {
+        if (it->IsEnable())
         {
-            continue;
+            AnimTransform* animTrans = it->GetAnimTransform();
+            animTrans->Animate(it->GetIndex(), this);
         }
-
-        AnimTransform* pAnimTrans = it->GetAnimTransform();
-        pAnimTrans->Animate(it->GetIndex(), this);
-    })
+    }
 
     if (IsVisible() || !(option & ANIMATEOPT_NOANIMATEINVISIBLE)) 
     {
@@ -253,8 +253,10 @@ void Pane::UnbindAnimation(AnimTransform* pAnimTrans, bool recursive)
 
     if (recursive) 
     {
-        NW_UT_LINKLIST_FOREACH (it, m_ChildList, 
-            { it->UnbindAnimation(pAnimTrans, recursive); })
+        for (PaneList::Iterator it = m_ChildList.GetBeginIter(); it != m_ChildList.GetEndIter(); ++it)
+        {
+            it->UnbindAnimation(pAnimTrans, recursive);
+        }
     }
 }
 
@@ -300,8 +302,10 @@ void Pane::SetAnimationEnable(AnimTransform* pAnimTrans, bool enable, bool recur
 
     if (recursive)
     {
-        NW_UT_LINKLIST_FOREACH (it, m_ChildList, 
-            { it->SetAnimationEnable(pAnimTrans, enable, recursive); })
+        for (PaneList::Iterator it = m_ChildList.GetBeginIter(); it != m_ChildList.GetEndIter(); ++it)
+        {
+            it->SetAnimationEnable(pAnimTrans, enable, recursive);
+        }
     }
 }
 

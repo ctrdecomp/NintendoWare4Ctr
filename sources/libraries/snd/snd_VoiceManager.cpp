@@ -86,19 +86,34 @@ Voice* VoiceManager::AllocVoice(int voiceChannelCount, int priority, Voice::Voic
     return &voice;
 }
 
-void VoiceManager::FreeVoice( Voice* voice )
+void VoiceManager::FreeVoice(Voice* voice)
 {
     RemoveVoiceList(voice);
 }
 
 void VoiceManager::UpdateAllVoices()
 {
-    NW_UT_LINKLIST_FOREACH_SAFE(it, m_PrioVoiceList, { it->StopFinished(); })
-    NW_UT_LINKLIST_FOREACH_SAFE(it, m_PrioVoiceList, { it->Calc(); })
-    NW_UT_LINKLIST_FOREACH_SAFE(it, m_PrioVoiceList, { it->Update(); })
+    for (VoiceList::Iterator itr = m_PrioVoiceList.GetBeginIter(); itr != m_PrioVoiceList.GetEndIter();)
+    {
+        VoiceList::Iterator curItr = itr++;
+        curItr->StopFinished();
+    }
+
+    for (VoiceList::Iterator itr = m_PrioVoiceList.GetBeginIter(); itr != m_PrioVoiceList.GetEndIter(); )
+    {
+        VoiceList::Iterator curItr = itr++;
+        curItr->Calc();
+    }
+
+
+    for (VoiceList::Iterator itr = m_PrioVoiceList.GetBeginIter(); itr != m_PrioVoiceList.GetEndIter(); )
+    {
+        VoiceList::Iterator curItr = itr++;
+        curItr->Update();
+    } 
 }
 
-void VoiceManager::AppendVoiceList( Voice* voice )
+void VoiceManager::AppendVoiceList(Voice* voice)
 {
     m_FreeVoiceList.Erase(voice);
 
@@ -178,7 +193,10 @@ int VoiceManager::GetVoiceCount() const
     
     int voiceCount = 0;
 
-    NW_UT_LINKLIST_FOREACH_SAFE(it, m_PrioVoiceList, { it->GetPhysicalVoiceCount(); })
+    for (VoiceList::ConstIterator itr = m_PrioVoiceList.GetBeginIter(); itr != m_PrioVoiceList.GetEndIter(); (void)++itr)
+    {
+        voiceCount += itr->GetPhysicalVoiceCount();
+    }
 
     return voiceCount;
 }

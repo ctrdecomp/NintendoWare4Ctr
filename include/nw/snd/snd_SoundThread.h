@@ -18,6 +18,8 @@ namespace driver {
 class SoundThread
 {
 public:
+    SoundThread();
+    
     class SoundFrameCallback
     {
       public:

@@ -2,7 +2,7 @@
 
 #include <nw/font/font_Types.h>
 #include <nw/ut/ut_Color.h>
-#include <nn/math/math_Vec4.h>
+#include <nn/math/math_Vector4.h>
 
 namespace nw {
 namespace font {
