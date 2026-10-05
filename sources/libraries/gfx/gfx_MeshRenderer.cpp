@@ -168,9 +168,9 @@ static bool isIllegal(const math::VEC3& vec)
 static bool isIllegal(const math::MTX34& mtx)
 {
     return
-        isIllegal(mtx._00) || isIllegal(mtx._01) || isIllegal(mtx._02) || isIllegal(mtx._03) ||
-        isIllegal(mtx._10) || isIllegal(mtx._11) || isIllegal(mtx._12) || isIllegal(mtx._13) ||
-        isIllegal(mtx._20) || isIllegal(mtx._21) || isIllegal(mtx._22) || isIllegal(mtx._23);
+        isIllegal(mtx.f._00) || isIllegal(mtx.f._01) || isIllegal(mtx.f._02) || isIllegal(mtx.f._03) ||
+        isIllegal(mtx.f._10) || isIllegal(mtx.f._11) || isIllegal(mtx.f._12) || isIllegal(mtx.f._13) ||
+        isIllegal(mtx.f._20) || isIllegal(mtx.f._21) || isIllegal(mtx.f._22) || isIllegal(mtx.f._23);
 }
 }
 

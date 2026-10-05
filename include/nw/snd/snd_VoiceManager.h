@@ -11,6 +11,7 @@ namespace driver {
 class VoiceManager
 {
     friend class Voice;
+    
 public:
     typedef ut::LinkList<Voice, offsetof(Voice, m_LinkNode)> VoiceList;
 

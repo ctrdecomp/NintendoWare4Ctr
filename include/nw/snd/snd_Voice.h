@@ -13,6 +13,8 @@ namespace driver {
 
 typedef nn::snd::CTR::Voice HardwareChannel;
 
+class VoiceManager;
+
 class Voice
 {
     friend class VoiceManager;
@@ -144,7 +146,8 @@ private:
     void StopAllHardwareChannel();
     void PauseAllHardwareChannel();
 
-private:
+    /* Hack to make --gnu work */
+public:
     HardwareChannel* m_pHardwareChannel[CHANNEL_MAX];
     int m_ChannelCount;
     VoiceCallback m_Callback;
