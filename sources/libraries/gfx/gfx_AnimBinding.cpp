@@ -197,3 +197,4 @@ void AnimBinding::EvaluateMember(AnimGroup* animGroup, int memberIdx, AnimObject
 
 }
 }
+

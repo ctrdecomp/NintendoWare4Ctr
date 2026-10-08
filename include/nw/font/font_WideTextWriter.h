@@ -9,3 +9,4 @@ typedef TextWriterBase<wchar_t> WideTextWriter;
 
 }
 }
+

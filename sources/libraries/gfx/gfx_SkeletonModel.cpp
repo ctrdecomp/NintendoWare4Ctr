@@ -222,3 +222,4 @@ void SkeletalModel::SetupAnimGroup(AnimGroup* animGroup, bool fullBakedAnimEnabl
 
 }
 }
+

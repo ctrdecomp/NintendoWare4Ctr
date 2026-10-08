@@ -696,3 +696,4 @@ void ResFogMember::SetValue(void* object, const void* value) const
 } // namespace res
 } // namespace anim
 } // namespace nw
+

@@ -87,3 +87,4 @@ Channel* Bank::NoteOn(const void* bankFile, const NoteOnInfo& noteOnInfo, const 
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

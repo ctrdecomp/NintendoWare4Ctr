@@ -697,3 +697,4 @@ Result Material::Initialize(nw::os::IAllocator* allocator)
 
 }
 }
+

@@ -14,3 +14,4 @@ NN_MAKE_MODULE(moduleInfo, "NINTENDO", NW_MIDDLEWARE_SYMBOL(module_name));      
 NN_REFER_MODULE(moduleInfo);                                                         \
 
 #endif // NINTENDOWARE_UT_MIDDLEWARESTRING_H
+

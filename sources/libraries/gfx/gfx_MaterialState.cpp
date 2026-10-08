@@ -475,3 +475,4 @@ void MaterialState::ActivateParticleTextureCoordinators(RenderContext* renderCon
 }
 }
 }
+

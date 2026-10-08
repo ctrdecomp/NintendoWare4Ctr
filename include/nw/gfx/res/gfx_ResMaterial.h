@@ -751,3 +751,4 @@ typedef nw::ut::ResArrayPatricia<const ResMaterial>::type ResMaterialArrayConst;
 }
 }
 }
+

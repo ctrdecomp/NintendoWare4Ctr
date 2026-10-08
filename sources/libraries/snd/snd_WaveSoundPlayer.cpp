@@ -147,3 +147,4 @@ s32 WaveSoundPlayer::GetPlaySamplePosition() const
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

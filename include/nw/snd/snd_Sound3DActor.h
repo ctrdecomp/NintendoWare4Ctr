@@ -52,3 +52,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_SOUND_3D_ACTOR_H_
+

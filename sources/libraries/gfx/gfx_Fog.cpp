@@ -417,3 +417,4 @@ void Fog::GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, ResFog resF
 
 }
 }
+

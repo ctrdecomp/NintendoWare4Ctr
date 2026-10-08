@@ -304,3 +304,4 @@
         { return &ref().m_CommandBuffer[0]; }                                       \
     const u32* GetCommandBuffer() const                                             \
         { return &ref().m_CommandBuffer[0]; }
+

@@ -624,3 +624,4 @@ void BiquadFilterBpf2048::GetCoefficients(int type, f32 value, BiquadFilterCallb
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

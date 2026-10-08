@@ -202,3 +202,4 @@ const TextureInfo ArcResourceAccessor::GetTexture(const char *name)
 
 } // namespace lyt
 } // namespace nw
+

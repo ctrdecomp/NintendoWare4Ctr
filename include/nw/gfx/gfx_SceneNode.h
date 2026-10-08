@@ -460,3 +460,4 @@ inline void SceneNode::InheritTraversalResults()
 
 }
 }
+

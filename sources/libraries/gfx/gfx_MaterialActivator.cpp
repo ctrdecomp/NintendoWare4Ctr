@@ -188,3 +188,4 @@ void MaterialActivator::Activate(RenderContext* renderContext, const Material* m
 
 }
 }
+

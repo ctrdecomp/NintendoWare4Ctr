@@ -171,3 +171,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_SOUND_INSTANCE_MANAGER_H_
+

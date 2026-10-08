@@ -83,3 +83,4 @@ void TexMap::ResetU32Info()
 
 }
 }
+

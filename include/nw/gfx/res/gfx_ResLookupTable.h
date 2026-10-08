@@ -167,3 +167,4 @@ inline const ResImageLookupTable ResLookupTable::Dereference() const
 }
 }
 }
+

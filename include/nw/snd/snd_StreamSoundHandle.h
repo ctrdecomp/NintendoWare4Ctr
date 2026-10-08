@@ -128,3 +128,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_STREAM_SOUND_HANDLE_H_
+

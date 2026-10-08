@@ -46,3 +46,4 @@ private:
 
 
 #endif // NW_SND_CHANNEL_MANAGER_H_
+

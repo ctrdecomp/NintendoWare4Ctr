@@ -88,3 +88,4 @@ struct WaveFile
 } // namespace nw
 
 #endif // NW_SND_WAVE_FILE_H_
+

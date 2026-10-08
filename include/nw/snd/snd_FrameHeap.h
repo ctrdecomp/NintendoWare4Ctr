@@ -117,3 +117,4 @@ private:
 } // namespace internal
 
 #endif // NW_SND_FRAME_HEAP_H_
+

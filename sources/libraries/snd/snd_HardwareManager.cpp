@@ -303,3 +303,4 @@ void HardwareManager::FinalizeEffect(AuxBus bus)
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

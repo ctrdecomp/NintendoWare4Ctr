@@ -100,3 +100,4 @@ bool WaveSoundFileReader::ReadWaveSoundInfo(WaveSoundInfo* dst, u32 index) const
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

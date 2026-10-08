@@ -418,3 +418,4 @@ inline void RenderContext::DeactivateVertexAttribute(ResMesh mesh)
 
 }
 }
+

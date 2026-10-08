@@ -305,3 +305,4 @@ const AdshrCurve& WaveSoundFile::NoteInfo::GetAdshrCurve() const
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

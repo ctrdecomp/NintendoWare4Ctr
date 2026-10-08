@@ -149,3 +149,4 @@ void MemorySoundArchive::MemoryFileStream::Seek(s32 offset, u32 origin)
 
 } // namespace snd
 } // namespace nw
+

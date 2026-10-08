@@ -18,3 +18,4 @@ const float CameraProjectionUpdater::PROJECTION_HEIGHT = 1.0f;
 
 }
 }
+

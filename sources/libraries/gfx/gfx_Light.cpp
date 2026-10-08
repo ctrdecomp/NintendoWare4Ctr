@@ -177,3 +177,4 @@ bool Light::ValidateLightAnimType(AnimObject* animObject)
 
 }
 }
+

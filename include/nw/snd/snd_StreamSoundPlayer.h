@@ -244,3 +244,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_STREAM_SOUND_PLAYER_H_
+

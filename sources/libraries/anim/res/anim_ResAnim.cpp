@@ -458,3 +458,4 @@ bool ResAnim::IsFullBakedAnim() const
 } // namespace res
 } // namespace anim
 } // namespace nw
+

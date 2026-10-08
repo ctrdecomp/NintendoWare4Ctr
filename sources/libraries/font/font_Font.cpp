@@ -46,3 +46,4 @@ const CharStrmReader Font::GetCharStrmReader(wchar_t /* dummy */) const
 
 }
 }
+

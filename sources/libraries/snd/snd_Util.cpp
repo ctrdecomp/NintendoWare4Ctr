@@ -848,3 +848,4 @@ f32 Util::CalcLpfFreq(f32 scale)
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

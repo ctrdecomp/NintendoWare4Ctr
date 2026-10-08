@@ -1246,3 +1246,4 @@ bool SoundArchivePlayer::WaveSoundCallback::GetWaveSoundData(
 
 } // namespace snd
 } // namespace nw
+

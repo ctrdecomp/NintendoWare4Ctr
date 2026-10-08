@@ -234,3 +234,4 @@ inline int ShaderProgram::GetVertexAttributeIndex(ResVertexAttribute::VertexAttr
 
 }
 }
+

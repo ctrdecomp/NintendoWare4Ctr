@@ -456,3 +456,4 @@ void CalcTransformCurve( nw::math::MTX34* result, const ResFullBakedCurveData* p
 }
 }
 }
+

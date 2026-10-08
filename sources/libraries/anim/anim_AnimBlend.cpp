@@ -214,3 +214,4 @@ void AnimBlendOpRgbaColor::ConvertToAnimResult(AnimResult* result, const void* s
 
 } // namespace anim
 } // namespace nw
+

@@ -31,3 +31,4 @@ Result SetupReferenceLut(ResReferenceLookupTable resReferenceLut, ResGraphicsFil
 }
 }
 }
+

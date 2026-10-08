@@ -84,3 +84,4 @@ void* ResFont::SetDrawBuffer(void* buffer)
 
 }
 }
+

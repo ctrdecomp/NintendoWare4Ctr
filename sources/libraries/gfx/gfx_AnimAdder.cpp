@@ -79,3 +79,4 @@ const anim::AnimResult* AnimAdder::GetResult(void* target,int memberIdx) const
 
 }
 }
+

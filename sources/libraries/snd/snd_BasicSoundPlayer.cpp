@@ -86,3 +86,4 @@ void BasicSoundPlayer::SetBiquadFilter( int type, float value )
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

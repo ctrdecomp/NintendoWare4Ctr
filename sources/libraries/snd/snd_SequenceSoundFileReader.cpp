@@ -101,3 +101,4 @@ const char* SequenceSoundFileReader::GetLabelByOffset(u32 offset) const
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

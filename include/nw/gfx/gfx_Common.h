@@ -128,3 +128,4 @@ inline bool ResCheckRevision(const TRes res)
     NW_ASSERT(result.IsSuccess());
 
 #endif
+

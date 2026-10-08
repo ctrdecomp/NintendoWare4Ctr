@@ -64,3 +64,4 @@ typedef nw::ut::ResArrayPatricia<ResParticleSet>::type  ResParticleSetArray;
 }
 }
 }
+

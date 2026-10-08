@@ -20,3 +20,4 @@ public:
 } // namespace snd
 
 #endif // NW_SND_BIQUAD_FILTER_CALLBACK_H_
+

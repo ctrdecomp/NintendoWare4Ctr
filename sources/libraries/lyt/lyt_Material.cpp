@@ -970,3 +970,4 @@ void Material::SetAnimationEnable(const AnimResource& animRes,bool bEnable)
 
 }
 }
+

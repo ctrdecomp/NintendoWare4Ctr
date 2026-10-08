@@ -258,3 +258,4 @@ void FrameBufferObject::ClearBuffer(u32 mask,const nw::ut::FloatColor& clearColo
 
 }
 }
+

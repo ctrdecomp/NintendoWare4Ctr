@@ -18,3 +18,4 @@ const BankFile::InfoBlock* BankFile::FileHeader::GetInfoBlock() const
 }
 }
 }
+

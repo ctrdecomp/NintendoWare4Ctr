@@ -225,3 +225,4 @@ void WorldMatrixUpdater::CalculateWorldBasic(math::MTX34* transformMatrix, math:
 
 }
 }
+

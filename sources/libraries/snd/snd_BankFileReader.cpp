@@ -122,3 +122,4 @@ const Util::WaveIdTable& BankFileReader::GetWaveIdTable() const
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

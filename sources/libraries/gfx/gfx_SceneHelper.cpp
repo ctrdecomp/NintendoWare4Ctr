@@ -35,3 +35,4 @@ void SceneHelper::ResolveReferenceImpl(SceneNode* parent, SceneNode* child)
 
 }
 }
+

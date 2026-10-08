@@ -91,3 +91,4 @@ void LookAtTargetViewUpdater::Update(math::MTX34* viewMatrix, const math::MTX34&
 
 }
 }
+

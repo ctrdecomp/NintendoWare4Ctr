@@ -112,3 +112,4 @@ void SoundHeap::DisposeCallbackFunc(void* mem, unsigned long size, void* arg)
 
 } // namespace snd
 } // namespace nw
+

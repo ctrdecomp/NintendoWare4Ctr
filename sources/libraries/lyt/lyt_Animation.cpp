@@ -522,3 +522,4 @@ void AnimResource::Init()
 
 }
 }
+

@@ -156,3 +156,4 @@ bool WaveArchiveFileReader::HasIndividualLoadTable() const
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

@@ -552,3 +552,4 @@ inline void Model::UpdateNormalMatrix(const math::MTX34& viewMatrix,bool isModel
 
 }
 }
+

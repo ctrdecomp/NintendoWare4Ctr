@@ -360,3 +360,4 @@ s32 ResShaderProgramDescription::GetGeometryUniformIndex(const char* name, Shade
 } // namespace res
 } // namespace gfx
 } // namespace nw
+

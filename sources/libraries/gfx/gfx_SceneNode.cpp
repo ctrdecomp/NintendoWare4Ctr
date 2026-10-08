@@ -190,3 +190,4 @@ Result SceneNode::Initialize(os::IAllocator* allocator)
 
 }
 }
+

@@ -9,3 +9,4 @@ namespace lyt{
     void Initialize(os::IAllocator* pAllocator,os::IAllocator* pDeviceMemoryAllocator);
 }
 }
+

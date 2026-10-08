@@ -193,3 +193,4 @@ void VertexLight::GetMemorySizeInternal( os::MemorySizeCalculator* pSize,ResVert
 
 }
 }
+

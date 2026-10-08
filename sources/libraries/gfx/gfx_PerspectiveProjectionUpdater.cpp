@@ -76,3 +76,4 @@ void PerspectiveProjectionUpdater::Update(math::MTX44* projectionMatrix, math::M
 
 }
 }
+

@@ -148,3 +148,4 @@ const void* WaveFileReader::GetWaveDataAddress(const WaveFile::ChannelInfo* info
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

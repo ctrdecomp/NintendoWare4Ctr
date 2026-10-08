@@ -79,3 +79,4 @@ NW_FORCE_INLINE u32* FastWordCopy(u32* dst, u32* src, u32 size)
 }
 }
 }
+

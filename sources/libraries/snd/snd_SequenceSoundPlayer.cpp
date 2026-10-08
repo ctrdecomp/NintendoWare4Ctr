@@ -623,3 +623,4 @@ Channel* SequenceSoundPlayer::NoteOn(u8 bankIndex, const NoteOnInfo& noteOnInfo)
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

@@ -287,3 +287,4 @@ inline void TransformNode::InheritTraversalResults()
 
 }
 }
+

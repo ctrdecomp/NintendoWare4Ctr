@@ -185,3 +185,4 @@ void SimpleMaterialActivator::Activate(RenderContext* renderContext, const Mater
 
 }
 }
+

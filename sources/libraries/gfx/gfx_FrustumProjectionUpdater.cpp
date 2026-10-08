@@ -82,3 +82,4 @@ void FrustumProjectionUpdater::Update(math::MTX44* projectionMatrix, math::MTX34
 
 }
 }
+

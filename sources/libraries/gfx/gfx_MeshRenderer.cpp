@@ -402,3 +402,4 @@ void MeshRenderer::SetMatrixPalette(SkeletalModel* skeletalModel, ResPrimitiveSe
 
 }
 }
+

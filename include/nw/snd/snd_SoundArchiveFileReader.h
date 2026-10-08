@@ -76,3 +76,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_SOUND_ARCHIVE_FILE_READER_H_
+

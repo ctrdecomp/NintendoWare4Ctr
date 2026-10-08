@@ -630,3 +630,4 @@ s32 SetupDrawIndexStreamCommand(CommandBufferInfo& bufferInfo, ResIndexStream in
 
 }
 }
+

@@ -140,3 +140,4 @@ void CalculatedTransform::UpdateCompositeFlags()
 
 }
 }
+

@@ -120,3 +120,4 @@ private:
 } // namespace snd
 
 #endif // NW_SND_FX_REVERB_HI_H_
+

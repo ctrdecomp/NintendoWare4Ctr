@@ -36,3 +36,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_DISPOSE_CALLBACK_MANAGER_H_
+

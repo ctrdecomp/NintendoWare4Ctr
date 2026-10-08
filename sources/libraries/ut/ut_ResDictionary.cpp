@@ -46,3 +46,4 @@ ResDicPatriciaData::ResDicNodeData* ResDicPatricia::Get(const ResName rhs) const
 
 }
 }
+

@@ -116,3 +116,4 @@ struct WaveSoundFile
 } // namespace nw
 
 #endif // NW_SND_WAVE_SOUND_FILE_H_
+

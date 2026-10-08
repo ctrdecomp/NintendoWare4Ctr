@@ -18,3 +18,4 @@ public:
 } // namespace nw
 
 #endif // NW_SND_SOUND_MEMORY_ALLOCATABLE_H_
+

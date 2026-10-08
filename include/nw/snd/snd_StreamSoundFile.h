@@ -157,3 +157,4 @@ struct StreamSoundFile
 } // namespace nw
 
 #endif // NW_SND_STREAM_SOUND_FILE_H_
+

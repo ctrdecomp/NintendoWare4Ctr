@@ -168,3 +168,4 @@ void HemiSphereLight::GetMemorySizeInternal( os::MemorySizeCalculator* pSize,Res
 
 }
 }
+

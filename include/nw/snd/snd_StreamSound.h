@@ -76,3 +76,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_STREAM_SOUND_H_
+

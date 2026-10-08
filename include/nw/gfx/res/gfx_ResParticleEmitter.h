@@ -83,3 +83,4 @@ typedef nw::ut::ResArrayPatricia<ResParticleEmitter>::type  ResEmitterArray;
 }
 }
 }
+

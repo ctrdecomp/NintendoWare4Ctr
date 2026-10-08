@@ -292,3 +292,4 @@ inline const void* AddOffsetToPtr(const void* ptr, T offset)
 }
 
 using namespace nw::ut::internal;
+

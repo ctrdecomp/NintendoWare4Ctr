@@ -197,3 +197,4 @@ void SceneEnvironmentSetting::GetMemorySizeInternal(os::MemorySizeCalculator* pS
 
 }
 }
+

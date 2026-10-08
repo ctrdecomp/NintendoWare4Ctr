@@ -51,3 +51,4 @@ inline TFlags SetFlagValue(const TFlags& flags, int shift, const TMask& mask, co
 
 } // namespace ut
 } // namespace nw
+

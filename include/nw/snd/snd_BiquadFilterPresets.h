@@ -67,3 +67,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_BIQUAD_FILTER_PRESETS_H_
+

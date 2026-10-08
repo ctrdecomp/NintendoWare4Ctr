@@ -634,3 +634,4 @@ Channel* SequenceTrack::NoteOn(int key, int velocity, s32 length, bool tieFlag)
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

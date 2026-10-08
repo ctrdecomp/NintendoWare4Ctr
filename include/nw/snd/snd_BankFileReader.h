@@ -48,3 +48,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_BANK_FILE_READER_H_
+

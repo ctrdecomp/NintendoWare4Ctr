@@ -995,3 +995,4 @@ void Window::MakeUniformDataSelf(DrawInfo* /* pDrawInfo */, Drawer* pDrawer) con
 
 }
 }
+

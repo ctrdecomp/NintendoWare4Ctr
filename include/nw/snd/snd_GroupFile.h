@@ -118,3 +118,4 @@ struct GroupFile
 
 
 #endif // NW_SND_GROUP_FILE_H_
+

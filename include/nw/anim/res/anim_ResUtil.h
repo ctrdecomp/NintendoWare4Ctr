@@ -16,3 +16,4 @@ void DestroyClonedTextureAnim(os::IAllocator* allocator, ResAnim anim);
 } // namespace nw
 
 #endif // NW_ANIM_RESUTIL_H_ 
+

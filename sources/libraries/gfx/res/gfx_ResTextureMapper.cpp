@@ -751,3 +751,4 @@ void ResPixelBasedTextureMapper::ForceSetupTexture(ResTexture texture)
 }
 }
 }
+

@@ -98,3 +98,4 @@ IRenderTarget* IRenderTarget::CreateOffScreenBuffer(os::IAllocator* allocator, R
 
 }
 }
+

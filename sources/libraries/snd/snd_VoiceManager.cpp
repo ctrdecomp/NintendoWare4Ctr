@@ -224,3 +224,4 @@ const VoiceManager::VoiceList& VoiceManager::GetVoiceList() const
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

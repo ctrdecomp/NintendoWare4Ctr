@@ -102,3 +102,4 @@ inline bool ARCDirEntryIsDir(ARCDirEntry* dirent) { return dirent->isDir; }
 
 }
 }
+

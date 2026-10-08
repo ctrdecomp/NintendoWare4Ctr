@@ -47,3 +47,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_PLAYER_HEAP_DATA_MANAGER_H_
+

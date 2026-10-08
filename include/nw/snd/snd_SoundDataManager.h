@@ -63,3 +63,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_SOUND_DATA_MANAGER_H_
+

@@ -44,3 +44,4 @@ void UserRenderNode::Accept(ISceneVisitor* visitor)
 
 }
 }
+

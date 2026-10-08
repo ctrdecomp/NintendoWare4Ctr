@@ -143,3 +143,4 @@ void DestroyClonedTextureAnim(os::IAllocator* allocator, ResAnim anim)
 } // namespace res
 } // namespace anim
 } // namespace nw
+

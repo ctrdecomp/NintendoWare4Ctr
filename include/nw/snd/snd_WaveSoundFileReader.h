@@ -59,3 +59,4 @@ struct WaveSoundNoteInfo
 } // namespace nw
 
 #endif // NW_SND_WAVE_SOUND_FILE_READER_H_
+

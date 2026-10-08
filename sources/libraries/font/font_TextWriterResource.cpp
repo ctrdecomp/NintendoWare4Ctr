@@ -135,3 +135,4 @@ void TextWriterResource::SetPosZ(f32 posZ)
 
 }
 }
+

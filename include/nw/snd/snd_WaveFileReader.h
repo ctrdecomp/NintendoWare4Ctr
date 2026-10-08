@@ -29,3 +29,4 @@ private:
 
 
 #endif // NW_SND_WAVE_FILE_READER_H_
+

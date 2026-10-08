@@ -28,3 +28,4 @@ const GroupFile::InfoExBlock* GroupFile::FileHeader::GetInfoExBlock() const
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

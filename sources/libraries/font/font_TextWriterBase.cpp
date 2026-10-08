@@ -246,3 +246,4 @@ void TextWriterBase<CharType>::CalcStringRectImpl(ut::Rect* pRect,StreamType str
 
 }
 }
+

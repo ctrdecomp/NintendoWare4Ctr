@@ -27,3 +27,4 @@ void CalcTextureMtx(nw::math::MTX23* pTexMtx, const TexSRT& texSRT, const TexMap
 
 }
 }
+

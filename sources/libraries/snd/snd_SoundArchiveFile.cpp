@@ -823,3 +823,4 @@ SoundArchiveFile::FileInfo::GetExternalFileInfo() const
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

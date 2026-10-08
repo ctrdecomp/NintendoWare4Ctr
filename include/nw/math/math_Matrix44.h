@@ -11,3 +11,4 @@ MTX44* MTX44TextureMatrixForSoftimage(MTX44* pOut,float scaleS, float scaleT,flo
 
 }
 }
+

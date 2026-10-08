@@ -422,3 +422,4 @@ inline const ResTexture ResTexture::Dereference() const
 }
 }
 }
+

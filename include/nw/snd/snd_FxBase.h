@@ -25,3 +25,4 @@ public:
 } // namespace snd
 
 #endif // NW_SND_FX_BASE_H_
+

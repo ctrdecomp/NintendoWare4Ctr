@@ -360,3 +360,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_UTIL_H_
+

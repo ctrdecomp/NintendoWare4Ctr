@@ -191,3 +191,4 @@ typedef struct ResBool
 
 } // namespace ut
 } // namespace nw
+

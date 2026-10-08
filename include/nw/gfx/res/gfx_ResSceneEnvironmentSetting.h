@@ -83,3 +83,4 @@ typedef nw::ut::ResArrayClass<ResLightSet>::type ResLightSetArray;
 }
 }
 }
+

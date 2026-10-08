@@ -308,3 +308,4 @@ void FragmentLight::GetMemorySizeInternal(nw::os::MemorySizeCalculator* pSize, R
 
 }
 }
+

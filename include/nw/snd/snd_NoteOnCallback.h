@@ -37,3 +37,4 @@ public:
 } // namespace nw
 
 #endif // NW_SND_NOTE_ON_CALLBACK_H_
+

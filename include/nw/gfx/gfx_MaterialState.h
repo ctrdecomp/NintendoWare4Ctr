@@ -491,3 +491,4 @@ inline void MaterialState::ActivateFragmentOperation(const ResFragmentOperation 
 }
 }
 }
+

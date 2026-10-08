@@ -169,3 +169,4 @@ void AmbientLight::GetMemorySizeInternal( os::MemorySizeCalculator* pSize,ResAmb
 
 }
 }
+

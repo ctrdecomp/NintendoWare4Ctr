@@ -204,3 +204,4 @@ void Picture::DrawSelf(const DrawInfo& drawInfo)
 
 }
 }
+

@@ -263,3 +263,4 @@ typedef nw::ut::ResArrayPatricia<ResCamera>::type  ResCameraArray;
 }
 }
 }
+

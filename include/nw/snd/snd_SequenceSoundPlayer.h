@@ -237,3 +237,4 @@ void SequenceSoundPlayer::SetTrackParam(u32 trackBitFlag, void (SequenceTrack::*
 } // namespace nw
 
 #endif // NW_SND_SEQUENCE_SOUND_PLAYER_H_
+

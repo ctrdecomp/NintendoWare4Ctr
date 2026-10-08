@@ -519,3 +519,4 @@ void Channel::Disposer::InvalidateData(const void* start, const void* end)
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

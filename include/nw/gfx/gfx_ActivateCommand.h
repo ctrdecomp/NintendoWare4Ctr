@@ -284,3 +284,4 @@ inline void ActivateFragmentLighting(const ResFragmentLighting fragmentLighting)
 }
 }
 }
+

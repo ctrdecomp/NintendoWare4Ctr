@@ -371,3 +371,4 @@ void CharWriter::SetupGXWithColorMapping(bool bAlphaTex)
 
 }
 }
+

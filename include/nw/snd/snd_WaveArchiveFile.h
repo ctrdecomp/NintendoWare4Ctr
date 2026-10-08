@@ -64,3 +64,4 @@ struct WaveArchiveFile
 } // namespace nw
 
 #endif // NW_SND_WAVE_ARCHIVE_FILE_H_
+

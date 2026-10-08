@@ -412,3 +412,4 @@ struct ImageSize
 } // namespace res
 } // namespace lyt
 } // namespace nw
+

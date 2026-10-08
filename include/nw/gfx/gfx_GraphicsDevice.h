@@ -719,3 +719,4 @@ inline void GraphicsDevice::SetStencilMask(u8 mask)
 
 }
 }
+

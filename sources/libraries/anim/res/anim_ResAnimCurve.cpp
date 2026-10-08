@@ -957,3 +957,4 @@ void CalcTransformCurve(math::MTX34* result, const ResFullBakedCurveData* pCurve
 } /* namespace res */
 } /* namespace anim */
 } // namespace nw */
+

@@ -479,3 +479,4 @@ void TextBox::SetupTextWriter(font::WideTextWriter* pWriter)
 
 }
 }
+

@@ -201,3 +201,4 @@ inline void WorldMatrixUpdater::UpdateXsi(nw::math::MTX34* worldMatrix,Calculate
 
 }
 }
+

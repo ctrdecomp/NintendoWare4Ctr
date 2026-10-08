@@ -243,3 +243,4 @@ void ParticleEmitter::Accept(ISceneVisitor* visitor)
 
 } // namespace gfx
 } // namespace nw
+

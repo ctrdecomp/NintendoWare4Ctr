@@ -570,3 +570,4 @@ bool ResPixelBasedImage::CheckMemoryLocation() const
 }
 }
 }
+

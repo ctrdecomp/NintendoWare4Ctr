@@ -92,3 +92,4 @@ void PoolImpl::FreeImpl(void* pElem)
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

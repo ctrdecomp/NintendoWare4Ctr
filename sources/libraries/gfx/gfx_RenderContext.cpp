@@ -720,3 +720,4 @@ void RenderContext::RenderPrimitive(ResPrimitive primitive)
 
 }
 }
+

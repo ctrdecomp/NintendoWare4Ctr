@@ -278,3 +278,4 @@ void RomSoundArchive::RomFileStream::Seek(s32 offset, u32 origin)
 // ルイージファンより
 //
 // 日本語＝かっこいい！
+

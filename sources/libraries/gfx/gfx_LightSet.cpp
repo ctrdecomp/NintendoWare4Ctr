@@ -56,3 +56,4 @@ LightSet* LightSet::Create(ResLightSet resource,os::IAllocator* allocator)
 
 }
 }
+

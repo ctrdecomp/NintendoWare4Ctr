@@ -85,3 +85,4 @@ typedef nw::ut::ResArrayPatricia<ResFog>::type  ResFogArray;
 }
 }
 }
+

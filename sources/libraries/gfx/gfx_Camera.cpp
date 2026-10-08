@@ -1011,3 +1011,4 @@ bool Camera::ValidateCameraAnimType(AnimObject* animObject)
 
 }
 }
+

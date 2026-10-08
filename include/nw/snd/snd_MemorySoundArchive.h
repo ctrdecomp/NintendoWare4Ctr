@@ -64,3 +64,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_MEMORY_SOUND_ARCHIVE_H
+

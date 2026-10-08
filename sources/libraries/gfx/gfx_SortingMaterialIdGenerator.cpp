@@ -150,3 +150,4 @@ void SortingMaterialIdGenerator::Generate()
 
 }
 }
+

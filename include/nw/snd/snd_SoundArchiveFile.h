@@ -398,3 +398,4 @@ struct SoundArchiveFile
 } // namespace nw
 
 #endif // NW_SND_SOUND_ARCHIVE_FILE_H_
+

@@ -93,3 +93,4 @@
 #define NW_NULL_ASSERT(exp) \
     NW_FAILSAFE_IF(exp) \
     { NW_FATAL_ERROR(#exp); }
+

@@ -58,3 +58,4 @@ private:
 
 
 #endif // NW_SND_STREAM_SOUND_FILE_READER_H_
+

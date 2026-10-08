@@ -96,3 +96,4 @@ bool TexResource::Set(void* pTexRes, u32 size)
 
 }
 }
+

@@ -132,3 +132,4 @@ bool StreamSoundFileLoader::ReadAdpcBlockData(u16* yn1, u16* yn2, int blockIndex
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

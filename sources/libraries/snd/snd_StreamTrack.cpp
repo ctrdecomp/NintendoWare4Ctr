@@ -23,3 +23,4 @@ void StreamChannel::AppendWaveBuffer(nn::snd::CTR::WaveBuffer* pBuffer, bool las
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

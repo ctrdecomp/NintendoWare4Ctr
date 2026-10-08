@@ -70,3 +70,4 @@ font::Font* ResourceAccessor::LoadFont(const char *name)
 
 }
 }
+

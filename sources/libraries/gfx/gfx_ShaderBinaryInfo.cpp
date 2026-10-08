@@ -547,3 +547,4 @@ s32 ShaderBinaryInfo::GetLoadCommandSize(u32 count) const
 
 }
 }
+

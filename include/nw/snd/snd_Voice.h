@@ -194,3 +194,4 @@ public:
 } // namespace nw
 
 #endif // NW_SND_VOICE_H_
+

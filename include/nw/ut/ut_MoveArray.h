@@ -661,3 +661,4 @@ inline bool operator>=(const nw::ut::MoveArray<TElement>& lhs, const nw::ut::Mov
 {
     return !(lhs < rhs);
 }
+

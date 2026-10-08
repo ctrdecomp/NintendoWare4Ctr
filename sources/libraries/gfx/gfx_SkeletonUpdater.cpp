@@ -225,3 +225,4 @@ void SkeletonUpdater::UpdateView(Skeleton* skeleton,const BillboardUpdater& bill
 
 }
 }
+

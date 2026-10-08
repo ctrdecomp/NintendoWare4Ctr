@@ -67,3 +67,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_SOUND_HEAP_H_
+

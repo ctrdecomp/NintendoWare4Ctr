@@ -32,3 +32,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_THREAD_STACK_H_
+

@@ -16,3 +16,4 @@ const float CameraViewUpdater::VIEW_TWIST = 0.0f;
 
 }
 }
+

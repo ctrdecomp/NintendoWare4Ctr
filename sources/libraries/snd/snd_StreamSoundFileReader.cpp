@@ -159,3 +159,4 @@ bool StreamSoundFileReader::IsValidFileHeader(const void* streamSoundFile) const
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

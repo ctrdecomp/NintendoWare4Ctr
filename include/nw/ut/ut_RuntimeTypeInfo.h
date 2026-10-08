@@ -71,3 +71,4 @@ inline bool IsTypeOf(const U* instance)
 
 }
 }
+

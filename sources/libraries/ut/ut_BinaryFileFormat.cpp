@@ -115,3 +115,4 @@ BinaryBlockHeader*  GetNextBinaryBlockHeader(BinaryFileHeader* pFileHeader,Binar
 
 }
 }
+

@@ -78,3 +78,4 @@ void FileStream::FilePosition::Seek(s32 offset, u32 origin)
 
 } // namespace io
 } // namespace nw
+

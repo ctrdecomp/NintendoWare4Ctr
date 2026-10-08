@@ -69,3 +69,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_CURVE_ADSHR_H_
+

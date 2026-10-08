@@ -130,3 +130,4 @@ enum ResTypeInfoDefinition
 }
 }
 }
+

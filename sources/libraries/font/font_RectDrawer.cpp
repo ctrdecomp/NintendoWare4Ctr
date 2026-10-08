@@ -804,3 +804,4 @@ void RectDrawer::InitializeCMD(void* vertexBuffer,void* commandBuffer,const void
 
 }
 }
+

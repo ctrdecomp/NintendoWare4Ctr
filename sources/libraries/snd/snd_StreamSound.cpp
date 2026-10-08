@@ -234,3 +234,4 @@ bool StreamSound::IsSuspendByLoadingDelay() const
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

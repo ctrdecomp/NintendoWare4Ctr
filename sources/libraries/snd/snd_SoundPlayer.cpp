@@ -280,3 +280,4 @@ void SoundPlayer::detail_FreePlayerHeap(internal::BasicSound* pSound)
 
 } // namespace snd
 } // namespace nw
+

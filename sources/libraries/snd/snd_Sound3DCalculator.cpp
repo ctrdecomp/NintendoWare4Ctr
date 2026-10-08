@@ -294,3 +294,4 @@ void Sound3DCalculator::CalcAngleAndDistance(
 
 } // namespace snd
 } // namespace nw
+
