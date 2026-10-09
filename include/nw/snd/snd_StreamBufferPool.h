@@ -37,3 +37,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_STREAM_BUFFER_POOL_H_
+

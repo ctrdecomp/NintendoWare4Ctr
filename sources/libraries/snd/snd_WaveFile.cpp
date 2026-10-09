@@ -49,3 +49,4 @@ const WaveFile::DspAdpcmInfo& WaveFile::ChannelInfo::GetDspAdpcmInfo() const
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

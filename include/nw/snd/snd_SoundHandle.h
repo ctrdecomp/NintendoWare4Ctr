@@ -246,3 +246,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_SOUND_HANDLE_H_
+

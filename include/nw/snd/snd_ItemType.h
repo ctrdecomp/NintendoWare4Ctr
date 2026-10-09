@@ -20,3 +20,4 @@ enum ItemType
 } // namespace nw
 
 #endif // NW_SND_ITEM_TYPE_H_
+

@@ -111,3 +111,4 @@ inline Function SoundActor::ForEachSound(Function function, bool reverse)
 } // namespace nw
 
 #endif // NW_SND_SOUND_ACTOR_H_
+

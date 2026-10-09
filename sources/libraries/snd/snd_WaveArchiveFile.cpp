@@ -51,3 +51,4 @@ const Util::ReferenceWithSize* WaveArchiveFile::FileHeader::GetReferenceBy(u16 t
 } // namespace internal
 } // namespace snd
 } // namespace nw
+

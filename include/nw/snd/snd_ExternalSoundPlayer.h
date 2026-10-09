@@ -80,3 +80,4 @@ inline Function ExternalSoundPlayer::ForEachSound(Function function, bool revers
 } // namespace internal
 
 #endif // NW_SND_EXTERNAL_SOUND_PLAYER_H_
+

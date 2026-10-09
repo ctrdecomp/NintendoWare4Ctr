@@ -39,3 +39,4 @@ private:
 
 #endif // NW_SND_GROUP_FILE_READER_H_
 
+

@@ -134,3 +134,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_SOUND_THREAD_H_
+

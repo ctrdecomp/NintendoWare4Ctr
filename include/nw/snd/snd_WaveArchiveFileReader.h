@@ -65,3 +65,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_WAVE_ARCHIVE_FILE_READER_H_
+

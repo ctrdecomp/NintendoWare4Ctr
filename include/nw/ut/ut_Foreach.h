@@ -233,3 +233,4 @@ inline bool done(static_any_t cur, static_any_t end, contain_type<std::pair<Type
               _continue ? NW_FOREACH_NEXT(COL) : (void)0)                           \
              if      ((_continue = false) == true) {}                               \
              else for (VAR = NW_FOREACH_EXTRACT(COL); !_continue; _continue = true)
+

@@ -77,3 +77,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_MOVE_VALUE_H_
+

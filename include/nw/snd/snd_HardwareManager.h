@@ -89,3 +89,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_HARDWARE_MANAGER_H_
+

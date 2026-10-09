@@ -104,3 +104,4 @@ public:
 } // namespace mw
 
 #endif // NW_SND_WAVE_SOUND_H_
+

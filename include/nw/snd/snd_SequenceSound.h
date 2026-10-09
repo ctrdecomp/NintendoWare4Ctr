@@ -206,3 +206,4 @@ private:
 } // namespace nw
 
 #endif // NW_SND_SEQUENCE_SOUND_H_
+

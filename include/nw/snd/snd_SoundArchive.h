@@ -302,3 +302,4 @@ private:
 }
 
 #endif // NW_SND_SOUND_ARCHIVE_H_
+
