@@ -10,8 +10,6 @@
 
 namespace nw {
 namespace ut {
-
-
 namespace detail {
 
 template<typename From, typename To>
@@ -192,7 +190,7 @@ public:
     {
         clear();
         this->resize(source.size());
-        std::copy(source.begin(), source.end(), NW_CHECKED_ARRAY_ITERATOR(this->begin(), this->size()));
+        std::copy(source.begin(), source.end(), this->begin());
     }
 
     bool reserve(int reserveSize);
@@ -430,7 +428,7 @@ inline bool MoveArray<TElement>::reserve(int reserveSize)
     size_t elementsCount = 0;
     if (!empty())
     {
-        std::copy(begin(), end(), NW_CHECKED_ARRAY_ITERATOR(elements, reserveSize));
+        std::copy(begin(), end(), elements);
         elementsCount = size();
     }
 
