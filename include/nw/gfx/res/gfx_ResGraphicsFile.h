@@ -73,12 +73,24 @@ class ResFileHeader : public nw::ut::ResCommon<ResFileHeaderData>
 public:
     NW_RES_CTOR( ResFileHeader )
     
-    NW_RES_FIELD_PRIMITIVE_DECL( u32, Signature )
-    NW_RES_FIELD_PRIMITIVE_DECL( u16, ByteOrder )
-    NW_RES_FIELD_PRIMITIVE_DECL( u16, HeaderSize )
-    NW_RES_FIELD_PRIMITIVE_DECL( u32, Revision )
-    NW_RES_FIELD_PRIMITIVE_DECL( u32, FileSize )
-    NW_RES_FIELD_PRIMITIVE_DECL( u16, NumBlocks )
+
+    u32 GetSignature() const { return static_cast<u32>(ref().m_Signature); }
+    void SetSignature(u32 value) { ref().m_Signature = value; }
+
+    u16 GetByteOrder() const { return static_cast<u16>(ref().m_ByteOrder); }
+    void SetByteOrder(u16 value) { ref().m_ByteOrder = value; }
+
+    u16 GetHeaderSize() const { return static_cast<u16>(ref().m_HeaderSize); }
+    void SetHeaderSize(u16 value) { ref().m_HeaderSize = value; }
+
+    u32 GetRevision() const { return static_cast<u32>(ref().m_Revision); }
+    void SetRevision(u32 value) { ref().m_Revision = value; }
+
+    u32 GetFileSize() const { return static_cast<u32>(ref().m_FileSize); }
+    void SetFileSize(u32 value) { ref().m_FileSize = value; }
+
+    u16 GetNumBlocks() const { return static_cast<u16>(ref().m_NumBlocks); }
+    void SetNumBlocks(u16 value) { ref().m_NumBlocks = value; }
 
     const nw::ut::BinaryFileHeader& GetFileHeader() const {return *reinterpret_cast<const nw::ut::BinaryFileHeader*>( this->ptr() );}
     const nw::ut::BinaryBlockHeader& GetFirstBlockHeader() const {return ref().m_BlockHeader;}
@@ -109,7 +121,7 @@ public:
 private:
     const void* GetImageBlockDataImpl() const
     {
-        NW_ASSERT( this->IsValid() );
+        NW_ASSERT(IsValid());
         
         const nw::ut::BinaryFileHeader& header = *reinterpret_cast<const nw::ut::BinaryFileHeader*>( this->ptr() );
         const nw::ut::BinaryBlockHeader* block = &ref().m_BlockHeader;
@@ -140,21 +152,606 @@ public:
     NW_RES_CTOR_INHERIT( ResGraphicsFile, ResFileHeader )
 
 
-    NW_RES_FIELD_CLASS_DIC_DECL( ResModel, Models, nw::ut::ResDicPatricia )
-    NW_RES_FIELD_CLASS_DIC_DECL( ResTexture, Textures, nw::ut::ResDicPatricia )
-    NW_RES_FIELD_CLASS_DIC_DECL( ResLookupTableSet, LutSets, nw::ut::ResDicPatricia )
-    NW_RES_FIELD_CLASS_DIC_DECL( ResShader, Shaders, nw::ut::ResDicPatricia )
-    NW_RES_FIELD_CLASS_DIC_DECL( ResCamera, Cameras, nw::ut::ResDicPatricia )
-    NW_RES_FIELD_CLASS_DIC_DECL( ResLight, Lights, nw::ut::ResDicPatricia )
-    NW_RES_FIELD_CLASS_DIC_DECL( ResFog, Fogs, nw::ut::ResDicPatricia )
-    NW_RES_FIELD_CLASS_DIC_DECL( ResSceneEnvironmentSetting, SceneEnvironmentSettings, nw::ut::ResDicPatricia )
-    NW_RES_FIELD_CLASS_DIC_DECL( anim::res::ResAnim, SkeletalAnims, nw::ut::ResDicPatricia )
-    NW_RES_FIELD_CLASS_DIC_DECL( anim::res::ResAnim, MaterialAnims, nw::ut::ResDicPatricia )
-    NW_RES_FIELD_CLASS_DIC_DECL( anim::res::ResAnim, VisibilityAnims, nw::ut::ResDicPatricia )
-    NW_RES_FIELD_CLASS_DIC_DECL( anim::res::ResCameraAnim, CameraAnims, nw::ut::ResDicPatricia )
-    NW_RES_FIELD_CLASS_DIC_DECL( anim::res::ResLightAnim, LightAnims, nw::ut::ResDicPatricia )
-    NW_RES_FIELD_CLASS_DIC_DECL( anim::res::ResAnim, FogAnims, nw::ut::ResDicPatricia )
-    NW_RES_FIELD_CLASS_DIC_DECL( ResParticleEmitter, Emitters, nw::ut::ResDicPatricia )
+
+    s32 GetModelsCount() const
+        { return ref().m_ModelsDicCount; }
+    ResModel GetModels(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toModelsDic.to_ptr());
+            return ResModel(dic[idx]);
+        }
+    ResModel GetModels(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toModelsDic.to_ptr());
+            return ResModel(dic[key]);
+        }
+    const ResModel GetModels(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toModelsDic.to_ptr());
+            return ResModel(dic[idx]);
+        }
+    const ResModel GetModels(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toModelsDic.to_ptr());
+            return ResModel(dic[key]);
+        }
+    s32 GetModelsIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toModelsDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<ResModel, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetModels()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toModelsDic.to_ptr());
+            return nw::ut::internal::ResArray<ResModel, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetModelsCount());
+        }
+    const nw::ut::internal::ResArray<const ResModel, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetModels() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toModelsDic.to_ptr());
+            return nw::ut::internal::ResArray<const ResModel, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetModelsCount());
+        }
+
+    s32 GetTexturesCount() const
+        { return ref().m_TexturesDicCount; }
+    ResTexture GetTextures(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toTexturesDic.to_ptr());
+            return ResTexture(dic[idx]);
+        }
+    ResTexture GetTextures(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toTexturesDic.to_ptr());
+            return ResTexture(dic[key]);
+        }
+    const ResTexture GetTextures(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toTexturesDic.to_ptr());
+            return ResTexture(dic[idx]);
+        }
+    const ResTexture GetTextures(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toTexturesDic.to_ptr());
+            return ResTexture(dic[key]);
+        }
+    s32 GetTexturesIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toTexturesDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<ResTexture, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetTextures()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toTexturesDic.to_ptr());
+            return nw::ut::internal::ResArray<ResTexture, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetTexturesCount());
+        }
+    const nw::ut::internal::ResArray<const ResTexture, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetTextures() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toTexturesDic.to_ptr());
+            return nw::ut::internal::ResArray<const ResTexture, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetTexturesCount());
+        }
+
+    s32 GetLutSetsCount() const
+        { return ref().m_LutSetsDicCount; }
+    ResLookupTableSet GetLutSets(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLutSetsDic.to_ptr());
+            return ResLookupTableSet(dic[idx]);
+        }
+    ResLookupTableSet GetLutSets(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLutSetsDic.to_ptr());
+            return ResLookupTableSet(dic[key]);
+        }
+    const ResLookupTableSet GetLutSets(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLutSetsDic.to_ptr());
+            return ResLookupTableSet(dic[idx]);
+        }
+    const ResLookupTableSet GetLutSets(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLutSetsDic.to_ptr());
+            return ResLookupTableSet(dic[key]);
+        }
+    s32 GetLutSetsIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLutSetsDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<ResLookupTableSet, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetLutSets()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLutSetsDic.to_ptr());
+            return nw::ut::internal::ResArray<ResLookupTableSet, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetLutSetsCount());
+        }
+    const nw::ut::internal::ResArray<const ResLookupTableSet, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetLutSets() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLutSetsDic.to_ptr());
+            return nw::ut::internal::ResArray<const ResLookupTableSet, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetLutSetsCount());
+        }
+
+    s32 GetShadersCount() const
+        { return ref().m_ShadersDicCount; }
+    ResShader GetShaders(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toShadersDic.to_ptr());
+            return ResShader(dic[idx]);
+        }
+    ResShader GetShaders(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toShadersDic.to_ptr());
+            return ResShader(dic[key]);
+        }
+    const ResShader GetShaders(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toShadersDic.to_ptr());
+            return ResShader(dic[idx]);
+        }
+    const ResShader GetShaders(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toShadersDic.to_ptr());
+            return ResShader(dic[key]);
+        }
+    s32 GetShadersIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toShadersDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<ResShader, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetShaders()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toShadersDic.to_ptr());
+            return nw::ut::internal::ResArray<ResShader, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetShadersCount());
+        }
+    const nw::ut::internal::ResArray<const ResShader, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetShaders() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toShadersDic.to_ptr());
+            return nw::ut::internal::ResArray<const ResShader, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetShadersCount());
+        }
+
+    s32 GetCamerasCount() const
+        { return ref().m_CamerasDicCount; }
+    ResCamera GetCameras(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toCamerasDic.to_ptr());
+            return ResCamera(dic[idx]);
+        }
+    ResCamera GetCameras(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toCamerasDic.to_ptr());
+            return ResCamera(dic[key]);
+        }
+    const ResCamera GetCameras(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toCamerasDic.to_ptr());
+            return ResCamera(dic[idx]);
+        }
+    const ResCamera GetCameras(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toCamerasDic.to_ptr());
+            return ResCamera(dic[key]);
+        }
+    s32 GetCamerasIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toCamerasDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<ResCamera, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetCameras()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toCamerasDic.to_ptr());
+            return nw::ut::internal::ResArray<ResCamera, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetCamerasCount());
+        }
+    const nw::ut::internal::ResArray<const ResCamera, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetCameras() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toCamerasDic.to_ptr());
+            return nw::ut::internal::ResArray<const ResCamera, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetCamerasCount());
+        }
+
+    s32 GetLightsCount() const
+        { return ref().m_LightsDicCount; }
+    ResLight GetLights(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLightsDic.to_ptr());
+            return ResLight(dic[idx]);
+        }
+    ResLight GetLights(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLightsDic.to_ptr());
+            return ResLight(dic[key]);
+        }
+    const ResLight GetLights(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLightsDic.to_ptr());
+            return ResLight(dic[idx]);
+        }
+    const ResLight GetLights(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLightsDic.to_ptr());
+            return ResLight(dic[key]);
+        }
+    s32 GetLightsIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLightsDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<ResLight, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetLights()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLightsDic.to_ptr());
+            return nw::ut::internal::ResArray<ResLight, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetLightsCount());
+        }
+    const nw::ut::internal::ResArray<const ResLight, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetLights() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLightsDic.to_ptr());
+            return nw::ut::internal::ResArray<const ResLight, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetLightsCount());
+        }
+
+    s32 GetFogsCount() const
+        { return ref().m_FogsDicCount; }
+    ResFog GetFogs(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toFogsDic.to_ptr());
+            return ResFog(dic[idx]);
+        }
+    ResFog GetFogs(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toFogsDic.to_ptr());
+            return ResFog(dic[key]);
+        }
+    const ResFog GetFogs(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toFogsDic.to_ptr());
+            return ResFog(dic[idx]);
+        }
+    const ResFog GetFogs(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toFogsDic.to_ptr());
+            return ResFog(dic[key]);
+        }
+    s32 GetFogsIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toFogsDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<ResFog, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetFogs()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toFogsDic.to_ptr());
+            return nw::ut::internal::ResArray<ResFog, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetFogsCount());
+        }
+    const nw::ut::internal::ResArray<const ResFog, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetFogs() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toFogsDic.to_ptr());
+            return nw::ut::internal::ResArray<const ResFog, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetFogsCount());
+        }
+
+    s32 GetSceneEnvironmentSettingsCount() const
+        { return ref().m_SceneEnvironmentSettingsDicCount; }
+    ResSceneEnvironmentSetting GetSceneEnvironmentSettings(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toSceneEnvironmentSettingsDic.to_ptr());
+            return ResSceneEnvironmentSetting(dic[idx]);
+        }
+    ResSceneEnvironmentSetting GetSceneEnvironmentSettings(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toSceneEnvironmentSettingsDic.to_ptr());
+            return ResSceneEnvironmentSetting(dic[key]);
+        }
+    const ResSceneEnvironmentSetting GetSceneEnvironmentSettings(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toSceneEnvironmentSettingsDic.to_ptr());
+            return ResSceneEnvironmentSetting(dic[idx]);
+        }
+    const ResSceneEnvironmentSetting GetSceneEnvironmentSettings(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toSceneEnvironmentSettingsDic.to_ptr());
+            return ResSceneEnvironmentSetting(dic[key]);
+        }
+    s32 GetSceneEnvironmentSettingsIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toSceneEnvironmentSettingsDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<ResSceneEnvironmentSetting, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetSceneEnvironmentSettings()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toSceneEnvironmentSettingsDic.to_ptr());
+            return nw::ut::internal::ResArray<ResSceneEnvironmentSetting, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetSceneEnvironmentSettingsCount());
+        }
+    const nw::ut::internal::ResArray<const ResSceneEnvironmentSetting, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetSceneEnvironmentSettings() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toSceneEnvironmentSettingsDic.to_ptr());
+            return nw::ut::internal::ResArray<const ResSceneEnvironmentSetting, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetSceneEnvironmentSettingsCount());
+        }
+
+    s32 GetSkeletalAnimsCount() const
+        { return ref().m_SkeletalAnimsDicCount; }
+    anim::res::ResAnim GetSkeletalAnims(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toSkeletalAnimsDic.to_ptr());
+            return anim::res::ResAnim(dic[idx]);
+        }
+    anim::res::ResAnim GetSkeletalAnims(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toSkeletalAnimsDic.to_ptr());
+            return anim::res::ResAnim(dic[key]);
+        }
+    const anim::res::ResAnim GetSkeletalAnims(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toSkeletalAnimsDic.to_ptr());
+            return anim::res::ResAnim(dic[idx]);
+        }
+    const anim::res::ResAnim GetSkeletalAnims(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toSkeletalAnimsDic.to_ptr());
+            return anim::res::ResAnim(dic[key]);
+        }
+    s32 GetSkeletalAnimsIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toSkeletalAnimsDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<anim::res::ResAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetSkeletalAnims()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toSkeletalAnimsDic.to_ptr());
+            return nw::ut::internal::ResArray<anim::res::ResAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetSkeletalAnimsCount());
+        }
+    const nw::ut::internal::ResArray<const anim::res::ResAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetSkeletalAnims() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toSkeletalAnimsDic.to_ptr());
+            return nw::ut::internal::ResArray<const anim::res::ResAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetSkeletalAnimsCount());
+        }
+
+    s32 GetMaterialAnimsCount() const
+        { return ref().m_MaterialAnimsDicCount; }
+    anim::res::ResAnim GetMaterialAnims(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMaterialAnimsDic.to_ptr());
+            return anim::res::ResAnim(dic[idx]);
+        }
+    anim::res::ResAnim GetMaterialAnims(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMaterialAnimsDic.to_ptr());
+            return anim::res::ResAnim(dic[key]);
+        }
+    const anim::res::ResAnim GetMaterialAnims(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMaterialAnimsDic.to_ptr());
+            return anim::res::ResAnim(dic[idx]);
+        }
+    const anim::res::ResAnim GetMaterialAnims(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMaterialAnimsDic.to_ptr());
+            return anim::res::ResAnim(dic[key]);
+        }
+    s32 GetMaterialAnimsIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMaterialAnimsDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<anim::res::ResAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetMaterialAnims()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMaterialAnimsDic.to_ptr());
+            return nw::ut::internal::ResArray<anim::res::ResAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetMaterialAnimsCount());
+        }
+    const nw::ut::internal::ResArray<const anim::res::ResAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetMaterialAnims() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMaterialAnimsDic.to_ptr());
+            return nw::ut::internal::ResArray<const anim::res::ResAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetMaterialAnimsCount());
+        }
+
+    s32 GetVisibilityAnimsCount() const
+        { return ref().m_VisibilityAnimsDicCount; }
+    anim::res::ResAnim GetVisibilityAnims(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toVisibilityAnimsDic.to_ptr());
+            return anim::res::ResAnim(dic[idx]);
+        }
+    anim::res::ResAnim GetVisibilityAnims(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toVisibilityAnimsDic.to_ptr());
+            return anim::res::ResAnim(dic[key]);
+        }
+    const anim::res::ResAnim GetVisibilityAnims(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toVisibilityAnimsDic.to_ptr());
+            return anim::res::ResAnim(dic[idx]);
+        }
+    const anim::res::ResAnim GetVisibilityAnims(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toVisibilityAnimsDic.to_ptr());
+            return anim::res::ResAnim(dic[key]);
+        }
+    s32 GetVisibilityAnimsIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toVisibilityAnimsDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<anim::res::ResAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetVisibilityAnims()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toVisibilityAnimsDic.to_ptr());
+            return nw::ut::internal::ResArray<anim::res::ResAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetVisibilityAnimsCount());
+        }
+    const nw::ut::internal::ResArray<const anim::res::ResAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetVisibilityAnims() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toVisibilityAnimsDic.to_ptr());
+            return nw::ut::internal::ResArray<const anim::res::ResAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetVisibilityAnimsCount());
+        }
+
+    s32 GetCameraAnimsCount() const
+        { return ref().m_CameraAnimsDicCount; }
+    anim::res::ResCameraAnim GetCameraAnims(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toCameraAnimsDic.to_ptr());
+            return anim::res::ResCameraAnim(dic[idx]);
+        }
+    anim::res::ResCameraAnim GetCameraAnims(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toCameraAnimsDic.to_ptr());
+            return anim::res::ResCameraAnim(dic[key]);
+        }
+    const anim::res::ResCameraAnim GetCameraAnims(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toCameraAnimsDic.to_ptr());
+            return anim::res::ResCameraAnim(dic[idx]);
+        }
+    const anim::res::ResCameraAnim GetCameraAnims(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toCameraAnimsDic.to_ptr());
+            return anim::res::ResCameraAnim(dic[key]);
+        }
+    s32 GetCameraAnimsIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toCameraAnimsDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<anim::res::ResCameraAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetCameraAnims()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toCameraAnimsDic.to_ptr());
+            return nw::ut::internal::ResArray<anim::res::ResCameraAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetCameraAnimsCount());
+        }
+    const nw::ut::internal::ResArray<const anim::res::ResCameraAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetCameraAnims() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toCameraAnimsDic.to_ptr());
+            return nw::ut::internal::ResArray<const anim::res::ResCameraAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetCameraAnimsCount());
+        }
+
+    s32 GetLightAnimsCount() const
+        { return ref().m_LightAnimsDicCount; }
+    anim::res::ResLightAnim GetLightAnims(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLightAnimsDic.to_ptr());
+            return anim::res::ResLightAnim(dic[idx]);
+        }
+    anim::res::ResLightAnim GetLightAnims(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLightAnimsDic.to_ptr());
+            return anim::res::ResLightAnim(dic[key]);
+        }
+    const anim::res::ResLightAnim GetLightAnims(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLightAnimsDic.to_ptr());
+            return anim::res::ResLightAnim(dic[idx]);
+        }
+    const anim::res::ResLightAnim GetLightAnims(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLightAnimsDic.to_ptr());
+            return anim::res::ResLightAnim(dic[key]);
+        }
+    s32 GetLightAnimsIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLightAnimsDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<anim::res::ResLightAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetLightAnims()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLightAnimsDic.to_ptr());
+            return nw::ut::internal::ResArray<anim::res::ResLightAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetLightAnimsCount());
+        }
+    const nw::ut::internal::ResArray<const anim::res::ResLightAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetLightAnims() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toLightAnimsDic.to_ptr());
+            return nw::ut::internal::ResArray<const anim::res::ResLightAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetLightAnimsCount());
+        }
+
+    s32 GetFogAnimsCount() const
+        { return ref().m_FogAnimsDicCount; }
+    anim::res::ResAnim GetFogAnims(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toFogAnimsDic.to_ptr());
+            return anim::res::ResAnim(dic[idx]);
+        }
+    anim::res::ResAnim GetFogAnims(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toFogAnimsDic.to_ptr());
+            return anim::res::ResAnim(dic[key]);
+        }
+    const anim::res::ResAnim GetFogAnims(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toFogAnimsDic.to_ptr());
+            return anim::res::ResAnim(dic[idx]);
+        }
+    const anim::res::ResAnim GetFogAnims(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toFogAnimsDic.to_ptr());
+            return anim::res::ResAnim(dic[key]);
+        }
+    s32 GetFogAnimsIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toFogAnimsDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<anim::res::ResAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetFogAnims()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toFogAnimsDic.to_ptr());
+            return nw::ut::internal::ResArray<anim::res::ResAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetFogAnimsCount());
+        }
+    const nw::ut::internal::ResArray<const anim::res::ResAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetFogAnims() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toFogAnimsDic.to_ptr());
+            return nw::ut::internal::ResArray<const anim::res::ResAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetFogAnimsCount());
+        }
+
+    s32 GetEmittersCount() const
+        { return ref().m_EmittersDicCount; }
+    ResParticleEmitter GetEmitters(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toEmittersDic.to_ptr());
+            return ResParticleEmitter(dic[idx]);
+        }
+    ResParticleEmitter GetEmitters(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toEmittersDic.to_ptr());
+            return ResParticleEmitter(dic[key]);
+        }
+    const ResParticleEmitter GetEmitters(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toEmittersDic.to_ptr());
+            return ResParticleEmitter(dic[idx]);
+        }
+    const ResParticleEmitter GetEmitters(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toEmittersDic.to_ptr());
+            return ResParticleEmitter(dic[key]);
+        }
+    s32 GetEmittersIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toEmittersDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<ResParticleEmitter, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetEmitters()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toEmittersDic.to_ptr());
+            return nw::ut::internal::ResArray<ResParticleEmitter, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetEmittersCount());
+        }
+    const nw::ut::internal::ResArray<const ResParticleEmitter, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetEmitters() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toEmittersDic.to_ptr());
+            return nw::ut::internal::ResArray<const ResParticleEmitter, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetEmittersCount());
+        }
     
     Result Setup(nw::os::IAllocator* allocator, ResGraphicsFile graphicsFile);
 
@@ -417,21 +1014,21 @@ public:
 
     bool IsValidRevision() const
     {
-        NW_ASSERT( this->IsValid() );
+        NW_ASSERT(IsValid());
         
         int modelsCount = this->GetModelsCount();
-        for (int i = 0 ; i < modelsCount ; ++i )
+        for (int i = 0 ; i < modelsCount ; ++i)
         {
-            if ( !internal::ResCheckRevision( this->GetModels(i) ) )
+            if (!internal::ResCheckRevision(this->GetModels(i)))
             {
                 return false;
             }
         }
         
         int texturesCount = this->GetTexturesCount();
-        for (int i = 0 ; i < texturesCount ; ++i )
+        for (int i = 0 ; i < texturesCount ; ++i)
         {
-            if ( !internal::ResCheckRevision( this->GetTextures(i) ) )
+            if (!internal::ResCheckRevision(this->GetTextures(i)))
             {
                 return false;
             }
@@ -440,25 +1037,25 @@ public:
         int lutSetsCount = this->GetLutSetsCount();
         for (int i = 0 ; i < lutSetsCount ; ++i )
         {
-            if ( !internal::ResCheckRevision( this->GetLutSets(i) ) )
+            if (!internal::ResCheckRevision( this->GetLutSets(i)))
             {
                 return false;
             }
         }
         
         int shadersCount = this->GetShadersCount();
-        for (int i = 0 ; i < shadersCount ; ++i )
+        for (int i = 0 ; i < shadersCount ; ++i)
         {
-            if ( !internal::ResCheckRevision( this->GetShaders(i) ) )
+            if (!internal::ResCheckRevision(this->GetShaders(i)))
             {
                 return false;
             }
         }
         
         int camerasCount = this->GetCamerasCount();
-        for (int i = 0 ; i < camerasCount ; ++i )
+        for (int i = 0 ; i < camerasCount ; ++i)
         {
-            if ( !internal::ResCheckRevision( this->GetCameras(i) ) )
+            if (!internal::ResCheckRevision(this->GetCameras(i) ) )
             {
                 return false;
             }
@@ -467,43 +1064,43 @@ public:
         int lightsCount = this->GetLightsCount();
         for (int i = 0 ; i < lightsCount ; ++i )
         {
-            if ( !internal::ResCheckRevision( this->GetLights(i) ) )
+            if (!internal::ResCheckRevision( this->GetLights(i) ) )
             {
                 return false;
             }
         }
         
         int fogsCount = this->GetFogsCount();
-        for (int i = 0 ; i < fogsCount ; ++i )
+        for (int i = 0 ; i < fogsCount ; ++i)
         {
-            if ( !internal::ResCheckRevision( this->GetFogs(i) ) )
+            if (!internal::ResCheckRevision(this->GetFogs(i)))
             {
                 return false;
             }
         }
         
         int sceneEnvironmentSettingsCount = this->GetSceneEnvironmentSettingsCount();
-        for (int i = 0 ; i < sceneEnvironmentSettingsCount ; ++i )
+        for (int i = 0 ; i < sceneEnvironmentSettingsCount ; ++i)
         {
-            if ( !internal::ResCheckRevision( this->GetSceneEnvironmentSettings(i) ) )
+            if (!internal::ResCheckRevision(this->GetSceneEnvironmentSettings(i)))
             {
                 return false;
             }
         }
         
         int skeletalAnimsCount = this->GetSkeletalAnimsCount();
-        for (int i = 0 ; i < skeletalAnimsCount ; ++i )
+        for (int i = 0 ; i < skeletalAnimsCount ; ++i)
         {
-            if ( !internal::ResCheckRevision( this->GetSkeletalAnims(i) ) )
+            if (!internal::ResCheckRevision(this->GetSkeletalAnims(i)))
             {
                 return false;
             }
         }
         
         int materialAnimsCount = this->GetMaterialAnimsCount();
-        for (int i = 0 ; i < materialAnimsCount ; ++i )
+        for (int i = 0 ; i < materialAnimsCount ; ++i)
         {
-            if ( !internal::ResCheckRevision( this->GetMaterialAnims(i) ) )
+            if (!internal::ResCheckRevision(this->GetMaterialAnims(i)))
             {
                 return false;
             }
@@ -512,34 +1109,34 @@ public:
         int visibilityAnimsCount = this->GetVisibilityAnimsCount();
         for (int i = 0 ; i < visibilityAnimsCount ; ++i )
         {
-            if ( !internal::ResCheckRevision( this->GetVisibilityAnims(i) ) )
+            if (!internal::ResCheckRevision( this->GetVisibilityAnims(i)))
             {
                 return false;
             }
         }
         
         int cameraAnimsCount = this->GetCameraAnimsCount();
-        for (int i = 0 ; i < cameraAnimsCount ; ++i )
+        for (int i = 0 ; i < cameraAnimsCount ; ++i)
         {
-            if ( !internal::ResCheckRevision( this->GetCameraAnims(i) ) )
+            if (!internal::ResCheckRevision(this->GetCameraAnims(i)))
             {
                 return false;
             }
         }
         
         int lightAnimsCount = this->GetLightAnimsCount();
-        for (int i = 0 ; i < lightAnimsCount ; ++i )
+        for (int i = 0 ; i < lightAnimsCount ; ++i)
         {
-            if ( !internal::ResCheckRevision( this->GetLightAnims(i) ) )
+            if (!internal::ResCheckRevision(this->GetLightAnims(i)))
             {
                 return false;
             }
         }
         
         int fogAnimsCount = this->GetFogAnimsCount();
-        for (int i = 0 ; i < fogAnimsCount ; ++i )
+        for (int i = 0 ; i < fogAnimsCount ; ++i)
         {
-            if ( !internal::ResCheckRevision(this->GetFogAnims(i)) )
+            if (!internal::ResCheckRevision(this->GetFogAnims(i)) )
             {
                 return false;
             }
@@ -554,7 +1151,10 @@ private:
     {
     public:
         explicit CheckUnresolvedTextureFunctor(TFunction function) :
-            m_Function(function) {}
+            m_Function(function) 
+        {
+        }
+
         void operator() (ResTexture texture)
         {
             if (texture.ref().typeInfo == ResReferenceTexture::TYPE_INFO)
@@ -599,8 +1199,7 @@ private:
         {
             if (lightingLut.IsValid() && lightingLut.GetSampler().IsValid())
             {
-                ResReferenceLookupTable refer =
-                    ResDynamicCast<ResReferenceLookupTable>(lightingLut.GetSampler());
+                ResReferenceLookupTable refer = ResDynamicCast<ResReferenceLookupTable>(lightingLut.GetSampler());
                 if (refer.IsValid() && !refer.GetTargetLut().IsValid())
                 {
                     m_Function(refer);
@@ -678,7 +1277,7 @@ public:
 
     void operator()(ResTexture resTexture) const
     {
-        switch ( resTexture.ref().typeInfo )
+        switch ( resTexture.ref().typeInfo)
         {
         case ResImageTexture::TYPE_INFO:{
                 ResImageTexture resImageTexture = ResStaticCast<ResImageTexture>( resTexture );

@@ -52,14 +52,64 @@ struct ResTransformNodeData : public ResSceneNodeData
 class ResSceneObject : public nw::ut::ResCommon< ResSceneObjectData >
 {
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResSceneObject) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('SOBJ') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResSceneObject)
+    };
+
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('SOBJ')
+    };
     
     NW_RES_CTOR(ResSceneObject)
     
-    NW_RES_FIELD_STRUCT_DECL(nw::ut::BinaryRevisionHeader, Header)
-    NW_RES_FIELD_STRING_DECL(Name)
-    NW_RES_FIELD_CLASS_DIC_DECL(nw::ut::ResMetaData, UserData, nw::ut::ResDicPatricia)
+
+    nw::ut::BinaryRevisionHeader& GetHeader() { return ref().m_Header; }
+    const nw::ut::BinaryRevisionHeader& GetHeader() const { return ref().m_Header; }
+    void SetHeader(const nw::ut::BinaryRevisionHeader& value) { ref().m_Header = value; }
+
+    const char* GetName() const { return ref().toName.to_ptr(); }
+
+    s32 GetUserDataCount() const
+        { return ref().m_UserDataDicCount; }
+    nw::ut::ResMetaData GetUserData(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::ResMetaData(dic[idx]);
+        }
+    nw::ut::ResMetaData GetUserData(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::ResMetaData(dic[key]);
+        }
+    const nw::ut::ResMetaData GetUserData(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::ResMetaData(dic[idx]);
+        }
+    const nw::ut::ResMetaData GetUserData(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::ResMetaData(dic[key]);
+        }
+    s32 GetUserDataIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<nw::ut::ResMetaData, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetUserData()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::internal::ResArray<nw::ut::ResMetaData, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetUserDataCount());
+        }
+    const nw::ut::internal::ResArray<const nw::ut::ResMetaData, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetUserData() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::internal::ResArray<const nw::ut::ResMetaData, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetUserDataCount());
+        }
 
     nw::ut::ResTypeInfo GetTypeInfo() const { return ref().typeInfo; }
 };
@@ -67,14 +117,82 @@ public:
 class ResSceneNode : public ResSceneObject
 {
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResSceneNode) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('CNOD') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResSceneNode)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('CNOD')
+    };
     
     NW_RES_CTOR_INHERIT(ResSceneNode, ResSceneObject)
 
-    NW_RES_FIELD_FLAGS_DECL(u32, Flags)
-    NW_RES_FIELD_CLASS_LIST_DECL(ResSceneObject, Children)
-    NW_RES_FIELD_CLASS_DIC_DECL(nw::anim::res::ResAnimGroup, AnimGroups, nw::ut::ResDicPatricia)
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
+
+    s32 GetChildrenCount() const
+        { return ref().m_ChildrenTableCount; }
+    ResSceneObject GetChildren(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toChildrenTable.to_table_ptr());
+            return ResSceneObject(tbl_ptr[idx].to_ptr());
+        }
+    const ResSceneObject GetChildren(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toChildrenTable.to_table_ptr());
+            return ResSceneObject(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<ResSceneObject, nw::ut::internal::ResArrayClassTraits> GetChildren()
+        {
+            return nw::ut::internal::ResArray<ResSceneObject, nw::ut::internal::ResArrayClassTraits>(ref().toChildrenTable.to_table_ptr(), GetChildrenCount());
+        }
+    const nw::ut::internal::ResArray<const ResSceneObject, nw::ut::internal::ResArrayClassTraits> GetChildren() const
+        {
+            return nw::ut::internal::ResArray<const ResSceneObject, nw::ut::internal::ResArrayClassTraits>(ref().toChildrenTable.to_table_ptr(), GetChildrenCount());
+        }
+
+    s32 GetAnimGroupsCount() const
+        { return ref().m_AnimGroupsDicCount; }
+    nw::anim::res::ResAnimGroup GetAnimGroups(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toAnimGroupsDic.to_ptr());
+            return nw::anim::res::ResAnimGroup(dic[idx]);
+        }
+    nw::anim::res::ResAnimGroup GetAnimGroups(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toAnimGroupsDic.to_ptr());
+            return nw::anim::res::ResAnimGroup(dic[key]);
+        }
+    const nw::anim::res::ResAnimGroup GetAnimGroups(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toAnimGroupsDic.to_ptr());
+            return nw::anim::res::ResAnimGroup(dic[idx]);
+        }
+    const nw::anim::res::ResAnimGroup GetAnimGroups(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toAnimGroupsDic.to_ptr());
+            return nw::anim::res::ResAnimGroup(dic[key]);
+        }
+    s32 GetAnimGroupsIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toAnimGroupsDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<nw::anim::res::ResAnimGroup, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetAnimGroups()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toAnimGroupsDic.to_ptr());
+            return nw::ut::internal::ResArray<nw::anim::res::ResAnimGroup, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetAnimGroupsCount());
+        }
+    const nw::ut::internal::ResArray<const nw::anim::res::ResAnimGroup, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetAnimGroups() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toAnimGroupsDic.to_ptr());
+            return nw::ut::internal::ResArray<const nw::anim::res::ResAnimGroup, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetAnimGroupsCount());
+        }
     
     bool IsBranchVisible() const { return ref().m_Flags & ResSceneNodeData::FLAG_IS_BRANCH_VISIBLE; }
     
@@ -99,13 +217,26 @@ public:
         FLAG_SHIFT_MAX = ResSceneNodeData::FLAG_SHIFT_MAX
     };
     
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResTransformNode) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('CTFN') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResTransformNode)
+    };
+
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('CTFN')
+    };
     
     NW_RES_CTOR_INHERIT( ResTransformNode, ResSceneNode )
 
-    NW_RES_FIELD_STRUCT_DECL(nw::math::Transform3, Transform)
-    NW_RES_FIELD_STRUCT_DECL(nw::math::MTX34, WorldMatrix)
+
+    nw::math::Transform3& GetTransform() { return ref().m_Transform; }
+    const nw::math::Transform3& GetTransform() const { return ref().m_Transform; }
+    void SetTransform(const nw::math::Transform3& value) { ref().m_Transform = value; }
+
+    nw::math::MTX34& GetWorldMatrix() { return ref().m_WorldMatrix; }
+    const nw::math::MTX34& GetWorldMatrix() const { return ref().m_WorldMatrix; }
+    void SetWorldMatrix(const nw::math::MTX34& value) { ref().m_WorldMatrix = value; }
 };
 
 }

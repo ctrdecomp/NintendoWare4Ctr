@@ -30,7 +30,27 @@ public:
 
     NW_RES_CTOR_INHERIT(ResParticleModel, ResModel)
 
-    NW_RES_FIELD_CLASS_LIST_DECL(ResParticleSet, ParticleSets)
+
+    s32 GetParticleSetsCount() const
+        { return ref().m_ParticleSetsTableCount; }
+    ResParticleSet GetParticleSets(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toParticleSetsTable.to_table_ptr());
+            return ResParticleSet(tbl_ptr[idx].to_ptr());
+        }
+    const ResParticleSet GetParticleSets(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toParticleSetsTable.to_table_ptr());
+            return ResParticleSet(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<ResParticleSet, nw::ut::internal::ResArrayClassTraits> GetParticleSets()
+        {
+            return nw::ut::internal::ResArray<ResParticleSet, nw::ut::internal::ResArrayClassTraits>(ref().toParticleSetsTable.to_table_ptr(), GetParticleSetsCount());
+        }
+    const nw::ut::internal::ResArray<const ResParticleSet, nw::ut::internal::ResArrayClassTraits> GetParticleSets() const
+        {
+            return nw::ut::internal::ResArray<const ResParticleSet, nw::ut::internal::ResArrayClassTraits>(ref().toParticleSetsTable.to_table_ptr(), GetParticleSetsCount());
+        }
 
     void Setup();
 

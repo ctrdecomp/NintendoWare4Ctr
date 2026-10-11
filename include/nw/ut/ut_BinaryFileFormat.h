@@ -2,8 +2,6 @@
 
 #include <nw/ut/ut_ResTypes.h>
 
-#if ( NW_PLATFORM_ENDIAN == NW_ENDIAN_LITTLE )
-
  // LE
  #define NW_UT_MAKE_SIGWORD(a,b,c,d)        \
     static_cast<nw::ut::SigWord >(          \
@@ -13,22 +11,10 @@
         | (static_cast<u8>(d) << 24)        \
     )
 
-#else
-
- // BE
- #define NW_UT_MAKE_SIGWORD(a,b,c,d)        \
-    static_cast<nw::ut::SigWord >(          \
-          (static_cast<u8>(a) << 24)        \
-        | (static_cast<u8>(b) << 16)        \
-        | (static_cast<u8>(c) <<  8)        \
-        | (static_cast<u8>(d) <<  0)        \
-    )
-#endif
-
 #define NW_UT_MAKE_VERSION_2(major, minor)                              \
     static_cast<u32>(                                                   \
         (static_cast<u8>(major) << 24) | (static_cast<u8>(minor) << 16) \
-    )
+    );
 
 #define NW_UT_MAKE_VERSION(major, minor, micro, binaryBugFix)            \
     static_cast<u32>(                                                    \

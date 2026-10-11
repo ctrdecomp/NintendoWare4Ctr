@@ -75,21 +75,90 @@ public:
 
     NW_RES_CTOR(ResBone)
 
-    NW_RES_FIELD_STRING_DECL(Name)
-    NW_RES_FIELD_FLAGS_DECL(u32, Flags)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, Index)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, ParentBoneIndex)
-    NW_RES_FIELD_CLASS_DECL(ResBone, ParentBone)
-    NW_RES_FIELD_CLASS_DECL(ResBone, ChildBone)
-    NW_RES_FIELD_CLASS_DECL(ResBone, PrevSibling)
-    NW_RES_FIELD_CLASS_DECL(ResBone, NextSibling)
-    NW_RES_FIELD_STRUCT_DECL(nw::math::Transform3, Transform)
-    NW_RES_FIELD_STRUCT_DECL(nw::math::MTX34, LocalMatrix)
-    NW_RES_FIELD_STRUCT_DECL(nw::math::MTX34, WorldMatrix)
-    NW_RES_FIELD_STRUCT_DECL(nw::math::MTX34, InverseBaseMatrix)
-    NW_RES_FIELD_PRIMITIVE_DECL(BillboardMode, BillboardMode)
 
-    NW_RES_FIELD_CLASS_DIC_DECL(nw::ut::ResMetaData, UserData, nw::ut::ResDicPatricia)
+    const char* GetName() const { return ref().toName.to_ptr(); }
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
+
+    s32 GetIndex() const { return static_cast<s32>(ref().m_Index); }
+    void SetIndex(s32 value) { ref().m_Index = value; }
+
+    s32 GetParentBoneIndex() const { return static_cast<s32>(ref().m_ParentBoneIndex); }
+    void SetParentBoneIndex(s32 value) { ref().m_ParentBoneIndex = value; }
+
+    ResBone GetParentBone() { return ResBone(ref().toParentBone.to_ptr()); }
+    const ResBone GetParentBone() const { return ResBone(ref().toParentBone.to_ptr()); }
+
+    ResBone GetChildBone() { return ResBone(ref().toChildBone.to_ptr()); }
+    const ResBone GetChildBone() const { return ResBone(ref().toChildBone.to_ptr()); }
+
+    ResBone GetPrevSibling() { return ResBone(ref().toPrevSibling.to_ptr()); }
+    const ResBone GetPrevSibling() const { return ResBone(ref().toPrevSibling.to_ptr()); }
+
+    ResBone GetNextSibling() { return ResBone(ref().toNextSibling.to_ptr()); }
+    const ResBone GetNextSibling() const { return ResBone(ref().toNextSibling.to_ptr()); }
+
+    nw::math::Transform3& GetTransform() { return ref().m_Transform; }
+    const nw::math::Transform3& GetTransform() const { return ref().m_Transform; }
+    void SetTransform(const nw::math::Transform3& value) { ref().m_Transform = value; }
+
+    nw::math::MTX34& GetLocalMatrix() { return ref().m_LocalMatrix; }
+    const nw::math::MTX34& GetLocalMatrix() const { return ref().m_LocalMatrix; }
+    void SetLocalMatrix(const nw::math::MTX34& value) { ref().m_LocalMatrix = value; }
+
+    nw::math::MTX34& GetWorldMatrix() { return ref().m_WorldMatrix; }
+    const nw::math::MTX34& GetWorldMatrix() const { return ref().m_WorldMatrix; }
+    void SetWorldMatrix(const nw::math::MTX34& value) { ref().m_WorldMatrix = value; }
+
+    nw::math::MTX34& GetInverseBaseMatrix() { return ref().m_InverseBaseMatrix; }
+    const nw::math::MTX34& GetInverseBaseMatrix() const { return ref().m_InverseBaseMatrix; }
+    void SetInverseBaseMatrix(const nw::math::MTX34& value) { ref().m_InverseBaseMatrix = value; }
+
+    BillboardMode GetBillboardMode() const { return static_cast<BillboardMode>(ref().m_BillboardMode); }
+    void SetBillboardMode(BillboardMode value) { ref().m_BillboardMode = value; }
+
+
+    s32 GetUserDataCount() const
+        { return ref().m_UserDataDicCount; }
+    nw::ut::ResMetaData GetUserData(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::ResMetaData(dic[idx]);
+        }
+    nw::ut::ResMetaData GetUserData(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::ResMetaData(dic[key]);
+        }
+    const nw::ut::ResMetaData GetUserData(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::ResMetaData(dic[idx]);
+        }
+    const nw::ut::ResMetaData GetUserData(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::ResMetaData(dic[key]);
+        }
+    s32 GetUserDataIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<nw::ut::ResMetaData, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetUserData()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::internal::ResArray<nw::ut::ResMetaData, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetUserDataCount());
+        }
+    const nw::ut::internal::ResArray<const nw::ut::ResMetaData, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetUserData() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::internal::ResArray<const nw::ut::ResMetaData, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetUserDataCount());
+        }
 };
 typedef nw::ut::ResArrayPatricia<ResBone>::type  ResBoneArray;
 
@@ -102,15 +171,67 @@ public:
         FLAG_TRANSLATE_ANIMATION_ENABLED            = 0x1 << 1
     };
 
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResSkeleton) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('CSKL') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResSkeleton)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('CSKL')
+    };
     
     NW_RES_CTOR_INHERIT(ResSkeleton, ResSceneObject)
 
-    NW_RES_FIELD_CLASS_DIC_DECL(ResBone, Bones, nw::ut::ResDicPatricia)
-    NW_RES_FIELD_CLASS_DECL(ResBone, RootBone)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, ScalingRule)
-    NW_RES_FIELD_FLAGS_DECL(u32, Flags)
+
+    s32 GetBonesCount() const
+        { return ref().m_BonesDicCount; }
+    ResBone GetBones(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toBonesDic.to_ptr());
+            return ResBone(dic[idx]);
+        }
+    ResBone GetBones(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toBonesDic.to_ptr());
+            return ResBone(dic[key]);
+        }
+    const ResBone GetBones(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toBonesDic.to_ptr());
+            return ResBone(dic[idx]);
+        }
+    const ResBone GetBones(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toBonesDic.to_ptr());
+            return ResBone(dic[key]);
+        }
+    s32 GetBonesIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toBonesDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<ResBone, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetBones()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toBonesDic.to_ptr());
+            return nw::ut::internal::ResArray<ResBone, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetBonesCount());
+        }
+    const nw::ut::internal::ResArray<const ResBone, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetBones() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toBonesDic.to_ptr());
+            return nw::ut::internal::ResArray<const ResBone, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetBonesCount());
+        }
+
+    ResBone GetRootBone() { return ResBone(ref().toRootBone.to_ptr()); }
+    const ResBone GetRootBone() const { return ResBone(ref().toRootBone.to_ptr()); }
+
+    s32 GetScalingRule() const { return static_cast<s32>(ref().m_ScalingRule); }
+    void SetScalingRule(s32 value) { ref().m_ScalingRule = value; }
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
 };
 
 }

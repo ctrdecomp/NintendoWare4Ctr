@@ -47,15 +47,69 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleSet, ResSceneNode )
 
-    NW_RES_FIELD_CLASS_DECL(ResParticleCollection, ParticleCollection)
-    NW_RES_FIELD_CLASS_LIST_DECL(ResParticleInitializer, ParticleInitializers)
-    NW_RES_FIELD_CLASS_LIST_DECL(ResParticleUpdater, ParticleUpdaters )
-    NW_RES_FIELD_CLASS_DECL(ResParticleShapeBuilder, ParticleShapeBuilder)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, ParticleShapeIndex)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, ParticleSetPriority)
-    NW_RES_FIELD_PRIMITIVE_DECL(bool, IsForceWorld)
-    NW_RES_FIELD_PRIMITIVE_DECL(bool, IsBufferFlushEnabled)
-    NW_RES_FIELD_PRIMITIVE_DECL(bool, IsInheritParentVelocity)
+
+    ResParticleCollection GetParticleCollection() { return ResParticleCollection(ref().toParticleCollection.to_ptr()); }
+    const ResParticleCollection GetParticleCollection() const { return ResParticleCollection(ref().toParticleCollection.to_ptr()); }
+
+    s32 GetParticleInitializersCount() const
+        { return ref().m_ParticleInitializersTableCount; }
+    ResParticleInitializer GetParticleInitializers(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toParticleInitializersTable.to_table_ptr());
+            return ResParticleInitializer(tbl_ptr[idx].to_ptr());
+        }
+    const ResParticleInitializer GetParticleInitializers(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toParticleInitializersTable.to_table_ptr());
+            return ResParticleInitializer(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<ResParticleInitializer, nw::ut::internal::ResArrayClassTraits> GetParticleInitializers()
+        {
+            return nw::ut::internal::ResArray<ResParticleInitializer, nw::ut::internal::ResArrayClassTraits>(ref().toParticleInitializersTable.to_table_ptr(), GetParticleInitializersCount());
+        }
+    const nw::ut::internal::ResArray<const ResParticleInitializer, nw::ut::internal::ResArrayClassTraits> GetParticleInitializers() const
+        {
+            return nw::ut::internal::ResArray<const ResParticleInitializer, nw::ut::internal::ResArrayClassTraits>(ref().toParticleInitializersTable.to_table_ptr(), GetParticleInitializersCount());
+        }
+
+    s32 GetParticleUpdatersCount() const
+        { return ref().m_ParticleUpdatersTableCount; }
+    ResParticleUpdater GetParticleUpdaters(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toParticleUpdatersTable.to_table_ptr());
+            return ResParticleUpdater(tbl_ptr[idx].to_ptr());
+        }
+    const ResParticleUpdater GetParticleUpdaters(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toParticleUpdatersTable.to_table_ptr());
+            return ResParticleUpdater(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<ResParticleUpdater, nw::ut::internal::ResArrayClassTraits> GetParticleUpdaters()
+        {
+            return nw::ut::internal::ResArray<ResParticleUpdater, nw::ut::internal::ResArrayClassTraits>(ref().toParticleUpdatersTable.to_table_ptr(), GetParticleUpdatersCount());
+        }
+    const nw::ut::internal::ResArray<const ResParticleUpdater, nw::ut::internal::ResArrayClassTraits> GetParticleUpdaters() const
+        {
+            return nw::ut::internal::ResArray<const ResParticleUpdater, nw::ut::internal::ResArrayClassTraits>(ref().toParticleUpdatersTable.to_table_ptr(), GetParticleUpdatersCount());
+        }
+
+    ResParticleShapeBuilder GetParticleShapeBuilder() { return ResParticleShapeBuilder(ref().toParticleShapeBuilder.to_ptr()); }
+    const ResParticleShapeBuilder GetParticleShapeBuilder() const { return ResParticleShapeBuilder(ref().toParticleShapeBuilder.to_ptr()); }
+
+    s32 GetParticleShapeIndex() const { return static_cast<s32>(ref().m_ParticleShapeIndex); }
+    void SetParticleShapeIndex(s32 value) { ref().m_ParticleShapeIndex = value; }
+
+    u32 GetParticleSetPriority() const { return static_cast<u32>(ref().m_ParticleSetPriority); }
+    void SetParticleSetPriority(u32 value) { ref().m_ParticleSetPriority = value; }
+
+    bool GetIsForceWorld() const { return static_cast<bool>(ref().m_IsForceWorld); }
+    void SetIsForceWorld(bool value) { ref().m_IsForceWorld = value; }
+
+    bool GetIsBufferFlushEnabled() const { return static_cast<bool>(ref().m_IsBufferFlushEnabled); }
+    void SetIsBufferFlushEnabled(bool value) { ref().m_IsBufferFlushEnabled = value; }
+
+    bool GetIsInheritParentVelocity() const { return static_cast<bool>(ref().m_IsInheritParentVelocity); }
+    void SetIsInheritParentVelocity(bool value) { ref().m_IsInheritParentVelocity = value; }
 
     void    Setup();
 };

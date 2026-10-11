@@ -71,8 +71,13 @@ public:
     
     NW_RES_CTOR( ResVertexAttribute )
 
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, Usage)
-    NW_RES_FIELD_FLAGS_DECL(u32, Flags)
+
+    s32 GetUsage() const { return static_cast<s32>(ref().m_Usage); }
+    void SetUsage(s32 value) { ref().m_Usage = value; }
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
 
     void    Setup();
 
@@ -104,10 +109,32 @@ public:
     
     NW_RES_CTOR_INHERIT( ResVertexParamAttribute, ResVertexAttribute )
 
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, FormatType)
-    NW_RES_FIELD_PRIMITIVE_DECL(u8, Dimension)
-    NW_RES_FIELD_PRIMITIVE_DECL(f32, Scale)
-    NW_RES_FIELD_PRIMITIVE_LIST_DECL(f32, Attribute)
+
+    u32 GetFormatType() const { return static_cast<u32>(ref().m_FormatType); }
+    void SetFormatType(u32 value) { ref().m_FormatType = value; }
+
+    u8 GetDimension() const { return static_cast<u8>(ref().m_Dimension); }
+    void SetDimension(u8 value) { ref().m_Dimension = value; }
+
+    f32 GetScale() const { return static_cast<f32>(ref().m_Scale); }
+    void SetScale(f32 value) { ref().m_Scale = value; }
+
+    s32 GetAttributeCount() const
+        { return ref().m_AttributeTableCount; }
+    f32 GetAttribute(int idx) const
+        {
+            const f32* tbl_ptr = static_cast<const f32*>(ref().toAttributeTable.to_table_ptr());
+            return tbl_ptr[idx];
+        }
+    void SetAttribute(int idx, f32 value)
+        {
+            f32* tbl_ptr = GetAttribute();
+            tbl_ptr[idx] = value;
+        }
+    f32* GetAttribute()
+        { return static_cast<f32*>(ref().toAttributeTable.to_table_ptr()); }
+    const f32* GetAttribute() const
+        { return static_cast<const f32*>(ref().toAttributeTable.to_table_ptr()); }
 
     void    Setup();
 
@@ -159,9 +186,29 @@ public:
     
     NW_RES_CTOR_INHERIT( ResVertexStreamBase, ResVertexAttribute )
 
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, BufferObject)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, LocationFlag)
-    NW_RES_FIELD_PRIMITIVE_LIST_DECL(u8, Stream)
+
+    u32 GetBufferObject() const { return static_cast<u32>(ref().m_BufferObject); }
+    void SetBufferObject(u32 value) { ref().m_BufferObject = value; }
+
+    u32 GetLocationFlag() const { return static_cast<u32>(ref().m_LocationFlag); }
+    void SetLocationFlag(u32 value) { ref().m_LocationFlag = value; }
+
+    s32 GetStreamCount() const
+        { return ref().m_StreamTableCount; }
+    u8 GetStream(int idx) const
+        {
+            const u8* tbl_ptr = static_cast<const u8*>(ref().toStreamTable.to_table_ptr());
+            return tbl_ptr[idx];
+        }
+    void SetStream(int idx, u8 value)
+        {
+            u8* tbl_ptr = GetStream();
+            tbl_ptr[idx] = value;
+        }
+    u8* GetStream()
+        { return static_cast<u8*>(ref().toStreamTable.to_table_ptr()); }
+    const u8* GetStream() const
+        { return static_cast<const u8*>(ref().toStreamTable.to_table_ptr()); }
 
     u32 GetLocationAddress() const { return ref().m_LocationAddress; }
 
@@ -192,10 +239,18 @@ public:
 { SIGNATURE = NW_RES_SIGNATURE32('VSTM') };
     
     NW_RES_CTOR_INHERIT(ResVertexStream, ResVertexStreamBase)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, FormatType)
-    NW_RES_FIELD_PRIMITIVE_DECL(u8, Dimension)
-    NW_RES_FIELD_PRIMITIVE_DECL(f32, Scale)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, Offset)
+
+    u32 GetFormatType() const { return static_cast<u32>(ref().m_FormatType); }
+    void SetFormatType(u32 value) { ref().m_FormatType = value; }
+
+    u8 GetDimension() const { return static_cast<u8>(ref().m_Dimension); }
+    void SetDimension(u8 value) { ref().m_Dimension = value; }
+
+    f32 GetScale() const { return static_cast<f32>(ref().m_Scale); }
+    void SetScale(f32 value) { ref().m_Scale = value; }
+
+    u32 GetOffset() const { return static_cast<u32>(ref().m_Offset); }
+    void SetOffset(u32 value) { ref().m_Offset = value; }
 
     void    Setup();
 
@@ -208,8 +263,30 @@ class ResInterleavedVertexStream : public ResVertexStreamBase
 public:
     NW_RES_CTOR_INHERIT(ResInterleavedVertexStream, ResVertexStreamBase)
 
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, Stride)
-    NW_RES_FIELD_CLASS_LIST_DECL(ResVertexStream, VertexStreams)
+
+    u32 GetStride() const { return static_cast<u32>(ref().m_Stride); }
+    void SetStride(u32 value) { ref().m_Stride = value; }
+
+    s32 GetVertexStreamsCount() const
+        { return ref().m_VertexStreamsTableCount; }
+    ResVertexStream GetVertexStreams(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toVertexStreamsTable.to_table_ptr());
+            return ResVertexStream(tbl_ptr[idx].to_ptr());
+        }
+    const ResVertexStream GetVertexStreams(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toVertexStreamsTable.to_table_ptr());
+            return ResVertexStream(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<ResVertexStream, nw::ut::internal::ResArrayClassTraits> GetVertexStreams()
+        {
+            return nw::ut::internal::ResArray<ResVertexStream, nw::ut::internal::ResArrayClassTraits>(ref().toVertexStreamsTable.to_table_ptr(), GetVertexStreamsCount());
+        }
+    const nw::ut::internal::ResArray<const ResVertexStream, nw::ut::internal::ResArrayClassTraits> GetVertexStreams() const
+        {
+            return nw::ut::internal::ResArray<const ResVertexStream, nw::ut::internal::ResArrayClassTraits>(ref().toVertexStreamsTable.to_table_ptr(), GetVertexStreamsCount());
+        }
 
     void    Setup();
 
@@ -247,13 +324,39 @@ class ResIndexStream : public nw::ut::ResCommon<ResIndexStreamData>
 public:
     NW_RES_CTOR( ResIndexStream )
 
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, FormatType)
-    NW_RES_FIELD_PRIMITIVE_DECL(u8, PrimitiveMode)
-    NW_RES_FIELD_PRIMITIVE_LIST_DECL(u8, Stream)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, BufferObject)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, LocationFlag)
 
-    NW_RES_FIELD_CLASS_DECL(nw::ut::ResBoundingVolume, BoundingVolume)
+    u32 GetFormatType() const { return static_cast<u32>(ref().m_FormatType); }
+    void SetFormatType(u32 value) { ref().m_FormatType = value; }
+
+    u8 GetPrimitiveMode() const { return static_cast<u8>(ref().m_PrimitiveMode); }
+    void SetPrimitiveMode(u8 value) { ref().m_PrimitiveMode = value; }
+
+    s32 GetStreamCount() const
+        { return ref().m_StreamTableCount; }
+    u8 GetStream(int idx) const
+        {
+            const u8* tbl_ptr = static_cast<const u8*>(ref().toStreamTable.to_table_ptr());
+            return tbl_ptr[idx];
+        }
+    void SetStream(int idx, u8 value)
+        {
+            u8* tbl_ptr = GetStream();
+            tbl_ptr[idx] = value;
+        }
+    u8* GetStream()
+        { return static_cast<u8*>(ref().toStreamTable.to_table_ptr()); }
+    const u8* GetStream() const
+        { return static_cast<const u8*>(ref().toStreamTable.to_table_ptr()); }
+
+    u32 GetBufferObject() const { return static_cast<u32>(ref().m_BufferObject); }
+    void SetBufferObject(u32 value) { ref().m_BufferObject = value; }
+
+    u32 GetLocationFlag() const { return static_cast<u32>(ref().m_LocationFlag); }
+    void SetLocationFlag(u32 value) { ref().m_LocationFlag = value; }
+
+
+    nw::ut::ResBoundingVolume GetBoundingVolume() { return nw::ut::ResBoundingVolume(ref().toBoundingVolume.to_ptr()); }
+    const nw::ut::ResBoundingVolume GetBoundingVolume() const { return nw::ut::ResBoundingVolume(ref().toBoundingVolume.to_ptr()); }
 
     u32 GetLocationAddress() const { return ref().m_LocationAddress; }
 
@@ -274,7 +377,9 @@ public:
         }
     }
 
-    NW_RES_FIELD_BOOL_PRIMITIVE_DECL(Visible)
+
+    bool IsVisible() const { return static_cast<bool>(ref().m_IsVisible); }
+    void SetVisible(bool value) { ref().m_IsVisible = value; }
 
     u32     GetVertexCount();
 };

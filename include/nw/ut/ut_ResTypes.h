@@ -11,9 +11,6 @@ namespace Endian {
     {
         u64 UInt64;
         s64 SInt64;
-#if defined(NW_ENABLE_FLOAT64)
-        f64 Float64;
-#endif
     } Type64;
 
     typedef union
@@ -45,16 +42,6 @@ namespace Endian {
         data.UInt64 = BSwap(data.UInt64);
         return data.SInt64;
     }
-
-#if defined(NW_ENABLE_FLOAT64)
-    static f64 BSwap(f64 val)
-    {
-        Type64 data;
-        data.Float64 = val;
-        data.UInt64  = BSwap(data.UInt64);
-        return data.Float64;
-    }
-#endif
 
     static u32 BSwap(u32 val)
     {

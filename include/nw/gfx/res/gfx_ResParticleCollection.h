@@ -17,12 +17,20 @@ struct ResParticleAttributeData
 class ResParticleAttribute : public nw::ut::ResCommon< ResParticleAttributeData >
 {
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleAttribute) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('PSAT') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleAttribute)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('PSAT')
+    };
 
     NW_RES_CTOR( ResParticleAttribute )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( s32, Usage )
+
+    s32 GetUsage() const { return static_cast<s32>(ref().m_Usage); }
+    void SetUsage(s32 value) { ref().m_Usage = value; }
     nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
 };
 
@@ -35,8 +43,14 @@ struct ResParticleStreamAttributeData : public ResParticleAttributeData
 class ResParticleStreamAttribute : public ResParticleAttribute
 {
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleStreamAttribute) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('PSST') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleStreamAttribute)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('PSST')
+    };
 
     NW_RES_CTOR_INHERIT( ResParticleStreamAttribute, ResParticleAttribute )
 };
@@ -51,13 +65,37 @@ struct ResParticleParameterAttributeData : public ResParticleAttributeData
 class ResParticleParameterAttribute : public ResParticleAttribute
 {
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleParameterAttribute) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('PSPA') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleParameterAttribute)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('PSPA')
+    };
 
     NW_RES_CTOR_INHERIT( ResParticleParameterAttribute, ResParticleAttribute )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( s32, Dimension )
-    NW_RES_FIELD_PRIMITIVE_LIST_DECL( f32, Data )
+
+    s32 GetDimension() const { return static_cast<s32>(ref().m_Dimension); }
+    void SetDimension(s32 value) { ref().m_Dimension = value; }
+
+    s32 GetDataCount() const
+        { return ref().m_DataTableCount; }
+    f32 GetData(int idx) const
+        {
+            const f32* tbl_ptr = static_cast<const f32*>(ref().toDataTable.to_table_ptr());
+            return tbl_ptr[idx];
+        }
+    void SetData(int idx, f32 value)
+        {
+            f32* tbl_ptr = GetData();
+            tbl_ptr[idx] = value;
+        }
+    f32* GetData()
+        { return static_cast<f32*>(ref().toDataTable.to_table_ptr()); }
+    const f32* GetData() const
+        { return static_cast<const f32*>(ref().toDataTable.to_table_ptr()); }
 
     nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
 };
@@ -74,8 +112,30 @@ class ResParticleCollection : public nw::ut::ResCommon< ResParticleCollectionDat
 public:
     NW_RES_CTOR( ResParticleCollection )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( s32, Capacity )
-    NW_RES_FIELD_CLASS_LIST_DECL( ResParticleAttribute, Attributes )
+
+    s32 GetCapacity() const { return static_cast<s32>(ref().m_Capacity); }
+    void SetCapacity(s32 value) { ref().m_Capacity = value; }
+
+    s32 GetAttributesCount() const
+        { return ref().m_AttributesTableCount; }
+    ResParticleAttribute GetAttributes(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toAttributesTable.to_table_ptr());
+            return ResParticleAttribute(tbl_ptr[idx].to_ptr());
+        }
+    const ResParticleAttribute GetAttributes(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toAttributesTable.to_table_ptr());
+            return ResParticleAttribute(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<ResParticleAttribute, nw::ut::internal::ResArrayClassTraits> GetAttributes()
+        {
+            return nw::ut::internal::ResArray<ResParticleAttribute, nw::ut::internal::ResArrayClassTraits>(ref().toAttributesTable.to_table_ptr(), GetAttributesCount());
+        }
+    const nw::ut::internal::ResArray<const ResParticleAttribute, nw::ut::internal::ResArrayClassTraits> GetAttributes() const
+        {
+            return nw::ut::internal::ResArray<const ResParticleAttribute, nw::ut::internal::ResArrayClassTraits>(ref().toAttributesTable.to_table_ptr(), GetAttributesCount());
+        }
 };
 
 }

@@ -122,12 +122,7 @@ public:
 
     operator SafeBool() const
     {
-#ifdef NW_MOVE_ARRAY_VARIABILITY_ENABLED
-        return (capacity() == 0 && GetArrayKind() != ARRAY_VARIABILITY)
-#else
-        return (capacity() == 0)
-#endif
-            ? 0 : &SafeBoolHelper::x;
+        return (capacity() == 0) ? 0 : &SafeBoolHelper::x;
     }
 
     MoveArray& operator=(MoveArray rhs)
@@ -419,7 +414,6 @@ private:
 template<typename TElement>
 inline bool MoveArray<TElement>::reserve(int reserveSize)
 {
-#ifdef NW_MOVE_ARRAY_VARIABILITY_ENABLED
     if (reserveSize <= capacity())
     {
         return true;
@@ -430,11 +424,7 @@ inline bool MoveArray<TElement>::reserve(int reserveSize)
         return false;
     }
 
-#ifdef NW_MOVE_ARRAY_CACHE_LINE_ALIGNMENT_ENABLED
     TElement* elements = static_cast<TElement*>(m_Allocator->Alloc(sizeof(TElement) * reserveSize, MEMORY_ALIGNMENT));
-#else
-    TElement* elements = static_cast<TElement*>(m_Allocator->Alloc(sizeof(TElement) * reserveSize));
-#endif
     NW_ASSERT(0 != elements);
 
     size_t elementsCount = 0;
@@ -454,14 +444,6 @@ inline bool MoveArray<TElement>::reserve(int reserveSize)
     m_End = elements + elementsCount;
     SetCapacity(reserveSize);
     return true;
-#else
-    if (reserveSize <= capacity())
-    {
-        return true;
-    }
-    NW_FATAL_ERROR("Can't increase capacity.");
-    return false;
-#endif
 }
 
 template<typename TElement>
@@ -471,12 +453,8 @@ inline bool MoveArray<TElement>::push_back(const TElement& element)
     int capacity = GetCapacity();
     if (capacity <= size())
     {
-#ifdef NW_MOVE_ARRAY_VARIABILITY_ENABLED
         int newCapacity = (capacity == 0) ? 1 : capacity * 2;
         result = reserve(newCapacity);
-#else
-        result = false;
-#endif
     }
     if (result)
     {

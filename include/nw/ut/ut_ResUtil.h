@@ -12,19 +12,6 @@
 #define NW_INDEX_ASSERT(name, idx) \
     NW_ASSERT(0 <= (idx) && static_cast<s32>(idx) < static_cast<s32>(Get##name##Count()))
 
-#ifdef NW_LITTLE_ENDIAN
-    #define NW_RES_SIGNATURE32(val)     \
-        ((((val) & 0x000000FF) << 24) | \
-         (((val) & 0x0000FF00) <<  8) | \
-         (((val) & 0x00FF0000) >>  8) | \
-         (((val) & 0xFF000000) >> 24))
-
-    #define NW_RES_SIGNATURE16(val)    \
-        ((((val) & 0x00FF) << 8) |     \
-         (((val) & 0xFF00) >>  8))
-
-    #define NW_RES_TYPE_INFO(val) (val)
-#else
     #define NW_RES_SIGNATURE32(val) (val)
     #define NW_RES_SIGNATURE16(val) (val)
     #define NW_RES_TYPE_INFO(val)       \
@@ -32,7 +19,6 @@
          (((val) & 0x0000FF00) <<  8) | \
          (((val) & 0x00FF0000) >>  8) | \
          (((val) & 0xFF000000) >> 24))
-#endif
 
 namespace nw {
 namespace ut {

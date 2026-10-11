@@ -12,82 +12,50 @@
 #include <nn/gx/CTR/gx_CommandAccess.h>
 #include <nn/gx/CTR/gx_PicaAll.h>
 
-#define NW_FONT_CMD_DATA_LOAD_ARRAY_ELEMENT8( elm8, elm9, elm10, elm11, bytes, num )    \
-      ((elm8)  & 0x0F) <<  0 | ((elm9)  & 0x0F) <<  4                                   \
-    | ((elm10) & 0x0F) <<  8 | ((elm11) & 0x0F) << 12                                   \
-    | ((bytes) & 0xFF) << 16 | ((num)   & 0x0F) << 28
-
-#define NW_FONT_CMD_SET_DRAW_MODE1( mode )                  \
-    PICA_CMD_DATA_DRAW_MODE1( 0 /* func */, mode ),         \
-    PICA_CMD_HEADER_SINGLE_BE( PICA_REG_DRAW_MODE1, 0x2 )
-
-#define NW_FONT_CMD_SET_LOAD_ARRAY( offset, elm0, elm1, elm2, elm3, elm4, elm5, elm6,       \
-    elm7, elm8, elm9, elm10, elm11, bytes, num )                                            \
-    (offset) & 0x0FFFFFFF,                                        \
-    PICA_CMD_DATA_LOAD_ARRAY0_ELEMENT( elm0, elm1, elm2, elm3, elm4, elm5, elm6, elm7 ),    \
-    NW_FONT_CMD_DATA_LOAD_ARRAY_ELEMENT8( elm8, elm9, elm10, elm11, bytes, num )
-
-#define NW_FONT_CMD_SET_LOAD_ARRAY_ZERO()                                           \
-    NW_FONT_CMD_SET_LOAD_ARRAY(                                                     \
-        0, /* offset */                                                             \
-        PICA_DATA_VERTEX_0_ATTR, PICA_DATA_VERTEX_0_ATTR, PICA_DATA_VERTEX_0_ATTR,  \
-        PICA_DATA_VERTEX_0_ATTR, PICA_DATA_VERTEX_0_ATTR, PICA_DATA_VERTEX_0_ATTR,  \
-        PICA_DATA_VERTEX_0_ATTR, PICA_DATA_VERTEX_0_ATTR, PICA_DATA_VERTEX_0_ATTR,  \
-        PICA_DATA_VERTEX_0_ATTR, PICA_DATA_VERTEX_0_ATTR, PICA_DATA_VERTEX_0_ATTR,  \
-        0,  /* bytes */                                                             \
-        0) 
-
-#define NW_FONT_CMD_SET_TEXTURE_LOD_DISABLE( addr )                                               \
-    PICA_CMD_DATA_TEXTURE_LOD_LEVEL( 0 /* lodBias */, 0 /* maxLodLevel */, 0 /* minLodLevel */ ), \
-    PICA_CMD_HEADER_SINGLE( addr )
-
 extern int* __cb_current_command_buffer;
-
-#define NW_FONT_ADD_COMMANDS(pStrBuf, command, size)                                                  \
-    std::memcpy(&(pStrBuf)->commandBuffer[(pStrBuf)->commandBufferSize], command, size );               \
-    (pStrBuf)->commandBufferSize += (size) / sizeof(u32)
-
-#define NW_FONT_ADD_SINGLE_COMMAND(pStrBuf, header, data)                               \
-    (pStrBuf)->commandBuffer[(pStrBuf)->commandBufferSize + 0] = (data);                \
-    (pStrBuf)->commandBuffer[(pStrBuf)->commandBufferSize + 1] = (header);              \
-    (pStrBuf)->commandBufferSize += 2
 
 namespace nw{
 namespace font{
 namespace{
 
-const u32   DRAW_MODE2_DEFAULT  = 0;
-const u32   DRAW_FUNC_DEFAULT   = 0;
-const u32   DRAW_MODE0_DEFAULT  = 0;
+const u32 DRAW_MODE2_DEFAULT  = 0;
+const u32 DRAW_FUNC_DEFAULT   = 0;
+const u32 DRAW_MODE0_DEFAULT  = 0;
 
-const u32   DRAW_MODE0_ELEMENT  = 1;
-const u32   DRAW_MODE2_ELEMENT  = PICA_DATA_DRAW_TRIANGLES;
+const u32 DRAW_MODE0_ELEMENT  = 1;
+const u32 DRAW_MODE2_ELEMENT  = PICA_DATA_DRAW_TRIANGLES;
 
-const u32   s_DrawInitCommands[] =
+const u32 s_DrawInitCommands[] =
 {
     NW_FONT_COMMAND_SET_BLEND_DEFAULT,
-    PICA_CMD_DATA_FRAGOP_ALPHA_TEST_DISABLE(),
-    PICA_CMD_HEADER_SINGLE( PICA_REG_FRAGOP_ALPHA_TEST ),
-    PICA_CMD_DATA_GAS_FOG_MODE(
-        PICA_DATA_FOG_FALSE,
-        0,
-        0),
-    PICA_CMD_HEADER_SINGLE_BE( PICA_REG_GAS_FOG_MODE, 0xd ),
-    PICA_CMD_SET_FRAG_LIGHT_ENABLE( false ),
+    0x0,
+    (PICA_REG_FRAGOP_ALPHA_TEST | 0x000F0000),
+    (PICA_DATA_FOG_FALSE | (0 << 3) | (0 << 16)),
+    (PICA_REG_GAS_FOG_MODE | (0xd << 16)),
+    0,
+    (PICA_REG_FRAG_LIGHT_EN0 | 0x000F0000),
+    1,
+    (PICA_REG_FRAG_LIGHT_EN1 | 0x000F0000),
     0x0000000f,
-    PICA_CMD_HEADER_SINGLE( PICA_REG_COLOR_BUFFER_READ ),
-    NW_FONT_CMD_SET_TEXTURE_LOD_DISABLE( PICA_REG_TEXTURE0_LOD ),
-    NW_FONT_CMD_SET_TEXTURE_LOD_DISABLE( PICA_REG_TEXTURE1_LOD ),
-    NW_FONT_CMD_SET_TEXTURE_LOD_DISABLE( PICA_REG_TEXTURE2_LOD ),
-    PICA_CMD_DATA_TEXTURE_SHADOW(
-        false,  /* perspectiveShadow */
-        0,      /* shadowZBias */
-        0),     /* shadowZScale */
-    PICA_CMD_HEADER_SINGLE( PICA_REG_TEXTURE0_SHADOW ),
-    PICA_CMD_SET_DRAW_MODE0( DRAW_MODE0_ELEMENT ),
-    PICA_CMD_SET_DRAW_MODE1( DRAW_FUNC_DEFAULT, DRAW_MODE0_ELEMENT ),
-    PICA_CMD_SET_DRAW_MODE2( DRAW_MODE2_ELEMENT ),
-    PICA_CMD_SET_COLOR_DEPTH_BUFFER_CLEAR( 1 /* data1 */, 1 /* data2 */ ),
+    (PICA_REG_COLOR_BUFFER_READ | 0x000F0000),
+    0,
+    (PICA_REG_TEXTURE0_LOD | 0x000F0000),
+    0,
+    (PICA_REG_TEXTURE1_LOD | 0x000F0000),
+    0,
+    (PICA_REG_TEXTURE2_LOD | 0x000F0000),
+    1,
+    (PICA_REG_TEXTURE0_SHADOW | 0x000F0000),
+    (DRAW_MODE0_ELEMENT << 8),
+    (PICA_REG_DRAW_MODE0 | (0x2 << 16)),
+    (DRAW_FUNC_DEFAULT | (DRAW_MODE0_ELEMENT << 8)),
+    (PICA_REG_DRAW_MODE1 | (0x3 << 16)),
+    (DRAW_MODE2_ELEMENT << 8),
+    (PICA_REG_VS_OUT_REG_NUM3 | (0x2 << 16)),
+    1,
+    (PICA_REG_COLOR_DEPTH_BUFFER_CLEAR1 | 0x000F0000),
+    1,
+    (PICA_REG_COLOR_DEPTH_BUFFER_CLEAR0 | 0x000F0000),
 };
 
 void AddVertexAttributeArrayCommand(ut::internal::CmdCache& cmdCache,u32 vboBaseAddr, uptr phyArrayBuffer,u32 vtxAttrNum)
@@ -97,56 +65,41 @@ void AddVertexAttributeArrayCommand(ut::internal::CmdCache& cmdCache,u32 vboBase
     const u32 loadAryElementNum = 1;
 
     const u32 command200[] ={
-        PICA_CMD_DATA_VERTEX_ATTR_ARRAYS_BASE_ADDR( vboBaseAddr ),
-        PICA_CMD_HEADER_BURSTSEQ( PICA_REG_VTX_ATTR_ARRAYS_BASE_ADDR, (0x202 - 0x200 + 1) + (0x205 - 0x203 + 1) * 12 ),
+        (((u32)vboBaseAddr >> 4) << 1),
+        (PICA_REG_VTX_ATTR_ARRAYS_BASE_ADDR | (0xF << 16) | (((0x202 - 0x200 + 1) + (0x205 - 0x203 + 1) * 12 - 1) << 20) | 0x80000000),
 
-        PICA_CMD_DATA_VERTEX_ATTR_ARRAYS(
-            PICA_DATA_SIZE_4_FLOAT, PICA_DATA_SIZE_1_BYTE, PICA_DATA_SIZE_1_BYTE,
-            PICA_DATA_SIZE_1_BYTE,  PICA_DATA_SIZE_1_BYTE, PICA_DATA_SIZE_1_BYTE,
-            PICA_DATA_SIZE_1_BYTE,  PICA_DATA_SIZE_1_BYTE),
+        (PICA_DATA_SIZE_4_FLOAT | (PICA_DATA_SIZE_1_BYTE << 4) | (PICA_DATA_SIZE_1_BYTE << 8) | (PICA_DATA_SIZE_1_BYTE << 12) |
+            (PICA_DATA_SIZE_1_BYTE << 16) | (PICA_DATA_SIZE_1_BYTE << 20) | (PICA_DATA_SIZE_1_BYTE << 24) | (PICA_DATA_SIZE_1_BYTE << 28)),
 
         PICA_DATA_SIZE_1_BYTE <<  0 | PICA_DATA_SIZE_1_BYTE <<  4
             | PICA_DATA_SIZE_1_BYTE <<  8 | PICA_DATA_SIZE_1_BYTE << 12
             | fixedVtxAttrMask << 16
             | (vtxAttrNum - 1) << 28,
 
-        NW_FONT_CMD_SET_LOAD_ARRAY(
-            phyArrayBuffer - vboBaseAddr,
-            PICA_DATA_VERTEX_0_ATTR,
-            PICA_DATA_VERTEX_0_ATTR,
-            PICA_DATA_VERTEX_0_ATTR,
-            PICA_DATA_VERTEX_0_ATTR,
-            PICA_DATA_VERTEX_0_ATTR,
-            PICA_DATA_VERTEX_0_ATTR,
-            PICA_DATA_VERTEX_0_ATTR,
-            PICA_DATA_VERTEX_0_ATTR,
-            PICA_DATA_VERTEX_0_ATTR,
-            PICA_DATA_VERTEX_0_ATTR,
-            PICA_DATA_VERTEX_0_ATTR,
-            PICA_DATA_VERTEX_0_ATTR,
-            loadAryBytes, 
-            loadAryElementNum),
+            (phyArrayBuffer - vboBaseAddr) & 0x0FFFFFFF,
+            0,
+            ((loadAryBytes & 0xFF) << 16) | ((loadAryElementNum & 0x0F) << 28),
     };
     cmdCache.Add(command200, sizeof(command200));
 
     static const u32 command206[] ={
-        NW_FONT_CMD_SET_LOAD_ARRAY_ZERO(),
-        NW_FONT_CMD_SET_LOAD_ARRAY_ZERO(),
-        NW_FONT_CMD_SET_LOAD_ARRAY_ZERO(),
-        NW_FONT_CMD_SET_LOAD_ARRAY_ZERO(),
-        NW_FONT_CMD_SET_LOAD_ARRAY_ZERO(),
-        NW_FONT_CMD_SET_LOAD_ARRAY_ZERO(),
-        NW_FONT_CMD_SET_LOAD_ARRAY_ZERO(),
-        NW_FONT_CMD_SET_LOAD_ARRAY_ZERO(),
-        NW_FONT_CMD_SET_LOAD_ARRAY_ZERO(),
-        NW_FONT_CMD_SET_LOAD_ARRAY_ZERO(),
-        NW_FONT_CMD_SET_LOAD_ARRAY_ZERO(),
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
 
-        PICA_CMD_DATA_VS_ATTR_IN_REG_MAP0( 0, 0, 0, 0, 0, 0, 0, 0 ),
-        PICA_CMD_HEADER_SINGLE( PICA_REG_VS_ATTR_IN_REG_MAP0 ),
+            0,
+        (PICA_REG_VS_ATTR_IN_REG_MAP0 | 0x000F0000),
 
-        PICA_CMD_DATA_VS_ATTR_IN_REG_MAP1( 0, 0, 0, 0 ),
-        PICA_CMD_HEADER_SINGLE( PICA_REG_VS_ATTR_IN_REG_MAP1 ),
+            0,
+        (PICA_REG_VS_ATTR_IN_REG_MAP1 | 0x000F0000),
     };
     cmdCache.Add(command206, sizeof(command206));
 }
@@ -331,12 +284,23 @@ u32 CalcDrawBeginCommandBytes(const ShaderPackageHeader& header)
 }
 
 const u32 s_DrawFinalizeCommands[] ={
-    PICA_CMD_SET_VS_FIXED_ATTR(0x0, 0x3f000000, 0x00000000, 0x00000000),
+    (0x0 & 0xf),
+    (PICA_REG_VS_FIXED_ATTR | (0xF << 16) | ((4 - 1) << 20) | 0x80000000),
+    (u32)(0x3f000000),
+    (u32)(0x00000000),
+    (u32)(0x00000000),
+    0x00000000,
 
-    PICA_CMD_SET_DRAW_MODE0( DRAW_MODE0_DEFAULT ),
-    NW_FONT_CMD_SET_DRAW_MODE1( DRAW_MODE0_DEFAULT ),
-    PICA_CMD_SET_DRAW_MODE2( DRAW_MODE2_DEFAULT ),
-    PICA_CMD_SET_COLOR_DEPTH_BUFFER_CLEAR(1, 1),
+    (DRAW_MODE0_DEFAULT << 8),
+    (PICA_REG_DRAW_MODE0 | (0x2 << 16)),
+    (0 | (DRAW_MODE0_DEFAULT << 8)),
+    (PICA_REG_DRAW_MODE1 | (0x2 << 16)),
+    (DRAW_MODE2_DEFAULT << 8),
+    (PICA_REG_VS_OUT_REG_NUM3 | (0x2 << 16)),
+    1,
+    (PICA_REG_COLOR_DEPTH_BUFFER_CLEAR1 | 0x000F0000),
+    1,
+    (PICA_REG_COLOR_DEPTH_BUFFER_CLEAR0 | 0x000F0000),
 };
 
 const u32 DRAWEND_STATICCOMMAND_BYTES = 176 + sizeof(s_DrawFinalizeCommands);
@@ -435,7 +399,8 @@ void RectDrawer::SetProjectionMtx(const nn::math::MTX44& mtx)
     nn::math::MTX44Copy(pDst, &mtx);
 
     const u32 size = SetUniformCommand(this->m_UniformProjBuffer, UNIFORM_PROJ_NUM + 1);
-    NW_FONT_RECTDRAWER_ADD_COMMAND(this->m_UniformProjBuffer, size);
+    std::memcpy(__cb_current_command_buffer, this->m_UniformProjBuffer, size);
+    __cb_current_command_buffer += size >> 2;
 }
 
 void RectDrawer::SetViewMtxForText(const nn::math::MTX34& mtx)
@@ -445,7 +410,8 @@ void RectDrawer::SetViewMtxForText(const nn::math::MTX34& mtx)
 
     m_UniformMtxIndex = sizeof(mtx) / sizeof(nn::math::VEC4);
     const u32 size = SetUniformCommand(this->m_UniformMtxBuffer, m_UniformMtxIndex);
-    NW_FONT_RECTDRAWER_ADD_COMMAND(this->m_UniformMtxBuffer, size);
+    std::memcpy(__cb_current_command_buffer, this->m_UniformMtxBuffer, size);
+    __cb_current_command_buffer += size >> 2;
     m_UniformMtxIndex = 0;
 }
 
@@ -483,7 +449,8 @@ void RectDrawer::InitializeStatic()
 void RectDrawer::AddUniformMtx()
 {
     const u32 size = this->SetUniformCommand(this->m_UniformMtxBuffer, this->m_UniformMtxIndex);
-    NW_FONT_RECTDRAWER_ADD_COMMAND(this->m_UniformMtxBuffer, size);
+    std::memcpy(__cb_current_command_buffer, this->m_UniformMtxBuffer, size);
+    __cb_current_command_buffer += size >> 2;
 
     m_UniformMtxIndex = 0;
 }
@@ -526,15 +493,34 @@ void RectDrawer::InitializeCMD(void* vertexBuffer,void* commandBuffer,const void
 
     {
         static const u32 commands[] ={
-            PICA_CMD_SET_DRAW_MODE0_DUMMY_BEGIN(),
+            0x0,
+            (PICA_REG_VS_OUT_REG_NUM2 | (0x9 << 20)),
+            0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+            0x0, 0x0,
+            0x0,
+            (PICA_REG_VERTEX_ATTR_ARRAYS_BASE_ADDR | (0x1D << 20)),
+            0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+            0x0, 0x0,
+            0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+            0x0, 0x0,
+            0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+            0x0, 0x0,
 
-            PICA_CMD_DATA_DRAW_MODE0(useGeometryShader,0,false),
+            ((useGeometryShader ? 2 : 0) | (0 << 8) | (0 << 9) | (false ? 1 << 31 : 0)),
 
-            PICA_CMD_HEADER_SINGLE_BE( PICA_REG_DRAW_MODE0, 0x1 ),
+            (PICA_REG_DRAW_MODE0 | (0x1 << 16)),
 
-            PICA_CMD_SET_DRAW_MODE0_DUMMY_END(),
+            0x0,
+            (PICA_REG_VERTEX_ATTR_ARRAYS_BASE_ADDR | (0x1D << 20)),
+            0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+            0x0, 0x0,
+            0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+            0x0, 0x0,
+            0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+            0x0, 0x0,
 
-            PICA_CMD_SET_VS_COM_MODE(useGeometryShader),
+            (useGeometryShader ? 1 : 0),
+            (PICA_REG_VS_COM_MODE | (0x1 << 16)),
         };
        this->m_CmdCacheDrawBegin.Add(commands, sizeof(commands));
     }
@@ -546,11 +532,11 @@ void RectDrawer::InitializeCMD(void* vertexBuffer,void* commandBuffer,const void
         {
             const u32 writeCnt = math::Min(BURST_MAX, pkgHead.instCount - totalCnt);
             const u32 commands[] ={
-                PICA_CMD_DATA_VS_PROG_ADDR(totalCnt),
-                PICA_CMD_HEADER_SINGLE(PICA_REG_VS_PROG_ADDR),
+                totalCnt,
+                (PICA_REG_VS_PROG_ADDR | 0x000F0000),
 
                 progCodes[totalCnt + 0],
-                PICA_CMD_HEADER_BURST(PICA_REG_VS_PROG_DATA0, writeCnt),
+                (PICA_REG_VS_PROG_DATA0 | (0xF << 16) | ((writeCnt - 1) << 20)),
             };
             this->m_CmdCacheDrawBegin.Add(commands, sizeof(commands));
             this->m_CmdCacheDrawBegin.Add(&progCodes[totalCnt + 1], sizeof(u32) * (writeCnt - 1));
@@ -560,8 +546,8 @@ void RectDrawer::InitializeCMD(void* vertexBuffer,void* commandBuffer,const void
 
         {
             static const u32 commands[] ={
-                PICA_CMD_DATA_VS_PROG_END(1),
-                PICA_CMD_HEADER_SINGLE(PICA_REG_VS_PROG_RENEWAL_END),
+                1,
+                (PICA_REG_VS_PROG_RENEWAL_END | 0x000F0000),
             };
             this->m_CmdCacheDrawBegin.Add(commands, sizeof(commands));
         }
@@ -574,11 +560,11 @@ void RectDrawer::InitializeCMD(void* vertexBuffer,void* commandBuffer,const void
         {
             const u32 writeCnt = math::Min(BURST_MAX, pkgHead.swizzleCount - totalCnt);
             const u32 commands[] ={
-                PICA_CMD_DATA_VS_PROG_SWIZZLE_ADDR( totalCnt ),
-                PICA_CMD_HEADER_SINGLE( PICA_REG_VS_PROG_SWIZZLE_ADDR ),
+                totalCnt,
+                (PICA_REG_VS_PROG_SWIZZLE_ADDR | 0x000F0000),
 
                 swDatas[totalCnt + 0].value,
-                PICA_CMD_HEADER_BURST(PICA_REG_VS_PROG_SWIZZLE_DATA0, writeCnt),
+                (PICA_REG_VS_PROG_SWIZZLE_DATA0 | (0xF << 16) | ((writeCnt - 1) << 20)),
             };
             this->m_CmdCacheDrawBegin.Add(commands, sizeof(commands));
 
@@ -604,8 +590,8 @@ void RectDrawer::InitializeCMD(void* vertexBuffer,void* commandBuffer,const void
             const int dataNum = 3;
             const int writeCount = 1 + dataNum;
             const u32 commands[] ={
-                PICA_CMD_DATA_VS_FLOAT_ADDR( PICA_DATA_VS_F24, setupInfo.index ),
-                PICA_CMD_HEADER_BURSTSEQ( PICA_REG_VS_FLOAT_ADDR, writeCount ),
+                ((setupInfo.index & 0xff) | (PICA_DATA_VS_F24 ? 0x80000000 : 0)),
+                (PICA_REG_VS_FLOAT_ADDR | (0xF << 16) | ((writeCount - 1) << 20) | 0x80000000),
 
                 setupInfo.value[3] <<  8 | ((setupInfo.value[2] >> 16) & 0x0000FF),
                 setupInfo.value[2] << 16 | ((setupInfo.value[1] >>  8) & 0x00FFFF),
@@ -624,14 +610,14 @@ void RectDrawer::InitializeCMD(void* vertexBuffer,void* commandBuffer,const void
 
     {
         const u32 commands[] ={
-            PICA_CMD_DATA_DRAW_MODE0(false,0,useGeometryShaderSubdivision),
-            PICA_CMD_HEADER_SINGLE_BE( PICA_REG_DRAW_MODE0, 0x8 ),
+            ((false ? 2 : 0) | (0 << 8) | (0 << 9) | (useGeometryShaderSubdivision ? 1 << 31 : 0)),
+            (PICA_REG_DRAW_MODE0 | (0x8 << 16)),
 
-            PICA_CMD_DATA_VS_ATTR_NUM0( vtxAttrNum ),
-            PICA_CMD_HEADER_SINGLE_BE( PICA_REG_VS_ATTR_NUM0, 0xb ),
+            (((vtxAttrNum - 1) & 0xf) | 0xa0000000),
+            (PICA_REG_VS_ATTR_NUM0 | (0xb << 16)),
 
-            PICA_CMD_DATA_VS_START_ADDR( exeHead.mainAddr ),
-            PICA_CMD_HEADER_SINGLE( PICA_REG_VS_START_ADDR ),
+            (exeHead.mainAddr | 0x7fff0000),
+            (PICA_REG_VS_START_ADDR | 0x000F0000),
         };
         this->m_CmdCacheDrawBegin.Add(commands, sizeof(commands));
     }
@@ -702,24 +688,24 @@ void RectDrawer::InitializeCMD(void* vertexBuffer,void* commandBuffer,const void
 
         {
             const u32 commands[] ={
-                PICA_CMD_DATA_VS_OUT_MASK( exeHead.outputMask ),
-                PICA_CMD_HEADER_SINGLE( PICA_REG_VS_OUT_REG_MASK ),
+                (exeHead.outputMask & 0xffff),
+                (PICA_REG_VS_OUT_REG_MASK | 0x000F0000),
 
                 outRegUseNum - 1,
-                PICA_CMD_HEADER_SINGLE( PICA_REG_VS_OUT_REG_NUM2 ),
+                (PICA_REG_VS_OUT_REG_NUM2 | 0x000F0000),
 
-                PICA_CMD_DATA_GS_MISC_REG0( PICA_DATA_GS_OTHER_MODE ),
-                PICA_CMD_HEADER_SINGLE( PICA_REG_GS_MISC_REG0 ),
+                0,
+                (PICA_REG_GS_MISC_REG0 | 0x000F0000),
 
-                PICA_CMD_DATA_VS_ATTR_NUM1( vtxAttrNum ),
-                PICA_CMD_HEADER_SINGLE( PICA_REG_VS_ATTR_NUM1 ),
+                ((vtxAttrNum - 1) & 0xf),
+                (PICA_REG_VS_ATTR_NUM1 | 0x000F0000),
 
                 outRegUseNum - 1,
-                PICA_CMD_HEADER_SINGLE(PICA_REG_VS_OUT_REG_NUM1),
-                PICA_CMD_DATA_VS_GS_OUT_REG_NUM3(outRegUseNum, 0),
-                PICA_CMD_HEADER_SINGLE_BE(PICA_REG_VS_OUT_REG_NUM3, 0x1),
+                (PICA_REG_VS_OUT_REG_NUM1 | 0x000F0000),
+                ((outRegUseNum - 1) | (0 << 8)),
+                (PICA_REG_VS_OUT_REG_NUM3 | (0x1 << 16)),
                 outRegUseNum,
-                PICA_CMD_HEADER_SINGLE(PICA_REG_VS_OUT_REG_NUM0),
+                (PICA_REG_VS_OUT_REG_NUM0 | 0x000F0000),
             };
             this->m_CmdCacheDrawBegin.Add(commands, sizeof(commands));
         }
@@ -727,7 +713,7 @@ void RectDrawer::InitializeCMD(void* vertexBuffer,void* commandBuffer,const void
         {
             const u32 commands[] ={
                 *reinterpret_cast<u32*>(outmaps[0]),
-                PICA_CMD_HEADER_BURSTSEQ(PICA_REG_VS_OUT_ATTR0, OutRegNum),
+                (PICA_REG_VS_OUT_ATTR0 | (0xF << 16) | ((OutRegNum - 1) << 20) | 0x80000000),
             };
             this->m_CmdCacheDrawBegin.Add(commands, sizeof(commands));
             this->m_CmdCacheDrawBegin.Add(reinterpret_cast<u32*>(outmaps[1]), sizeof(u32) * (OutRegNum - 1));
@@ -750,23 +736,23 @@ void RectDrawer::InitializeCMD(void* vertexBuffer,void* commandBuffer,const void
 
             const bool useViewQuaternion = 0 != useOutRegTypes[SHADEROUTMAPTYPE_VIEW] ||  0 != useOutRegTypes[SHADEROUTMAPTYPE_QUATERNION];
             const u32 outAttrClk =
-                PICA_CMD_DATA_VS_GS_OUT_ATTR_CLK(usePosZ,
-                    0 != useOutRegTypes[SHADEROUTMAPTYPE_COLOR],
-                    0 != useOutRegTypes[SHADEROUTMAPTYPE_TEXCOORD0],
-                    0 != useOutRegTypes[SHADEROUTMAPTYPE_TEXCOORD1],
-                    0 != useOutRegTypes[SHADEROUTMAPTYPE_TEXCOORD2],
-                    0 != useOutRegTypes[SHADEROUTMAPTYPE_TEXCOORD0W],
-                    useViewQuaternion);
-            const u32 TexEnableBits = PICA_CMD_DATA_VS_GS_OUT_ATTR_CLK(false,false,true,true,true,true,false);
+                ((usePosZ ? 1 : 0) |
+                    ((0 != useOutRegTypes[SHADEROUTMAPTYPE_COLOR] ? 1 : 0) << 1) |
+                    ((0 != useOutRegTypes[SHADEROUTMAPTYPE_TEXCOORD0] ? 1 : 0) << 8) |
+                    ((0 != useOutRegTypes[SHADEROUTMAPTYPE_TEXCOORD1] ? 1 : 0) << 9) |
+                    ((0 != useOutRegTypes[SHADEROUTMAPTYPE_TEXCOORD2] ? 1 : 0) << 10) |
+                    ((0 != useOutRegTypes[SHADEROUTMAPTYPE_TEXCOORD0W] ? 1 : 0) << 16) |
+                    ((useViewQuaternion ? 1 : 0) << 24));
+            const u32 TexEnableBits = (1 << 8) | (1 << 9) | (1 << 10) | (1 << 16);
 
             const bool useTexCoords = 0 != (outAttrClk & TexEnableBits);
             const u32 outAttrMode = useTexCoords ? 1 : 0;
             const u32 commands[] ={
 
-                PICA_CMD_DATA_VS_GS_OUT_ATTR_MODE(outAttrMode),
-                PICA_CMD_HEADER_SINGLE(PICA_REG_VS_OUT_ATTR_MODE),
+                outAttrMode,
+                (PICA_REG_VS_OUT_ATTR_MODE | 0x000F0000),
                 outAttrClk,
-                PICA_CMD_HEADER_SINGLE(PICA_REG_VS_OUT_ATTR_CLK),
+                (PICA_REG_VS_OUT_ATTR_CLK | 0x000F0000),
             };
             this->m_CmdCacheDrawBegin.Add(commands, sizeof(commands));
         }
@@ -781,8 +767,8 @@ void RectDrawer::InitializeCMD(void* vertexBuffer,void* commandBuffer,const void
         const uptr phyEleArrayBuf = nngxGetPhysicalAddr(reinterpret_cast<uptr>(eleArrayBuf));
         const u32 indexOffset = phyEleArrayBuf - vboBaseAddr;
         const u32 commands[] ={
-            PICA_CMD_DATA_INDEX_ARRAY_ADDR_OFFSET(indexOffset,1),
-            PICA_CMD_HEADER_SINGLE(PICA_REG_INDEX_ARRAY_ADDR_OFFSET),
+            (indexOffset | 0x80000000),
+            (PICA_REG_INDEX_ARRAY_ADDR_OFFSET | 0x000F0000),
         };
         this->m_CmdCacheDrawBegin.Add(commands, sizeof(commands));
     }

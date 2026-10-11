@@ -33,7 +33,27 @@ class ResTargetShape : public nw::ut::ResCommon<ResTargetShapeData>
 public:
     NW_RES_CTOR(ResTargetShape)
 
-    NW_RES_FIELD_CLASS_LIST_DECL(ResVertexAttribute, VertexAttributes)
+
+    s32 GetVertexAttributesCount() const
+        { return ref().m_VertexAttributesTableCount; }
+    ResVertexAttribute GetVertexAttributes(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toVertexAttributesTable.to_table_ptr());
+            return ResVertexAttribute(tbl_ptr[idx].to_ptr());
+        }
+    const ResVertexAttribute GetVertexAttributes(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toVertexAttributesTable.to_table_ptr());
+            return ResVertexAttribute(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<ResVertexAttribute, nw::ut::internal::ResArrayClassTraits> GetVertexAttributes()
+        {
+            return nw::ut::internal::ResArray<ResVertexAttribute, nw::ut::internal::ResArrayClassTraits>(ref().toVertexAttributesTable.to_table_ptr(), GetVertexAttributesCount());
+        }
+    const nw::ut::internal::ResArray<const ResVertexAttribute, nw::ut::internal::ResArrayClassTraits> GetVertexAttributes() const
+        {
+            return nw::ut::internal::ResArray<const ResVertexAttribute, nw::ut::internal::ResArrayClassTraits>(ref().toVertexAttributesTable.to_table_ptr(), GetVertexAttributesCount());
+        }
 };
 
 class ResBlendShape : public nw::ut::ResCommon<ResBlendShapeData>
@@ -41,8 +61,44 @@ class ResBlendShape : public nw::ut::ResCommon<ResBlendShapeData>
 public:
     NW_RES_CTOR(ResBlendShape)
 
-    NW_RES_FIELD_CLASS_LIST_DECL(ResTargetShape, TargetShapes)
-    NW_RES_FIELD_PRIMITIVE_LIST_DECL(u32, UsageTable)
+
+    s32 GetTargetShapesCount() const
+        { return ref().m_TargetShapesTableCount; }
+    ResTargetShape GetTargetShapes(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toTargetShapesTable.to_table_ptr());
+            return ResTargetShape(tbl_ptr[idx].to_ptr());
+        }
+    const ResTargetShape GetTargetShapes(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toTargetShapesTable.to_table_ptr());
+            return ResTargetShape(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<ResTargetShape, nw::ut::internal::ResArrayClassTraits> GetTargetShapes()
+        {
+            return nw::ut::internal::ResArray<ResTargetShape, nw::ut::internal::ResArrayClassTraits>(ref().toTargetShapesTable.to_table_ptr(), GetTargetShapesCount());
+        }
+    const nw::ut::internal::ResArray<const ResTargetShape, nw::ut::internal::ResArrayClassTraits> GetTargetShapes() const
+        {
+            return nw::ut::internal::ResArray<const ResTargetShape, nw::ut::internal::ResArrayClassTraits>(ref().toTargetShapesTable.to_table_ptr(), GetTargetShapesCount());
+        }
+
+    s32 GetUsageTableCount() const
+        { return ref().m_UsageTableTableCount; }
+    u32 GetUsageTable(int idx) const
+        {
+            const u32* tbl_ptr = static_cast<const u32*>(ref().toUsageTableTable.to_table_ptr());
+            return tbl_ptr[idx];
+        }
+    void SetUsageTable(int idx, u32 value)
+        {
+            u32* tbl_ptr = GetUsageTable();
+            tbl_ptr[idx] = value;
+        }
+    u32* GetUsageTable()
+        { return static_cast<u32*>(ref().toUsageTableTable.to_table_ptr()); }
+    const u32* GetUsageTable() const
+        { return static_cast<const u32*>(ref().toUsageTableTable.to_table_ptr()); }
 };
 
 struct ResPrimitiveData
@@ -65,10 +121,49 @@ public:
 
     NW_RES_CTOR( ResPrimitive )
 
-    NW_RES_FIELD_CLASS_LIST_DECL(ResIndexStream, IndexStreams)
-    NW_RES_FIELD_PRIMITIVE_LIST_DECL(u32, BufferObjects)
 
-    NW_RES_FIELD_FLAGS_DECL(u32, Flags)
+    s32 GetIndexStreamsCount() const
+        { return ref().m_IndexStreamsTableCount; }
+    ResIndexStream GetIndexStreams(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toIndexStreamsTable.to_table_ptr());
+            return ResIndexStream(tbl_ptr[idx].to_ptr());
+        }
+    const ResIndexStream GetIndexStreams(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toIndexStreamsTable.to_table_ptr());
+            return ResIndexStream(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<ResIndexStream, nw::ut::internal::ResArrayClassTraits> GetIndexStreams()
+        {
+            return nw::ut::internal::ResArray<ResIndexStream, nw::ut::internal::ResArrayClassTraits>(ref().toIndexStreamsTable.to_table_ptr(), GetIndexStreamsCount());
+        }
+    const nw::ut::internal::ResArray<const ResIndexStream, nw::ut::internal::ResArrayClassTraits> GetIndexStreams() const
+        {
+            return nw::ut::internal::ResArray<const ResIndexStream, nw::ut::internal::ResArrayClassTraits>(ref().toIndexStreamsTable.to_table_ptr(), GetIndexStreamsCount());
+        }
+
+    s32 GetBufferObjectsCount() const
+        { return ref().m_BufferObjectsTableCount; }
+    u32 GetBufferObjects(int idx) const
+        {
+            const u32* tbl_ptr = static_cast<const u32*>(ref().toBufferObjectsTable.to_table_ptr());
+            return tbl_ptr[idx];
+        }
+    void SetBufferObjects(int idx, u32 value)
+        {
+            u32* tbl_ptr = GetBufferObjects();
+            tbl_ptr[idx] = value;
+        }
+    u32* GetBufferObjects()
+        { return static_cast<u32*>(ref().toBufferObjectsTable.to_table_ptr()); }
+    const u32* GetBufferObjects() const
+        { return static_cast<const u32*>(ref().toBufferObjectsTable.to_table_ptr()); }
+
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
 
     void    Setup(nw::os::IAllocator* allocator);
 
@@ -99,9 +194,47 @@ public:
     
     NW_RES_CTOR( ResPrimitiveSet )
 
-    NW_RES_FIELD_PRIMITIVE_LIST_DECL(s32, BoneIndexTable)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, SkinningMode)
-    NW_RES_FIELD_CLASS_LIST_DECL(ResPrimitive, Primitives)
+
+    s32 GetBoneIndexTableCount() const
+        { return ref().m_BoneIndexTableTableCount; }
+    s32 GetBoneIndexTable(int idx) const
+        {
+            const s32* tbl_ptr = static_cast<const s32*>(ref().toBoneIndexTableTable.to_table_ptr());
+            return tbl_ptr[idx];
+        }
+    void SetBoneIndexTable(int idx, s32 value)
+        {
+            s32* tbl_ptr = GetBoneIndexTable();
+            tbl_ptr[idx] = value;
+        }
+    s32* GetBoneIndexTable()
+        { return static_cast<s32*>(ref().toBoneIndexTableTable.to_table_ptr()); }
+    const s32* GetBoneIndexTable() const
+        { return static_cast<const s32*>(ref().toBoneIndexTableTable.to_table_ptr()); }
+
+    s32 GetSkinningMode() const { return static_cast<s32>(ref().m_SkinningMode); }
+    void SetSkinningMode(s32 value) { ref().m_SkinningMode = value; }
+
+    s32 GetPrimitivesCount() const
+        { return ref().m_PrimitivesTableCount; }
+    ResPrimitive GetPrimitives(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toPrimitivesTable.to_table_ptr());
+            return ResPrimitive(tbl_ptr[idx].to_ptr());
+        }
+    const ResPrimitive GetPrimitives(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toPrimitivesTable.to_table_ptr());
+            return ResPrimitive(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<ResPrimitive, nw::ut::internal::ResArrayClassTraits> GetPrimitives()
+        {
+            return nw::ut::internal::ResArray<ResPrimitive, nw::ut::internal::ResArrayClassTraits>(ref().toPrimitivesTable.to_table_ptr(), GetPrimitivesCount());
+        }
+    const nw::ut::internal::ResArray<const ResPrimitive, nw::ut::internal::ResArrayClassTraits> GetPrimitives() const
+        {
+            return nw::ut::internal::ResArray<const ResPrimitive, nw::ut::internal::ResArrayClassTraits>(ref().toPrimitivesTable.to_table_ptr(), GetPrimitivesCount());
+        }
 
     void    Setup(nw::os::IAllocator* allocator);
 
@@ -134,8 +267,13 @@ public:
     
     NW_RES_CTOR_INHERIT( ResShape, ResSceneObject )
 
-    NW_RES_FIELD_FLAGS_DECL(u32, Flags)
-    NW_RES_FIELD_CLASS_DECL(nw::ut::ResBoundingVolume, BoundingVolume)
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
+
+    nw::ut::ResBoundingVolume GetBoundingVolume() { return nw::ut::ResBoundingVolume(ref().toBoundingVolume.to_ptr()); }
+    const nw::ut::ResBoundingVolume GetBoundingVolume() const { return nw::ut::ResBoundingVolume(ref().toBoundingVolume.to_ptr()); }
 
     nw::ut::ResOrientedBoundingBox GetOrientedBoundingBox() 
     {
@@ -156,8 +294,31 @@ public:
     nw::ut::ResOrientedBoundingBoxData& GetOrientedBoundingBoxData() {return this->GetOrientedBoundingBox().ref();}
     const nw::ut::ResOrientedBoundingBoxData& GetOrientedBoundingBoxData() const { return this->GetOrientedBoundingBox().ref();}
 
-    NW_RES_FIELD_VECTOR3_DECL(nw::math::VEC3, PositionOffset)
-    NW_RES_FIELD_CLASS_LIST_DECL(ResPrimitiveSet, PrimitiveSets)
+
+    void SetPositionOffset(f32 x, f32 y, f32 z) { ref().m_PositionOffset.Set(x, y, z); }
+    const nw::math::VEC3& GetPositionOffset() const { return ref().m_PositionOffset; }
+    void SetPositionOffset(const nw::math::VEC3& value) { ref().m_PositionOffset = value; }
+
+    s32 GetPrimitiveSetsCount() const
+        { return ref().m_PrimitiveSetsTableCount; }
+    ResPrimitiveSet GetPrimitiveSets(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toPrimitiveSetsTable.to_table_ptr());
+            return ResPrimitiveSet(tbl_ptr[idx].to_ptr());
+        }
+    const ResPrimitiveSet GetPrimitiveSets(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toPrimitiveSetsTable.to_table_ptr());
+            return ResPrimitiveSet(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<ResPrimitiveSet, nw::ut::internal::ResArrayClassTraits> GetPrimitiveSets()
+        {
+            return nw::ut::internal::ResArray<ResPrimitiveSet, nw::ut::internal::ResArrayClassTraits>(ref().toPrimitiveSetsTable.to_table_ptr(), GetPrimitiveSetsCount());
+        }
+    const nw::ut::internal::ResArray<const ResPrimitiveSet, nw::ut::internal::ResArrayClassTraits> GetPrimitiveSets() const
+        {
+            return nw::ut::internal::ResArray<const ResPrimitiveSet, nw::ut::internal::ResArrayClassTraits>(ref().toPrimitiveSetsTable.to_table_ptr(), GetPrimitiveSetsCount());
+        }
 
     const nw::math::VEC3& GetCenterPosition() const { return this->GetOrientedBoundingBox().GetCenterPosition(); }
 
@@ -180,13 +341,41 @@ struct ResSeparateDataShapeData : public ResShapeData
 class ResSeparateDataShape : public ResShape
 {
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResSeparateDataShape) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('SPSH') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResSeparateDataShape)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('SPSH')
+    };
     
     NW_RES_CTOR_INHERIT( ResSeparateDataShape, ResShape )
 
-    NW_RES_FIELD_CLASS_LIST_DECL(ResVertexAttribute, VertexAttributes)
-    NW_RES_FIELD_CLASS_DECL(ResBlendShape, BlendShape)
+
+    s32 GetVertexAttributesCount() const
+        { return ref().m_VertexAttributesTableCount; }
+    ResVertexAttribute GetVertexAttributes(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toVertexAttributesTable.to_table_ptr());
+            return ResVertexAttribute(tbl_ptr[idx].to_ptr());
+        }
+    const ResVertexAttribute GetVertexAttributes(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toVertexAttributesTable.to_table_ptr());
+            return ResVertexAttribute(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<ResVertexAttribute, nw::ut::internal::ResArrayClassTraits> GetVertexAttributes()
+        {
+            return nw::ut::internal::ResArray<ResVertexAttribute, nw::ut::internal::ResArrayClassTraits>(ref().toVertexAttributesTable.to_table_ptr(), GetVertexAttributesCount());
+        }
+    const nw::ut::internal::ResArray<const ResVertexAttribute, nw::ut::internal::ResArrayClassTraits> GetVertexAttributes() const
+        {
+            return nw::ut::internal::ResArray<const ResVertexAttribute, nw::ut::internal::ResArrayClassTraits>(ref().toVertexAttributesTable.to_table_ptr(), GetVertexAttributesCount());
+        }
+
+    ResBlendShape GetBlendShape() { return ResBlendShape(ref().toBlendShape.to_ptr()); }
+    const ResBlendShape GetBlendShape() const { return ResBlendShape(ref().toBlendShape.to_ptr()); }
 
     u32 GetVertexCount();
 };

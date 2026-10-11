@@ -25,7 +25,27 @@ public:
 { SIGNATURE = NW_RES_SIGNATURE32('PSHP') };
 
     NW_RES_CTOR_INHERIT(ResParticleShape, ResShape)
-    NW_RES_FIELD_CLASS_LIST_DECL(ResVertexAttribute, VertexAttributes)
+
+    s32 GetVertexAttributesCount() const
+        { return ref().m_VertexAttributesTableCount; }
+    ResVertexAttribute GetVertexAttributes(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toVertexAttributesTable.to_table_ptr());
+            return ResVertexAttribute(tbl_ptr[idx].to_ptr());
+        }
+    const ResVertexAttribute GetVertexAttributes(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toVertexAttributesTable.to_table_ptr());
+            return ResVertexAttribute(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<ResVertexAttribute, nw::ut::internal::ResArrayClassTraits> GetVertexAttributes()
+        {
+            return nw::ut::internal::ResArray<ResVertexAttribute, nw::ut::internal::ResArrayClassTraits>(ref().toVertexAttributesTable.to_table_ptr(), GetVertexAttributesCount());
+        }
+    const nw::ut::internal::ResArray<const ResVertexAttribute, nw::ut::internal::ResArrayClassTraits> GetVertexAttributes() const
+        {
+            return nw::ut::internal::ResArray<const ResVertexAttribute, nw::ut::internal::ResArrayClassTraits>(ref().toVertexAttributesTable.to_table_ptr(), GetVertexAttributesCount());
+        }
 
     void    Setup();
 };

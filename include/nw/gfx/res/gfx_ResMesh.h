@@ -45,15 +45,32 @@ public:
     
     NW_RES_CTOR_INHERIT( ResMesh, ResSceneObject )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( s32, ShapeIndex )
-    NW_RES_FIELD_PRIMITIVE_DECL( s32, MaterialIndex )
-    NW_RES_FIELD_CLASS_DECL( ResTransformNode, OwnerModel )
-    NW_RES_FIELD_BOOL_PRIMITIVE_DECL( Visible )
-    NW_RES_FIELD_PRIMITIVE_DECL( u8, RenderPriority )
-    NW_RES_FIELD_PRIMITIVE_DECL( s32, CurrentPrimitiveIndex )
-    NW_RES_FIELD_FLAGS_DECL( u32, Flags )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( s32, MeshNodeVisibilityIndex )
+    s32 GetShapeIndex() const { return static_cast<s32>(ref().m_ShapeIndex); }
+    void SetShapeIndex(s32 value) { ref().m_ShapeIndex = value; }
+
+    s32 GetMaterialIndex() const { return static_cast<s32>(ref().m_MaterialIndex); }
+    void SetMaterialIndex(s32 value) { ref().m_MaterialIndex = value; }
+
+    ResTransformNode GetOwnerModel() { return ResTransformNode(ref().toOwnerModel.to_ptr()); }
+    const ResTransformNode GetOwnerModel() const { return ResTransformNode(ref().toOwnerModel.to_ptr()); }
+
+    bool IsVisible() const { return static_cast<bool>(ref().m_IsVisible); }
+    void SetVisible(bool value) { ref().m_IsVisible = value; }
+
+    u8 GetRenderPriority() const { return static_cast<u8>(ref().m_RenderPriority); }
+    void SetRenderPriority(u8 value) { ref().m_RenderPriority = value; }
+
+    s32 GetCurrentPrimitiveIndex() const { return static_cast<s32>(ref().m_CurrentPrimitiveIndex); }
+    void SetCurrentPrimitiveIndex(s32 value) { ref().m_CurrentPrimitiveIndex = value; }
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
+
+
+    s32 GetMeshNodeVisibilityIndex() const { return static_cast<s32>(ref().m_MeshNodeVisibilityIndex); }
+    void SetMeshNodeVisibilityIndex(s32 value) { ref().m_MeshNodeVisibilityIndex = value; }
     
     u64 GetRenderKeyCache() const { return ref().m_RenderKeyCache; }
 

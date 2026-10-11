@@ -170,16 +170,66 @@ public:
     }
     void SetAmbient(const nw::ut::FloatColor& value) { this->SetAmbient(value.r, value.g, value.b); }
 
-    NW_RES_FIELD_FLOAT_U32_COLOR_DECL(nw::ut::FloatColor, Emission)
-    NW_RES_FIELD_FLOAT_U32_COLOR_DECL(nw::ut::FloatColor, Diffuse)
-    NW_RES_FIELD_FLOAT_U32_COLOR_DECL(nw::ut::FloatColor, Specular0)
-    NW_RES_FIELD_FLOAT_U32_COLOR_DECL(nw::ut::FloatColor, Specular1)
-    NW_RES_FIELD_FLOAT_U32_COLOR_DECL(nw::ut::FloatColor, Constant0)
-    NW_RES_FIELD_FLOAT_U32_COLOR_DECL(nw::ut::FloatColor, Constant1)
-    NW_RES_FIELD_FLOAT_U32_COLOR_DECL(nw::ut::FloatColor, Constant2)
-    NW_RES_FIELD_FLOAT_U32_COLOR_DECL(nw::ut::FloatColor, Constant3)
-    NW_RES_FIELD_FLOAT_U32_COLOR_DECL(nw::ut::FloatColor, Constant4)
-    NW_RES_FIELD_FLOAT_U32_COLOR_DECL(nw::ut::FloatColor, Constant5)
+
+    u32 GetEmissionU32() const { return ref().m_EmissionU32; }
+    void SetEmission(f32 r, f32 g, f32 b) { ref().m_Emission.Set(r, g, b); ref().m_EmissionU32 = ref().m_Emission.ToPicaU32(); }
+    void SetEmission(f32 r, f32 g, f32 b, f32 a) { ref().m_Emission.Set(r, g, b, a); ref().m_EmissionU32 = ref().m_Emission.ToPicaU32(); }
+    const nw::ut::FloatColor& GetEmission() const { return ref().m_Emission; }
+    void SetEmission(const nw::ut::FloatColor& value) { ref().m_Emission = value; ref().m_EmissionU32 = ref().m_Emission.ToPicaU32(); }
+
+    u32 GetDiffuseU32() const { return ref().m_DiffuseU32; }
+    void SetDiffuse(f32 r, f32 g, f32 b) { ref().m_Diffuse.Set(r, g, b); ref().m_DiffuseU32 = ref().m_Diffuse.ToPicaU32(); }
+    void SetDiffuse(f32 r, f32 g, f32 b, f32 a) { ref().m_Diffuse.Set(r, g, b, a); ref().m_DiffuseU32 = ref().m_Diffuse.ToPicaU32(); }
+    const nw::ut::FloatColor& GetDiffuse() const { return ref().m_Diffuse; }
+    void SetDiffuse(const nw::ut::FloatColor& value) { ref().m_Diffuse = value; ref().m_DiffuseU32 = ref().m_Diffuse.ToPicaU32(); }
+
+    u32 GetSpecular0U32() const { return ref().m_Specular0U32; }
+    void SetSpecular0(f32 r, f32 g, f32 b) { ref().m_Specular0.Set(r, g, b); ref().m_Specular0U32 = ref().m_Specular0.ToPicaU32(); }
+    void SetSpecular0(f32 r, f32 g, f32 b, f32 a) { ref().m_Specular0.Set(r, g, b, a); ref().m_Specular0U32 = ref().m_Specular0.ToPicaU32(); }
+    const nw::ut::FloatColor& GetSpecular0() const { return ref().m_Specular0; }
+    void SetSpecular0(const nw::ut::FloatColor& value) { ref().m_Specular0 = value; ref().m_Specular0U32 = ref().m_Specular0.ToPicaU32(); }
+
+    u32 GetSpecular1U32() const { return ref().m_Specular1U32; }
+    void SetSpecular1(f32 r, f32 g, f32 b) { ref().m_Specular1.Set(r, g, b); ref().m_Specular1U32 = ref().m_Specular1.ToPicaU32(); }
+    void SetSpecular1(f32 r, f32 g, f32 b, f32 a) { ref().m_Specular1.Set(r, g, b, a); ref().m_Specular1U32 = ref().m_Specular1.ToPicaU32(); }
+    const nw::ut::FloatColor& GetSpecular1() const { return ref().m_Specular1; }
+    void SetSpecular1(const nw::ut::FloatColor& value) { ref().m_Specular1 = value; ref().m_Specular1U32 = ref().m_Specular1.ToPicaU32(); }
+
+    u32 GetConstant0U32() const { return ref().m_Constant0U32; }
+    void SetConstant0(f32 r, f32 g, f32 b) { ref().m_Constant0.Set(r, g, b); ref().m_Constant0U32 = ref().m_Constant0.ToPicaU32(); }
+    void SetConstant0(f32 r, f32 g, f32 b, f32 a) { ref().m_Constant0.Set(r, g, b, a); ref().m_Constant0U32 = ref().m_Constant0.ToPicaU32(); }
+    const nw::ut::FloatColor& GetConstant0() const { return ref().m_Constant0; }
+    void SetConstant0(const nw::ut::FloatColor& value) { ref().m_Constant0 = value; ref().m_Constant0U32 = ref().m_Constant0.ToPicaU32(); }
+
+    u32 GetConstant1U32() const { return ref().m_Constant1U32; }
+    void SetConstant1(f32 r, f32 g, f32 b) { ref().m_Constant1.Set(r, g, b); ref().m_Constant1U32 = ref().m_Constant1.ToPicaU32(); }
+    void SetConstant1(f32 r, f32 g, f32 b, f32 a) { ref().m_Constant1.Set(r, g, b, a); ref().m_Constant1U32 = ref().m_Constant1.ToPicaU32(); }
+    const nw::ut::FloatColor& GetConstant1() const { return ref().m_Constant1; }
+    void SetConstant1(const nw::ut::FloatColor& value) { ref().m_Constant1 = value; ref().m_Constant1U32 = ref().m_Constant1.ToPicaU32(); }
+
+    u32 GetConstant2U32() const { return ref().m_Constant2U32; }
+    void SetConstant2(f32 r, f32 g, f32 b) { ref().m_Constant2.Set(r, g, b); ref().m_Constant2U32 = ref().m_Constant2.ToPicaU32(); }
+    void SetConstant2(f32 r, f32 g, f32 b, f32 a) { ref().m_Constant2.Set(r, g, b, a); ref().m_Constant2U32 = ref().m_Constant2.ToPicaU32(); }
+    const nw::ut::FloatColor& GetConstant2() const { return ref().m_Constant2; }
+    void SetConstant2(const nw::ut::FloatColor& value) { ref().m_Constant2 = value; ref().m_Constant2U32 = ref().m_Constant2.ToPicaU32(); }
+
+    u32 GetConstant3U32() const { return ref().m_Constant3U32; }
+    void SetConstant3(f32 r, f32 g, f32 b) { ref().m_Constant3.Set(r, g, b); ref().m_Constant3U32 = ref().m_Constant3.ToPicaU32(); }
+    void SetConstant3(f32 r, f32 g, f32 b, f32 a) { ref().m_Constant3.Set(r, g, b, a); ref().m_Constant3U32 = ref().m_Constant3.ToPicaU32(); }
+    const nw::ut::FloatColor& GetConstant3() const { return ref().m_Constant3; }
+    void SetConstant3(const nw::ut::FloatColor& value) { ref().m_Constant3 = value; ref().m_Constant3U32 = ref().m_Constant3.ToPicaU32(); }
+
+    u32 GetConstant4U32() const { return ref().m_Constant4U32; }
+    void SetConstant4(f32 r, f32 g, f32 b) { ref().m_Constant4.Set(r, g, b); ref().m_Constant4U32 = ref().m_Constant4.ToPicaU32(); }
+    void SetConstant4(f32 r, f32 g, f32 b, f32 a) { ref().m_Constant4.Set(r, g, b, a); ref().m_Constant4U32 = ref().m_Constant4.ToPicaU32(); }
+    const nw::ut::FloatColor& GetConstant4() const { return ref().m_Constant4; }
+    void SetConstant4(const nw::ut::FloatColor& value) { ref().m_Constant4 = value; ref().m_Constant4U32 = ref().m_Constant4.ToPicaU32(); }
+
+    u32 GetConstant5U32() const { return ref().m_Constant5U32; }
+    void SetConstant5(f32 r, f32 g, f32 b) { ref().m_Constant5.Set(r, g, b); ref().m_Constant5U32 = ref().m_Constant5.ToPicaU32(); }
+    void SetConstant5(f32 r, f32 g, f32 b, f32 a) { ref().m_Constant5.Set(r, g, b, a); ref().m_Constant5U32 = ref().m_Constant5.ToPicaU32(); }
+    const nw::ut::FloatColor& GetConstant5() const { return ref().m_Constant5; }
+    void SetConstant5(const nw::ut::FloatColor& value) { ref().m_Constant5 = value; ref().m_Constant5U32 = ref().m_Constant5.ToPicaU32(); }
 };
 
 class ResRasterization : public nw::ut::ResCommon<ResRasterizationData>
@@ -194,9 +244,18 @@ public:
 
     NW_RES_CTOR(ResRasterization)
 
-    NW_RES_FIELD_FLAGS_DECL(u32, Flags)
-    NW_RES_FIELD_PRIMITIVE_DECL(f32, PolygonOffsetUnit)
-    NW_RES_FIELD_COMMAND_BUFFER()
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
+
+    f32 GetPolygonOffsetUnit() const { return static_cast<f32>(ref().m_PolygonOffsetUnit); }
+    void SetPolygonOffsetUnit(f32 value) { ref().m_PolygonOffsetUnit = value; }
+
+    u32* GetCommandBuffer()
+        { return &ref().m_CommandBuffer[0]; }
+    const u32* GetCommandBuffer() const
+        { return &ref().m_CommandBuffer[0]; }
 
     CullingMode GetCullingMode() const { return static_cast<CullingMode>(this->ref().m_CullingMode); }
     void SetCullingMode(CullingMode value)
@@ -394,7 +453,11 @@ public:
         internal::SetCmdValue(&ref().m_CommandBuffer[2], value, CMD_MASK, CMD_SHIFT);
     }
 
-    NW_RES_FIELD_COMMAND_BUFFER();
+
+    u32* GetCommandBuffer()
+        { return &ref().m_CommandBuffer[0]; }
+    const u32* GetCommandBuffer() const
+        { return &ref().m_CommandBuffer[0]; };
 };
 
 class ResDepthOperation : public nw::ut::ResCommon<ResDepthOperationData>
@@ -440,7 +503,11 @@ public:
         internal::SetCmdValue(&ref().m_CommandBuffer[2], table[value], CMD_MASK126, CMD_SHIFT126);
     }
 
-    NW_RES_FIELD_COMMAND_BUFFER()
+
+    u32* GetCommandBuffer()
+        { return &ref().m_CommandBuffer[0]; }
+    const u32* GetCommandBuffer() const
+        { return &ref().m_CommandBuffer[0]; }
 };
 
 class ResStencilOperation : public nw::ut::ResCommon<ResStencilOperationData>
@@ -472,7 +539,11 @@ public:
 
     NW_RES_CTOR(ResStencilOperation)
 
-    NW_RES_FIELD_COMMAND_BUFFER();
+
+    u32* GetCommandBuffer()
+        { return &ref().m_CommandBuffer[0]; }
+    const u32* GetCommandBuffer() const
+        { return &ref().m_CommandBuffer[0]; };
 
     bool IsTestEnabled() const
     {
@@ -595,9 +666,21 @@ public:
         return static_cast<FragmentOperationMode>(internal::GetCmdValue(blendOperation.ref().m_CommandBuffer[0], CMD_MASK, CMD_SHIFT));
     }
 
-    NW_RES_FIELD_RESSTRUCT_DECL(ResDepthOperation,   DepthOperation)
-    NW_RES_FIELD_RESSTRUCT_DECL(ResBlendOperation,   BlendOperation)
-    NW_RES_FIELD_RESSTRUCT_DECL(ResStencilOperation, StencilOperation)
+
+    ResDepthOperation GetDepthOperation() { return ResDepthOperation(&(ref().m_DepthOperation)); }
+    const ResDepthOperation GetDepthOperation() const { return ResDepthOperation(&(ref().m_DepthOperation)); }
+    ResDepthOperationData& GetDepthOperationData() { return ref().m_DepthOperation; }
+    const ResDepthOperationData& GetDepthOperationData() const { return ref().m_DepthOperation; }
+
+    ResBlendOperation GetBlendOperation() { return ResBlendOperation(&(ref().m_BlendOperation)); }
+    const ResBlendOperation GetBlendOperation() const { return ResBlendOperation(&(ref().m_BlendOperation)); }
+    ResBlendOperationData& GetBlendOperationData() { return ref().m_BlendOperation; }
+    const ResBlendOperationData& GetBlendOperationData() const { return ref().m_BlendOperation; }
+
+    ResStencilOperation GetStencilOperation() { return ResStencilOperation(&(ref().m_StencilOperation)); }
+    const ResStencilOperation GetStencilOperation() const { return ResStencilOperation(&(ref().m_StencilOperation)); }
+    ResStencilOperationData& GetStencilOperationData() { return ref().m_StencilOperation; }
+    const ResStencilOperationData& GetStencilOperationData() const { return ref().m_StencilOperation; }
 };
 
 class ResTextureCoordinator : public nw::ut::ResCommon<ResTextureCoordinatorData>
@@ -652,13 +735,28 @@ public:
         }
     }
 
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, SourceCoordinate)
-    NW_RES_FIELD_PRIMITIVE_DECL(MappingMethod, MappingMethod)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, ReferenceCamera)
-    NW_RES_FIELD_PRIMITIVE_DECL(MappingMatrixMode, MatrixMode)
-    NW_RES_FIELD_BOOL_PRIMITIVE_DECL(Dirty)
-    NW_RES_FIELD_BOOL_PRIMITIVE_DECL(Enabled)
-    NW_RES_FIELD_STRUCT_DECL(nw::math::MTX34, TextureMatrix)
+
+    s32 GetSourceCoordinate() const { return static_cast<s32>(ref().m_SourceCoordinate); }
+    void SetSourceCoordinate(s32 value) { ref().m_SourceCoordinate = value; }
+
+    MappingMethod GetMappingMethod() const { return static_cast<MappingMethod>(ref().m_MappingMethod); }
+    void SetMappingMethod(MappingMethod value) { ref().m_MappingMethod = value; }
+
+    s32 GetReferenceCamera() const { return static_cast<s32>(ref().m_ReferenceCamera); }
+    void SetReferenceCamera(s32 value) { ref().m_ReferenceCamera = value; }
+
+    MappingMatrixMode GetMatrixMode() const { return static_cast<MappingMatrixMode>(ref().m_MatrixMode); }
+    void SetMatrixMode(MappingMatrixMode value) { ref().m_MatrixMode = value; }
+
+    bool IsDirty() const { return static_cast<bool>(ref().m_IsDirty); }
+    void SetDirty(bool value) { ref().m_IsDirty = value; }
+
+    bool IsEnabled() const { return static_cast<bool>(ref().m_IsEnabled); }
+    void SetEnabled(bool value) { ref().m_IsEnabled = value; }
+
+    nw::math::MTX34& GetTextureMatrix() { return ref().m_TextureMatrix; }
+    const nw::math::MTX34& GetTextureMatrix() const { return ref().m_TextureMatrix; }
+    void SetTextureMatrix(const nw::math::MTX34& value) { ref().m_TextureMatrix = value; }
 };
 
 class ResMaterial : public ResSceneObject
@@ -697,36 +795,147 @@ public:
 
     NW_RES_CTOR_INHERIT(ResMaterial, ResSceneObject)
 
-    NW_RES_FIELD_FLAGS_DECL(u32, Flags)
-    NW_RES_FIELD_PRIMITIVE_DECL(TextureCoordinateConfig, TextureCoordinateConfig)
-    NW_RES_FIELD_PRIMITIVE_DECL(TranslucencyKind, TranslucencyKind)
-    NW_RES_FIELD_RESSTRUCT_DECL(ResMaterialColor,    MaterialColor)
-    NW_RES_FIELD_RESSTRUCT_DECL(ResRasterization,    Rasterization)
-    NW_RES_FIELD_RESSTRUCT_DECL(ResFragmentOperation, FragmentOperation)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, ActiveTextureCoordinatorsCount)
-    NW_RES_FIELD_STRUCT_FIXED_LIST_DECL(ResTextureCoordinator, TextureCoordinators)
-    NW_RES_FIELD_CLASS_FIXED_LIST_DECL(ResPixelBasedTextureMapper, TextureMappers)
-    NW_RES_FIELD_CLASS_DECL(ResProceduralTextureMapper, ProceduralTextureMapper)
-    NW_RES_FIELD_CLASS_DECL(ResShader, Shader)
-    NW_RES_FIELD_CLASS_DECL(ResFragmentShader, FragmentShader)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, ShaderProgramDescriptionIndex)
-    NW_RES_FIELD_CLASS_LIST_DECL(ResShaderParameter, ShaderParameters)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, LightSetIndex)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, FogIndex)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, ShadingParameterHash)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, ShaderParametersHash)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, TextureCoordinatorsHash)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, TextureSamplersHash)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, TextureMappersHash)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, MaterialColorHash)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, RasterizationHash)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, FragmentLightingHash)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, FragmentLightingTableHash)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, FragmentLightingTableParametersHash)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, AlphaTestHash)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, TextureCombinersHash)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, FragmentOperationHash)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, MaterialId)
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
+
+    TextureCoordinateConfig GetTextureCoordinateConfig() const { return static_cast<TextureCoordinateConfig>(ref().m_TextureCoordinateConfig); }
+    void SetTextureCoordinateConfig(TextureCoordinateConfig value) { ref().m_TextureCoordinateConfig = value; }
+
+    TranslucencyKind GetTranslucencyKind() const { return static_cast<TranslucencyKind>(ref().m_TranslucencyKind); }
+    void SetTranslucencyKind(TranslucencyKind value) { ref().m_TranslucencyKind = value; }
+
+    ResMaterialColor GetMaterialColor() { return ResMaterialColor(&(ref().m_MaterialColor)); }
+    const ResMaterialColor GetMaterialColor() const { return ResMaterialColor(&(ref().m_MaterialColor)); }
+    ResMaterialColorData& GetMaterialColorData() { return ref().m_MaterialColor; }
+    const ResMaterialColorData& GetMaterialColorData() const { return ref().m_MaterialColor; }
+
+    ResRasterization GetRasterization() { return ResRasterization(&(ref().m_Rasterization)); }
+    const ResRasterization GetRasterization() const { return ResRasterization(&(ref().m_Rasterization)); }
+    ResRasterizationData& GetRasterizationData() { return ref().m_Rasterization; }
+    const ResRasterizationData& GetRasterizationData() const { return ref().m_Rasterization; }
+
+    ResFragmentOperation GetFragmentOperation() { return ResFragmentOperation(&(ref().m_FragmentOperation)); }
+    const ResFragmentOperation GetFragmentOperation() const { return ResFragmentOperation(&(ref().m_FragmentOperation)); }
+    ResFragmentOperationData& GetFragmentOperationData() { return ref().m_FragmentOperation; }
+    const ResFragmentOperationData& GetFragmentOperationData() const { return ref().m_FragmentOperation; }
+
+    s32 GetActiveTextureCoordinatorsCount() const { return static_cast<s32>(ref().m_ActiveTextureCoordinatorsCount); }
+    void SetActiveTextureCoordinatorsCount(s32 value) { ref().m_ActiveTextureCoordinatorsCount = value; }
+
+    s32 GetTextureCoordinatorsCount() const
+        { return sizeof(ref().m_TextureCoordinators) / sizeof(ResTextureCoordinatorData); }
+
+    ResTextureCoordinator GetTextureCoordinators(int idx)
+        { return ResTextureCoordinator(&ref().m_TextureCoordinators[idx]); }
+
+    const ResTextureCoordinator GetTextureCoordinators(int idx) const
+        { return ResTextureCoordinator(&ref().m_TextureCoordinators[idx]); }
+
+    ResTextureCoordinatorData& GetTextureCoordinatorsData(int idx)
+        { return ref().m_TextureCoordinators[idx]; }
+
+    const ResTextureCoordinatorData& GetTextureCoordinatorsData(int idx) const
+        { return ref().m_TextureCoordinators[idx]; }
+
+    ResTextureCoordinatorData* GetTextureCoordinatorsData()
+        { return ref().m_TextureCoordinators; }
+
+    const ResTextureCoordinatorData* GetTextureCoordinatorsData() const
+        { return ref().m_TextureCoordinators; }
+
+    s32 GetTextureMappersCount() const
+        { return sizeof(ref().toTextureMappers) / sizeof(nw::ut::Offset); }
+    ResPixelBasedTextureMapper GetTextureMappers(int idx)
+        { NW_INDEX_ASSERT(TextureMappers, idx); return ResPixelBasedTextureMapper(ref().toTextureMappers[idx].to_ptr()); }
+    const ResPixelBasedTextureMapper GetTextureMappers(int idx) const
+        { return ResPixelBasedTextureMapper(ref().toTextureMappers[idx].to_ptr()); }
+    nw::ut::internal::ResArray<ResPixelBasedTextureMapper, nw::ut::internal::ResArrayClassTraits> GetTextureMappers()
+        { return nw::ut::internal::ResArray<ResPixelBasedTextureMapper, nw::ut::internal::ResArrayClassTraits>(&ref().toTextureMappers[0], GetTextureMappersCount()); }
+    const nw::ut::internal::ResArray<const ResPixelBasedTextureMapper, nw::ut::internal::ResArrayClassTraits> GetTextureMappers() const
+        { return nw::ut::internal::ResArray<const ResPixelBasedTextureMapper, nw::ut::internal::ResArrayClassTraits>(&ref().toTextureMappers[0], GetTextureMappersCount()); }
+
+    ResProceduralTextureMapper GetProceduralTextureMapper() { return ResProceduralTextureMapper(ref().toProceduralTextureMapper.to_ptr()); }
+    const ResProceduralTextureMapper GetProceduralTextureMapper() const { return ResProceduralTextureMapper(ref().toProceduralTextureMapper.to_ptr()); }
+
+    ResShader GetShader() { return ResShader(ref().toShader.to_ptr()); }
+    const ResShader GetShader() const { return ResShader(ref().toShader.to_ptr()); }
+
+    ResFragmentShader GetFragmentShader() { return ResFragmentShader(ref().toFragmentShader.to_ptr()); }
+    const ResFragmentShader GetFragmentShader() const { return ResFragmentShader(ref().toFragmentShader.to_ptr()); }
+
+    s32 GetShaderProgramDescriptionIndex() const { return static_cast<s32>(ref().m_ShaderProgramDescriptionIndex); }
+    void SetShaderProgramDescriptionIndex(s32 value) { ref().m_ShaderProgramDescriptionIndex = value; }
+
+    s32 GetShaderParametersCount() const
+        { return ref().m_ShaderParametersTableCount; }
+    ResShaderParameter GetShaderParameters(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toShaderParametersTable.to_table_ptr());
+            return ResShaderParameter(tbl_ptr[idx].to_ptr());
+        }
+    const ResShaderParameter GetShaderParameters(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toShaderParametersTable.to_table_ptr());
+            return ResShaderParameter(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<ResShaderParameter, nw::ut::internal::ResArrayClassTraits> GetShaderParameters()
+        {
+            return nw::ut::internal::ResArray<ResShaderParameter, nw::ut::internal::ResArrayClassTraits>(ref().toShaderParametersTable.to_table_ptr(), GetShaderParametersCount());
+        }
+    const nw::ut::internal::ResArray<const ResShaderParameter, nw::ut::internal::ResArrayClassTraits> GetShaderParameters() const
+        {
+            return nw::ut::internal::ResArray<const ResShaderParameter, nw::ut::internal::ResArrayClassTraits>(ref().toShaderParametersTable.to_table_ptr(), GetShaderParametersCount());
+        }
+
+    s32 GetLightSetIndex() const { return static_cast<s32>(ref().m_LightSetIndex); }
+    void SetLightSetIndex(s32 value) { ref().m_LightSetIndex = value; }
+
+    s32 GetFogIndex() const { return static_cast<s32>(ref().m_FogIndex); }
+    void SetFogIndex(s32 value) { ref().m_FogIndex = value; }
+
+    u32 GetShadingParameterHash() const { return static_cast<u32>(ref().m_ShadingParameterHash); }
+    void SetShadingParameterHash(u32 value) { ref().m_ShadingParameterHash = value; }
+
+    u32 GetShaderParametersHash() const { return static_cast<u32>(ref().m_ShaderParametersHash); }
+    void SetShaderParametersHash(u32 value) { ref().m_ShaderParametersHash = value; }
+
+    u32 GetTextureCoordinatorsHash() const { return static_cast<u32>(ref().m_TextureCoordinatorsHash); }
+    void SetTextureCoordinatorsHash(u32 value) { ref().m_TextureCoordinatorsHash = value; }
+
+    u32 GetTextureSamplersHash() const { return static_cast<u32>(ref().m_TextureSamplersHash); }
+    void SetTextureSamplersHash(u32 value) { ref().m_TextureSamplersHash = value; }
+
+    u32 GetTextureMappersHash() const { return static_cast<u32>(ref().m_TextureMappersHash); }
+    void SetTextureMappersHash(u32 value) { ref().m_TextureMappersHash = value; }
+
+    u32 GetMaterialColorHash() const { return static_cast<u32>(ref().m_MaterialColorHash); }
+    void SetMaterialColorHash(u32 value) { ref().m_MaterialColorHash = value; }
+
+    u32 GetRasterizationHash() const { return static_cast<u32>(ref().m_RasterizationHash); }
+    void SetRasterizationHash(u32 value) { ref().m_RasterizationHash = value; }
+
+    u32 GetFragmentLightingHash() const { return static_cast<u32>(ref().m_FragmentLightingHash); }
+    void SetFragmentLightingHash(u32 value) { ref().m_FragmentLightingHash = value; }
+
+    u32 GetFragmentLightingTableHash() const { return static_cast<u32>(ref().m_FragmentLightingTableHash); }
+    void SetFragmentLightingTableHash(u32 value) { ref().m_FragmentLightingTableHash = value; }
+
+    u32 GetFragmentLightingTableParametersHash() const { return static_cast<u32>(ref().m_FragmentLightingTableParametersHash); }
+    void SetFragmentLightingTableParametersHash(u32 value) { ref().m_FragmentLightingTableParametersHash = value; }
+
+    u32 GetAlphaTestHash() const { return static_cast<u32>(ref().m_AlphaTestHash); }
+    void SetAlphaTestHash(u32 value) { ref().m_AlphaTestHash = value; }
+
+    u32 GetTextureCombinersHash() const { return static_cast<u32>(ref().m_TextureCombinersHash); }
+    void SetTextureCombinersHash(u32 value) { ref().m_TextureCombinersHash = value; }
+
+    u32 GetFragmentOperationHash() const { return static_cast<u32>(ref().m_FragmentOperationHash); }
+    void SetFragmentOperationHash(u32 value) { ref().m_FragmentOperationHash = value; }
+
+    u32 GetMaterialId() const { return static_cast<u32>(ref().m_MaterialId); }
+    void SetMaterialId(u32 value) { ref().m_MaterialId = value; }
 
     u32 GetRevision() const { return this->GetHeader().revision; }
 

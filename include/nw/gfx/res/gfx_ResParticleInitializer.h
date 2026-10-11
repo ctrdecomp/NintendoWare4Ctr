@@ -29,9 +29,15 @@ public:
 
     NW_RES_CTOR( ResParticleInitializer )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( bool, IsResourceCopyEnabled )
-    NW_RES_FIELD_PRIMITIVE_DECL( bool, InitializerEnabled )
-    NW_RES_FIELD_PRIMITIVE_DECL( ParticleUsage, TargetStream )
+
+    bool GetIsResourceCopyEnabled() const { return static_cast<bool>(ref().m_IsResourceCopyEnabled); }
+    void SetIsResourceCopyEnabled(bool value) { ref().m_IsResourceCopyEnabled = value; }
+
+    bool GetInitializerEnabled() const { return static_cast<bool>(ref().m_InitializerEnabled); }
+    void SetInitializerEnabled(bool value) { ref().m_InitializerEnabled = value; }
+
+    ParticleUsage GetTargetStream() const { return static_cast<ParticleUsage>(ref().m_TargetStream); }
+    void SetTargetStream(ParticleUsage value) { ref().m_TargetStream = value; }
 
     nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
 };
@@ -52,8 +58,13 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleDirectionalVelocityInitializer, ResParticleInitializer )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Power )
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, Direction )
+
+    f32 GetPower() const { return static_cast<f32>(ref().m_Power); }
+    void SetPower(f32 value) { ref().m_Power = value; }
+
+    void SetDirection(f32 x, f32 y, f32 z) { ref().m_Direction.Set(x, y, z); }
+    const nw::math::VEC3& GetDirection() const { return ref().m_Direction; }
+    void SetDirection(const nw::math::VEC3& value) { ref().m_Direction = value; }
 };
 
 struct ResParticleRandomDirectionalVelocityInitializerData : public ResParticleInitializerData
@@ -73,9 +84,16 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleRandomDirectionalVelocityInitializer, ResParticleInitializer )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Power )
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, Direction )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Angle )
+
+    f32 GetPower() const { return static_cast<f32>(ref().m_Power); }
+    void SetPower(f32 value) { ref().m_Power = value; }
+
+    void SetDirection(f32 x, f32 y, f32 z) { ref().m_Direction.Set(x, y, z); }
+    const nw::math::VEC3& GetDirection() const { return ref().m_Direction; }
+    void SetDirection(const nw::math::VEC3& value) { ref().m_Direction = value; }
+
+    f32 GetAngle() const { return static_cast<f32>(ref().m_Angle); }
+    void SetAngle(f32 value) { ref().m_Angle = value; }
 };
 
 struct ResParticleOriginVelocityInitializerData : public ResParticleInitializerData
@@ -93,7 +111,9 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleOriginVelocityInitializer, ResParticleInitializer )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Power )
+
+    f32 GetPower() const { return static_cast<f32>(ref().m_Power); }
+    void SetPower(f32 value) { ref().m_Power = value; }
 };
 
 struct ResParticleRandomVelocityInitializerData : public ResParticleInitializerData
@@ -111,7 +131,9 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleRandomVelocityInitializer, ResParticleInitializer )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Power )
+
+    f32 GetPower() const { return static_cast<f32>(ref().m_Power); }
+    void SetPower(f32 value) { ref().m_Power = value; }
 };
 
 struct ResParticleYAxisVelocityInitializerData : public ResParticleInitializerData
@@ -129,7 +151,9 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleYAxisVelocityInitializer, ResParticleInitializer )
 
-        NW_RES_FIELD_PRIMITIVE_DECL( f32, Power )
+
+        f32 GetPower() const { return static_cast<f32>(ref().m_Power); }
+        void SetPower(f32 value) { ref().m_Power = value; }
 };
 
 struct ResParticleFloatRandomInitializerData : public ResParticleInitializerData
@@ -148,8 +172,12 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleFloatRandomInitializer, ResParticleInitializer )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, BaseValue )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Random )
+
+    f32 GetBaseValue() const { return static_cast<f32>(ref().m_BaseValue); }
+    void SetBaseValue(f32 value) { ref().m_BaseValue = value; }
+
+    f32 GetRandom() const { return static_cast<f32>(ref().m_Random); }
+    void SetRandom(f32 value) { ref().m_Random = value; }
 };
 
 struct ResParticleFloatRangeRandomInitializerData : public ResParticleInitializerData
@@ -168,8 +196,12 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleFloatRangeRandomInitializer, ResParticleInitializer )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, MaxValue )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, MinValue )
+
+    f32 GetMaxValue() const { return static_cast<f32>(ref().m_MaxValue); }
+    void SetMaxValue(f32 value) { ref().m_MaxValue = value; }
+
+    f32 GetMinValue() const { return static_cast<f32>(ref().m_MinValue); }
+    void SetMinValue(f32 value) { ref().m_MinValue = value; }
 };
 
 struct ResParticleFloatImmediateInitializerData : public ResParticleInitializerData
@@ -187,7 +219,9 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleFloatImmediateInitializer, ResParticleInitializer )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, ImmediateValue )
+
+    f32 GetImmediateValue() const { return static_cast<f32>(ref().m_ImmediateValue); }
+    void SetImmediateValue(f32 value) { ref().m_ImmediateValue = value; }
 };
 
 struct ResParticleVector2ImmediateInitializerData : public ResParticleInitializerData
@@ -205,7 +239,10 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleVector2ImmediateInitializer, ResParticleInitializer )
 
-    NW_RES_FIELD_VECTOR2_DECL( nw::math::VEC2, ImmediateValue )
+
+    void SetImmediateValue(f32 x, f32 y) { ref().m_ImmediateValue.Set(x, y); }
+    const nw::math::VEC2& GetImmediateValue() const { return ref().m_ImmediateValue; }
+    void SetImmediateValue(const nw::math::VEC2& value) { ref().m_ImmediateValue = value; }
 };
 
 struct ResParticleVector3ImmediateInitializerData : public ResParticleInitializerData
@@ -223,7 +260,10 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleVector3ImmediateInitializer, ResParticleInitializer )
 
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, ImmediateValue )
+
+    void SetImmediateValue(f32 x, f32 y, f32 z) { ref().m_ImmediateValue.Set(x, y, z); }
+    const nw::math::VEC3& GetImmediateValue() const { return ref().m_ImmediateValue; }
+    void SetImmediateValue(const nw::math::VEC3& value) { ref().m_ImmediateValue = value; }
 };
 
 struct ResParticleVector3Random1InitializerData : public ResParticleInitializerData
@@ -242,8 +282,13 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleVector3Random1Initializer, ResParticleInitializer )
 
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, BaseValue )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Random )
+
+    void SetBaseValue(f32 x, f32 y, f32 z) { ref().m_BaseValue.Set(x, y, z); }
+    const nw::math::VEC3& GetBaseValue() const { return ref().m_BaseValue; }
+    void SetBaseValue(const nw::math::VEC3& value) { ref().m_BaseValue = value; }
+
+    f32 GetRandom() const { return static_cast<f32>(ref().m_Random); }
+    void SetRandom(f32 value) { ref().m_Random = value; }
 };
 
 struct ResParticleVector3Random3InitializerData : public ResParticleInitializerData
@@ -262,8 +307,14 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleVector3Random3Initializer, ResParticleInitializer )
 
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, BaseValue )
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, Random )
+
+    void SetBaseValue(f32 x, f32 y, f32 z) { ref().m_BaseValue.Set(x, y, z); }
+    const nw::math::VEC3& GetBaseValue() const { return ref().m_BaseValue; }
+    void SetBaseValue(const nw::math::VEC3& value) { ref().m_BaseValue = value; }
+
+    void SetRandom(f32 x, f32 y, f32 z) { ref().m_Random.Set(x, y, z); }
+    const nw::math::VEC3& GetRandom() const { return ref().m_Random; }
+    void SetRandom(const nw::math::VEC3& value) { ref().m_Random = value; }
 };
 
 struct ResParticleVector3MultRandomInitializerData : public ResParticleInitializerData
@@ -281,7 +332,9 @@ public:
 
     NW_RES_CTOR_INHERIT(ResParticleVector3MultRandomInitializer, ResParticleInitializer)
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Random )
+
+    f32 GetRandom() const { return static_cast<f32>(ref().m_Random); }
+    void SetRandom(f32 value) { ref().m_Random = value; }
 };
 
 }

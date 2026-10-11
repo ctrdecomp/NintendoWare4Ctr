@@ -212,13 +212,13 @@ s32 ARCConvertPathToEntrynum(ARCHandle* handle, const wchar_t* pathPtr)
             {
                 if (*(pathPtr + 2) == '/')
                 {
-                    dirLookAt = parentDir(FSTEntries, dirLookAt);
+                    dirLookAt = FSTEntries[dirLookAt].parentOrPosition;
                     pathPtr += 3;
                     continue;
                 }
                 else if (*(pathPtr + 2) == '\0')
                 {
-                    return (s32)parentDir(FSTEntries, dirLookAt);
+                    return FSTEntries[dirLookAt].parentOrPosition;
                 }
             }
             else if (*(pathPtr + 1) == '/')
@@ -239,12 +239,12 @@ s32 ARCConvertPathToEntrynum(ARCHandle* handle, const wchar_t* pathPtr)
 
         ptr = pathPtr;
 
-        for (i = dirLookAt + 1; i < nextDir(FSTEntries, dirLookAt); i = entryIsDir(FSTEntries, i)? nextDir(FSTEntries, i): (i+1) )
+        for (i = dirLookAt + 1; i < FSTEntries[i].nextEntryOrLength; i = FSTEntries[i].isDirAndStringOff ? FSTEntries[i].nextEntryOrLength: (i + 1))
         {
 dot:
             if ((entryIsDir(FSTEntries, i) == false) &&
                  (isDir == true))
-                 {
+            {
                 continue;
             }
 
@@ -268,7 +268,7 @@ dot:
 next_hier:
         if (!isDir)
         {
-            return (s32)i;
+            return i;
         }
 
         dirLookAt = i;

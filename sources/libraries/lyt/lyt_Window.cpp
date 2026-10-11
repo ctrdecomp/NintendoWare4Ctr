@@ -230,7 +230,7 @@ Window::Window(u8 contentTexNum,u8 cornerLTTexNum,u8 cornerRTTexNum,u8 cornerRBT
 
 Window::Window(const res::Window* pBlock,const ResBlockSet& resBlockSet):   
     Base(pBlock)
-    {
+{
     const res::WindowContent *const pResContent = internal::ConvertOffsToPtr<res::WindowContent>(pBlock, pBlock->contentOffset);
     const u8 texCoordNum = ut::Min(pResContent->texCoordNum, u8(TexMapMax));
 
@@ -389,7 +389,7 @@ Material* Window::FindMaterialByName(const char* findName,bool bRecursive)
         for (PaneList::Iterator it = GetChildList().GetBeginIter(); it != GetChildList().GetEndIter(); ++it)
         {
             if (Material* pMat = it->FindMaterialByName(findName, bRecursive))
-        {
+            {
                 return pMat;
             }
         }

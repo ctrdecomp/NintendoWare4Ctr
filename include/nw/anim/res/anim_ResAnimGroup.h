@@ -180,12 +180,23 @@ public:
 
     NW_RES_CTOR(ResAnimGroupMember)
     
-    NW_RES_FIELD_STRING_DECL(Path)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, MemberOffset)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, BlendOperationIndex)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, ObjectType)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, MemberType)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, ResMaterialPtr)
+
+    const char* GetPath() const { return ref().toPath.to_ptr(); }
+
+    s32 GetMemberOffset() const { return static_cast<s32>(ref().m_MemberOffset); }
+    void SetMemberOffset(s32 value) { ref().m_MemberOffset = value; }
+
+    s32 GetBlendOperationIndex() const { return static_cast<s32>(ref().m_BlendOperationIndex); }
+    void SetBlendOperationIndex(s32 value) { ref().m_BlendOperationIndex = value; }
+
+    u32 GetObjectType() const { return static_cast<u32>(ref().m_ObjectType); }
+    void SetObjectType(u32 value) { ref().m_ObjectType = value; }
+
+    u32 GetMemberType() const { return static_cast<u32>(ref().m_MemberType); }
+    void SetMemberType(u32 value) { ref().m_MemberType = value; }
+
+    u32 GetResMaterialPtr() const { return static_cast<u32>(ref().m_ResMaterialPtr); }
+    void SetResMaterialPtr(u32 value) { ref().m_ResMaterialPtr = value; }
 
     void SetValueForType(void* object, const void* value) const;
 
@@ -209,7 +220,8 @@ public:
 
     NW_RES_CTOR_INHERIT(ResBoneMember, ResAnimGroupMember)
 
-    NW_RES_FIELD_STRING_DECL(BoneName)
+
+    const char* GetBoneName() const { return ref().toBoneName.to_ptr(); }
 
     void SetValue(void* object, const void* value) const;
 };
@@ -239,7 +251,8 @@ public:
 
     NW_RES_CTOR_INHERIT(ResMaterialColorMember, ResAnimGroupMember)
 
-    NW_RES_FIELD_STRING_DECL(MaterialName)
+
+    const char* GetMaterialName() const { return ref().toMaterialName.to_ptr(); }
 
     void SetValue(void* object, const void* value) const;
 };
@@ -259,8 +272,11 @@ public:
 
     NW_RES_CTOR_INHERIT(ResTextureSamplerMember, ResAnimGroupMember)
 
-    NW_RES_FIELD_STRING_DECL(MaterialName)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, TextureMapperIndex)
+
+    const char* GetMaterialName() const { return ref().toMaterialName.to_ptr(); }
+
+    u32 GetTextureMapperIndex() const { return static_cast<u32>(ref().m_TextureMapperIndex); }
+    void SetTextureMapperIndex(u32 value) { ref().m_TextureMapperIndex = value; }
 
     void SetValue(void* object, const void* value) const;
 };
@@ -280,8 +296,11 @@ public:
 
     NW_RES_CTOR_INHERIT(ResTextureMapperMember, ResAnimGroupMember)
 
-    NW_RES_FIELD_STRING_DECL(MaterialName)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, TextureMapperIndex)
+
+    const char* GetMaterialName() const { return ref().toMaterialName.to_ptr(); }
+
+    u32 GetTextureMapperIndex() const { return static_cast<u32>(ref().m_TextureMapperIndex); }
+    void SetTextureMapperIndex(u32 value) { ref().m_TextureMapperIndex = value; }
 
     void SetValue(void* object, const void* value) const;
 };
@@ -301,7 +320,8 @@ public:
 
     NW_RES_CTOR_INHERIT( ResBlendOperationMember, ResAnimGroupMember )
 
-    NW_RES_FIELD_STRING_DECL( MaterialName )
+
+    const char* GetMaterialName() const { return ref().toMaterialName.to_ptr(); }
 
     void SetValue(void* object, const void* value) const;
 };
@@ -323,8 +343,11 @@ public:
 
     NW_RES_CTOR_INHERIT( ResTextureCoordinatorMember, ResAnimGroupMember )
 
-    NW_RES_FIELD_STRING_DECL( MaterialName )
-    NW_RES_FIELD_PRIMITIVE_DECL( u32, TextureCoordinatorIndex )
+
+    const char* GetMaterialName() const { return ref().toMaterialName.to_ptr(); }
+
+    u32 GetTextureCoordinatorIndex() const { return static_cast<u32>(ref().m_TextureCoordinatorIndex); }
+    void SetTextureCoordinatorIndex(u32 value) { ref().m_TextureCoordinatorIndex = value; }
 
     void SetValue(void* object, const void* value) const;
 };
@@ -363,7 +386,9 @@ public:
 
     NW_RES_CTOR_INHERIT( ResMeshMember, ResAnimGroupMember )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( u32, MeshIndex )
+
+    u32 GetMeshIndex() const { return static_cast<u32>(ref().m_MeshIndex); }
+    void SetMeshIndex(u32 value) { ref().m_MeshIndex = value; }
 
     void SetValue(void* object, const void* value) const;
 };
@@ -383,7 +408,8 @@ public:
 
     NW_RES_CTOR_INHERIT( ResMeshNodeVisibilityMember, ResAnimGroupMember )
 
-    NW_RES_FIELD_STRING_DECL( NodeName )
+
+    const char* GetNodeName() const { return ref().toNodeName.to_ptr(); }
 
     void SetValue(void* object, const void* value) const;
 };
@@ -612,15 +638,77 @@ public:
     
     NW_RES_CTOR( ResAnimGroup )
     
-    NW_RES_FIELD_FLAGS_DECL( u32, Flags )
 
-    NW_RES_FIELD_STRING_DECL( Name )
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
 
-    NW_RES_FIELD_PRIMITIVE_DECL( s32, TargetType )
 
-    NW_RES_FIELD_CLASS_DIC_DECL( ResAnimGroupMember, MemberInfoSet, nw::ut::ResDicPatricia )
+    const char* GetName() const { return ref().toName.to_ptr(); }
 
-    NW_RES_FIELD_PRIMITIVE_LIST_DECL( s32, BlendOperations )
+
+    s32 GetTargetType() const { return static_cast<s32>(ref().m_TargetType); }
+    void SetTargetType(s32 value) { ref().m_TargetType = value; }
+
+
+    s32 GetMemberInfoSetCount() const
+        { return ref().m_MemberInfoSetDicCount; }
+    ResAnimGroupMember GetMemberInfoSet(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMemberInfoSetDic.to_ptr());
+            return ResAnimGroupMember(dic[idx]);
+        }
+    ResAnimGroupMember GetMemberInfoSet(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMemberInfoSetDic.to_ptr());
+            return ResAnimGroupMember(dic[key]);
+        }
+    const ResAnimGroupMember GetMemberInfoSet(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMemberInfoSetDic.to_ptr());
+            return ResAnimGroupMember(dic[idx]);
+        }
+    const ResAnimGroupMember GetMemberInfoSet(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMemberInfoSetDic.to_ptr());
+            return ResAnimGroupMember(dic[key]);
+        }
+    s32 GetMemberInfoSetIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMemberInfoSetDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<ResAnimGroupMember, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetMemberInfoSet()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMemberInfoSetDic.to_ptr());
+            return nw::ut::internal::ResArray<ResAnimGroupMember, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetMemberInfoSetCount());
+        }
+    const nw::ut::internal::ResArray<const ResAnimGroupMember, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetMemberInfoSet() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMemberInfoSetDic.to_ptr());
+            return nw::ut::internal::ResArray<const ResAnimGroupMember, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetMemberInfoSetCount());
+        }
+
+
+    s32 GetBlendOperationsCount() const
+        { return ref().m_BlendOperationsTableCount; }
+    s32 GetBlendOperations(int idx) const
+        {
+            const s32* tbl_ptr = static_cast<const s32*>(ref().toBlendOperationsTable.to_table_ptr());
+            return tbl_ptr[idx];
+        }
+    void SetBlendOperations(int idx, s32 value)
+        {
+            s32* tbl_ptr = GetBlendOperations();
+            tbl_ptr[idx] = value;
+        }
+    s32* GetBlendOperations()
+        { return static_cast<s32*>(ref().toBlendOperationsTable.to_table_ptr()); }
+    const s32* GetBlendOperations() const
+        { return static_cast<const s32*>(ref().toBlendOperationsTable.to_table_ptr()); }
 };
 
 class ResGraphicsAnimGroup : public ResAnimGroup
@@ -649,7 +737,9 @@ public:
     
     NW_RES_CTOR_INHERIT( ResGraphicsAnimGroup, ResAnimGroup )
     
-    NW_RES_FIELD_PRIMITIVE_DECL( EvaluationTiming, EvaluationTiming )
+
+    EvaluationTiming GetEvaluationTiming() const { return static_cast<EvaluationTiming>(ref().m_EvaluationTiming); }
+    void SetEvaluationTiming(EvaluationTiming value) { ref().m_EvaluationTiming = value; }
 };
 
 }

@@ -27,7 +27,9 @@ public:
 
     NW_RES_CTOR( ResParticleForm )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( bool, IsResourceCopyEnabled )
+
+    bool GetIsResourceCopyEnabled() const { return static_cast<bool>(ref().m_IsResourceCopyEnabled); }
+    void SetIsResourceCopyEnabled(bool value) { ref().m_IsResourceCopyEnabled = value; }
 
     nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
     void    Setup();
@@ -51,9 +53,16 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleCubeForm, ResParticleForm )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Inner )
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, Scale )
-    NW_RES_FIELD_PRIMITIVE_DECL( bool, EvenInterval )
+
+    f32 GetInner() const { return static_cast<f32>(ref().m_Inner); }
+    void SetInner(f32 value) { ref().m_Inner = value; }
+
+    void SetScale(f32 x, f32 y, f32 z) { ref().m_Scale.Set(x, y, z); }
+    const nw::math::VEC3& GetScale() const { return ref().m_Scale; }
+    void SetScale(const nw::math::VEC3& value) { ref().m_Scale = value; }
+
+    bool GetEvenInterval() const { return static_cast<bool>(ref().m_EvenInterval); }
+    void SetEvenInterval(bool value) { ref().m_EvenInterval = value; }
 
     void    Setup();
 };
@@ -80,13 +89,28 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleCylinderForm, ResParticleForm )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Inner )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, AngleWidth )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, AngleOffset )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, AngleSwing )
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, Scale )
-    NW_RES_FIELD_PRIMITIVE_DECL( bool, FixedOffset )
-    NW_RES_FIELD_PRIMITIVE_DECL( bool, EvenInterval )
+
+    f32 GetInner() const { return static_cast<f32>(ref().m_Inner); }
+    void SetInner(f32 value) { ref().m_Inner = value; }
+
+    f32 GetAngleWidth() const { return static_cast<f32>(ref().m_AngleWidth); }
+    void SetAngleWidth(f32 value) { ref().m_AngleWidth = value; }
+
+    f32 GetAngleOffset() const { return static_cast<f32>(ref().m_AngleOffset); }
+    void SetAngleOffset(f32 value) { ref().m_AngleOffset = value; }
+
+    f32 GetAngleSwing() const { return static_cast<f32>(ref().m_AngleSwing); }
+    void SetAngleSwing(f32 value) { ref().m_AngleSwing = value; }
+
+    void SetScale(f32 x, f32 y, f32 z) { ref().m_Scale.Set(x, y, z); }
+    const nw::math::VEC3& GetScale() const { return ref().m_Scale; }
+    void SetScale(const nw::math::VEC3& value) { ref().m_Scale = value; }
+
+    bool GetFixedOffset() const { return static_cast<bool>(ref().m_FixedOffset); }
+    void SetFixedOffset(bool value) { ref().m_FixedOffset = value; }
+
+    bool GetEvenInterval() const { return static_cast<bool>(ref().m_EvenInterval); }
+    void SetEvenInterval(bool value) { ref().m_EvenInterval = value; }
 
     void    Setup();
 };
@@ -113,13 +137,28 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleDiscForm, ResParticleForm )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Inner )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, AngleWidth )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, AngleOffset )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, AngleSwing )
-    NW_RES_FIELD_VECTOR2_DECL( nw::math::VEC2, Scale )
-    NW_RES_FIELD_PRIMITIVE_DECL( bool, FixedOffset )
-    NW_RES_FIELD_PRIMITIVE_DECL( bool, EvenInterval )
+
+    f32 GetInner() const { return static_cast<f32>(ref().m_Inner); }
+    void SetInner(f32 value) { ref().m_Inner = value; }
+
+    f32 GetAngleWidth() const { return static_cast<f32>(ref().m_AngleWidth); }
+    void SetAngleWidth(f32 value) { ref().m_AngleWidth = value; }
+
+    f32 GetAngleOffset() const { return static_cast<f32>(ref().m_AngleOffset); }
+    void SetAngleOffset(f32 value) { ref().m_AngleOffset = value; }
+
+    f32 GetAngleSwing() const { return static_cast<f32>(ref().m_AngleSwing); }
+    void SetAngleSwing(f32 value) { ref().m_AngleSwing = value; }
+
+    void SetScale(f32 x, f32 y) { ref().m_Scale.Set(x, y); }
+    const nw::math::VEC2& GetScale() const { return ref().m_Scale; }
+    void SetScale(const nw::math::VEC2& value) { ref().m_Scale = value; }
+
+    bool GetFixedOffset() const { return static_cast<bool>(ref().m_FixedOffset); }
+    void SetFixedOffset(bool value) { ref().m_FixedOffset = value; }
+
+    bool GetEvenInterval() const { return static_cast<bool>(ref().m_EvenInterval); }
+    void SetEvenInterval(bool value) { ref().m_EvenInterval = value; }
 
     void    Setup();
 };
@@ -159,9 +198,16 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleRectangleForm, ResParticleForm )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Inner )
-    NW_RES_FIELD_VECTOR2_DECL( nw::math::VEC2, Scale )
-    NW_RES_FIELD_PRIMITIVE_DECL( bool, EvenInterval )
+
+    f32 GetInner() const { return static_cast<f32>(ref().m_Inner); }
+    void SetInner(f32 value) { ref().m_Inner = value; }
+
+    void SetScale(f32 x, f32 y) { ref().m_Scale.Set(x, y); }
+    const nw::math::VEC2& GetScale() const { return ref().m_Scale; }
+    void SetScale(const nw::math::VEC2& value) { ref().m_Scale = value; }
+
+    bool GetEvenInterval() const { return static_cast<bool>(ref().m_EvenInterval); }
+    void SetEvenInterval(bool value) { ref().m_EvenInterval = value; }
 
     void    Setup();
 };
@@ -188,13 +234,28 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleSphereForm, ResParticleForm )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Inner )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, AngleWidth )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, AngleOffset )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, AngleSwing )
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, Scale )
-    NW_RES_FIELD_PRIMITIVE_DECL( bool, FixedOffset )
-    NW_RES_FIELD_PRIMITIVE_DECL( bool, EvenInterval )
+
+    f32 GetInner() const { return static_cast<f32>(ref().m_Inner); }
+    void SetInner(f32 value) { ref().m_Inner = value; }
+
+    f32 GetAngleWidth() const { return static_cast<f32>(ref().m_AngleWidth); }
+    void SetAngleWidth(f32 value) { ref().m_AngleWidth = value; }
+
+    f32 GetAngleOffset() const { return static_cast<f32>(ref().m_AngleOffset); }
+    void SetAngleOffset(f32 value) { ref().m_AngleOffset = value; }
+
+    f32 GetAngleSwing() const { return static_cast<f32>(ref().m_AngleSwing); }
+    void SetAngleSwing(f32 value) { ref().m_AngleSwing = value; }
+
+    void SetScale(f32 x, f32 y, f32 z) { ref().m_Scale.Set(x, y, z); }
+    const nw::math::VEC3& GetScale() const { return ref().m_Scale; }
+    void SetScale(const nw::math::VEC3& value) { ref().m_Scale = value; }
+
+    bool GetFixedOffset() const { return static_cast<bool>(ref().m_FixedOffset); }
+    void SetFixedOffset(bool value) { ref().m_FixedOffset = value; }
+
+    bool GetEvenInterval() const { return static_cast<bool>(ref().m_EvenInterval); }
+    void SetEvenInterval(bool value) { ref().m_EvenInterval = value; }
 
     void    Setup();
 };

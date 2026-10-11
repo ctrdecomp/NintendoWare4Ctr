@@ -114,9 +114,11 @@ public:
         KIND_COUNT
     };
     
-    NW_RES_CTOR_INHERIT( ResLight, ResTransformNode )
+    NW_RES_CTOR_INHERIT(ResLight, ResTransformNode)
 
-    NW_RES_FIELD_BOOL_PRIMITIVE_DECL( LightEnabled )
+
+    bool IsLightEnabled() const { return static_cast<bool>(ref().m_IsLightEnabled); }
+    void SetLightEnabled(bool value) { ref().m_IsLightEnabled = value; }
 
     u32 GetRevision() const { return this->GetHeader().revision; }
 
@@ -129,19 +131,54 @@ typedef nw::ut::ResArrayPatricia<ResLight>::type  ResLightArray;
 class ResFragmentLight : public ResLight
 {
 public:
-    enum{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResFragmentLight) };
-    enum{ SIGNATURE = NW_RES_SIGNATURE32('CFLT') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResFragmentLight)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('CFLT')
+    };
     
     NW_RES_CTOR_INHERIT( ResFragmentLight, ResLight )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( s32, LightKind )
-    NW_RES_FIELD_FLOAT_U32_COLOR_DECL( nw::ut::FloatColor, Ambient )
-    NW_RES_FIELD_FLOAT_U32_COLOR_DECL( nw::ut::FloatColor, Diffuse )
-    NW_RES_FIELD_FLOAT_U32_COLOR_DECL( nw::ut::FloatColor, Specular0 )
-    NW_RES_FIELD_FLOAT_U32_COLOR_DECL( nw::ut::FloatColor, Specular1 )
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, Direction )
-    NW_RES_FIELD_CLASS_DECL( ResLookupTable, DistanceSampler )
-    NW_RES_FIELD_CLASS_DECL( ResLightingLookupTable, AngleSampler )
+
+    s32 GetLightKind() const { return static_cast<s32>(ref().m_LightKind); }
+    void SetLightKind(s32 value) { ref().m_LightKind = value; }
+
+    u32 GetAmbientU32() const { return ref().m_AmbientU32; }
+    void SetAmbient(f32 r, f32 g, f32 b) { ref().m_Ambient.Set(r, g, b); ref().m_AmbientU32 = ref().m_Ambient.ToPicaU32(); }
+    void SetAmbient(f32 r, f32 g, f32 b, f32 a) { ref().m_Ambient.Set(r, g, b, a); ref().m_AmbientU32 = ref().m_Ambient.ToPicaU32(); }
+    const nw::ut::FloatColor& GetAmbient() const { return ref().m_Ambient; }
+    void SetAmbient(const nw::ut::FloatColor& value) { ref().m_Ambient = value; ref().m_AmbientU32 = ref().m_Ambient.ToPicaU32(); }
+
+    u32 GetDiffuseU32() const { return ref().m_DiffuseU32; }
+    void SetDiffuse(f32 r, f32 g, f32 b) { ref().m_Diffuse.Set(r, g, b); ref().m_DiffuseU32 = ref().m_Diffuse.ToPicaU32(); }
+    void SetDiffuse(f32 r, f32 g, f32 b, f32 a) { ref().m_Diffuse.Set(r, g, b, a); ref().m_DiffuseU32 = ref().m_Diffuse.ToPicaU32(); }
+    const nw::ut::FloatColor& GetDiffuse() const { return ref().m_Diffuse; }
+    void SetDiffuse(const nw::ut::FloatColor& value) { ref().m_Diffuse = value; ref().m_DiffuseU32 = ref().m_Diffuse.ToPicaU32(); }
+
+    u32 GetSpecular0U32() const { return ref().m_Specular0U32; }
+    void SetSpecular0(f32 r, f32 g, f32 b) { ref().m_Specular0.Set(r, g, b); ref().m_Specular0U32 = ref().m_Specular0.ToPicaU32(); }
+    void SetSpecular0(f32 r, f32 g, f32 b, f32 a) { ref().m_Specular0.Set(r, g, b, a); ref().m_Specular0U32 = ref().m_Specular0.ToPicaU32(); }
+    const nw::ut::FloatColor& GetSpecular0() const { return ref().m_Specular0; }
+    void SetSpecular0(const nw::ut::FloatColor& value) { ref().m_Specular0 = value; ref().m_Specular0U32 = ref().m_Specular0.ToPicaU32(); }
+
+    u32 GetSpecular1U32() const { return ref().m_Specular1U32; }
+    void SetSpecular1(f32 r, f32 g, f32 b) { ref().m_Specular1.Set(r, g, b); ref().m_Specular1U32 = ref().m_Specular1.ToPicaU32(); }
+    void SetSpecular1(f32 r, f32 g, f32 b, f32 a) { ref().m_Specular1.Set(r, g, b, a); ref().m_Specular1U32 = ref().m_Specular1.ToPicaU32(); }
+    const nw::ut::FloatColor& GetSpecular1() const { return ref().m_Specular1; }
+    void SetSpecular1(const nw::ut::FloatColor& value) { ref().m_Specular1 = value; ref().m_Specular1U32 = ref().m_Specular1.ToPicaU32(); }
+
+    void SetDirection(f32 x, f32 y, f32 z) { ref().m_Direction.Set(x, y, z); }
+    const nw::math::VEC3& GetDirection() const { return ref().m_Direction; }
+    void SetDirection(const nw::math::VEC3& value) { ref().m_Direction = value; }
+
+    ResLookupTable GetDistanceSampler() { return ResLookupTable(ref().toDistanceSampler.to_ptr()); }
+    const ResLookupTable GetDistanceSampler() const { return ResLookupTable(ref().toDistanceSampler.to_ptr()); }
+
+    ResLightingLookupTable GetAngleSampler() { return ResLightingLookupTable(ref().toAngleSampler.to_ptr()); }
+    const ResLightingLookupTable GetAngleSampler() const { return ResLightingLookupTable(ref().toAngleSampler.to_ptr()); }
 
     void SetDistanceSampler(ResImageLookupTable lookupTable)
     {
@@ -186,7 +223,9 @@ public:
         ref().m_DistanceAttenuationBias = nw::ut::Float20::Float32ToBits20(-start / diff);
     }
     
-    NW_RES_FIELD_BOOL_PRIMITIVE_DECL( Dirty )
+
+    bool IsDirty() const { return static_cast<bool>(ref().m_IsDirty); }
+    void SetDirty(bool value) { ref().m_IsDirty = value; }
 
     void ForceSetupDistanceSampler(const char* targetName, ResLookupTable lookupTable)
     {
@@ -199,28 +238,64 @@ public:
 class ResAmbientLight : public ResLight
 {
 public:
-    enum{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResAmbientLight) };
-    enum{ SIGNATURE = NW_RES_SIGNATURE32('CALT') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResAmbientLight)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('CALT')
+    };
     
     NW_RES_CTOR_INHERIT( ResAmbientLight, ResLight )
 
-    NW_RES_FIELD_FLOAT_U32_COLOR_DECL( nw::ut::FloatColor, Ambient )
+
+    u32 GetAmbientU32() const { return ref().m_AmbientU32; }
+    void SetAmbient(f32 r, f32 g, f32 b) { ref().m_Ambient.Set(r, g, b); ref().m_AmbientU32 = ref().m_Ambient.ToPicaU32(); }
+    void SetAmbient(f32 r, f32 g, f32 b, f32 a) { ref().m_Ambient.Set(r, g, b, a); ref().m_AmbientU32 = ref().m_Ambient.ToPicaU32(); }
+    const nw::ut::FloatColor& GetAmbient() const { return ref().m_Ambient; }
+    void SetAmbient(const nw::ut::FloatColor& value) { ref().m_Ambient = value; ref().m_AmbientU32 = ref().m_Ambient.ToPicaU32(); }
 };
 
 class ResVertexLight : public ResLight
 {
 public:
-    enum{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResVertexLight) };
-    enum{ SIGNATURE = NW_RES_SIGNATURE32('CVLT') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResVertexLight)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('CVLT')
+    };
  
-    NW_RES_CTOR_INHERIT( ResVertexLight, ResLight )
+    NW_RES_CTOR_INHERIT(ResVertexLight, ResLight)
 
-    NW_RES_FIELD_PRIMITIVE_DECL( s32, LightKind )
-    NW_RES_FIELD_FLOAT_COLOR_DECL( nw::ut::FloatColor, Ambient )
-    NW_RES_FIELD_FLOAT_COLOR_DECL( nw::ut::FloatColor, Diffuse )
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, Direction )
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, DistanceAttenuation )
-    NW_RES_FIELD_VECTOR2_DECL( nw::math::VEC2, SpotFactor )
+
+    s32 GetLightKind() const { return static_cast<s32>(ref().m_LightKind); }
+    void SetLightKind(s32 value) { ref().m_LightKind = value; }
+
+    void SetAmbient(f32 r, f32 g, f32 b) { ref().m_Ambient.Set(r, g, b); }
+    void SetAmbient(f32 r, f32 g, f32 b, f32 a) { ref().m_Ambient.Set(r, g, b, a); }
+    const nw::ut::FloatColor& GetAmbient() const { return ref().m_Ambient; }
+    void SetAmbient(const nw::ut::FloatColor& value) { ref().m_Ambient = value; }
+
+    void SetDiffuse(f32 r, f32 g, f32 b) { ref().m_Diffuse.Set(r, g, b); }
+    void SetDiffuse(f32 r, f32 g, f32 b, f32 a) { ref().m_Diffuse.Set(r, g, b, a); }
+    const nw::ut::FloatColor& GetDiffuse() const { return ref().m_Diffuse; }
+    void SetDiffuse(const nw::ut::FloatColor& value) { ref().m_Diffuse = value; }
+
+    void SetDirection(f32 x, f32 y, f32 z) { ref().m_Direction.Set(x, y, z); }
+    const nw::math::VEC3& GetDirection() const { return ref().m_Direction; }
+    void SetDirection(const nw::math::VEC3& value) { ref().m_Direction = value; }
+
+    void SetDistanceAttenuation(f32 x, f32 y, f32 z) { ref().m_DistanceAttenuation.Set(x, y, z); }
+    const nw::math::VEC3& GetDistanceAttenuation() const { return ref().m_DistanceAttenuation; }
+    void SetDistanceAttenuation(const nw::math::VEC3& value) { ref().m_DistanceAttenuation = value; }
+
+    void SetSpotFactor(f32 x, f32 y) { ref().m_SpotFactor.Set(x, y); }
+    const nw::math::VEC2& GetSpotFactor() const { return ref().m_SpotFactor; }
+    void SetSpotFactor(const nw::math::VEC2& value) { ref().m_SpotFactor = value; }
 
     bool IsDistanceAttenuationEnabled() const { return ref().m_IsDistanceAttenuationEnabled != 0.0f; }
 
@@ -235,15 +310,34 @@ public:
 class ResHemiSphereLight : public ResLight
 {
 public:
-    enum{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResHemiSphereLight) };
-    enum{ SIGNATURE = NW_RES_SIGNATURE32('CHLT') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResHemiSphereLight)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('CHLT')
+    };
     
     NW_RES_CTOR_INHERIT( ResHemiSphereLight, ResLight )
 
-    NW_RES_FIELD_FLOAT_COLOR_DECL( nw::ut::FloatColor, GroundColor )
-    NW_RES_FIELD_FLOAT_COLOR_DECL( nw::ut::FloatColor, SkyColor )
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, Direction )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, LerpFactor )
+
+    void SetGroundColor(f32 r, f32 g, f32 b) { ref().m_GroundColor.Set(r, g, b); }
+    void SetGroundColor(f32 r, f32 g, f32 b, f32 a) { ref().m_GroundColor.Set(r, g, b, a); }
+    const nw::ut::FloatColor& GetGroundColor() const { return ref().m_GroundColor; }
+    void SetGroundColor(const nw::ut::FloatColor& value) { ref().m_GroundColor = value; }
+
+    void SetSkyColor(f32 r, f32 g, f32 b) { ref().m_SkyColor.Set(r, g, b); }
+    void SetSkyColor(f32 r, f32 g, f32 b, f32 a) { ref().m_SkyColor.Set(r, g, b, a); }
+    const nw::ut::FloatColor& GetSkyColor() const { return ref().m_SkyColor; }
+    void SetSkyColor(const nw::ut::FloatColor& value) { ref().m_SkyColor = value; }
+
+    void SetDirection(f32 x, f32 y, f32 z) { ref().m_Direction.Set(x, y, z); }
+    const nw::math::VEC3& GetDirection() const { return ref().m_Direction; }
+    void SetDirection(const nw::math::VEC3& value) { ref().m_Direction = value; }
+
+    f32 GetLerpFactor() const { return static_cast<f32>(ref().m_LerpFactor); }
+    void SetLerpFactor(f32 value) { ref().m_LerpFactor = value; }
 
     nw::math::VEC4& GetDirectionAndLerp() {return reinterpret_cast<nw::math::VEC4&>( ref().m_Direction );}
 

@@ -48,7 +48,10 @@ struct ResShaderParameterData
 
 struct ResShaderProgramDescriptionData
 {
-    enum { VERTEX_ATTRIBUTE_USAGE_COUNT = 22 };
+    enum
+    {
+        VERTEX_ATTRIBUTE_USAGE_COUNT = 22
+    };
     
     nw::ut::ResU32 m_Flags;
     nw::ut::ResU32 m_VertexShaderObject;
@@ -113,7 +116,9 @@ public:
     
     NW_RES_CTOR( ResShaderParameterValue )
 
-    NW_RES_FIELD_PRIMITIVE_DECL(UniformType, UniformType)
+
+    UniformType GetUniformType() const { return static_cast<UniformType>(ref().m_UniformType); }
+    void SetUniformType(UniformType value) { ref().m_UniformType = value; }
 
 
     const f32* GetValueF32() const { return &ref().m_Value[0]; }
@@ -203,9 +208,16 @@ class ResShaderParameter : public nw::ut::ResCommon< ResShaderParameterData >
 public:
     NW_RES_CTOR( ResShaderParameter )
 
-    NW_RES_FIELD_STRING_DECL(Name)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, SymbolIndex)
-    NW_RES_FIELD_RESSTRUCT_DECL(ResShaderParameterValue, Parameter)
+
+    const char* GetName() const { return ref().toName.to_ptr(); }
+
+    s32 GetSymbolIndex() const { return static_cast<s32>(ref().m_SymbolIndex); }
+    void SetSymbolIndex(s32 value) { ref().m_SymbolIndex = value; }
+
+    ResShaderParameterValue GetParameter() { return ResShaderParameterValue(&(ref().m_Parameter)); }
+    const ResShaderParameterValue GetParameter() const { return ResShaderParameterValue(&(ref().m_Parameter)); }
+    ResShaderParameterValueData& GetParameterData() { return ref().m_Parameter; }
+    const ResShaderParameterValueData& GetParameterData() const { return ref().m_Parameter; }
 
     s32 GetParameterLength()
     {
@@ -241,11 +253,22 @@ class ResShaderSymbol : public nw::ut::ResCommon< ResShaderSymbolData >
 public:
     NW_RES_CTOR( ResShaderSymbol )
 
-    NW_RES_FIELD_STRING_DECL(Name)
-    NW_RES_FIELD_BOOL_PRIMITIVE_DECL(Enabled)
-    NW_RES_FIELD_RESSTRUCT_DECL(ResShaderParameterValue, DefaultValue)
-    NW_RES_FIELD_BOOL_PRIMITIVE_DECL(GeometryUniform)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, Location)
+
+    const char* GetName() const { return ref().toName.to_ptr(); }
+
+    bool IsEnabled() const { return static_cast<bool>(ref().m_IsEnabled); }
+    void SetEnabled(bool value) { ref().m_IsEnabled = value; }
+
+    ResShaderParameterValue GetDefaultValue() { return ResShaderParameterValue(&(ref().m_DefaultValue)); }
+    const ResShaderParameterValue GetDefaultValue() const { return ResShaderParameterValue(&(ref().m_DefaultValue)); }
+    ResShaderParameterValueData& GetDefaultValueData() { return ref().m_DefaultValue; }
+    const ResShaderParameterValueData& GetDefaultValueData() const { return ref().m_DefaultValue; }
+
+    bool IsGeometryUniform() const { return static_cast<bool>(ref().m_IsGeometryUniform); }
+    void SetGeometryUniform(bool value) { ref().m_IsGeometryUniform = value; }
+
+    s32 GetLocation() const { return static_cast<s32>(ref().m_Location); }
+    void SetLocation(s32 value) { ref().m_Location = value; }
 };
 
 class ResShaderProgramDescription : public nw::ut::ResCommon< ResShaderProgramDescriptionData >
@@ -261,27 +284,113 @@ public:
     
     NW_RES_CTOR(ResShaderProgramDescription)
 
-    NW_RES_FIELD_FLAGS_DECL(u32, Flags)
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
 
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, VertexShaderObject)
 
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, GeometryShaderObject)
+    u32 GetVertexShaderObject() const { return static_cast<u32>(ref().m_VertexShaderObject); }
+    void SetVertexShaderObject(u32 value) { ref().m_VertexShaderObject = value; }
 
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, VertexShaderIndex)
 
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, GeometryShaderIndex)
+    u32 GetGeometryShaderObject() const { return static_cast<u32>(ref().m_GeometryShaderObject); }
+    void SetGeometryShaderObject(u32 value) { ref().m_GeometryShaderObject = value; }
 
-    NW_RES_FIELD_CLASS_LIST_DECL(ResShaderSymbol, Symbols)
 
-    NW_RES_FIELD_STRING_FIXED_LIST_DECL(AttributeSymbols)
+    s32 GetVertexShaderIndex() const { return static_cast<s32>(ref().m_VertexShaderIndex); }
+    void SetVertexShaderIndex(s32 value) { ref().m_VertexShaderIndex = value; }
 
-    NW_RES_FIELD_PRIMITIVE_FIXED_LIST_DECL(s8, AttributeIndices)
 
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, MaxBoneCount)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, MaxVertexLightCount)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, VertexLightEndUniform)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, GeometryShaderMode)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, ProgramObject)
+    s32 GetGeometryShaderIndex() const { return static_cast<s32>(ref().m_GeometryShaderIndex); }
+    void SetGeometryShaderIndex(s32 value) { ref().m_GeometryShaderIndex = value; }
+
+
+    s32 GetSymbolsCount() const
+        { return ref().m_SymbolsTableCount; }
+    ResShaderSymbol GetSymbols(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toSymbolsTable.to_table_ptr());
+            return ResShaderSymbol(tbl_ptr[idx].to_ptr());
+        }
+    const ResShaderSymbol GetSymbols(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toSymbolsTable.to_table_ptr());
+            return ResShaderSymbol(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<ResShaderSymbol, nw::ut::internal::ResArrayClassTraits> GetSymbols()
+        {
+            return nw::ut::internal::ResArray<ResShaderSymbol, nw::ut::internal::ResArrayClassTraits>(ref().toSymbolsTable.to_table_ptr(), GetSymbolsCount());
+        }
+    const nw::ut::internal::ResArray<const ResShaderSymbol, nw::ut::internal::ResArrayClassTraits> GetSymbols() const
+        {
+            return nw::ut::internal::ResArray<const ResShaderSymbol, nw::ut::internal::ResArrayClassTraits>(ref().toSymbolsTable.to_table_ptr(), GetSymbolsCount());
+        }
+
+
+    s32 GetAttributeSymbolsCount() const
+        { return sizeof(ref().toAttributeSymbols) / sizeof(nw::ut::BinString); }
+
+    const char* GetAttributeSymbols(int idx) const;
+
+    nw::ut::internal::ResArray<
+        const nw::ut::BinString,
+        nw::ut::internal::ResArrayPrimitiveTraits
+    > GetAttributeSymbols() const
+    {
+        return nw::ut::internal::ResArray<
+            const nw::ut::BinString,
+            nw::ut::internal::ResArrayPrimitiveTraits
+        >(&(ref().toAttributeSymbols[0]), GetAttributeSymbolsCount());
+    }
+
+
+    s32 GetAttributeIndicesCount() const
+        { return sizeof(ref().m_AttributeIndices) / sizeof(s8); }
+
+    s8 GetAttributeIndices(int idx) const
+        { return ref().m_AttributeIndices[idx]; }
+
+    void SetAttributeIndices(int idx, s8 value)
+        { ref().m_AttributeIndices[idx] = value; }
+
+    nw::ut::internal::ResArray<
+        s8,
+        nw::ut::internal::ResArrayPrimitiveTraits
+    > GetAttributeIndices()
+    {
+        return nw::ut::internal::ResArray<
+            s8,
+            nw::ut::internal::ResArrayPrimitiveTraits
+        >(&(ref().m_AttributeIndices[0]), GetAttributeIndicesCount());
+    }
+
+    nw::ut::internal::ResArray<
+        const s8,
+        nw::ut::internal::ResArrayPrimitiveTraits
+    > GetAttributeIndices() const
+    {
+        return nw::ut::internal::ResArray<
+            const s8,
+            nw::ut::internal::ResArrayPrimitiveTraits
+        >(&(ref().m_AttributeIndices[0]), GetAttributeIndicesCount());
+    }
+
+
+    s32 GetMaxBoneCount() const { return static_cast<s32>(ref().m_MaxBoneCount); }
+    void SetMaxBoneCount(s32 value) { ref().m_MaxBoneCount = value; }
+
+    s32 GetMaxVertexLightCount() const { return static_cast<s32>(ref().m_MaxVertexLightCount); }
+    void SetMaxVertexLightCount(s32 value) { ref().m_MaxVertexLightCount = value; }
+
+    s32 GetVertexLightEndUniform() const { return static_cast<s32>(ref().m_VertexLightEndUniform); }
+    void SetVertexLightEndUniform(s32 value) { ref().m_VertexLightEndUniform = value; }
+
+    s32 GetGeometryShaderMode() const { return static_cast<s32>(ref().m_GeometryShaderMode); }
+    void SetGeometryShaderMode(s32 value) { ref().m_GeometryShaderMode = value; }
+
+    u32 GetProgramObject() const { return static_cast<u32>(ref().m_ProgramObject); }
+    void SetProgramObject(u32 value) { ref().m_ProgramObject = value; }
 
 #if defined(NW_GFX_PROGRAM_OBJECT_ENABLED)
     void*       GetUniformLocation() { return ref().m_UniformLocation; }
@@ -322,9 +431,18 @@ private:
 class ResShader : public ResSceneObject
 {
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResShader) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('SHDR') };
-    enum { BINARY_REVISION = REVISION_RES_SHADER };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResShader)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('SHDR')
+    };
+    enum
+    {
+        BINARY_REVISION = REVISION_RES_SHADER
+    };
     
     NW_RES_CTOR_INHERIT( ResShader, ResSceneObject )
 
@@ -343,17 +461,91 @@ public:
 class ResBinaryShader : public ResShader
 {
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResBinaryShader) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('BSHD') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResBinaryShader)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('BSHD')
+    };
     
     NW_RES_CTOR_INHERIT( ResBinaryShader, ResShader )
 
-    NW_RES_FIELD_PRIMITIVE_LIST_DECL(u8, BinaryData)
 
-    NW_RES_FIELD_PRIMITIVE_LIST_DECL(u32, ShaderKinds)
-    NW_RES_FIELD_CLASS_LIST_DECL(ResShaderProgramDescription, Descriptions)
+    s32 GetBinaryDataCount() const
+        { return ref().m_BinaryDataTableCount; }
+    u8 GetBinaryData(int idx) const
+        {
+            const u8* tbl_ptr = static_cast<const u8*>(ref().toBinaryDataTable.to_table_ptr());
+            return tbl_ptr[idx];
+        }
+    void SetBinaryData(int idx, u8 value)
+        {
+            u8* tbl_ptr = GetBinaryData();
+            tbl_ptr[idx] = value;
+        }
+    u8* GetBinaryData()
+        { return static_cast<u8*>(ref().toBinaryDataTable.to_table_ptr()); }
+    const u8* GetBinaryData() const
+        { return static_cast<const u8*>(ref().toBinaryDataTable.to_table_ptr()); }
 
-    NW_RES_FIELD_PRIMITIVE_LIST_DECL(u32, ShaderObjects)
+
+    s32 GetShaderKindsCount() const
+        { return ref().m_ShaderKindsTableCount; }
+    u32 GetShaderKinds(int idx) const
+        {
+            const u32* tbl_ptr = static_cast<const u32*>(ref().toShaderKindsTable.to_table_ptr());
+            return tbl_ptr[idx];
+        }
+    void SetShaderKinds(int idx, u32 value)
+        {
+            u32* tbl_ptr = GetShaderKinds();
+            tbl_ptr[idx] = value;
+        }
+    u32* GetShaderKinds()
+        { return static_cast<u32*>(ref().toShaderKindsTable.to_table_ptr()); }
+    const u32* GetShaderKinds() const
+        { return static_cast<const u32*>(ref().toShaderKindsTable.to_table_ptr()); }
+
+    s32 GetDescriptionsCount() const
+        { return ref().m_DescriptionsTableCount; }
+    ResShaderProgramDescription GetDescriptions(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toDescriptionsTable.to_table_ptr());
+            return ResShaderProgramDescription(tbl_ptr[idx].to_ptr());
+        }
+    const ResShaderProgramDescription GetDescriptions(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toDescriptionsTable.to_table_ptr());
+            return ResShaderProgramDescription(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<ResShaderProgramDescription, nw::ut::internal::ResArrayClassTraits> GetDescriptions()
+        {
+            return nw::ut::internal::ResArray<ResShaderProgramDescription, nw::ut::internal::ResArrayClassTraits>(ref().toDescriptionsTable.to_table_ptr(), GetDescriptionsCount());
+        }
+    const nw::ut::internal::ResArray<const ResShaderProgramDescription, nw::ut::internal::ResArrayClassTraits> GetDescriptions() const
+        {
+            return nw::ut::internal::ResArray<const ResShaderProgramDescription, nw::ut::internal::ResArrayClassTraits>(ref().toDescriptionsTable.to_table_ptr(), GetDescriptionsCount());
+        }
+
+
+    s32 GetShaderObjectsCount() const
+        { return ref().m_ShaderObjectsTableCount; }
+    u32 GetShaderObjects(int idx) const
+        {
+            const u32* tbl_ptr = static_cast<const u32*>(ref().toShaderObjectsTable.to_table_ptr());
+            return tbl_ptr[idx];
+        }
+    void SetShaderObjects(int idx, u32 value)
+        {
+            u32* tbl_ptr = GetShaderObjects();
+            tbl_ptr[idx] = value;
+        }
+    u32* GetShaderObjects()
+        { return static_cast<u32*>(ref().toShaderObjectsTable.to_table_ptr()); }
+    const u32* GetShaderObjects() const
+        { return static_cast<const u32*>(ref().toShaderObjectsTable.to_table_ptr()); }
 
     const void* GetCommandCache() const { return ref().m_CommandCache; }
 
@@ -373,13 +565,22 @@ public:
 class ResReferenceShader : public ResShader
 {
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResReferenceShader) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('SDRF') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResReferenceShader)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('SDRF')
+    };
     
     NW_RES_CTOR_INHERIT( ResReferenceShader, ResShader )
 
-    NW_RES_FIELD_STRING_DECL(Path)
-    NW_RES_FIELD_CLASS_DECL(ResShader, TargetShader)
+
+    const char* GetPath() const { return ref().toPath.to_ptr(); }
+
+    ResShader GetTargetShader() { return ResShader(ref().toTargetShader.to_ptr()); }
+    const ResShader GetTargetShader() const { return ResShader(ref().toTargetShader.to_ptr()); }
 };
 
 }

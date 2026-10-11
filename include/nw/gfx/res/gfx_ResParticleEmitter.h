@@ -45,22 +45,49 @@ struct ResParticleEmitterParameterData
 class ResParticleEmitter : public ResTransformNode
 {
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleEmitter) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('PEMT') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleEmitter)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('PEMT')
+    };
 
     NW_RES_CTOR_INHERIT( ResParticleEmitter, ResTransformNode )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( u32, Id )
-    NW_RES_FIELD_STRING_DECL( ParticleSetPath )
-    NW_RES_FIELD_CLASS_DECL( ResParticleForm, ParticleForm)
-    NW_RES_FIELD_PRIMITIVE_DECL( bool, IsResourceCopyEnabled)
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, EmissionRatio )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, EmissionRatioRandom )
-    NW_RES_FIELD_PRIMITIVE_DECL( s32, EmissionInterval )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, EmissionIntervalRandom )
-    NW_RES_FIELD_PRIMITIVE_DECL( bool, EmissionSpanInfinity)
-    NW_RES_FIELD_PRIMITIVE_DECL( s32, EmissionSpan)
-    NW_RES_FIELD_PRIMITIVE_DECL( s32, EmissionStart)
+
+    u32 GetId() const { return static_cast<u32>(ref().m_Id); }
+    void SetId(u32 value) { ref().m_Id = value; }
+
+    const char* GetParticleSetPath() const { return ref().toParticleSetPath.to_ptr(); }
+
+    ResParticleForm GetParticleForm() { return ResParticleForm(ref().toParticleForm.to_ptr()); }
+    const ResParticleForm GetParticleForm() const { return ResParticleForm(ref().toParticleForm.to_ptr()); }
+
+    bool GetIsResourceCopyEnabled() const { return static_cast<bool>(ref().m_IsResourceCopyEnabled); }
+    void SetIsResourceCopyEnabled(bool value) { ref().m_IsResourceCopyEnabled = value; }
+
+    f32 GetEmissionRatio() const { return static_cast<f32>(ref().m_EmissionRatio); }
+    void SetEmissionRatio(f32 value) { ref().m_EmissionRatio = value; }
+
+    f32 GetEmissionRatioRandom() const { return static_cast<f32>(ref().m_EmissionRatioRandom); }
+    void SetEmissionRatioRandom(f32 value) { ref().m_EmissionRatioRandom = value; }
+
+    s32 GetEmissionInterval() const { return static_cast<s32>(ref().m_EmissionInterval); }
+    void SetEmissionInterval(s32 value) { ref().m_EmissionInterval = value; }
+
+    f32 GetEmissionIntervalRandom() const { return static_cast<f32>(ref().m_EmissionIntervalRandom); }
+    void SetEmissionIntervalRandom(f32 value) { ref().m_EmissionIntervalRandom = value; }
+
+    bool GetEmissionSpanInfinity() const { return static_cast<bool>(ref().m_EmissionSpanInfinity); }
+    void SetEmissionSpanInfinity(bool value) { ref().m_EmissionSpanInfinity = value; }
+
+    s32 GetEmissionSpan() const { return static_cast<s32>(ref().m_EmissionSpan); }
+    void SetEmissionSpan(s32 value) { ref().m_EmissionSpan = value; }
+
+    s32 GetEmissionStart() const { return static_cast<s32>(ref().m_EmissionStart); }
+    void SetEmissionStart(s32 value) { ref().m_EmissionStart = value; }
 };
 
 class ResParticleEmitterParameter : public nw::ut::ResCommon<ResParticleEmitterParameterData>
@@ -68,14 +95,30 @@ class ResParticleEmitterParameter : public nw::ut::ResCommon<ResParticleEmitterP
 public:
     NW_RES_CTOR( ResParticleEmitterParameter )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( bool, IsResourceCopyEnabled)
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, EmissionRatio )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, EmissionRatioRandom )
-    NW_RES_FIELD_PRIMITIVE_DECL( s32, EmissionInterval )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, EmissionIntervalRandom )
-    NW_RES_FIELD_PRIMITIVE_DECL( bool, EmissionSpanInfinity)
-    NW_RES_FIELD_PRIMITIVE_DECL( s32, EmissionSpan)
-    NW_RES_FIELD_PRIMITIVE_DECL( s32, EmissionStart)
+
+    bool GetIsResourceCopyEnabled() const { return static_cast<bool>(ref().m_IsResourceCopyEnabled); }
+    void SetIsResourceCopyEnabled(bool value) { ref().m_IsResourceCopyEnabled = value; }
+
+    f32 GetEmissionRatio() const { return static_cast<f32>(ref().m_EmissionRatio); }
+    void SetEmissionRatio(f32 value) { ref().m_EmissionRatio = value; }
+
+    f32 GetEmissionRatioRandom() const { return static_cast<f32>(ref().m_EmissionRatioRandom); }
+    void SetEmissionRatioRandom(f32 value) { ref().m_EmissionRatioRandom = value; }
+
+    s32 GetEmissionInterval() const { return static_cast<s32>(ref().m_EmissionInterval); }
+    void SetEmissionInterval(s32 value) { ref().m_EmissionInterval = value; }
+
+    f32 GetEmissionIntervalRandom() const { return static_cast<f32>(ref().m_EmissionIntervalRandom); }
+    void SetEmissionIntervalRandom(f32 value) { ref().m_EmissionIntervalRandom = value; }
+
+    bool GetEmissionSpanInfinity() const { return static_cast<bool>(ref().m_EmissionSpanInfinity); }
+    void SetEmissionSpanInfinity(bool value) { ref().m_EmissionSpanInfinity = value; }
+
+    s32 GetEmissionSpan() const { return static_cast<s32>(ref().m_EmissionSpan); }
+    void SetEmissionSpan(s32 value) { ref().m_EmissionSpan = value; }
+
+    s32 GetEmissionStart() const { return static_cast<s32>(ref().m_EmissionStart); }
+    void SetEmissionStart(s32 value) { ref().m_EmissionStart = value; }
 };
 
 typedef nw::ut::ResArrayPatricia<ResParticleEmitter>::type  ResEmitterArray;

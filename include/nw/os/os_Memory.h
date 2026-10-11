@@ -184,7 +184,7 @@ public:
         m_Size(0),
         m_Alignment(alignment),
         m_MaxAlignment(alignment)
-        {
+    {
         NW_ASSERT(alignment <= MAX_ALIGNMENT);
         NW_ASSERTMSG(alignment != 0 && (alignment & alignment - 1) == 0, "alignment must be power of 2");
     }

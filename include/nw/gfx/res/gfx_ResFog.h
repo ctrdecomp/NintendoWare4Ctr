@@ -49,25 +49,50 @@ public:
     
     NW_RES_CTOR( ResFogUpdater )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( FogUpdaterType, FogUpdaterType )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, MinFogDepth )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, MaxFogDepth )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Density )
+
+    FogUpdaterType GetFogUpdaterType() const { return static_cast<FogUpdaterType>(ref().m_FogUpdaterType); }           
+    void SetFogUpdaterType(FogUpdaterType value) { ref().m_FogUpdaterType = value; }
+
+    f32 GetMinFogDepth() const { return static_cast<f32>(ref().m_MinFogDepth); }           
+    void SetMinFogDepth(f32 value) { ref().m_MinFogDepth = value; }
+
+    f32 GetMaxFogDepth() const { return static_cast<f32>(ref().m_MaxFogDepth); }           
+    void SetMaxFogDepth(f32 value) { ref().m_MaxFogDepth = value; }
+
+    f32 GetDensity() const { return static_cast<f32>(ref().m_Density); }           
+    void SetDensity(f32 value) { ref().m_Density = value; }
 };
 
 class ResFog : public ResTransformNode
 {
 public:
-    enum{ BINARY_REVISION = REVISION_RES_FOG };
-    enum{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResFog) };
-    enum{ SIGNATURE = NW_RES_SIGNATURE32('CFOG') };
+    enum
+    { 
+        BINARY_REVISION = REVISION_RES_FOG 
+    };
+    enum
+    { 
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResFog) 
+    };
+    enum
+    { 
+        SIGNATURE = NW_RES_SIGNATURE32('CFOG') 
+    };
 
-    NW_RES_CTOR_INHERIT( ResFog, ResTransformNode )
+    NW_RES_CTOR_INHERIT(ResFog, ResTransformNode)
 
-    NW_RES_FIELD_FLOAT_COLOR_DECL( nw::ut::FloatColor, Color )
 
-    NW_RES_FIELD_CLASS_DECL( ResImageLookupTable, FogSampler )
-    NW_RES_FIELD_CLASS_DECL( ResFogUpdater, FogUpdater )
+    void SetColor(f32 r, f32 g, f32 b) { ref().m_Color.Set(r, g, b); }            
+    void SetColor(f32 r, f32 g, f32 b, f32 a) { ref().m_Color.Set(r, g, b, a); } 
+    const nw::ut::FloatColor& GetColor() const { return ref().m_Color; }                       
+    void SetColor(const nw::ut::FloatColor& value) { ref().m_Color = value; }
+
+
+    ResImageLookupTable GetFogSampler() { return ResImageLookupTable(ref().toFogSampler.to_ptr()); }                     
+    const ResImageLookupTable GetFogSampler() const { return ResImageLookupTable(ref().toFogSampler.to_ptr()); }
+
+    ResFogUpdater GetFogUpdater() { return ResFogUpdater(ref().toFogUpdater.to_ptr()); }                     
+    const ResFogUpdater GetFogUpdater() const { return ResFogUpdater(ref().toFogUpdater.to_ptr()); }
 
     u32 GetRevision() const { return this->GetHeader().revision; }
 

@@ -97,8 +97,14 @@ protected:
 class ResStandardTextureSampler : public ResTextureSampler
 {
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResStandardTextureSampler) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('STTS') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResStandardTextureSampler)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('STTS')
+    };
 
     NW_RES_CTOR_INHERIT( ResStandardTextureSampler, ResTextureSampler )
 
@@ -109,7 +115,10 @@ public:
         ref().m_BorderColor = value;
         u32 borderColorU32 = ref().m_BorderColor.ToPicaU32();
 
-        enum { CMD_INDEX = 2 };
+        enum
+        {
+            CMD_INDEX = 2
+        };
         ::std::pair<u32, u32*> command = GetOwnerCommand();
 
         command.second[CMD_INDEX] = borderColorU32;
@@ -120,7 +129,10 @@ public:
         ref().m_BorderColor.Set(r, g, b);
         u32 borderColorU32 = ref().m_BorderColor.ToPicaU32();
 
-        enum { CMD_INDEX = 2 };
+        enum
+        {
+            CMD_INDEX = 2
+        };
         ::std::pair<u32, u32*> command = GetOwnerCommand();
 
         command.second[CMD_INDEX] = borderColorU32;
@@ -131,7 +143,10 @@ public:
         ref().m_BorderColor.Set(r, g, b, a);
         u32 borderColorU32 = ref().m_BorderColor.ToPicaU32();
 
-        enum { CMD_INDEX = 2 };
+        enum
+        {
+            CMD_INDEX = 2
+        };
         ::std::pair<u32, u32*> command = GetOwnerCommand();
 
 
@@ -152,8 +167,14 @@ public:
 class ResShadowTextureSampler : public ResTextureSampler
 {
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResShadowTextureSampler) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('SHTS') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResShadowTextureSampler)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('SHTS')
+    };
 
     NW_RES_CTOR_INHERIT(ResShadowTextureSampler, ResTextureSampler)
 };
@@ -161,8 +182,14 @@ public:
 class ResTextureMapper : public nw::ut::ResCommon< ResTextureMapperData >
 {
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResTextureMapper) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('TMAP') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResTextureMapper)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('TMAP')
+    };
 
     NW_RES_CTOR(ResTextureMapper)
 
@@ -195,8 +222,14 @@ typedef nw::ut::ResArrayClass<ResTextureMapper>::type  ResTextureMapperArray;
 class ResPixelBasedTextureMapper : public ResTextureMapper
 {
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResPixelBasedTextureMapper)};
-    enum { SIGNATURE = NW_RES_SIGNATURE32('PMAP') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResPixelBasedTextureMapper)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('PMAP')
+    };
     
     NW_RES_CTOR_INHERIT(ResPixelBasedTextureMapper, ResTextureMapper)
 
@@ -206,7 +239,9 @@ public:
     u32* GetCommandCache() { return &ref().m_CommandCache[0]; }
     const u32* GetCommandCache() const { return &ref().m_CommandCache[0]; }
     
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, CommandSizeToSend)
+
+    u32 GetCommandSizeToSend() const { return static_cast<u32>(ref().m_CommandSizeToSend); }
+    void SetCommandSizeToSend(u32 value) { ref().m_CommandSizeToSend = value; }
     
     bool IsCommandReady() const
     {
@@ -227,8 +262,14 @@ typedef nw::ut::ResArrayClass<const ResPixelBasedTextureMapper>::type  ResPixelB
 class ResProceduralTextureMapper : public ResTextureMapper
 {
 public:
-    enum { TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResProceduralTextureMapper) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('PRCM') };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResProceduralTextureMapper)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('PRCM')
+    };
 
     NW_RES_CTOR_INHERIT( ResProceduralTextureMapper, ResTextureMapper )
 };

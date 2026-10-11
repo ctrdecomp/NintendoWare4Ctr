@@ -116,12 +116,6 @@ public:
     virtual bool IsLinearFilterEnableAtSmall() const = 0;
     virtual bool IsLinearFilterEnableAtLarge() const = 0;
     virtual u32 GetTextureWrapFilterValue() const = 0;
-
-private:
-#if defined(NW_VERSION_USE_FNT2)
-    bool m_IsEnableKerning;
-    bool m_IsEnableExtraMargin;
-#endif
 };
 
 }

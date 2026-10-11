@@ -32,6 +32,7 @@ public:
         this->m_Bits.format = src.GetFormat();
         this->ResetU32Info();
     }
+    
     void SetWrapMode(TexWrap wrapS, TexWrap wrapT)
     {
         m_Bits.wrapS = wrapS;
@@ -47,10 +48,12 @@ public:
 
         this->ResetU32Info();
     }
+    
     const TexSize GetSize() const
     {
         return TexSize(this->m_Width, this->m_Height);
     }
+
     ushort GetHeight() const { return m_Height; }
     ushort GetWidth() const {return m_Width; }
     ushort GetRealWidth() const {return m_RealWidth;}

@@ -60,18 +60,30 @@ class ResParticleUpdater : public nw::ut::ResCommon< ResParticleUpdaterData >
 {
 public:
     enum
-{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleUpdater) };
+    { 
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleUpdater) 
+    };
     enum
-{ SIGNATURE = NW_RES_SIGNATURE32('PUPD') };
+    { 
+        SIGNATURE = NW_RES_SIGNATURE32('PUPD') 
+    };
 
     NW_RES_CTOR(ResParticleUpdater)
 
-    NW_RES_FIELD_PRIMITIVE_DECL(bool, IsResourceCopyEnabled)
-    NW_RES_FIELD_PRIMITIVE_DECL(bool, UpdaterEnabled)
-    NW_RES_FIELD_PRIMITIVE_DECL(ParticleUsage, TargetStream)
-    NW_RES_FIELD_CLASS_DECL(ResParticleAnimation, ParticleAnimation)
 
-    nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
+    bool GetIsResourceCopyEnabled() const { return static_cast<bool>(ref().m_IsResourceCopyEnabled); }           
+    void SetIsResourceCopyEnabled(bool value) { ref().m_IsResourceCopyEnabled = value; }
+
+    bool GetUpdaterEnabled() const { return static_cast<bool>(ref().m_UpdaterEnabled); }           
+    void SetUpdaterEnabled(bool value) { ref().m_UpdaterEnabled = value; }
+
+    ParticleUsage GetTargetStream() const { return static_cast<ParticleUsage>(ref().m_TargetStream); }           
+    void SetTargetStream(ParticleUsage value) { ref().m_TargetStream = value; }
+
+    ResParticleAnimation GetParticleAnimation() { return ResParticleAnimation(ref().toParticleAnimation.to_ptr()); }                     
+    const ResParticleAnimation GetParticleAnimation() const { return ResParticleAnimation(ref().toParticleAnimation.to_ptr()); }
+
+    nw::ut::ResTypeInfo GetTypeInfo() const { return ref().typeInfo; }
 };
 
 struct ResParticleAccelarationUpdaterData : public ResParticleUpdaterData
@@ -89,7 +101,8 @@ public:
 
     NW_RES_CTOR_INHERIT(ResParticleAccelarationUpdater, ResParticleUpdater)
 
-    NW_RES_FIELD_PRIMITIVE_DECL(f32, Factor)
+    f32 GetFactor() const { return static_cast<f32>(ref().m_Factor); }           
+    void SetFactor(f32 value) { ref().m_Factor = value; }
 };
 
 struct ResParticleFloatUpdaterData : public ResParticleUpdaterData
@@ -101,13 +114,19 @@ class ResParticleFloatUpdater : public ResParticleUpdater
 {
 public:
     enum
-{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleFloatUpdater) };
+    { 
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleFloatUpdater) 
+    };
     enum
-{ SIGNATURE = NW_RES_SIGNATURE32('FLOA') };
+    { 
+        SIGNATURE = NW_RES_SIGNATURE32('FLOA') 
+    };
 
     NW_RES_CTOR_INHERIT(ResParticleFloatUpdater, ResParticleUpdater)
 
-    NW_RES_FIELD_PRIMITIVE_DECL(f32, DefaultValue)
+
+    f32 GetDefaultValue() const { return static_cast<f32>(ref().m_DefaultValue); }           
+    void SetDefaultValue(f32 value) { ref().m_DefaultValue = value; }
 };
 
 struct ResParticleFloatImmediateUpdaterData : public ResParticleFloatUpdaterData
@@ -118,9 +137,13 @@ class ResParticleFloatImmediateUpdater : public ResParticleFloatUpdater
 {
 public:
     enum
-{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleFloatImmediateUpdater) };
+    { 
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleFloatImmediateUpdater) 
+    };
     enum
-{ SIGNATURE = NW_RES_SIGNATURE32('FIMM') };
+    { 
+        SIGNATURE = NW_RES_SIGNATURE32('FIMM') 
+    };
 
     NW_RES_CTOR_INHERIT(ResParticleFloatImmediateUpdater, ResParticleFloatUpdater)
 };
@@ -140,19 +163,37 @@ class ResParticleFloatImmediate4KeyUpdater : public ResParticleUpdater
 {
 public:
     enum
-{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleFloatImmediate4KeyUpdater) };
+    { 
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleFloatImmediate4KeyUpdater) 
+    };
     enum
-{ SIGNATURE = NW_RES_SIGNATURE32('FIM4') };
+    { 
+        SIGNATURE = NW_RES_SIGNATURE32('FIM4') 
+    };
 
-    NW_RES_CTOR_INHERIT( ResParticleFloatImmediate4KeyUpdater, ResParticleUpdater )
+    NW_RES_CTOR_INHERIT(ResParticleFloatImmediate4KeyUpdater, ResParticleUpdater)
 
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, InTime)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, OutTime)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, Value0)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, Value1)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, Value2)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, Value3)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, Value4)
+
+    u32 GetInTime() const { return static_cast<u32>(ref().m_InTime); }           
+    void SetInTime(u32 value) { ref().m_InTime = value; }
+
+    u32 GetOutTime() const { return static_cast<u32>(ref().m_OutTime); }           
+    void SetOutTime(u32 value) { ref().m_OutTime = value; }
+
+    s32 GetValue0() const { return static_cast<s32>(ref().m_Value0); }           
+    void SetValue0(s32 value) { ref().m_Value0 = value; }
+
+    s32 GetValue1() const { return static_cast<s32>(ref().m_Value1); }           
+    void SetValue1(s32 value) { ref().m_Value1 = value; }
+
+    s32 GetValue2() const { return static_cast<s32>(ref().m_Value2); }           
+    void SetValue2(s32 value) { ref().m_Value2 = value; }
+
+    s32 GetValue3() const { return static_cast<s32>(ref().m_Value3); }           
+    void SetValue3(s32 value) { ref().m_Value3 = value; }
+
+    s32 GetValue4() const { return static_cast<s32>(ref().m_Value4); }           
+    void SetValue4(s32 value) { ref().m_Value4 = value; }
 };
 
 struct ResParticleVector3Immediate4KeyUpdaterData : public ResParticleUpdaterData
@@ -170,19 +211,42 @@ class ResParticleVector3Immediate4KeyUpdater : public ResParticleUpdater
 {
 public:
     enum
-{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleVector3Immediate4KeyUpdater) };
+    { 
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleVector3Immediate4KeyUpdater) 
+    };
     enum
-{ SIGNATURE = NW_RES_SIGNATURE32('V3I4') };
+    { 
+        SIGNATURE = NW_RES_SIGNATURE32('V3I4') 
+    };
 
     NW_RES_CTOR_INHERIT(ResParticleVector3Immediate4KeyUpdater, ResParticleUpdater)
 
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, InTime)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, OutTime)
-    NW_RES_FIELD_VECTOR3_DECL(nw::math::VEC3, Value0)
-    NW_RES_FIELD_VECTOR3_DECL(nw::math::VEC3, Value1)
-    NW_RES_FIELD_VECTOR3_DECL(nw::math::VEC3, Value2)
-    NW_RES_FIELD_VECTOR3_DECL(nw::math::VEC3, Value3)
-    NW_RES_FIELD_VECTOR3_DECL(nw::math::VEC3, Value4)
+
+    u32 GetInTime() const { return static_cast<u32>(ref().m_InTime); }           
+    void SetInTime(u32 value) { ref().m_InTime = value; }
+
+    u32 GetOutTime() const { return static_cast<u32>(ref().m_OutTime); }           
+    void SetOutTime(u32 value) { ref().m_OutTime = value; }
+
+    void SetValue0(f32 x, f32 y, f32 z) { ref().m_Value0.Set(x, y, z); }            
+    const nw::math::VEC3& GetValue0() const { return ref().m_Value0; }                       
+    void SetValue0(const nw::math::VEC3& value) { ref().m_Value0 = value; }
+
+    void SetValue1(f32 x, f32 y, f32 z) { ref().m_Value1.Set(x, y, z); }            
+    const nw::math::VEC3& GetValue1() const { return ref().m_Value1; }                       
+    void SetValue1(const nw::math::VEC3& value) { ref().m_Value1 = value; }
+
+    void SetValue2(f32 x, f32 y, f32 z) { ref().m_Value2.Set(x, y, z); }            
+    const nw::math::VEC3& GetValue2() const { return ref().m_Value2; }                       
+    void SetValue2(const nw::math::VEC3& value) { ref().m_Value2 = value; }
+
+    void SetValue3(f32 x, f32 y, f32 z) { ref().m_Value3.Set(x, y, z); }            
+    const nw::math::VEC3& GetValue3() const { return ref().m_Value3; }                       
+    void SetValue3(const nw::math::VEC3& value) { ref().m_Value3 = value; }
+
+    void SetValue4(f32 x, f32 y, f32 z) { ref().m_Value4.Set(x, y, z); }            
+    const nw::math::VEC3& GetValue4() const { return ref().m_Value4; }                       
+    void SetValue4(const nw::math::VEC3& value) { ref().m_Value4 = value; }
 };
 
 struct ResParticleGeneralUpdaterData : public ResParticleUpdaterData
@@ -193,9 +257,13 @@ class ResParticleGeneralUpdater : public ResParticleUpdater
 {
 public:
     enum
-{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleGeneralUpdater) };
+    { 
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResParticleGeneralUpdater) 
+    };
     enum
-{ SIGNATURE = NW_RES_SIGNATURE32('GENE') };
+    { 
+        SIGNATURE = NW_RES_SIGNATURE32('GENE') 
+    };
 
     NW_RES_CTOR_INHERIT(ResParticleGeneralUpdater, ResParticleUpdater)
 };
@@ -216,8 +284,13 @@ public:
 
     NW_RES_CTOR_INHERIT(ResParticleGravityUpdater, ResParticleUpdater)
 
-    NW_RES_FIELD_PRIMITIVE_DECL(f32, Power)
-    NW_RES_FIELD_VECTOR3_DECL(nw::math::VEC3, Direction)
+
+    f32 GetPower() const { return static_cast<f32>(ref().m_Power); }           
+    void SetPower(f32 value) { ref().m_Power = value; }
+
+    void SetDirection(f32 x, f32 y, f32 z) { ref().m_Direction.Set(x, y, z); }            
+    const nw::math::VEC3& GetDirection() const { return ref().m_Direction; }                       
+    void SetDirection(const nw::math::VEC3& value) { ref().m_Direction = value; }
 };
 
 struct ResParticleSpinUpdaterData : public ResParticleUpdaterData
@@ -236,8 +309,13 @@ public:
 
     NW_RES_CTOR_INHERIT(ResParticleSpinUpdater, ResParticleUpdater)
 
-    NW_RES_FIELD_PRIMITIVE_DECL(f32, Power)
-    NW_RES_FIELD_VECTOR3_DECL(nw::math::VEC3, Axis)
+
+    f32 GetPower() const { return static_cast<f32>(ref().m_Power); }           
+    void SetPower(f32 value) { ref().m_Power = value; }
+
+    void SetAxis(f32 x, f32 y, f32 z) { ref().m_Axis.Set(x, y, z); }            
+    const nw::math::VEC3& GetAxis() const { return ref().m_Axis; }                       
+    void SetAxis(const nw::math::VEC3& value) { ref().m_Axis = value; }
 };
 
 struct ResParticleRandomUpdaterData : public ResParticleUpdaterData
@@ -256,8 +334,13 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleRandomUpdater, ResParticleUpdater )
 
-    NW_RES_FIELD_VECTOR3_DECL(nw::math::VEC3, Power)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, Interval)
+
+    void SetPower(f32 x, f32 y, f32 z) { ref().m_Power.Set(x, y, z); }            
+    const nw::math::VEC3& GetPower() const { return ref().m_Power; }                       
+    void SetPower(const nw::math::VEC3& value) { ref().m_Power = value; }
+
+    s32 GetInterval() const { return static_cast<s32>(ref().m_Interval); }           
+    void SetInterval(s32 value) { ref().m_Interval = value; }
 };
 
 struct ResParticleVector2ImmediateUpdaterData : public ResParticleUpdaterData
@@ -275,7 +358,10 @@ public:
 
     NW_RES_CTOR_INHERIT(ResParticleVector2ImmediateUpdater, ResParticleUpdater)
 
-    NW_RES_FIELD_VECTOR2_DECL(nw::math::VEC2, DefaultValue)
+
+    void SetDefaultValue(f32 x, f32 y) { ref().m_DefaultValue.Set(x, y); }                      
+    const nw::math::VEC2& GetDefaultValue() const { return ref().m_DefaultValue; }                       
+    void SetDefaultValue(const nw::math::VEC2& value) { ref().m_DefaultValue = value; }
 };
 
 struct ResParticleVector3UpdaterData : public ResParticleUpdaterData
@@ -293,7 +379,10 @@ public:
 
     NW_RES_CTOR_INHERIT(ResParticleVector3Updater, ResParticleUpdater)
 
-    NW_RES_FIELD_VECTOR3_DECL(nw::math::VEC3, DefaultValue)
+
+    void SetDefaultValue(f32 x, f32 y, f32 z) { ref().m_DefaultValue.Set(x, y, z); }            
+    const nw::math::VEC3& GetDefaultValue() const { return ref().m_DefaultValue; }                       
+    void SetDefaultValue(const nw::math::VEC3& value) { ref().m_DefaultValue = value; }
 };
 
 struct ResParticleVector3AdditiveUpdaterData : public ResParticleVector3UpdaterData
@@ -362,7 +451,9 @@ public:
 
     NW_RES_CTOR_INHERIT(ResParticleRotateUpVectorUpdater, ResParticleUpdater)
 
-    NW_RES_FIELD_PRIMITIVE_DECL(ParticleRotateUpVectorSource, Source)
+
+    ParticleRotateUpVectorSource GetSource() const { return static_cast<ParticleRotateUpVectorSource>(ref().m_Source); }           
+    void SetSource(ParticleRotateUpVectorSource value) { ref().m_Source = value; }
 };
 
 enum ParticleTexturePatternUpdaterDivisionType
@@ -391,9 +482,15 @@ public:
 
     NW_RES_CTOR_INHERIT(ResParticleTexturePatternUpdater, ResParticleUpdater)
 
-    NW_RES_FIELD_PRIMITIVE_DECL(ParticleTexturePatternUpdaterDivisionType, DivisionX)
-    NW_RES_FIELD_PRIMITIVE_DECL(ParticleTexturePatternUpdaterDivisionType, DivisionY)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, TextureIndex)
+
+    ParticleTexturePatternUpdaterDivisionType GetDivisionX() const { return static_cast<ParticleTexturePatternUpdaterDivisionType>(ref().m_DivisionX); }           
+    void SetDivisionX(ParticleTexturePatternUpdaterDivisionType value) { ref().m_DivisionX = value; }
+
+    ParticleTexturePatternUpdaterDivisionType GetDivisionY() const { return static_cast<ParticleTexturePatternUpdaterDivisionType>(ref().m_DivisionY); }           
+    void SetDivisionY(ParticleTexturePatternUpdaterDivisionType value) { ref().m_DivisionY = value; }
+
+    u32 GetTextureIndex() const { return static_cast<u32>(ref().m_TextureIndex); }           
+    void SetTextureIndex(u32 value) { ref().m_TextureIndex = value; }
 };
 
 struct ResParticleChildUpdaterOptionData
@@ -467,9 +564,15 @@ public:
 
     NW_RES_CTOR_INHERIT(ResParticleChildUpdaterIntervalOption, ResParticleChildUpdaterOption)
 
-    NW_RES_FIELD_PRIMITIVE_DECL(f32, Start)
-    NW_RES_FIELD_PRIMITIVE_DECL(f32, End)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, Interval)
+
+    f32 GetStart() const { return static_cast<f32>(ref().m_Start); }           
+    void SetStart(f32 value) { ref().m_Start = value; }
+
+    f32 GetEnd() const { return static_cast<f32>(ref().m_End); }           
+    void SetEnd(f32 value) { ref().m_End = value; }
+
+    s32 GetInterval() const { return static_cast<s32>(ref().m_Interval); }           
+    void SetInterval(s32 value) { ref().m_Interval = value; }
 };
 
 struct ResParticleChildUpdaterFrameOptionData : public ResParticleChildUpdaterOptionData
@@ -489,9 +592,15 @@ public:
 
     NW_RES_CTOR_INHERIT(ResParticleChildUpdaterFrameOption, ResParticleChildUpdaterOption)
 
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, Start)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, End)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, Interval)
+
+    s32 GetStart() const { return static_cast<s32>(ref().m_Start); }           
+    void SetStart(s32 value) { ref().m_Start = value; }
+
+    s32 GetEnd() const { return static_cast<s32>(ref().m_End); }           
+    void SetEnd(s32 value) { ref().m_End = value; }
+
+    s32 GetInterval() const { return static_cast<s32>(ref().m_Interval); }           
+    void SetInterval(s32 value) { ref().m_Interval = value; }
 };
 
 struct ResParticleChildUpdaterData : public ResParticleUpdaterData
@@ -512,10 +621,17 @@ public:
 
     NW_RES_CTOR_INHERIT(ResParticleChildUpdater, ResParticleUpdater)
 
-    NW_RES_FIELD_STRING_DECL(ParticleSetPath)
-    NW_RES_FIELD_CLASS_DECL(ResParticleForm, ParticleForm)
-    NW_RES_FIELD_CLASS_DECL(ResParticleChildUpdaterOption, Timing)
-    NW_RES_FIELD_PRIMITIVE_DECL(s32, EmissionRatio)
+
+    const char* GetParticleSetPath() const { return ref().toParticleSetPath.to_ptr(); }
+
+    ResParticleForm GetParticleForm() { return ResParticleForm(ref().toParticleForm.to_ptr()); }                     
+    const ResParticleForm GetParticleForm() const { return ResParticleForm(ref().toParticleForm.to_ptr()); }
+
+    ResParticleChildUpdaterOption GetTiming() { return ResParticleChildUpdaterOption(ref().toTiming.to_ptr()); }                     
+    const ResParticleChildUpdaterOption GetTiming() const { return ResParticleChildUpdaterOption(ref().toTiming.to_ptr()); }
+
+    s32 GetEmissionRatio() const { return static_cast<s32>(ref().m_EmissionRatio); }           
+    void SetEmissionRatio(s32 value) { ref().m_EmissionRatio = value; }
 };
 
 struct ResParticleUserUpdaterData : public ResParticleUpdaterData
@@ -535,7 +651,9 @@ public:
 
     NW_RES_CTOR_INHERIT(ResParticleUserUpdater, ResParticleUpdater)
 
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, UserParameter)
+
+    u32 GetUserParameter() const { return static_cast<u32>(ref().m_UserParameter); }           
+    void SetUserParameter(u32 value) { ref().m_UserParameter = value; }
 };
 
 }

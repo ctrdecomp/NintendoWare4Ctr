@@ -25,7 +25,9 @@ public:
 
     NW_RES_CTOR( ResParticleAnimationOption )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, AnimationDuration )
+
+    f32 GetAnimationDuration() const { return static_cast<f32>(ref().m_AnimationDuration); }
+    void SetAnimationDuration(f32 value) { ref().m_AnimationDuration = value; }
 
     nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
 
@@ -64,8 +66,12 @@ public:
 
     NW_RES_CTOR_INHERIT( ResParticleFrameLoopAnimationOption, ResParticleAnimationOption )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( u32, LoopDuration )
-    NW_RES_FIELD_PRIMITIVE_DECL( bool, RandomOffset )
+
+    u32 GetLoopDuration() const { return static_cast<u32>(ref().m_LoopDuration); }
+    void SetLoopDuration(u32 value) { ref().m_LoopDuration = value; }
+
+    bool GetRandomOffset() const { return static_cast<bool>(ref().m_RandomOffset); }
+    void SetRandomOffset(bool value) { ref().m_RandomOffset = value; }
 };
 
 struct ResParticleRandomAnimationOptionData : public ResParticleAnimationOptionData

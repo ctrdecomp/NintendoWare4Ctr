@@ -2,11 +2,8 @@
 
 #include <nw/font/font_RectDrawer.h>
 
-#if 0
-#define NW_LYT_DRAWER_ALIGN_32 __attribute__((aligned(32)))
-#else
+
 #define NW_LYT_DRAWER_ALIGN_32
-#endif
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2extern.h>

@@ -433,9 +433,16 @@ public:
     };
     
     NW_RES_CTOR(ResMemberAnim)
-    NW_RES_FIELD_FLAGS_DECL(u32, Flags)
-    NW_RES_FIELD_STRING_DECL(Path)
-    NW_RES_FIELD_PRIMITIVE_DECL(u32, PrimitiveType)
+
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
+
+    const char* GetPath() const { return ref().toPath.to_ptr(); }
+
+    u32 GetPrimitiveType() const { return static_cast<u32>(ref().m_PrimitiveType); }
+    void SetPrimitiveType(u32 value) { ref().m_PrimitiveType = value; }
 
     gfx::Result Setup(os::IAllocator* allocator, gfx::ResGraphicsFile graphicsFile);
 
@@ -453,27 +460,123 @@ typedef nw::ut::ResArrayClass<ResMemberAnim>::type  ResMemberAnimArray;
 class ResAnim : public nw::ut::ResCommon<ResAnimData>
 {
 public:
-    enum { BINARY_REVISION = REVISION_RES_ANIM_DATA };
-    enum { TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResAnim) };
-    enum { SIGNATURE = NW_RES_SIGNATURE32('ADAT') };
+    enum
+    {
+        BINARY_REVISION = REVISION_RES_ANIM_DATA
+    };
+    enum
+    {
+        TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResAnim)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('ADAT')
+    };
 
     NW_RES_CTOR( ResAnim )
 
-    NW_RES_FIELD_STRUCT_DECL( nw::ut::BinaryRevisionHeader, Header )
+
+    nw::ut::BinaryRevisionHeader& GetHeader() { return ref().m_Header; }
+    const nw::ut::BinaryRevisionHeader& GetHeader() const { return ref().m_Header; }
+    void SetHeader(const nw::ut::BinaryRevisionHeader& value) { ref().m_Header = value; }
 
     u32 GetRevision() const { return this->GetHeader().revision; }
 
-    NW_RES_FIELD_STRING_DECL( Name )
 
-    NW_RES_FIELD_STRING_DECL( TargetAnimGroupName )
+    const char* GetName() const { return ref().toName.to_ptr(); }
 
-    NW_RES_FIELD_PRIMITIVE_DECL( u8, LoopMode )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, FrameSize )
+    const char* GetTargetAnimGroupName() const { return ref().toTargetAnimGroupName.to_ptr(); }
 
-    NW_RES_FIELD_CLASS_DIC_DECL( ResMemberAnim, MemberAnimSet, nw::ut::ResDicPatricia )
 
-    NW_RES_FIELD_CLASS_DIC_DECL( nw::ut::ResMetaData, UserData, nw::ut::ResDicPatricia )
+    u8 GetLoopMode() const { return static_cast<u8>(ref().m_LoopMode); }
+    void SetLoopMode(u8 value) { ref().m_LoopMode = value; }
+
+
+    f32 GetFrameSize() const { return static_cast<f32>(ref().m_FrameSize); }
+    void SetFrameSize(f32 value) { ref().m_FrameSize = value; }
+
+
+    s32 GetMemberAnimSetCount() const
+        { return ref().m_MemberAnimSetDicCount; }
+    ResMemberAnim GetMemberAnimSet(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMemberAnimSetDic.to_ptr());
+            return ResMemberAnim(dic[idx]);
+        }
+    ResMemberAnim GetMemberAnimSet(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMemberAnimSetDic.to_ptr());
+            return ResMemberAnim(dic[key]);
+        }
+    const ResMemberAnim GetMemberAnimSet(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMemberAnimSetDic.to_ptr());
+            return ResMemberAnim(dic[idx]);
+        }
+    const ResMemberAnim GetMemberAnimSet(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMemberAnimSetDic.to_ptr());
+            return ResMemberAnim(dic[key]);
+        }
+    s32 GetMemberAnimSetIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMemberAnimSetDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<ResMemberAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetMemberAnimSet()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMemberAnimSetDic.to_ptr());
+            return nw::ut::internal::ResArray<ResMemberAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetMemberAnimSetCount());
+        }
+    const nw::ut::internal::ResArray<const ResMemberAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetMemberAnimSet() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toMemberAnimSetDic.to_ptr());
+            return nw::ut::internal::ResArray<const ResMemberAnim, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetMemberAnimSetCount());
+        }
+
+
+    s32 GetUserDataCount() const
+        { return ref().m_UserDataDicCount; }
+    nw::ut::ResMetaData GetUserData(int idx)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::ResMetaData(dic[idx]);
+        }
+    nw::ut::ResMetaData GetUserData(const char* key)
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::ResMetaData(dic[key]);
+        }
+    const nw::ut::ResMetaData GetUserData(int idx) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::ResMetaData(dic[idx]);
+        }
+    const nw::ut::ResMetaData GetUserData(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::ResMetaData(dic[key]);
+        }
+    s32 GetUserDataIndex(const char* key) const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return dic.GetIndex(key);
+        }
+    nw::ut::internal::ResArray<nw::ut::ResMetaData, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetUserData()
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::internal::ResArray<nw::ut::ResMetaData, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetUserDataCount());
+        }
+    const nw::ut::internal::ResArray<const nw::ut::ResMetaData, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits> GetUserData() const
+        {
+            nw::ut::ResDicPatricia dic = nw::ut::ResDicPatricia(ref().toUserDataDic.to_ptr());
+            return nw::ut::internal::ResArray<const nw::ut::ResMetaData, nw::ut::internal::ResArrayDicTraits<nw::ut::ResDicPatriciaData>::Traits>(
+                (dic.IsValid()) ? dic.ref().GetBeginNode() : NULL, GetUserDataCount());
+        }
 
     gfx::Result Setup(nw::os::IAllocator* allocator, gfx::ResGraphicsFile graphicsFile);
 
@@ -513,13 +616,23 @@ private:
 class ResLightAnim : public ResAnim
 {
 public:
-    enum{ TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResLightAnim) };
-    enum{ SIGNATURE = NW_RES_SIGNATURE32('ADLT') };
+    enum
+    {
+        TYPE_INFO = NW_ANIM_RES_TYPE_INFO(ResLightAnim)
+    };
+    enum
+    {
+        SIGNATURE = NW_RES_SIGNATURE32('ADLT')
+    };
 
     NW_RES_CTOR_INHERIT( ResLightAnim, ResAnim )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( u32, LightKind )
-    NW_RES_FIELD_PRIMITIVE_DECL( u32, LightType )
+
+    u32 GetLightKind() const { return static_cast<u32>(ref().m_LightKind); }
+    void SetLightKind(u32 value) { ref().m_LightKind = value; }
+
+    u32 GetLightType() const { return static_cast<u32>(ref().m_LightType); }
+    void SetLightType(u32 value) { ref().m_LightType = value; }
 };
 
 class ResCameraAnim : public ResAnim
@@ -532,8 +645,12 @@ public:
 
     NW_RES_CTOR_INHERIT( ResCameraAnim, ResAnim )
     
-    NW_RES_FIELD_PRIMITIVE_DECL( u32, ProjectionUpdaterKind )
-    NW_RES_FIELD_PRIMITIVE_DECL( u32, ViewUpdaterKind )
+
+    u32 GetProjectionUpdaterKind() const { return static_cast<u32>(ref().m_ProjectionUpdaterKind); }
+    void SetProjectionUpdaterKind(u32 value) { ref().m_ProjectionUpdaterKind = value; }
+
+    u32 GetViewUpdaterKind() const { return static_cast<u32>(ref().m_ViewUpdaterKind); }
+    void SetViewUpdaterKind(u32 value) { ref().m_ViewUpdaterKind = value; }
 };
 
 #define NW_RESANM_GETCURVE_DECL( type, name, hasNoCurveFlag )                   \
@@ -814,7 +931,27 @@ public:
     NW_RESANM_GETCURVE_DECL( ResFloatCurveData, Curve, ResTextureAnimData::FLAG_CONSTANT )
     NW_RESANM_EVALUATE_FLOAT_DECL( Curve, ResTextureAnimData::FLAG_CONSTANT )
 
-    NW_RES_FIELD_CLASS_LIST_DECL( gfx::ResReferenceTexture, Textures )
+
+    s32 GetTexturesCount() const
+        { return ref().m_TexturesTableCount; }
+    gfx::ResReferenceTexture GetTextures(int idx)
+        {
+            nw::ut::Offset* tbl_ptr = static_cast<nw::ut::Offset*>(ref().toTexturesTable.to_table_ptr());
+            return gfx::ResReferenceTexture(tbl_ptr[idx].to_ptr());
+        }
+    const gfx::ResReferenceTexture GetTextures(int idx) const
+        {
+            const nw::ut::Offset* tbl_ptr = static_cast<const nw::ut::Offset*>(ref().toTexturesTable.to_table_ptr());
+            return gfx::ResReferenceTexture(tbl_ptr[idx].to_ptr());
+        }
+    nw::ut::internal::ResArray<gfx::ResReferenceTexture, nw::ut::internal::ResArrayClassTraits> GetTextures()
+        {
+            return nw::ut::internal::ResArray<gfx::ResReferenceTexture, nw::ut::internal::ResArrayClassTraits>(ref().toTexturesTable.to_table_ptr(), GetTexturesCount());
+        }
+    const nw::ut::internal::ResArray<const gfx::ResReferenceTexture, nw::ut::internal::ResArrayClassTraits> GetTextures() const
+        {
+            return nw::ut::internal::ResArray<const gfx::ResReferenceTexture, nw::ut::internal::ResArrayClassTraits>(ref().toTexturesTable.to_table_ptr(), GetTexturesCount());
+        }
 
     gfx::Result Setup(nw::os::IAllocator* allocator, gfx::ResGraphicsFile graphicsFile);
 

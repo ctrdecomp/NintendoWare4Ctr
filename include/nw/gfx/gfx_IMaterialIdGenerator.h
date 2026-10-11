@@ -22,7 +22,9 @@ public:
 
 protected:
     IMaterialIdGenerator(nw::os::IAllocator* allocator) : 
-        GfxObject(allocator) {}
+        GfxObject(allocator)
+    {
+    }
 
 };
 

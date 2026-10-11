@@ -132,15 +132,10 @@ public:
         CONFIG_DETAIL5        = LUT_RR | LUT_RG | LUT_RB | LUT_D0 | LUT_FR | LUT_SP | LUT_DA,
         CONFIG_DETAIL6        = LUT_RR | LUT_D0 | LUT_D1 | LUT_FR | LUT_SP | LUT_DA,
         CONFIG_DETAIL7        = LUT_RR | LUT_RG | LUT_RB | LUT_D0 | LUT_D1 | LUT_FR | LUT_SP | LUT_DA,
-    #ifdef NW_TARGET_CTR_GL_FINAL
-        CONFIG_DETAIL8        = LUT_RR | LUT_D1 | LUT_SP | LUT_DA,
-        CONFIG_DETAIL9        = LUT_D0 | LUT_D1 | LUT_SP | LUT_DA,
-        CONFIG_DETAIL10       = LUT_RR | LUT_RG | LUT_RB | LUT_DA
-    #else
+
         CONFIG_DETAIL8        = LUT_RR | LUT_RG | LUT_RB | LUT_D0 | LUT_D1 | LUT_FR | LUT_SP | LUT_DA,
         CONFIG_DETAIL9        = LUT_RR | LUT_RG | LUT_RB | LUT_D0 | LUT_D1 | LUT_FR | LUT_SP | LUT_DA,
         CONFIG_DETAIL10       = LUT_RR | LUT_RG | LUT_RB | LUT_D0 | LUT_D1 | LUT_FR | LUT_SP | LUT_DA
-    #endif
     };
 
     enum Config
@@ -153,15 +148,9 @@ public:
         CONFIG_TYPE5        = 5,
         CONFIG_TYPE6        = 6,
         CONFIG_TYPE7        = 8,
-    #if defined(NW_TARGET_CTR_GL_FINAL)
-        CONFIG_TYPE8        = 12,
-        CONFIG_TYPE9        = 13,
-        CONFIG_TYPE10       = 14
-    #else
         CONFIG_TYPE8        = 8,
         CONFIG_TYPE9        = 8,
         CONFIG_TYPE10       = 8
-    #endif
     };
 
     enum FresnelConfig
@@ -189,12 +178,25 @@ public:
     
     NW_RES_CTOR( ResFragmentLighting )
 
-    NW_RES_FIELD_FLAGS_DECL( u32, Flags )
-    NW_RES_FIELD_PRIMITIVE_DECL( Config, LayerConfig )
-    NW_RES_FIELD_PRIMITIVE_DECL( FresnelConfig, FresnelConfig )
-    NW_RES_FIELD_PRIMITIVE_DECL( BumpTexture, BumpTextureIndex )
-    NW_RES_FIELD_PRIMITIVE_DECL( BumpMode, BumpMode )
-    NW_RES_FIELD_BOOL_PRIMITIVE_DECL( BumpRenormalize )
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
+
+    Config GetLayerConfig() const { return static_cast<Config>(ref().m_LayerConfig); }
+    void SetLayerConfig(Config value) { ref().m_LayerConfig = value; }
+
+    FresnelConfig GetFresnelConfig() const { return static_cast<FresnelConfig>(ref().m_FresnelConfig); }
+    void SetFresnelConfig(FresnelConfig value) { ref().m_FresnelConfig = value; }
+
+    BumpTexture GetBumpTextureIndex() const { return static_cast<BumpTexture>(ref().m_BumpTextureIndex); }
+    void SetBumpTextureIndex(BumpTexture value) { ref().m_BumpTextureIndex = value; }
+
+    BumpMode GetBumpMode() const { return static_cast<BumpMode>(ref().m_BumpMode); }
+    void SetBumpMode(BumpMode value) { ref().m_BumpMode = value; }
+
+    bool IsBumpRenormalize() const { return static_cast<bool>(ref().m_IsBumpRenormalize); }
+    void SetBumpRenormalize(bool value) { ref().m_IsBumpRenormalize = value; }
     
     bool IsReflectionEnabled() const { return nw::ut::CheckFlag(GetFlags(), ResFragmentLightingData::FLAG_REFLECTION_ENABLED); }
 
@@ -222,7 +224,10 @@ public:
 class ResLightingLookupTable : public nw::ut::ResCommon<ResLightingLookupTableData>
 {
 public:
-    enum{ SIGNATURE = NW_RES_SIGNATURE32('LLUT') };
+    enum
+    { 
+        SIGNATURE = NW_RES_SIGNATURE32('LLUT') 
+    };
 
     enum Input
     {
@@ -235,9 +240,11 @@ public:
         INPUT_NUM
     };
     
-    NW_RES_CTOR( ResLightingLookupTable )
+    NW_RES_CTOR(ResLightingLookupTable)
 
-    NW_RES_FIELD_PRIMITIVE_DECL( Input, Input )
+
+    Input GetInput() const { return static_cast<Input>(ref().m_Input); }
+    void SetInput(Input value) { ref().m_Input = value; }
 
     enum Scale
     {
@@ -250,7 +257,9 @@ public:
         SCALE_MAX = 8
     };
 
-    NW_RES_FIELD_PRIMITIVE_DECL( Scale, Scale )
+
+    Scale GetScale() const { return static_cast<Scale>(ref().m_Scale); }
+    void SetScale(Scale value) { ref().m_Scale = value; }
 
     f32 GetScaleF32() const
     {
@@ -272,7 +281,9 @@ public:
         else { NW_FATAL_ERROR("Illegal scale value"); }
     }
 
-    NW_RES_FIELD_CLASS_DECL( ResLookupTable, Sampler )
+
+    ResLookupTable GetSampler() { return ResLookupTable(ref().toSampler.to_ptr()); }
+    const ResLookupTable GetSampler() const { return ResLookupTable(ref().toSampler.to_ptr()); }
 
     bool IsAbs() const 
     {
@@ -306,14 +317,26 @@ public:
 class ResFragmentLightingTable : public nw::ut::ResCommon< ResFragmentLightingTableData >
 {
 public:
-    NW_RES_CTOR( ResFragmentLightingTable )
+    NW_RES_CTOR(ResFragmentLightingTable)
 
-    NW_RES_FIELD_CLASS_DECL( ResLightingLookupTable, ReflectanceRSampler )
-    NW_RES_FIELD_CLASS_DECL( ResLightingLookupTable, ReflectanceGSampler )
-    NW_RES_FIELD_CLASS_DECL( ResLightingLookupTable, ReflectanceBSampler )
-    NW_RES_FIELD_CLASS_DECL( ResLightingLookupTable, Distribution0Sampler )
-    NW_RES_FIELD_CLASS_DECL( ResLightingLookupTable, Distribution1Sampler )
-    NW_RES_FIELD_CLASS_DECL( ResLightingLookupTable, FresnelSampler )
+
+    ResLightingLookupTable GetReflectanceRSampler() { return ResLightingLookupTable(ref().toReflectanceRSampler.to_ptr()); }
+    const ResLightingLookupTable GetReflectanceRSampler() const { return ResLightingLookupTable(ref().toReflectanceRSampler.to_ptr()); }
+
+    ResLightingLookupTable GetReflectanceGSampler() { return ResLightingLookupTable(ref().toReflectanceGSampler.to_ptr()); }
+    const ResLightingLookupTable GetReflectanceGSampler() const { return ResLightingLookupTable(ref().toReflectanceGSampler.to_ptr()); }
+
+    ResLightingLookupTable GetReflectanceBSampler() { return ResLightingLookupTable(ref().toReflectanceBSampler.to_ptr()); }
+    const ResLightingLookupTable GetReflectanceBSampler() const { return ResLightingLookupTable(ref().toReflectanceBSampler.to_ptr()); }
+
+    ResLightingLookupTable GetDistribution0Sampler() { return ResLightingLookupTable(ref().toDistribution0Sampler.to_ptr()); }
+    const ResLightingLookupTable GetDistribution0Sampler() const { return ResLightingLookupTable(ref().toDistribution0Sampler.to_ptr()); }
+
+    ResLightingLookupTable GetDistribution1Sampler() { return ResLightingLookupTable(ref().toDistribution1Sampler.to_ptr()); }
+    const ResLightingLookupTable GetDistribution1Sampler() const { return ResLightingLookupTable(ref().toDistribution1Sampler.to_ptr()); }
+
+    ResLightingLookupTable GetFresnelSampler() { return ResLightingLookupTable(ref().toFresnelSampler.to_ptr()); }
+    const ResLightingLookupTable GetFresnelSampler() const { return ResLightingLookupTable(ref().toFresnelSampler.to_ptr()); }
 
     Result Setup(nw::os::IAllocator* allocator, ResGraphicsFile graphicsFile);
 
@@ -372,9 +395,25 @@ public:
         KIND_FRAGMENT_SECONDARY_COLOR_DMP = GL_FRAGMENT_SECONDARY_COLOR_DMP
     };
     
-    NW_RES_CTOR( ResTextureCombinerSource )
+    NW_RES_CTOR(ResTextureCombinerSource)
 
-    NW_RES_FIELD_PRIMITIVE_FIXED_LIST_DECL( u32, Sources )
+
+    s32 GetSourcesCount() const
+        { return sizeof(ref().m_Sources) / sizeof(u32); }
+
+    u32 GetSources(int idx) const { return ref().m_Sources[idx]; }
+
+    void SetSources(int idx, u32 value) { ref().m_Sources[idx] = value; }
+
+    nw::ut::internal::ResArray<u32, nw::ut::internal::ResArrayPrimitiveTraits> GetSources()
+    {
+        return nw::ut::internal::ResArray<u32, nw::ut::internal::ResArrayPrimitiveTraits>(&(ref().m_Sources[0]), GetSourcesCount());
+    }
+
+    nw::ut::internal::ResArray<const u32, nw::ut::internal::ResArrayPrimitiveTraits> GetSources() const
+    {
+        return nw::ut::internal::ResArray<const u32, nw::ut::internal::ResArrayPrimitiveTraits >(&(ref().m_Sources[0]), GetSourcesCount());
+    }
 };
 
 class ResTextureCombinerOperand : public nw::ut::ResCommon< ResTextureCombinerOperandData >
@@ -387,33 +426,38 @@ public:
         KIND_SRC_ALPHA           = GL_SRC_ALPHA,
         KIND_ONE_MINUS_SRC_ALPHA = GL_ONE_MINUS_SRC_ALPHA,
 
-    #ifdef NW_TARGET_CTR_GL_FINAL
-        KIND_SRC_R               = GL_SRC_R_DMP,
-        KIND_SRC_G               = GL_SRC_G_DMP,
-        KIND_SRC_B               = GL_SRC_B_DMP,
-        KIND_ONE_MINUS_SRC_R     = GL_ONE_MINUS_SRC_R_DMP,
-        KIND_ONE_MINUS_SRC_G     = GL_ONE_MINUS_SRC_G_DMP,
-        KIND_ONE_MINUS_SRC_B     = GL_ONE_MINUS_SRC_B_DMP
-    #else
         KIND_SRC_R               = GL_SRC_COLOR,
         KIND_SRC_G               = GL_SRC_COLOR,
         KIND_SRC_B               = GL_SRC_COLOR,
         KIND_ONE_MINUS_SRC_R     = GL_ONE_MINUS_SRC_COLOR,
         KIND_ONE_MINUS_SRC_G     = GL_ONE_MINUS_SRC_COLOR,
         KIND_ONE_MINUS_SRC_B     = GL_ONE_MINUS_SRC_COLOR
-    #endif
     };
 
-    NW_RES_CTOR( ResTextureCombinerOperand )
+    NW_RES_CTOR(ResTextureCombinerOperand)
 
-    NW_RES_FIELD_PRIMITIVE_FIXED_LIST_DECL( u32, Operands )
+
+    s32 GetOperandsCount() const { return sizeof(ref().m_Operands) / sizeof(u32); }
+    u32 GetOperands(int idx) const { return ref().m_Operands[idx]; }
+
+    void SetOperands(int idx, u32 value) { ref().m_Operands[idx] = value; }
+
+    nw::ut::internal::ResArray<u32, nw::ut::internal::ResArrayPrimitiveTraits> GetOperands()
+    {
+        return nw::ut::internal::ResArray<u32, nw::ut::internal::ResArrayPrimitiveTraits>(&(ref().m_Operands[0]), GetOperandsCount());
+    }
+
+    nw::ut::internal::ResArray<const u32, nw::ut::internal::ResArrayPrimitiveTraits> GetOperands() const
+    {
+        return nw::ut::internal::ResArray<const u32, nw::ut::internal::ResArrayPrimitiveTraits>(&(ref().m_Operands[0]), GetOperandsCount());
+    }
 };
 
 class ResAlphaTest : public nw::ut::ResCommon< ResAlphaTestData >
 {
 public:
     
-    NW_RES_CTOR( ResAlphaTest )
+    NW_RES_CTOR(ResAlphaTest)
 
     enum TestFunc
     {
@@ -429,47 +473,74 @@ public:
 
     bool IsTestEnabled() const
     {
-        enum{ CMD_SHIFT = 0, CMD_MASK = 0x1 };
+        enum
+        { 
+            CMD_SHIFT = 0, CMD_MASK = 0x1 
+        };
         
         return internal::GetCmdValue( ref().m_CommandBuffer[0], CMD_MASK, CMD_SHIFT ) ? true : false;
     }
 
     void SetTestEnabled(bool value)
     {
-        enum{ CMD_SHIFT = 0, CMD_MASK = 0x1 };
+        enum
+        {
+            CMD_SHIFT = 0,
+            CMD_MASK = 0x1
+        };
         
         internal::SetCmdValue( &ref().m_CommandBuffer[0], value, CMD_MASK, CMD_SHIFT );
     }
 
     TestFunc GetTestFunc() const
     {
-        enum{ CMD_SHIFT = 4, CMD_MASK = 0x7 };
+        enum
+        {
+            CMD_SHIFT = 4,
+            CMD_MASK = 0x7
+        };
         
         return (TestFunc)internal::GetCmdValue( ref().m_CommandBuffer[0], CMD_MASK, CMD_SHIFT );
     }
 
     void SetTestFunc(TestFunc value)
     {
-        enum{ CMD_SHIFT = 4, CMD_MASK = 0x7 };
+        enum
+        {
+            CMD_SHIFT = 4,
+            CMD_MASK = 0x7
+        };
 
         internal::SetCmdValue( &ref().m_CommandBuffer[0], value, CMD_MASK, CMD_SHIFT );
     }
 
     f32 GetTestReference() const
     {
-        enum{ CMD_SHIFT = 8, CMD_MASK = 0xff };
+        enum
+        {
+            CMD_SHIFT = 8,
+            CMD_MASK = 0xff
+        };
         
         return static_cast<f32>(internal::GetCmdValue( ref().m_CommandBuffer[0], CMD_MASK, CMD_SHIFT )) / 255.0f;
     }
 
     void SetTestReference(f32 value)
     {
-        enum{ CMD_SHIFT = 8, CMD_MASK = 0xff };
+        enum
+        {
+            CMD_SHIFT = 8,
+            CMD_MASK = 0xff
+        };
 
         internal::SetCmdValue( &ref().m_CommandBuffer[0], (0.5f + (value * 255.0f)), CMD_MASK, CMD_SHIFT );
     }
 
-    NW_RES_FIELD_COMMAND_BUFFER()
+
+    u32* GetCommandBuffer()
+        { return &ref().m_CommandBuffer[0]; }
+    const u32* GetCommandBuffer() const
+        { return &ref().m_CommandBuffer[0]; }
 };
 
 class ResTextureCombiner : public nw::ut::ResCommon< ResTextureCombinerData >
@@ -492,9 +563,15 @@ public:
 
     NW_RES_CTOR( ResTextureCombiner )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( Constant, Constant )
+
+    Constant GetConstant() const { return static_cast<Constant>(ref().m_Constant); }
+    void SetConstant(Constant value) { ref().m_Constant = value; }
     
-    NW_RES_FIELD_COMMAND_BUFFER();
+
+    u32* GetCommandBuffer()
+        { return &ref().m_CommandBuffer[0]; }
+    const u32* GetCommandBuffer() const
+        { return &ref().m_CommandBuffer[0]; };
 
     void SetConstantCmd(u32 rgba) { ref().m_CmdConstant = rgba; }
     
@@ -575,90 +652,150 @@ public:
 
     Source GetSourceAlpha(s32 index) const
     {
-        enum{ CMD_SHIFT = 16, CMD_WIDTH = 4, CMD_MASK = 0xF };
+        enum
+        {
+            CMD_SHIFT = 16,
+            CMD_WIDTH = 4,
+            CMD_MASK = 0xF
+        };
         
         return (Source)internal::GetCmdValue( ref().m_CmdSource, CMD_MASK, CMD_WIDTH * index + CMD_SHIFT );
     }
     
     void SetSourceAlpha(s32 index, Source value)
     {
-        enum{ CMD_SHIFT = 16, CMD_WIDTH = 4, CMD_MASK = 0xF };
+        enum
+        {
+            CMD_SHIFT = 16,
+            CMD_WIDTH = 4,
+            CMD_MASK = 0xF
+        };
         
         internal::SetCmdValue( &ref().m_CmdSource, value, CMD_MASK, CMD_WIDTH * index + CMD_SHIFT );
     }
     
     OperandRgb GetOperandRgb(s32 index) const
     {
-        enum{ CMD_WIDTH = 4, CMD_MASK = 0xF };
+        enum
+        {
+            CMD_WIDTH = 4,
+            CMD_MASK = 0xF
+        };
         
         return (OperandRgb)internal::GetCmdValue( ref().m_CmdOperand, CMD_MASK, CMD_WIDTH * index );
     }
 
     void SetOperandRgb(s32 index, OperandRgb value)
     {
-        enum{ CMD_WIDTH = 4, CMD_MASK = 0xF };
+        enum
+        {
+            CMD_WIDTH = 4,
+            CMD_MASK = 0xF
+        };
         
         internal::SetCmdValue( &ref().m_CmdOperand, value, CMD_MASK, CMD_WIDTH * index );
     }
 
     OperandAlpha GetOperandAlpha(s32 index) const
     {
-        enum{ CMD_SHIFT = 12, CMD_WIDTH = 4, CMD_MASK = 0xF };
+        enum
+        {
+            CMD_SHIFT = 12,
+            CMD_WIDTH = 4,
+            CMD_MASK = 0xF
+        };
         
         return (OperandAlpha)internal::GetCmdValue( ref().m_CmdOperand, CMD_MASK, CMD_WIDTH * index + CMD_SHIFT );
     }
 
     void SetOperandAlpha(s32 index, OperandAlpha value)
     {
-        enum{ CMD_SHIFT = 12, CMD_WIDTH = 4, CMD_MASK = 0xF };
+        enum
+        {
+            CMD_SHIFT = 12,
+            CMD_WIDTH = 4,
+            CMD_MASK = 0xF
+        };
         internal::SetCmdValue( &ref().m_CmdOperand, value, CMD_MASK, CMD_WIDTH * index + CMD_SHIFT );
     }
 
     Combine GetCombineRgb() const
     {
-        enum{ CMD_SHIFT = 0, CMD_MASK = 0xF };
+        enum
+        {
+            CMD_SHIFT = 0,
+            CMD_MASK = 0xF
+        };
         return (Combine)internal::GetCmdValue( ref().m_CmdCombine, CMD_MASK, CMD_SHIFT );
     }
 
     void SetCombineRgb(Combine value)
     {
-        enum{ CMD_SHIFT = 0, CMD_MASK = 0xF };
+        enum
+        {
+            CMD_SHIFT = 0,
+            CMD_MASK = 0xF
+        };
         internal::SetCmdValue( &ref().m_CmdCombine, value, CMD_MASK, CMD_SHIFT );
     }
 
     Combine GetCombineAlpha() const
     {
-        enum{ CMD_SHIFT = 16, CMD_MASK = 0xF };
+        enum
+        {
+            CMD_SHIFT = 16,
+            CMD_MASK = 0xF
+        };
         return (Combine)internal::GetCmdValue( ref().m_CmdCombine, CMD_MASK, CMD_SHIFT );
     }
 
     void SetCombineAlpha(Combine value)
     {
-        enum{ CMD_SHIFT = 16, CMD_MASK = 0xF };
+        enum
+        {
+            CMD_SHIFT = 16,
+            CMD_MASK = 0xF
+        };
         internal::SetCmdValue( &ref().m_CmdCombine, value, CMD_MASK, CMD_SHIFT );
     }
 
     Scale GetScaleRgb() const
     {
-        enum{ CMD_SHIFT = 0, CMD_MASK = 0x3 };
+        enum
+        {
+            CMD_SHIFT = 0,
+            CMD_MASK = 0x3
+        };
         return (Scale)internal::GetCmdValue( ref().m_CmdScale, CMD_MASK, CMD_SHIFT );
     }
 
     void SetScaleRgb(Scale value)
     {
-        enum{ CMD_SHIFT = 0, CMD_MASK = 0x3 };
+        enum
+        {
+            CMD_SHIFT = 0,
+            CMD_MASK = 0x3
+        };
         internal::SetCmdValue( &ref().m_CmdScale, value, CMD_MASK, CMD_SHIFT );
     }
 
     Scale GetScaleAlpha() const
     {
-        enum{ CMD_SHIFT = 16, CMD_MASK = 0x3 };
+        enum
+        {
+            CMD_SHIFT = 16,
+            CMD_MASK = 0x3
+        };
         return (Scale)internal::GetCmdValue( ref().m_CmdScale, CMD_MASK, CMD_SHIFT );
     }
 
     void SetScaleAlpha(Scale value)
     {
-        enum{ CMD_SHIFT = 16, CMD_MASK = 0x3 };
+        enum
+        {
+            CMD_SHIFT = 16,
+            CMD_MASK = 0x3
+        };
         internal::SetCmdValue( &ref().m_CmdScale, value, CMD_MASK, CMD_SHIFT );
     }
 };
@@ -675,10 +812,40 @@ public:
     NW_RES_CTOR( ResFragmentShader )
 
 
-    NW_RES_FIELD_RESSTRUCT_DECL( ResFragmentLighting, FragmentLighting )
-    NW_RES_FIELD_CLASS_DECL( ResFragmentLightingTable, FragmentLightingTable )
-    NW_RES_FIELD_STRUCT_FIXED_LIST_DECL( ResTextureCombiner, TextureCombiners )
-    NW_RES_FIELD_RESSTRUCT_DECL( ResAlphaTest, AlphaTest )
+
+    ResFragmentLighting GetFragmentLighting() { return ResFragmentLighting(&(ref().m_FragmentLighting)); }
+    const ResFragmentLighting GetFragmentLighting() const { return ResFragmentLighting(&(ref().m_FragmentLighting)); }
+    ResFragmentLightingData& GetFragmentLightingData() { return ref().m_FragmentLighting; }
+    const ResFragmentLightingData& GetFragmentLightingData() const { return ref().m_FragmentLighting; }
+
+    ResFragmentLightingTable GetFragmentLightingTable() { return ResFragmentLightingTable(ref().toFragmentLightingTable.to_ptr()); }
+    const ResFragmentLightingTable GetFragmentLightingTable() const { return ResFragmentLightingTable(ref().toFragmentLightingTable.to_ptr()); }
+
+    s32 GetTextureCombinersCount() const
+        { return sizeof(ref().m_TextureCombiners) / sizeof(ResTextureCombinerData); }
+
+    ResTextureCombiner GetTextureCombiners(int idx)
+        { return ResTextureCombiner(&ref().m_TextureCombiners[idx]); }
+
+    const ResTextureCombiner GetTextureCombiners(int idx) const
+        { return ResTextureCombiner(&ref().m_TextureCombiners[idx]); }
+
+    ResTextureCombinerData& GetTextureCombinersData(int idx)
+        { return ref().m_TextureCombiners[idx]; }
+
+    const ResTextureCombinerData& GetTextureCombinersData(int idx) const
+        { return ref().m_TextureCombiners[idx]; }
+
+    ResTextureCombinerData* GetTextureCombinersData()
+        { return ref().m_TextureCombiners; }
+
+    const ResTextureCombinerData* GetTextureCombinersData() const
+        { return ref().m_TextureCombiners; }
+
+    ResAlphaTest GetAlphaTest() { return ResAlphaTest(&(ref().m_AlphaTest)); }
+    const ResAlphaTest GetAlphaTest() const { return ResAlphaTest(&(ref().m_AlphaTest)); }
+    ResAlphaTestData& GetAlphaTestData() { return ref().m_AlphaTest; }
+    const ResAlphaTestData& GetAlphaTestData() const { return ref().m_AlphaTest; }
 
 
     Result Setup(nw::os::IAllocator* allocator, ResGraphicsFile graphicsFile);
@@ -717,25 +884,41 @@ public:
 
     BufferInput GetBufferInputRgb(s32 index) const
     {
-        enum{ CMD_SHIFT = 7, CMD_MASK = 0x1 };
+        enum
+        {
+            CMD_SHIFT = 7,
+            CMD_MASK = 0x1
+        };
         return static_cast<BufferInput>(internal::GetCmdValue( ref().m_BufferCommand[2], CMD_MASK, CMD_SHIFT+index ));
     }
 
     void SetBufferInputRgb(s32 index, BufferInput value)
     {
-        enum{ CMD_SHIFT = 7, CMD_MASK = 0x1 };
+        enum
+        {
+            CMD_SHIFT = 7,
+            CMD_MASK = 0x1
+        };
         internal::SetCmdValue( &ref().m_BufferCommand[2], value, CMD_MASK, CMD_SHIFT+index );
     }
 
     BufferInput GetBufferInputAlpha(s32 index) const
     {
-        enum{ CMD_SHIFT = 11, CMD_MASK = 0x1 };
+        enum
+        {
+            CMD_SHIFT = 11,
+            CMD_MASK = 0x1
+        };
         return static_cast<BufferInput>(internal::GetCmdValue( ref().m_BufferCommand[2], CMD_MASK, CMD_SHIFT+index ));
     }
 
     void SetBufferInputAlpha(s32 index, BufferInput value)
     {
-        enum{ CMD_SHIFT = 11, CMD_MASK = 0x1 };
+        enum
+        {
+            CMD_SHIFT = 11,
+            CMD_MASK = 0x1
+        };
         internal::SetCmdValue(&ref().m_BufferCommand[2], value, CMD_MASK, CMD_SHIFT+index );
     }
 

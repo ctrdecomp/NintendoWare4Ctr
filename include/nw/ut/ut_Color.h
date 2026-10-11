@@ -115,7 +115,6 @@ public:
     }
     void Set(SelfType color) { *this = color; }
 
-#if NN_ENDIAN == NN_ENDIAN_VALUE_LITTLE
     u32 ToU32() const
     {
         u32 val = ToU32Raw();
@@ -125,10 +124,6 @@ public:
     {
         ToU32RawRef() = ((value >> 24) & 0xFF) | ((value >> 8) & 0xFF00) | ((value << 8) & 0xFF0000) | ((value << 24) & 0xFF000000);
     }
-#else
-    u32  ToU32() const { return ToU32RawRef(); }
-    void SetU32(u32 value) { ToU32RawRef() = value; }
-#endif
 
     u8 r, g, b, a;
 
@@ -252,16 +247,7 @@ protected:
     const nn::math::VEC4& ToVEC4() const { return *reinterpret_cast<const nn::math::VEC4*>(this); }
 };
 
-#if !defined(NN_SWAP_ENDIAN)
     typedef FloatColor ResFloatColor;
-#else
-    typedef struct
-    {
-        nw::ut::ResF32 r, g, b, a;
-        operator FloatColor() const { FloatColor c; c.r=r; c.g=g; c.b=b; c.a=a; return c; }
-        void operator=(const FloatColor& v) { r=v.r; g=v.g; b=v.b; a=v.a; }
-    } ResFloatColor;
-#endif
 
 }
 }

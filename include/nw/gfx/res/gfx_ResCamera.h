@@ -133,7 +133,10 @@ struct ResPerspectiveProjectionUpdaterData : public ResCameraProjectionUpdaterDa
 class ResCameraViewUpdater : public nw::ut::ResCommon< ResCameraViewUpdaterData >
 {
 public:
-    enum{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResCameraViewUpdater) };
+    enum
+    {
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResCameraViewUpdater)
+    };
     
     NW_RES_CTOR( ResCameraViewUpdater )
 
@@ -144,13 +147,20 @@ class ResCameraProjectionUpdater : public nw::ut::ResCommon< ResCameraProjection
 {
 public:
 
-    enum{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResCameraProjectionUpdater) };
+    enum
+    { 
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResCameraProjectionUpdater) 
+    };
     
-    NW_RES_CTOR( ResCameraProjectionUpdater )
+    NW_RES_CTOR(ResCameraProjectionUpdater)
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Near )
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Far )
+    f32 GetNear() const { return static_cast<f32>(ref().m_Near); }           
+    void SetNear(f32 value) { ref().m_Near = value; }
+
+
+    f32 GetFar() const { return static_cast<f32>(ref().m_Far); }           
+    void SetFar(f32 value) { ref().m_Far = value; }
 
     nw::ut::ResTypeInfo     GetTypeInfo() const { return ref().typeInfo; }
 };
@@ -158,76 +168,134 @@ public:
 class ResAimTargetViewUpdater : public ResCameraViewUpdater
 {
 public:
-    enum{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResAimTargetViewUpdater) };
+    enum
+    { 
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResAimTargetViewUpdater)
+    };
     
-    NW_RES_CTOR_INHERIT( ResAimTargetViewUpdater, ResCameraViewUpdater )
+    NW_RES_CTOR_INHERIT(ResAimTargetViewUpdater, ResCameraViewUpdater)
 
 
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, TargetPosition )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Twist )
-    NW_RES_FIELD_FLAGS_DECL( u32, Flags )
+
+    void SetTargetPosition(f32 x, f32 y, f32 z) { ref().m_TargetPosition.Set(x, y, z); }            
+    const nw::math::VEC3& GetTargetPosition() const { return ref().m_TargetPosition; }                       
+    void SetTargetPosition(const nw::math::VEC3& value) { ref().m_TargetPosition = value; }
+
+    f32 GetTwist() const { return static_cast<f32>(ref().m_Twist); }           
+    void SetTwist(f32 value) { ref().m_Twist = value; }
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
 };
 
 class ResLookAtTargetViewUpdater : public ResCameraViewUpdater
 {
 public:
-    enum{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResLookAtTargetViewUpdater) };
+    enum
+    { 
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResLookAtTargetViewUpdater) 
+    };
     
-    NW_RES_CTOR_INHERIT( ResLookAtTargetViewUpdater, ResCameraViewUpdater )
+    NW_RES_CTOR_INHERIT(ResLookAtTargetViewUpdater, ResCameraViewUpdater)
 
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, TargetPosition )
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, UpwardVector )
-    NW_RES_FIELD_FLAGS_DECL( u32, Flags )
+    void SetTargetPosition(f32 x, f32 y, f32 z) { ref().m_TargetPosition.Set(x, y, z); }            
+    const nw::math::VEC3& GetTargetPosition() const { return ref().m_TargetPosition; }                       
+    void SetTargetPosition(const nw::math::VEC3& value) { ref().m_TargetPosition = value; }
+
+    void SetUpwardVector(f32 x, f32 y, f32 z) { ref().m_UpwardVector.Set(x, y, z); }            
+    const nw::math::VEC3& GetUpwardVector() const { return ref().m_UpwardVector; }                       
+    void SetUpwardVector(const nw::math::VEC3& value) { ref().m_UpwardVector = value; }
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
 };
 
 class ResRotateViewUpdater : public ResCameraViewUpdater
 {
 public:
-    enum{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResRotateViewUpdater) };
+    enum
+    { 
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResRotateViewUpdater) 
+    };
     
-    NW_RES_CTOR_INHERIT( ResRotateViewUpdater, ResCameraViewUpdater )
+    NW_RES_CTOR_INHERIT(ResRotateViewUpdater, ResCameraViewUpdater)
 
-    NW_RES_FIELD_VECTOR3_DECL( nw::math::VEC3, ViewRotate )
-    NW_RES_FIELD_FLAGS_DECL( u32, Flags )
+
+    void SetViewRotate(f32 x, f32 y, f32 z) { ref().m_ViewRotate.Set(x, y, z); }            
+    const nw::math::VEC3& GetViewRotate() const { return ref().m_ViewRotate; }                       
+    void SetViewRotate(const nw::math::VEC3& value) { ref().m_ViewRotate = value; }
+    u32 GetFlags() const { return static_cast<u32>(ref().m_Flags); }
+    void SetFlags(u32 value) { ref().m_Flags = value; }
+    void EnableFlags(u32 value) { ref().m_Flags = nw::ut::EnableFlag(ref().m_Flags, value); }
+    void DisableFlags(u32 value) { ref().m_Flags = nw::ut::DisableFlag(ref().m_Flags, value); }
 };
 
 class ResFrustumProjectionUpdater : public ResCameraProjectionUpdater
 {
 public:
-    enum{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResFrustumProjectionUpdater) };
+    enum
+    { 
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResFrustumProjectionUpdater) 
+    };
     
     NW_RES_CTOR_INHERIT( ResFrustumProjectionUpdater, ResCameraProjectionUpdater )
 
-    NW_RES_FIELD_RECT_DECL( ResProjectionRect, Rect )
+
+    void SetRectWithoutFlip(f32 l, f32 r, f32 b, f32 t) { ref().m_Rect.SetWithoutFlip(l, r, b, t); } 
+    void SetRectWithYFlip(f32 l, f32 r, f32 b, f32 t) { ref().m_Rect.SetWithYFlip(l, r, b, t); } 
+    const ResProjectionRect& GetRect() const { return ref().m_Rect; }                       
+    void SetRect(const ResProjectionRect& value) { ref().m_Rect = value; }
 };
 
 class ResOrthoProjectionUpdater : public ResCameraProjectionUpdater
 {
 public:
-    enum{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResOrthoProjectionUpdater) };
+    enum
+    { 
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResOrthoProjectionUpdater) 
+    };
     
-    NW_RES_CTOR_INHERIT( ResOrthoProjectionUpdater, ResCameraProjectionUpdater )
+    NW_RES_CTOR_INHERIT(ResOrthoProjectionUpdater, ResCameraProjectionUpdater)
 
-    NW_RES_FIELD_RECT_DECL( ResProjectionRect, Rect )
+
+    void SetRectWithoutFlip(f32 l, f32 r, f32 b, f32 t) { ref().m_Rect.SetWithoutFlip(l, r, b, t); } 
+    void SetRectWithYFlip(f32 l, f32 r, f32 b, f32 t) { ref().m_Rect.SetWithYFlip(l, r, b, t); } 
+    const ResProjectionRect& GetRect() const { return ref().m_Rect; }                       
+    void SetRect(const ResProjectionRect& value) { ref().m_Rect = value; }
 };
 
 
 class ResPerspectiveProjectionUpdater : public ResCameraProjectionUpdater
 {
 public:
-    enum{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResPerspectiveProjectionUpdater) };
+    enum
+    { 
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResPerspectiveProjectionUpdater) 
+    };
     
-    NW_RES_CTOR_INHERIT( ResPerspectiveProjectionUpdater, ResCameraProjectionUpdater )
+    NW_RES_CTOR_INHERIT(ResPerspectiveProjectionUpdater, ResCameraProjectionUpdater)
 
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, AspectRatio )
-    NW_RES_FIELD_PRIMITIVE_DECL( f32, Fovy )
+
+    f32 GetAspectRatio() const { return static_cast<f32>(ref().m_AspectRatio); }           
+    void SetAspectRatio(f32 value) { ref().m_AspectRatio = value; }
+
+    f32 GetFovy() const { return static_cast<f32>(ref().m_Fovy); }           
+    void SetFovy(f32 value) { ref().m_Fovy = value; }
 };
 
 class ResCamera : public ResTransformNode
 {
 public:
-    enum{ BINARY_REVISION = REVISION_RES_CAMERA };
-    enum{ TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResCamera) };
+    enum
+    { 
+        BINARY_REVISION = REVISION_RES_CAMERA 
+    };
+    enum
+    { 
+        TYPE_INFO = NW_GFX_RES_TYPE_INFO(ResCamera) 
+    };
 
     enum ViewType
     {
@@ -247,13 +315,22 @@ public:
     
     NW_RES_CTOR_INHERIT(ResCamera, ResTransformNode)
     
-    NW_RES_FIELD_PRIMITIVE_DECL(ViewType, ViewType)
-    NW_RES_FIELD_PRIMITIVE_DECL(ProjType, ProjectionType)
+    ViewType GetViewType() const { return static_cast<ViewType>(ref().m_ViewType); }           
+    void SetViewType(ViewType value) { ref().m_ViewType = value; }
 
-    NW_RES_FIELD_CLASS_DECL(ResCameraViewUpdater, ViewUpdater)
-    NW_RES_FIELD_CLASS_DECL(ResCameraProjectionUpdater, ProjectionUpdater)
+    ProjType GetProjectionType() const { return static_cast<ProjType>(ref().m_ProjectionType); }           
+    void SetProjectionType(ProjType value) { ref().m_ProjectionType = value; }
 
-    NW_RES_FIELD_PRIMITIVE_DECL(f32, WScale)
+
+    ResCameraViewUpdater GetViewUpdater() { return ResCameraViewUpdater(ref().toViewUpdater.to_ptr()); }                     
+    const ResCameraViewUpdater GetViewUpdater() const { return ResCameraViewUpdater(ref().toViewUpdater.to_ptr()); }
+
+    ResCameraProjectionUpdater GetProjectionUpdater() { return ResCameraProjectionUpdater(ref().toProjectionUpdater.to_ptr()); }                     
+    const ResCameraProjectionUpdater GetProjectionUpdater() const { return ResCameraProjectionUpdater(ref().toProjectionUpdater.to_ptr()); }
+
+
+    f32 GetWScale() const { return static_cast<f32>(ref().m_WScale); }           
+    void SetWScale(f32 value) { ref().m_WScale = value; }
 
     u32 GetRevision() const { return this->GetHeader().revision; }
 };
